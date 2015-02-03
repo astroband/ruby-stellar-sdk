@@ -1,6 +1,6 @@
 # Stellar::Xdr
 
-TODO: Write a gem description
+WIP Library to decode the core Hayashi data types
 
 ## Installation
 
