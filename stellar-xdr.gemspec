@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["nullstyle@gmail.com"]
   spec.summary       = %q{Stellar client library: XDR}
   spec.homepage      = ""
-  spec.license       = "MIT"
+  spec.license       = "ISC"
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
