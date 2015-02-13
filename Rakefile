@@ -8,7 +8,7 @@ task :update do
   #  TODO: download XDR
   Pathname.glob("xdr/**/*.x").each do |path|
     $stderr.puts "Generating #{path}"
-    compilation = Xdrgen::Compilation.new(path, "lib/stellar/generated")
+    compilation = Xdrgen::Compilation.new(path, "generated")
     compilation.compile
   end
 end

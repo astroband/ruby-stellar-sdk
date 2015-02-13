@@ -1,11 +1,12 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in stellar-xdr.gemspec
 gemspec
 
 gem "xdr", git: "git@github.com:stellar/ruby-xdr.git"
+# gem "xdr", path: "../ruby-xdr"
 
 group :development do
   gem "xdrgen", git: "git@github.com:stellar/xdrgen.git"
+  gem "pry"
 end
 
