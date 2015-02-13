@@ -1,7 +1,8 @@
 module Stellar
   Transaction.class_eval do
     def sign(key_pair)
-      key_pair.sign(to_xdr)
+      hash = Digest::SHA256.digest(to_xdr)
+      key_pair.sign(hash)
     end
 
     def to_envelope(*key_pairs)

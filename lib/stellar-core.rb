@@ -1,5 +1,6 @@
 require 'xdr'
 require 'rbnacl'
+require 'digest/sha2'
 
 # See ../generated for code-gen'ed files
 

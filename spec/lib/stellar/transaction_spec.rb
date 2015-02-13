@@ -16,9 +16,10 @@ describe Stellar::Transaction do
   describe "#sign" do
     let(:result){ subject.sign(key_pair) }
 
-    it "returns a signature of the xdr form of the transaction" do
+    it "returns a signature of SHA256(xdr form of the transaction)" do
       xdr      = subject.to_xdr
-      expected = key_pair.sign(xdr)
+      hash     = Digest::SHA256.digest(xdr)
+      expected = key_pair.sign(hash)
       expect(result).to eq(expected)
     end
   end
