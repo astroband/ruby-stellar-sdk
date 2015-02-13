@@ -1,0 +1,16 @@
+# Automatically generated from xdr/Stellar-transaction.x
+# DO NOT EDIT or your changes may be overwritten
+      
+require 'xdr'
+__dir__ = File.dirname(__FILE__)
+
+module Stellar
+  class ClaimOfferAtom < XDR::Struct
+
+                                 
+    attribute :offer_owner,      AccountID
+    attribute :offer_sequence,   Uint32
+    attribute :currency_claimed, Currency
+    attribute :amount_claimed,   Int64
+  end
+end
