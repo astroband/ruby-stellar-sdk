@@ -1,6 +1,8 @@
 require "bundler/gem_tasks"
 Bundler.setup
 
+require "rbnacl/rake_tasks"
+
 begin
   require 'rspec/core/rake_task'
   RSpec::Core::RakeTask.new(:spec)
@@ -19,4 +21,16 @@ task :update do
   end
 end
 
+# libsodium support for travis
 
+file "lib/libsodium.so" => :build_libsodium do
+  cp $LIBSODIUM_PATH, "lib/libsodium.so"
+end
+
+task "ci:sodium" => "lib/libsodium.so"
+
+task :travis => %w(ci:sodium spec)
+
+CLEAN.add "lib/libsodium.*"
+
+# end libsodium tasks

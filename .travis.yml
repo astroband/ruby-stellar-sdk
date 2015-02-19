@@ -6,6 +6,7 @@ rvm:
 - 1.9.3
 - jruby-1.7.9
 - jruby-head
+script: "LD_LIBRARY_PATH=lib bundle exec rake travis"
 notifications:
   slack:
     secure: WMHn4vPd6GL3mo14e4pbh4/ohUMic3UibZyFQbM54g1HUiB2fDz6rMMIUtsICBodXZ111cEbC7efvapzu/QX4jWLqWvBUG/5qRG9brExNRDC0YMR+ZZ+Rw+xQ77mjWQc8k2B2kWe4KSoHsXMr1f1W4ooTtMkIjdf2gzQAd5YC/E=
