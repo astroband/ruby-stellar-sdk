@@ -32,14 +32,22 @@ module Stellar
       @secret_key = secret_key
     end
 
+    def public_key
+      @public_key.to_bytes
+    end
+
+    def raw_seed
+      @secret_key.to_bytes
+    end
+
     def address
-      pk_bytes = @public_key.to_bytes
+      pk_bytes = public_key
       Util::Base58.stellar.check_encode(:account_id, pk_bytes)
     end
 
     def seed
       #TODO: raise some sort of error if we only have the public key
-      seed_bytes = @secret_key.to_bytes
+      seed_bytes = raw_seed
       encoder = Util::Base58.stellar.check_encode(:seed, seed_bytes)
     end
 
