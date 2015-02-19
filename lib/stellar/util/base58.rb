@@ -13,11 +13,11 @@ module Stellar
       }
 
       def self.stellar
-        @stellar ||= new(STELLAR_ALPHABET)
+        Thread.current[:stellar_base58] ||= new(STELLAR_ALPHABET)
       end
 
       def self.bitcoin
-        @bitcoin ||= new(BITCOIN_ALPHABET)
+        Thread.current[:bitcoin_base58] ||= new(BITCOIN_ALPHABET)
       end
 
       def initialize(alphabet)
