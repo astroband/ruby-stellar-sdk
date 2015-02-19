@@ -19,6 +19,8 @@ Or install it yourself as:
 
     $ gem install stellar-core
 
+Also requires libsodium. Installable via `brew install libsodium` on OS X.
+
 ## Usage
 
 TODO: Write usage instructions here
