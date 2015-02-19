@@ -2,13 +2,12 @@
 # DO NOT EDIT or your changes may be overwritten
       
 require 'xdr'
-__dir__ = File.dirname(__FILE__)
 
 module Stellar
   class LedgerKey < XDR::Union
-    autoload :Account,   "#{__dir__}/ledger_key/account"
-    autoload :TrustLine, "#{__dir__}/ledger_key/trust_line"
-    autoload :Offer,     "#{__dir__}/ledger_key/offer"
+    autoload :Account,   "#{File.dirname(__FILE__)}/ledger_key/account"
+    autoload :TrustLine, "#{File.dirname(__FILE__)}/ledger_key/trust_line"
+    autoload :Offer,     "#{File.dirname(__FILE__)}/ledger_key/offer"
 
     switch_on LedgerEntryType, :type
                                       

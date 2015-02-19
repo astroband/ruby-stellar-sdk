@@ -2,20 +2,19 @@
 # DO NOT EDIT or your changes may be overwritten
       
 require 'xdr'
-__dir__ = File.dirname(__FILE__)
 
 module Stellar
-  autoload :CLFBucketHeader, "#{__dir__}/stellar/clf_bucket_header"
-  autoload :CLFLevel, "#{__dir__}/stellar/clf_level"
-  autoload :LedgerHeader, "#{__dir__}/stellar/ledger_header"
+  autoload :CLFBucketHeader, "#{File.dirname(__FILE__)}/stellar/clf_bucket_header"
+  autoload :CLFLevel, "#{File.dirname(__FILE__)}/stellar/clf_level"
+  autoload :LedgerHeader, "#{File.dirname(__FILE__)}/stellar/ledger_header"
 
-  autoload :CLFType, "#{__dir__}/stellar/clf_type"
+  autoload :CLFType, "#{File.dirname(__FILE__)}/stellar/clf_type"
 
-  autoload :LedgerKey, "#{__dir__}/stellar/ledger_key"
+  autoload :LedgerKey, "#{File.dirname(__FILE__)}/stellar/ledger_key"
 
-  autoload :CLFEntry, "#{__dir__}/stellar/clf_entry"
-  autoload :CLFBucket, "#{__dir__}/stellar/clf_bucket"
-  autoload :TransactionSet, "#{__dir__}/stellar/transaction_set"
-  autoload :HistoryEntry, "#{__dir__}/stellar/history_entry"
-  autoload :History, "#{__dir__}/stellar/history"
+  autoload :CLFEntry, "#{File.dirname(__FILE__)}/stellar/clf_entry"
+  autoload :CLFBucket, "#{File.dirname(__FILE__)}/stellar/clf_bucket"
+  autoload :TransactionSet, "#{File.dirname(__FILE__)}/stellar/transaction_set"
+  autoload :HistoryEntry, "#{File.dirname(__FILE__)}/stellar/history_entry"
+  autoload :History, "#{File.dirname(__FILE__)}/stellar/history"
 end

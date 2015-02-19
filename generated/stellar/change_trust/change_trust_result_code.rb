@@ -2,7 +2,6 @@
 # DO NOT EDIT or your changes may be overwritten
       
 require 'xdr'
-__dir__ = File.dirname(__FILE__)
 
 module Stellar
   module ChangeTrust

@@ -2,11 +2,10 @@
 # DO NOT EDIT or your changes may be overwritten
       
 require 'xdr'
-__dir__ = File.dirname(__FILE__)
 
 module Stellar
   class Transaction < XDR::Struct
-    autoload :Body, "#{__dir__}/transaction/body"
+    autoload :Body, "#{File.dirname(__FILE__)}/transaction/body"
                            
     attribute :account,    AccountID
     attribute :max_fee,    Int32

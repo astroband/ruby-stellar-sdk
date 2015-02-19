@@ -2,12 +2,11 @@
 # DO NOT EDIT or your changes may be overwritten
       
 require 'xdr'
-__dir__ = File.dirname(__FILE__)
 
 module Stellar
   class TransactionResult
     class Body < XDR::Union
-      autoload :Tr, "#{__dir__}/body/tr"
+      autoload :Tr, "#{File.dirname(__FILE__)}/body/tr"
 
       switch_on TransactionResultCode, :code
                                              

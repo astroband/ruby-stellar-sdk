@@ -2,7 +2,6 @@
 # DO NOT EDIT or your changes may be overwritten
       
 require 'xdr'
-__dir__ = File.dirname(__FILE__)
 
 module Stellar
   Uint512 = XDR::Opaque[64]
@@ -16,11 +15,11 @@ module Stellar
   Hash = XDR::Opaque[32]
   Threshold = XDR::Opaque[4]
 
-  autoload :CurrencyType, "#{__dir__}/stellar/currency_type"
+  autoload :CurrencyType, "#{File.dirname(__FILE__)}/stellar/currency_type"
 
-  autoload :ISOCurrencyIssuer, "#{__dir__}/stellar/iso_currency_issuer"
+  autoload :ISOCurrencyIssuer, "#{File.dirname(__FILE__)}/stellar/iso_currency_issuer"
 
-  autoload :Currency, "#{__dir__}/stellar/currency"
+  autoload :Currency, "#{File.dirname(__FILE__)}/stellar/currency"
 
-  autoload :Price, "#{__dir__}/stellar/price"
+  autoload :Price, "#{File.dirname(__FILE__)}/stellar/price"
 end
