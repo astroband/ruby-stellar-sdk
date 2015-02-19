@@ -12,6 +12,14 @@ module Stellar
         seed:       [33].pack("C"),
       }
 
+      def self.stellar
+        @stellar ||= new(STELLAR_ALPHABET)
+      end
+
+      def self.bitcoin
+        @bitcoin ||= new(BITCOIN_ALPHABET)
+      end
+
       def initialize(alphabet)
         raise ArgumentError, "Invalid alphabet length" if alphabet.length != BASE
         @alphabet = alphabet
