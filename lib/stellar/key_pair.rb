@@ -2,6 +2,10 @@ module Stellar
   class KeyPair
     def self.from_seed(seed)
       seed_bytes = Util::Base58.stellar.check_decode(:seed, seed)
+      from_raw_seed seed_bytes
+    end
+
+    def self.from_raw_seed(seed_bytes)
       secret_key = RbNaCl::SigningKey.new(seed_bytes)
       public_key = secret_key.verify_key
       new(public_key, secret_key)
