@@ -72,6 +72,10 @@ module Stellar
 
     def verify(signature, message)
       @public_key.verify(signature, message)
+    rescue RbNaCl::LengthError
+      false
+    rescue RbNaCl::BadSignatureError
+      false
     end
 
   end

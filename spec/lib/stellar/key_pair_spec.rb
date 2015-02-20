@@ -156,7 +156,32 @@ describe Stellar::KeyPair do
     end
   end
 
-  describe "#verify"
+  describe "#verify" do
+    let(:key_pair)  { Stellar::KeyPair.random }
+    let(:message)   { "hello" } 
+    subject         { key_pair.verify(signature, message) }
+
+    context "when the signature is correct" do
+      let(:signature) { key_pair.sign(message) } 
+      it{ should be_truthy }
+    end
+
+    context "when the signature is incorrect" do
+      let(:signature) { key_pair.sign("some other message") } 
+      it{ should be_falsey }
+    end
+
+    context "when the signature is invalid" do
+      let(:signature) { "food" } 
+      it{ should be_falsey }
+    end
+
+    context "when the signature is from a different key" do
+      let(:signature) { Stellar::KeyPair.random.sign(message) } 
+      it{ should be_falsey }
+    end
+
+  end
 
   describe "#sign?" do
     subject{ key_pair.sign? }
