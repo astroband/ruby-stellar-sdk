@@ -40,13 +40,22 @@ module Stellar
       @secret_key.to_bytes
     end
 
+    def rbnacl_signing_key
+      @secret_key
+    end
+
+    def rbnacl_verify_key
+      @public_key
+    end
+
     def address
       pk_bytes = public_key
       Util::Base58.stellar.check_encode(:account_id, pk_bytes)
     end
 
     def seed
-      #TODO: raise some sort of error if we only have the public key
+      raise "no private key" if @secret_key.nil?
+      #TODO: improve the error class above
       seed_bytes = raw_seed
       encoder = Util::Base58.stellar.check_encode(:seed, seed_bytes)
     end
@@ -56,7 +65,8 @@ module Stellar
     end
 
     def sign(message)
-      #TODO: raise some sort of error if we only have the public key
+      raise "no private key" if @secret_key.nil?
+      #TODO: improve the error class above
       @secret_key.sign(message)
     end
 

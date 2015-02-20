@@ -106,7 +106,7 @@ describe Stellar::KeyPair do
     subject{ key_pair.public_key }
 
     it { should be_a(String) }
-    it { expect(subject.length).to eq(32) }
+    it { should have_length(32) }
   end
 
   describe "#raw_seed" do
@@ -114,7 +114,7 @@ describe Stellar::KeyPair do
     subject{ key_pair.raw_seed }
 
     it { should be_a(String) }
-    it { expect(subject.length).to eq(32) }
+    it { should have_length(32) }
   end
 
   describe "#address" do
@@ -129,18 +129,44 @@ describe Stellar::KeyPair do
     it{ should be_base58_check(:seed)}
   end
 
-  describe "#sign"
+  describe "#sign" do
+    let(:message) { "hello" } 
+    subject{ key_pair.sign(message) }
+
+    context "when the key_pair has no private key" do
+      let(:key_pair){ Stellar::KeyPair.from_public_key("\x00" * 32)}
+
+      it{ expect{ subject }.to raise_error("no private key") }
+    end
+
+    context "when the key_pair has both public/private keys" do
+      let(:key_pair){ Stellar::KeyPair.from_raw_seed("\x00" * 32)}
+
+      it { should have_length(64) }
+
+      it "should be a ed25519 signature" do
+        verification = key_pair.rbnacl_verify_key.verify(subject, message)
+        expect(verification).to be_truthy
+      end
+
+      context "when the message is nil" do
+        let(:message){ nil }
+        it { expect{subject}.to raise_error(TypeError) }
+      end
+    end
+  end
+
   describe "#verify"
 
   describe "#sign?" do
     subject{ key_pair.sign? }
 
-    context "when the key_pair has no secret component" do
+    context "when the key_pair has no private key" do
       let(:key_pair){ Stellar::KeyPair.from_public_key("\x00" * 32)}
       it{ should eq(false) }
     end
 
-    context "when the key_pair has no secret component" do
+    context "when the key_pair has both public/private keys" do
       let(:key_pair){ Stellar::KeyPair.from_raw_seed("\x00" * 32)}
       it{ should eq(true) }
     end
