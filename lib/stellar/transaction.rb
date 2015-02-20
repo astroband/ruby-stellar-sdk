@@ -44,7 +44,11 @@ module Stellar
     def apply_defaults
       self.max_fee    ||= 10
       self.min_ledger ||= 0
-      self.max_ledger ||= 2**64 - 1
+
+      # NOTE: the effective limit of max_ledger is (2^63 - 1), since while
+      # the XDR for is an unsigned 64-bit integer, the sql systems that store
+      # the transaction data do not support unsigned 64-bit integers. 
+      self.max_ledger ||= 2**63 - 1
     end
   end
 end
