@@ -117,8 +117,18 @@ describe Stellar::KeyPair do
     it { expect(subject.length).to eq(32) }
   end
 
-  describe "#address"
-  describe "#seed"
+  describe "#address" do
+    let(:key_pair){ Stellar::KeyPair.random }
+    subject{ key_pair.address }
+    it{ should be_base58_check(:account_id)}
+  end
+
+  describe "#seed" do
+    let(:key_pair){ Stellar::KeyPair.random }
+    subject{ key_pair.seed }
+    it{ should be_base58_check(:seed)}
+  end
+
   describe "#sign"
   describe "#verify"
 
