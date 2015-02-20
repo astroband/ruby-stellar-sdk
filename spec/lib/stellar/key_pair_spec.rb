@@ -1,37 +1,55 @@
 require "spec_helper"
 
-RSpec.shared_examples "a keypair with both public and private keys" do
-  it "can sign messages"
-
-  it_behaves_like "a keypair with only a public key"
-end
-
-RSpec.shared_examples "a keypair with only a public key" do
-  it "can verify messages"
-end
-
 describe Stellar::KeyPair do
 
   describe ".from_seed" do
-    it "returns a keypair when provided a base58check encoded seed"
-    it "raises an ArgumentError when the provided value is not base58 encoded"
-    it "raises an ArgumentError when the provided value is not a :seed versioned base58 value"
+    subject{ Stellar::KeyPair.from_seed(seed) }
 
-    it_behaves_like "a keypair with both public and private keys"
+    context "when provided a base58check encoded seed" do
+      let(:seed){ "s9aaUNPaT9t1x7vCeDzQYvLZDm5XxSUKkwnqQowV6D3kMr678uZ" }
+      it { should be_a(Stellar::KeyPair) }
+    end
+
+    context "provided value is not base58 encoded" do
+      let(:seed){ "masterpassphrasemasterpassphrase" }
+      it { expect{ subject }.to raise_error(ArgumentError) }
+    end
+
+    context "provided value is not base58 encoded" do
+      let(:raw_seed){ "masterpassphrasemasterpassphrase" }
+      let(:seed){ Stellar::Util::Base58.stellar.check_encode(:account_id, raw_seed) }
+      it { expect{ subject }.to raise_error(ArgumentError) }
+    end
   end
 
   describe ".from_raw_seed" do
-    it "returns a keypair when the provided value is a 32-byte string"
-    it "raises an ArgumentError when the provided is not 32-bytes"
-    it "raises an ArgumentError when the provided value is a 32-character, but > 32-byte string (i.e. multi-byte characters)"
+    subject{ Stellar::KeyPair.from_raw_seed(raw_seed) }
+    
+    context "when the provided value is a 32-byte string" do
+      let(:raw_seed){ "masterpassphrasemasterpassphrase" }
+      it { should be_a(Stellar::KeyPair) }
+    end
 
-    it_behaves_like "a keypair with both public and private keys"
+    context "when the provided value is < 32-byte string" do
+      let(:raw_seed){ "\xFF" * 31 }
+      it { expect{ subject }.to raise_error(ArgumentError) }
+    end
+
+    context "when the provided value is > 32-byte string" do
+      let(:raw_seed){ "\xFF" * 33 }
+      it { expect{ subject }.to raise_error(ArgumentError) }
+    end
+
+    context "when the provided value is a 32 character, but > 32 byte string (i.e. multi-byte characters)" do
+      let(:raw_seed){ "ü" + ("\x00" * 31) }
+      it { expect{ subject }.to raise_error(ArgumentError) }
+    end
   end
 
   describe ".from_public_key" do
     subject{ Stellar::KeyPair.from_public_key(key) }
 
-    context "when the provided value is a  32-byte string" do
+    context "when the provided value is a 32-byte string" do
       let(:key){ "\xFF" * 32 }
       it { should be_a(Stellar::KeyPair) }
     end
@@ -50,13 +68,9 @@ describe Stellar::KeyPair do
       let(:key){ "ü" + ("\x00" * 31) }
       it { expect{ subject }.to raise_error(ArgumentError) }
     end
-
-    it_behaves_like "a keypair with only a public key"
   end
 
-  describe ".from_address" do
-    it_behaves_like "a keypair with only a public key"
-  end
+  describe ".from_address"
 
   describe ".random" do
     subject{ Stellar::KeyPair.random }
@@ -65,8 +79,6 @@ describe Stellar::KeyPair do
       other = Stellar::KeyPair.random
       expect(subject.raw_seed == other.raw_seed).to eq(false)
     end
-
-    it_behaves_like "a keypair with both public and private keys"
   end
 
   describe "#public_key"
