@@ -16,7 +16,7 @@ describe Stellar::KeyPair do
       it { expect{ subject }.to raise_error(ArgumentError) }
     end
 
-    context "provided value is not base58 encoded" do
+    context "provided value is not base58 encoded as a seed" do
       let(:raw_seed){ "masterpassphrasemasterpassphrase" }
       let(:seed){ Stellar::Util::Base58.stellar.check_encode(:account_id, raw_seed) }
       it { expect{ subject }.to raise_error(ArgumentError) }
@@ -71,7 +71,26 @@ describe Stellar::KeyPair do
     end
   end
 
-  describe ".from_address"
+  describe ".from_address" do
+    subject{ Stellar::KeyPair.from_address(address) }
+
+    context "when provided a base58check encoded account_id" do
+      let(:address){ "gsYRSEQhTffqA9opPepAENCr2WG6z5iBHHubxxbRzWaHf8FBWcu" }
+      it { should be_a(Stellar::KeyPair) }
+    end
+
+    context "provided value is not base58 encoded" do
+      let(:address){ "some address" }
+      it { expect{ subject }.to raise_error(ArgumentError) }
+    end
+
+    context "provided value is not base58 encoded as an account_id" do
+      let(:public_key){ "\xFF" * 32 }
+      let(:address){ Stellar::Util::Base58.stellar.check_encode(:seed, public_key) }
+      it { expect{ subject }.to raise_error(ArgumentError) }
+    end
+
+  end
 
   describe ".random" do
     subject{ Stellar::KeyPair.random }

@@ -7,9 +7,9 @@ module Stellar
 
       # TODO: improve the conversion to bitstring, perhaps `Fixnum#to_byte`?
       VERSION_BYTES = {
-        none:       [1].pack("C"),
-        account_id: [0].pack("C"),
-        seed:       [33].pack("C"),
+        none:       [1].pack("C").encode("BINARY"),
+        account_id: [0].pack("C").encode("BINARY"),
+        seed:       [33].pack("C").encode("BINARY"),
       }
 
       def self.stellar
@@ -38,7 +38,7 @@ module Stellar
         version_byte = VERSION_BYTES[version]
         raise ArgumentError, "Invalid version: #{version}" if version_byte.blank?
 
-        payload = version_byte + byte_str
+        payload = version_byte + byte_str.dup.force_encoding("BINARY")
         check   = checksum(payload)
         encode(payload + check)
       end
