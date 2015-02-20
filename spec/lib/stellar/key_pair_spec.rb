@@ -101,10 +101,38 @@ describe Stellar::KeyPair do
     end
   end
 
-  describe "#public_key"
-  describe "#raw_seed"
+  describe "#public_key" do
+    let(:key_pair){ Stellar::KeyPair.random }
+    subject{ key_pair.public_key }
+
+    it { should be_a(String) }
+    it { expect(subject.length).to eq(32) }
+  end
+
+  describe "#raw_seed" do
+    let(:key_pair){ Stellar::KeyPair.random }
+    subject{ key_pair.raw_seed }
+
+    it { should be_a(String) }
+    it { expect(subject.length).to eq(32) }
+  end
+
   describe "#address"
   describe "#seed"
-  describe "#sign?"
+  describe "#sign"
   describe "#verify"
+
+  describe "#sign?" do
+    subject{ key_pair.sign? }
+
+    context "when the key_pair has no secret component" do
+      let(:key_pair){ Stellar::KeyPair.from_public_key("\x00" * 32)}
+      it{ should eq(false) }
+    end
+
+    context "when the key_pair has no secret component" do
+      let(:key_pair){ Stellar::KeyPair.from_raw_seed("\x00" * 32)}
+      it{ should eq(true) }
+    end
+  end
 end
