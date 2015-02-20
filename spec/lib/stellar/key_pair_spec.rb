@@ -29,9 +29,27 @@ describe Stellar::KeyPair do
   end
 
   describe ".from_public_key" do
-    it "returns a keypair object when the provided value is a 32-byte string"
-    it "raises an ArgumentError when the provided is not 32-bytes"
-    it "raises an ArgumentError when the provided value is a 32-character, but > 32-byte string (i.e. multi-byte characters)"
+    subject{ Stellar::KeyPair.from_public_key(key) }
+
+    context "when the provided value is a  32-byte string" do
+      let(:key){ "\xFF" * 32 }
+      it { should be_a(Stellar::KeyPair) }
+    end
+
+    context "when the provided value is < 32-byte string" do
+      let(:key){ "\xFF" * 31 }
+      it { expect{ subject }.to raise_error(ArgumentError) }
+    end
+
+    context "when the provided value is > 32-byte string" do
+      let(:key){ "\xFF" * 33 }
+      it { expect{ subject }.to raise_error(ArgumentError) }
+    end
+
+    context "when the provided value is a 32 character, but > 32 byte string (i.e. multi-byte characters)" do
+      let(:key){ "ü" + ("\x00" * 31) }
+      it { expect{ subject }.to raise_error(ArgumentError) }
+    end
 
     it_behaves_like "a keypair with only a public key"
   end
