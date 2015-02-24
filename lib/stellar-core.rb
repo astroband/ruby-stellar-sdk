@@ -15,6 +15,7 @@ require 'Stellar-ledger-entries'
 # extensions onto the generated files must be loaded manually, below
 
 require_relative './stellar/key_pair'
-require_relative './stellar/transaction'
 require_relative './stellar/payment_tx'
+require_relative './stellar/transaction'
+require_relative './stellar/transaction_envelope'
 require_relative './stellar/util/base58'
