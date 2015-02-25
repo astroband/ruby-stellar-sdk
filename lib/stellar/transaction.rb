@@ -2,25 +2,44 @@ module Stellar
   Transaction.class_eval do
 
     def self.payment(attributes={})
-      account     = attributes[:account]
       destination = attributes[:destination]
-      sequence    = attributes[:sequence]
       amount      = attributes[:amount]
 
-      raise ArgumentError unless account.is_a?(KeyPair) && account.sign?
       raise ArgumentError unless destination.is_a?(KeyPair)
 
-      new.tap do |result|
-        result.seq_num = sequence
-        result.account = account.public_key
-        result.apply_defaults
-
+      for_account(attributes).tap do |result|
         payment = PaymentTx.send(*amount)
         payment.destination = destination.public_key
         payment.apply_defaults
 
         result.body = payment.to_tx_body
+      end
+    end
 
+    def self.change_trust(attributes={})
+      line  = attributes[:line]
+      limit = attributes[:limit]
+
+      raise ArgumentError, "Bad :line (must be a Currency)" unless line.is_a?(Currency)
+      raise ArgumentError, "Bad :limit #{limit}" unless limit.is_a?(Integer)
+
+      for_account(attributes).tap do |result|
+        details = ChangeTrustTx.new(line: line, limit: limit)
+
+        result.body = details.to_tx_body
+      end
+    end
+
+    def self.for_account(attributes={})
+      account     = attributes[:account]
+      sequence    = attributes[:sequence]
+      raise ArgumentError, "Bad :account" unless account.is_a?(KeyPair) && account.sign?
+      raise ArgumentError, "Bad :sequence #{sequence}" unless sequence.is_a?(Integer)
+
+      new.tap do |result|
+        result.seq_num = sequence
+        result.account = account.public_key
+        result.apply_defaults
       end
     end
 
