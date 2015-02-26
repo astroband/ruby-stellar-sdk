@@ -5,10 +5,15 @@ require 'xdr'
 
 module Stellar
   module Inflation
-    class InflationResult < XDR::Struct
-      autoload :Result, "#{File.dirname(__FILE__)}/inflation_result/result"
-                         
-      attribute :result, Result
+    class InflationResult < XDR::Union
+
+
+      switch_on InflationResultCode, :code
+                                          
+      switch InflationResultCode.success, :payouts
+                                                switch :default
+                          
+      attribute :payouts, XDR::VarArray[InflationPayout]
     end
   end
 end

@@ -5,10 +5,14 @@ require 'xdr'
 
 module Stellar
   module CancelOffer
-    class CancelOfferResult < XDR::Struct
-      autoload :Result, "#{File.dirname(__FILE__)}/cancel_offer_result/result"
-                         
-      attribute :result, Result
+    class CancelOfferResult < XDR::Union
+
+
+      switch_on CancelOfferResultCode, :code
+
+      switch CancelOfferResultCode.success
+      switch :default
+
     end
   end
 end

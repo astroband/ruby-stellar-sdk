@@ -57,26 +57,6 @@ union LedgerKey switch (LedgerEntryType type)
         } offer;
 };
 
-struct CLFEntry
-{
-    Hash hash;
-    union switch (CLFType type)
-    {
-        case LIVEENTRY:
-            LedgerEntry liveEntry;
-
-        case DEADENTRY:
-            LedgerKey deadEntry;
-    } entry;
-};
-
-
-struct CLFBucket
-{
-    CLFBucketHeader header;
-    CLFEntry entries<>;
-};
-
 struct TransactionSet
 {
     Hash previousLedgerHash;
@@ -94,6 +74,20 @@ struct History
     uint64 fromLedger;
     uint64 toLedger;
     HistoryEntry entries<>;
+};
+
+union CLFEntry switch (CLFType type)
+{
+    case LIVEENTRY:
+        LedgerEntry liveEntry;
+
+    case DEADENTRY:
+        LedgerKey deadEntry;
+};
+
+struct TransactionMeta
+{
+    CLFEntry entries<>;
 };
 
 }

@@ -5,10 +5,14 @@ require 'xdr'
 
 module Stellar
   module AccountMerge
-    class AccountMergeResult < XDR::Struct
-      autoload :Result, "#{File.dirname(__FILE__)}/account_merge_result/result"
-                         
-      attribute :result, Result
+    class AccountMergeResult < XDR::Union
+
+
+      switch_on AccountMergeResultCode, :code
+
+      switch AccountMergeResultCode.success
+      switch :default
+
     end
   end
 end

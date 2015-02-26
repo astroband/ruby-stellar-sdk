@@ -5,10 +5,14 @@ require 'xdr'
 
 module Stellar
   module SetOption
-    class SetOptionsResult < XDR::Struct
-      autoload :Result, "#{File.dirname(__FILE__)}/set_options_result/result"
-                         
-      attribute :result, Result
+    class SetOptionsResult < XDR::Union
+
+
+      switch_on SetOptionsResultCode, :code
+
+      switch SetOptionsResultCode.success
+      switch :default
+
     end
   end
 end

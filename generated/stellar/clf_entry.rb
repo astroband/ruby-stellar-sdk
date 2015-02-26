@@ -4,10 +4,15 @@
 require 'xdr'
 
 module Stellar
-  class CLFEntry < XDR::Struct
-    autoload :Entry, "#{File.dirname(__FILE__)}/clf_entry/entry"
-                      
-    attribute :hash,  Hash
-    attribute :entry, Entry
+  class CLFEntry < XDR::Union
+
+
+    switch_on CLFType, :type
+                              
+    switch CLFType.liveentry, :live_entry
+    switch CLFType.deadentry, :dead_entry
+                           
+    attribute :live_entry, LedgerEntry
+    attribute :dead_entry, LedgerKey
   end
 end

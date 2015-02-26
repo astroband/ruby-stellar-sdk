@@ -5,10 +5,16 @@ require 'xdr'
 
 module Stellar
   module Payment
-    class PaymentResult < XDR::Struct
-      autoload :Result, "#{File.dirname(__FILE__)}/payment_result/result"
-                         
-      attribute :result, Result
+    class PaymentResult < XDR::Union
+
+
+      switch_on PaymentResultCode, :code
+                                              
+                                                    switch PaymentResultCode.success
+      switch PaymentResultCode.success_multi, :multi
+                                                    switch :default
+                        
+      attribute :multi, SuccessMultiResult
     end
   end
 end

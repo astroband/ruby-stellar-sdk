@@ -20,6 +20,7 @@ module Stellar
 
     autoload :SimplePaymentResult, "#{File.dirname(__FILE__)}/stellar/payment/simple_payment_result"
     autoload :SuccessMultiResult, "#{File.dirname(__FILE__)}/stellar/payment/success_multi_result"
+
     autoload :PaymentResult, "#{File.dirname(__FILE__)}/stellar/payment/payment_result"
   end
   module CreateOffer
@@ -27,6 +28,7 @@ module Stellar
     autoload :CreateOfferEffect, "#{File.dirname(__FILE__)}/stellar/create_offer/create_offer_effect"
 
     autoload :CreateOfferSuccessResult, "#{File.dirname(__FILE__)}/stellar/create_offer/create_offer_success_result"
+
     autoload :CreateOfferResult, "#{File.dirname(__FILE__)}/stellar/create_offer/create_offer_result"
   end
   module CancelOffer
@@ -58,6 +60,7 @@ module Stellar
     autoload :InflationResultCode, "#{File.dirname(__FILE__)}/stellar/inflation/inflation_result_code"
 
     autoload :InflationPayout, "#{File.dirname(__FILE__)}/stellar/inflation/inflation_payout"
+
     autoload :InflationResult, "#{File.dirname(__FILE__)}/stellar/inflation/inflation_result"
   end
 

@@ -5,10 +5,15 @@ require 'xdr'
 
 module Stellar
   module CreateOffer
-    class CreateOfferResult < XDR::Struct
-      autoload :Result, "#{File.dirname(__FILE__)}/create_offer_result/result"
-                         
-      attribute :result, Result
+    class CreateOfferResult < XDR::Union
+
+
+      switch_on CreateOfferResultCode, :code
+                                            
+      switch CreateOfferResultCode.success, :success
+                                                  switch :default
+                          
+      attribute :success, CreateOfferSuccessResult
     end
   end
 end

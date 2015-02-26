@@ -5,10 +5,14 @@ require 'xdr'
 
 module Stellar
   module ChangeTrust
-    class ChangeTrustResult < XDR::Struct
-      autoload :Result, "#{File.dirname(__FILE__)}/change_trust_result/result"
-                         
-      attribute :result, Result
+    class ChangeTrustResult < XDR::Union
+
+
+      switch_on ChangeTrustResultCode, :code
+
+      switch ChangeTrustResultCode.success
+      switch :default
+
     end
   end
 end
