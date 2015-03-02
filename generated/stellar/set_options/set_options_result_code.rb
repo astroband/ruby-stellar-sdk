@@ -1,10 +1,10 @@
 # Automatically generated from xdr/Stellar-transaction.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
-  module SetOption
+  module SetOptions
     class SetOptionsResultCode < XDR::Enum
       member :success,           0
       member :rate_fixed,        1

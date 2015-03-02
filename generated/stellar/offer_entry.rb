@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-ledger-entries.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
@@ -8,7 +8,7 @@ module Stellar
 
                            
     attribute :account_id, Uint256
-    attribute :sequence,   Uint32
+    attribute :offer_id,   Uint64
     attribute :taker_gets, Currency
     attribute :taker_pays, Currency
     attribute :amount,     Int64

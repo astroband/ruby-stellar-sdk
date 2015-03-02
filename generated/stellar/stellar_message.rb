@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-overlay.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
@@ -8,20 +8,20 @@ module Stellar
 
 
     switch_on MessageType, :type
-                                          
-    switch MessageType.error_msg,         :error
-    switch MessageType.hello,             :hello
-    switch MessageType.dont_have,         :dont_have
-                                              switch MessageType.get_peers
-    switch MessageType.peers,             :peers
-    switch MessageType.get_tx_set,        :tx_set_hash
-    switch MessageType.tx_set,            :tx_set
-    switch MessageType.get_validations,   :ledger_hash
-    switch MessageType.validations,       :validations
-    switch MessageType.transaction,       :transaction
-    switch MessageType.get_fba_quorumset, :q_set_hash
-    switch MessageType.fba_quorumset,     :q_set
-    switch MessageType.fba_message,       :envelope
+                               
+    switch :error_msg,         :error
+    switch :hello,             :hello
+    switch :dont_have,         :dont_have
+                                   switch :get_peers
+    switch :peers,             :peers
+    switch :get_tx_set,        :tx_set_hash
+    switch :tx_set,            :tx_set
+    switch :get_validations,   :ledger_hash
+    switch :validations,       :validations
+    switch :transaction,       :transaction
+    switch :get_fba_quorumset, :q_set_hash
+    switch :fba_quorumset,     :q_set
+    switch :fba_message,       :envelope
                             
     attribute :error,       Error
     attribute :hello,       Hello

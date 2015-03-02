@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-ledger.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
@@ -8,9 +8,9 @@ module Stellar
 
 
     switch_on CLFType, :type
-                              
-    switch CLFType.liveentry, :live_entry
-    switch CLFType.deadentry, :dead_entry
+                       
+    switch :liveentry, :live_entry
+    switch :deadentry, :dead_entry
                            
     attribute :live_entry, LedgerEntry
     attribute :dead_entry, LedgerKey

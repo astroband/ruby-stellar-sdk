@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-transaction.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
@@ -10,15 +10,16 @@ module Stellar
 
 
         switch_on TransactionType, :type
-                                              
-        switch TransactionType.payment,       :payment_result
-        switch TransactionType.create_offer,  :create_offer_result
-        switch TransactionType.cancel_offer,  :cancel_offer_result
-        switch TransactionType.set_options,   :set_options_result
-        switch TransactionType.change_trust,  :change_trust_result
-        switch TransactionType.allow_trust,   :allow_trust_result
-        switch TransactionType.account_merge, :account_merge_result
-        switch TransactionType.inflation,     :inflation_result
+                               
+        switch :payment,       :payment_result
+        switch :create_offer,  :create_offer_result
+        switch :cancel_offer,  :cancel_offer_result
+        switch :set_options,   :set_options_result
+        switch :change_trust,  :change_trust_result
+        switch :allow_trust,   :allow_trust_result
+        switch :account_merge, :account_merge_result
+        switch :set_seq_slot,  :set_seq_slot_result
+        switch :inflation,     :inflation_result
                                          
         attribute :payment_result,       Payment::PaymentResult
         attribute :create_offer_result,  CreateOffer::CreateOfferResult
@@ -27,6 +28,7 @@ module Stellar
         attribute :change_trust_result,  ChangeTrust::ChangeTrustResult
         attribute :allow_trust_result,   AllowTrust::AllowTrustResult
         attribute :account_merge_result, AccountMerge::AccountMergeResult
+        attribute :set_seq_slot_result,  SetSeqSlot::SetSeqSlotResult
         attribute :inflation_result,     Inflation::InflationResult
       end
     end

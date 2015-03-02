@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-transaction.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
@@ -9,9 +9,9 @@ module Stellar
 
 
       switch_on CreateOfferResultCode, :code
-                                            
-      switch CreateOfferResultCode.success, :success
-                                                  switch :default
+                       
+      switch :success, :success
+                             switch :default
                           
       attribute :success, CreateOfferSuccessResult
     end

@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-transaction.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
@@ -8,7 +8,7 @@ module Stellar
 
                                  
     attribute :offer_owner,      AccountID
-    attribute :offer_sequence,   Uint32
+    attribute :offer_id,         Uint64
     attribute :currency_claimed, Currency
     attribute :amount_claimed,   Int64
   end

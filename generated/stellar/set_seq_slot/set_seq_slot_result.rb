@@ -4,11 +4,11 @@
 require 'xdr'
 
 module Stellar
-  module AllowTrust
-    class AllowTrustResult < XDR::Union
+  module SetSeqSlot
+    class SetSeqSlotResult < XDR::Union
 
 
-      switch_on AllowTrustResultCode, :code
+      switch_on SetSeqSlotResultCode, :code
 
       switch :success
       switch :default

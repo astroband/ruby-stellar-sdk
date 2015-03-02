@@ -4,12 +4,10 @@
 require 'xdr'
 
 module Stellar
-  module CancelOffer
-    class CancelOfferResultCode < XDR::Enum
-      member :success,   0
-      member :not_found, 1
+  class SetSeqSlotTx < XDR::Struct
 
-      seal
-    end
+                           
+    attribute :slot_index, Uint32
+    attribute :slot_value, Uint32
   end
 end

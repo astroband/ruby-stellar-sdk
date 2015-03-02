@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-transaction.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
@@ -10,9 +10,9 @@ module Stellar
 
 
         switch_on CreateOfferEffect, :effect
-                                          
-        switch CreateOfferEffect.created, :offer_created
-                                                  switch :default
+                         
+        switch :created, :offer_created
+                                 switch :default
                                   
         attribute :offer_created, OfferEntry
       end

@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-types.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
@@ -8,9 +8,9 @@ module Stellar
 
 
     switch_on CurrencyType, :type
-                                 
-                                     switch CurrencyType.native
-    switch CurrencyType.iso4217, :iso_ci
+                     
+                         switch :native
+    switch :iso4217, :iso_ci
                        
     attribute :iso_ci, ISOCurrencyIssuer
   end

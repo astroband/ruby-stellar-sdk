@@ -1,9 +1,10 @@
 # Automatically generated from xdr/Stellar-overlay.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
+  autoload :StellarBallotValue, "#{File.dirname(__FILE__)}/stellar/stellar_ballot_value"
   autoload :StellarBallot, "#{File.dirname(__FILE__)}/stellar/stellar_ballot"
   autoload :Error, "#{File.dirname(__FILE__)}/stellar/error"
   autoload :Hello, "#{File.dirname(__FILE__)}/stellar/hello"

@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-ledger-entries.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
@@ -8,10 +8,10 @@ module Stellar
 
 
     switch_on LedgerEntryType, :type
-                                      
-    switch LedgerEntryType.account,   :account
-    switch LedgerEntryType.trustline, :trust_line
-    switch LedgerEntryType.offer,     :offer
+                       
+    switch :account,   :account
+    switch :trustline, :trust_line
+    switch :offer,     :offer
                            
     attribute :account,    AccountEntry
     attribute :trust_line, TrustLineEntry

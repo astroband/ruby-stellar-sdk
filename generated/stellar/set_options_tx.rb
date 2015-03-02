@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-transaction.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
@@ -11,7 +11,7 @@ module Stellar
     attribute :clear_flags,    XDR::Option[Uint32]
     attribute :set_flags,      XDR::Option[Uint32]
     attribute :data,           XDR::Option[KeyValue]
-    attribute :thresholds,     XDR::Option[Threshold]
+    attribute :thresholds,     XDR::Option[Thresholds]
     attribute :signer,         XDR::Option[Signer]
   end
 end

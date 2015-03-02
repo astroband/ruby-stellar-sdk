@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-overlay.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar

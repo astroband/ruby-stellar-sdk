@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-ledger.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
@@ -15,6 +15,7 @@ module Stellar
     attribute :total_coins,          Int64
     attribute :fee_pool,             Int64
     attribute :ledger_seq,           Uint64
+    attribute :id_pool,              Uint64
     attribute :inflation_seq,        Uint32
     attribute :base_fee,             Int32
     attribute :base_reserve,         Int32

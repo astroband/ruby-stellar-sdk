@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-transaction.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
@@ -8,6 +8,7 @@ module Stellar
 
   autoload :PaymentTx, "#{File.dirname(__FILE__)}/stellar/payment_tx"
   autoload :CreateOfferTx, "#{File.dirname(__FILE__)}/stellar/create_offer_tx"
+  autoload :SetSeqSlotTx, "#{File.dirname(__FILE__)}/stellar/set_seq_slot_tx"
   autoload :SetOptionsTx, "#{File.dirname(__FILE__)}/stellar/set_options_tx"
   autoload :ChangeTrustTx, "#{File.dirname(__FILE__)}/stellar/change_trust_tx"
   autoload :AllowTrustTx, "#{File.dirname(__FILE__)}/stellar/allow_trust_tx"
@@ -36,7 +37,7 @@ module Stellar
 
     autoload :CancelOfferResult, "#{File.dirname(__FILE__)}/stellar/cancel_offer/cancel_offer_result"
   end
-  module SetOption
+  module SetOptions
     autoload :SetOptionsResultCode, "#{File.dirname(__FILE__)}/stellar/set_options/set_options_result_code"
 
     autoload :SetOptionsResult, "#{File.dirname(__FILE__)}/stellar/set_options/set_options_result"
@@ -50,6 +51,11 @@ module Stellar
     autoload :AllowTrustResultCode, "#{File.dirname(__FILE__)}/stellar/allow_trust/allow_trust_result_code"
 
     autoload :AllowTrustResult, "#{File.dirname(__FILE__)}/stellar/allow_trust/allow_trust_result"
+  end
+  module SetSeqSlot
+    autoload :SetSeqSlotResultCode, "#{File.dirname(__FILE__)}/stellar/set_seq_slot/set_seq_slot_result_code"
+
+    autoload :SetSeqSlotResult, "#{File.dirname(__FILE__)}/stellar/set_seq_slot/set_seq_slot_result"
   end
   module AccountMerge
     autoload :AccountMergeResultCode, "#{File.dirname(__FILE__)}/stellar/account_merge/account_merge_result_code"

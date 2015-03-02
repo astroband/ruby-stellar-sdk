@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-transaction.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
@@ -9,10 +9,10 @@ module Stellar
 
 
       switch_on PaymentResultCode, :code
-                                              
-                                                    switch PaymentResultCode.success
-      switch PaymentResultCode.success_multi, :multi
-                                                    switch :default
+                             
+                                   switch :success
+      switch :success_multi, :multi
+                                   switch :default
                         
       attribute :multi, SuccessMultiResult
     end

@@ -17,8 +17,8 @@ destination = Stellar::KeyPair.random
 tx = Stellar::Transaction.payment({
   account:     master,
   destination: destination,
-  sequence:    4,
-  amount:      [:native, 20000000]
+  sequence:    1,
+  amount:      [:native, 20_000000]
 })
 
 hex    = tx.to_envelope(master).to_xdr(:hex)

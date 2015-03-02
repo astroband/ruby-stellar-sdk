@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-ledger-entries.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
@@ -9,7 +9,7 @@ module Stellar
   autoload :Signer, "#{File.dirname(__FILE__)}/stellar/signer"
   autoload :KeyValue, "#{File.dirname(__FILE__)}/stellar/key_value"
 
-  autoload :AccountFlag, "#{File.dirname(__FILE__)}/stellar/account_flags"
+  autoload :AccountFlags, "#{File.dirname(__FILE__)}/stellar/account_flags"
 
   autoload :AccountEntry, "#{File.dirname(__FILE__)}/stellar/account_entry"
   autoload :TrustLineEntry, "#{File.dirname(__FILE__)}/stellar/trust_line_entry"

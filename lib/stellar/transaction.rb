@@ -17,10 +17,9 @@ module Stellar
     end
 
     def self.change_trust(attributes={})
-      line  = attributes[:line]
+      line  = Currency.send(*attributes[:line])
       limit = attributes[:limit]
 
-      raise ArgumentError, "Bad :line (must be a Currency)" unless line.is_a?(Currency)
       raise ArgumentError, "Bad :limit #{limit}" unless limit.is_a?(Integer)
 
       for_account(attributes).tap do |result|
@@ -61,6 +60,7 @@ module Stellar
     end
 
     def apply_defaults
+      self.seq_slot   ||= 0
       self.max_fee    ||= 10
       self.min_ledger ||= 0
 

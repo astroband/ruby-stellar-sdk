@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-types.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
@@ -13,7 +13,7 @@ module Stellar
   AccountID = XDR::Opaque[32]
   Signature = XDR::Opaque[64]
   Hash = XDR::Opaque[32]
-  Threshold = XDR::Opaque[4]
+  Thresholds = XDR::Opaque[4]
 
   autoload :CurrencyType, "#{File.dirname(__FILE__)}/stellar/currency_type"
 

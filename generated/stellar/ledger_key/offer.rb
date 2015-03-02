@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-ledger.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
@@ -9,7 +9,7 @@ module Stellar
 
                              
       attribute :account_id, Uint256
-      attribute :sequence,   Uint32
+      attribute :offer_id,   Uint64
     end
   end
 end

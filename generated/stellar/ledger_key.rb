@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-ledger.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
@@ -10,10 +10,10 @@ module Stellar
     autoload :Offer,     "#{File.dirname(__FILE__)}/ledger_key/offer"
 
     switch_on LedgerEntryType, :type
-                                      
-    switch LedgerEntryType.account,   :account
-    switch LedgerEntryType.trustline, :trust_line
-    switch LedgerEntryType.offer,     :offer
+                       
+    switch :account,   :account
+    switch :trustline, :trust_line
+    switch :offer,     :offer
                            
     attribute :account,    Account
     attribute :trust_line, TrustLine

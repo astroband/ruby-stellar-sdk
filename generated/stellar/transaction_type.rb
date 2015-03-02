@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-transaction.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
@@ -12,7 +12,8 @@ module Stellar
     member :change_trust,  4
     member :allow_trust,   5
     member :account_merge, 6
-    member :inflation,     7
+    member :set_seq_slot,  7
+    member :inflation,     8
 
     seal
   end

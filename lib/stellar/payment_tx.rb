@@ -2,11 +2,25 @@ module Stellar
   PaymentTx.class_eval do
 
     def self.native(amount)
-      new.tap do |result|
-        result.currency = Stellar::Currency.new(:native)
-        result.path     = []
+      currency = Stellar::Currency.new(:native)
+      with_currency(currency).tap do |result|
         result.amount   = amount
         result.send_max = amount
+      end
+    end
+
+    def self.iso4217(code, issuer, amount)
+      currency = Stellar::Currency.iso4217(code, issuer)
+      with_currency(currency).tap do |result|
+        result.amount   = amount
+        result.send_max = amount
+      end
+    end
+
+    def self.with_currency(currency)
+      new.tap do |result|
+        result.currency = currency
+        result.path     = []
       end
     end
 

@@ -1,16 +1,16 @@
 # Automatically generated from xdr/Stellar-transaction.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
-  module SetOption
+  module SetOptions
     class SetOptionsResult < XDR::Union
 
 
       switch_on SetOptionsResultCode, :code
 
-      switch SetOptionsResultCode.success
+      switch :success
       switch :default
 
     end

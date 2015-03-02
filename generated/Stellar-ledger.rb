@@ -1,6 +1,6 @@
 # Automatically generated from xdr/Stellar-ledger.x
 # DO NOT EDIT or your changes may be overwritten
-      
+        
 require 'xdr'
 
 module Stellar
@@ -18,5 +18,5 @@ module Stellar
 
   autoload :CLFEntry, "#{File.dirname(__FILE__)}/stellar/clf_entry"
 
-  autoload :TransactionMetum, "#{File.dirname(__FILE__)}/stellar/transaction_meta"
+  autoload :TransactionMeta, "#{File.dirname(__FILE__)}/stellar/transaction_meta"
 end
