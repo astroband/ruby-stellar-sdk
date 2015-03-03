@@ -6,6 +6,7 @@ require 'active_support/core_ext/enumerable'
 
 # See ../generated for code-gen'ed files
 
+require 'FBAXDR'
 require 'Stellar-types'
 require 'Stellar-overlay'
 require 'Stellar-ledger'
