@@ -6,8 +6,6 @@ require 'xdr'
 module Stellar
   module CancelOffer
     class CancelOfferResult < XDR::Union
-
-
       switch_on CancelOfferResultCode, :code
 
       switch :success

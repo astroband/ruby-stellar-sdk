@@ -6,8 +6,6 @@ require 'xdr'
 module Stellar
   class Transaction
     class Body < XDR::Union
-
-
       switch_on TransactionType, :type
                              
       switch :payment,       :payment_tx

@@ -5,7 +5,9 @@ require 'xdr'
 
 module Stellar
   class TransactionResult < XDR::Struct
-    autoload :Body, "#{File.dirname(__FILE__)}/transaction_result/body"
+    include XDR::Namespace
+
+    autoload :Body
                             
     attribute :fee_charged, Int64
     attribute :body,        Body

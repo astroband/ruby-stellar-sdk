@@ -5,7 +5,9 @@ require 'xdr'
 
 module Stellar
   class Transaction < XDR::Struct
-    autoload :Body, "#{File.dirname(__FILE__)}/transaction/body"
+    include XDR::Namespace
+
+    autoload :Body
                            
     attribute :account,    AccountID
     attribute :max_fee,    Int32

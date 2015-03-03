@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class Price < XDR::Struct
-
-                  
     attribute :n, Int32
     attribute :d, Int32
   end

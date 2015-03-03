@@ -7,8 +7,6 @@ module Stellar
   class TransactionResult
     class Body
       class Tr < XDR::Union
-
-
         switch_on TransactionType, :type
                                
         switch :payment,       :payment_result

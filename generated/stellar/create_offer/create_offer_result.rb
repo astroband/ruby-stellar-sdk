@@ -6,8 +6,6 @@ require 'xdr'
 module Stellar
   module CreateOffer
     class CreateOfferResult < XDR::Union
-
-
       switch_on CreateOfferResultCode, :code
                        
       switch :success, :success

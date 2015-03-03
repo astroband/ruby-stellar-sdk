@@ -5,9 +5,11 @@ require 'xdr'
 
 module Stellar
   class LedgerKey < XDR::Union
-    autoload :Account,   "#{File.dirname(__FILE__)}/ledger_key/account"
-    autoload :TrustLine, "#{File.dirname(__FILE__)}/ledger_key/trust_line"
-    autoload :Offer,     "#{File.dirname(__FILE__)}/ledger_key/offer"
+    include XDR::Namespace
+
+    autoload :Account
+    autoload :TrustLine
+    autoload :Offer
 
     switch_on LedgerEntryType, :type
                        

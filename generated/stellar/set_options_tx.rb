@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class SetOptionsTx < XDR::Struct
-
-                               
     attribute :inflation_dest, XDR::Option[AccountID]
     attribute :clear_flags,    XDR::Option[Uint32]
     attribute :set_flags,      XDR::Option[Uint32]

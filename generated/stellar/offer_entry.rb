@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class OfferEntry < XDR::Struct
-
-                           
     attribute :account_id, Uint256
     attribute :offer_id,   Uint64
     attribute :taker_gets, Currency

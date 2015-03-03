@@ -6,8 +6,6 @@ require 'xdr'
 module Stellar
   module SetOptions
     class SetOptionsResult < XDR::Union
-
-
       switch_on SetOptionsResultCode, :code
 
       switch :success

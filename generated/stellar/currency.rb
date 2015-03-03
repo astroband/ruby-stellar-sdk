@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class Currency < XDR::Union
-
-
     switch_on CurrencyType, :type
                      
                          switch :native

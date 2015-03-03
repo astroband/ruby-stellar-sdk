@@ -6,8 +6,6 @@ require 'xdr'
 module Stellar
   class AllowTrustTx
     class Code < XDR::Union
-
-
       switch_on CurrencyType, :type
                        
                              switch :native

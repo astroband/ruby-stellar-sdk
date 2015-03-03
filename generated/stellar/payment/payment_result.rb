@@ -6,8 +6,6 @@ require 'xdr'
 module Stellar
   module Payment
     class PaymentResult < XDR::Union
-
-
       switch_on PaymentResultCode, :code
                              
                                    switch :success

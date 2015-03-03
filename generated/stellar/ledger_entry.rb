@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class LedgerEntry < XDR::Union
-
-
     switch_on LedgerEntryType, :type
                        
     switch :account,   :account

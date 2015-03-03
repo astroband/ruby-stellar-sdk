@@ -4,73 +4,93 @@
 require 'xdr'
 
 module Stellar
-  autoload :TransactionType, "#{File.dirname(__FILE__)}/stellar/transaction_type"
+  include XDR::Namespace
 
-  autoload :PaymentTx, "#{File.dirname(__FILE__)}/stellar/payment_tx"
-  autoload :CreateOfferTx, "#{File.dirname(__FILE__)}/stellar/create_offer_tx"
-  autoload :SetSeqSlotTx, "#{File.dirname(__FILE__)}/stellar/set_seq_slot_tx"
-  autoload :SetOptionsTx, "#{File.dirname(__FILE__)}/stellar/set_options_tx"
-  autoload :ChangeTrustTx, "#{File.dirname(__FILE__)}/stellar/change_trust_tx"
-  autoload :AllowTrustTx, "#{File.dirname(__FILE__)}/stellar/allow_trust_tx"
-  autoload :Transaction, "#{File.dirname(__FILE__)}/stellar/transaction"
-  autoload :TransactionEnvelope, "#{File.dirname(__FILE__)}/stellar/transaction_envelope"
-  autoload :ClaimOfferAtom, "#{File.dirname(__FILE__)}/stellar/claim_offer_atom"
+  autoload :TransactionType
+
+  autoload :PaymentTx
+  autoload :CreateOfferTx
+  autoload :SetSeqSlotTx
+  autoload :SetOptionsTx
+  autoload :ChangeTrustTx
+  autoload :AllowTrustTx
+  autoload :Transaction
+  autoload :TransactionEnvelope
+  autoload :ClaimOfferAtom
 
   module Payment
-    autoload :PaymentResultCode, "#{File.dirname(__FILE__)}/stellar/payment/payment_result_code"
+    include XDR::Namespace
 
-    autoload :SimplePaymentResult, "#{File.dirname(__FILE__)}/stellar/payment/simple_payment_result"
-    autoload :SuccessMultiResult, "#{File.dirname(__FILE__)}/stellar/payment/success_multi_result"
+    autoload :PaymentResultCode
 
-    autoload :PaymentResult, "#{File.dirname(__FILE__)}/stellar/payment/payment_result"
+    autoload :SimplePaymentResult
+    autoload :SuccessMultiResult
+
+    autoload :PaymentResult
   end
   module CreateOffer
-    autoload :CreateOfferResultCode, "#{File.dirname(__FILE__)}/stellar/create_offer/create_offer_result_code"
-    autoload :CreateOfferEffect, "#{File.dirname(__FILE__)}/stellar/create_offer/create_offer_effect"
+    include XDR::Namespace
 
-    autoload :CreateOfferSuccessResult, "#{File.dirname(__FILE__)}/stellar/create_offer/create_offer_success_result"
+    autoload :CreateOfferResultCode
+    autoload :CreateOfferEffect
 
-    autoload :CreateOfferResult, "#{File.dirname(__FILE__)}/stellar/create_offer/create_offer_result"
+    autoload :CreateOfferSuccessResult
+
+    autoload :CreateOfferResult
   end
   module CancelOffer
-    autoload :CancelOfferResultCode, "#{File.dirname(__FILE__)}/stellar/cancel_offer/cancel_offer_result_code"
+    include XDR::Namespace
 
-    autoload :CancelOfferResult, "#{File.dirname(__FILE__)}/stellar/cancel_offer/cancel_offer_result"
+    autoload :CancelOfferResultCode
+
+    autoload :CancelOfferResult
   end
   module SetOptions
-    autoload :SetOptionsResultCode, "#{File.dirname(__FILE__)}/stellar/set_options/set_options_result_code"
+    include XDR::Namespace
 
-    autoload :SetOptionsResult, "#{File.dirname(__FILE__)}/stellar/set_options/set_options_result"
+    autoload :SetOptionsResultCode
+
+    autoload :SetOptionsResult
   end
   module ChangeTrust
-    autoload :ChangeTrustResultCode, "#{File.dirname(__FILE__)}/stellar/change_trust/change_trust_result_code"
+    include XDR::Namespace
 
-    autoload :ChangeTrustResult, "#{File.dirname(__FILE__)}/stellar/change_trust/change_trust_result"
+    autoload :ChangeTrustResultCode
+
+    autoload :ChangeTrustResult
   end
   module AllowTrust
-    autoload :AllowTrustResultCode, "#{File.dirname(__FILE__)}/stellar/allow_trust/allow_trust_result_code"
+    include XDR::Namespace
 
-    autoload :AllowTrustResult, "#{File.dirname(__FILE__)}/stellar/allow_trust/allow_trust_result"
+    autoload :AllowTrustResultCode
+
+    autoload :AllowTrustResult
   end
   module SetSeqSlot
-    autoload :SetSeqSlotResultCode, "#{File.dirname(__FILE__)}/stellar/set_seq_slot/set_seq_slot_result_code"
+    include XDR::Namespace
 
-    autoload :SetSeqSlotResult, "#{File.dirname(__FILE__)}/stellar/set_seq_slot/set_seq_slot_result"
+    autoload :SetSeqSlotResultCode
+
+    autoload :SetSeqSlotResult
   end
   module AccountMerge
-    autoload :AccountMergeResultCode, "#{File.dirname(__FILE__)}/stellar/account_merge/account_merge_result_code"
+    include XDR::Namespace
 
-    autoload :AccountMergeResult, "#{File.dirname(__FILE__)}/stellar/account_merge/account_merge_result"
+    autoload :AccountMergeResultCode
+
+    autoload :AccountMergeResult
   end
   module Inflation
-    autoload :InflationResultCode, "#{File.dirname(__FILE__)}/stellar/inflation/inflation_result_code"
+    include XDR::Namespace
 
-    autoload :InflationPayout, "#{File.dirname(__FILE__)}/stellar/inflation/inflation_payout"
+    autoload :InflationResultCode
 
-    autoload :InflationResult, "#{File.dirname(__FILE__)}/stellar/inflation/inflation_result"
+    autoload :InflationPayout
+
+    autoload :InflationResult
   end
 
-  autoload :TransactionResultCode, "#{File.dirname(__FILE__)}/stellar/transaction_result_code"
+  autoload :TransactionResultCode
 
-  autoload :TransactionResult, "#{File.dirname(__FILE__)}/stellar/transaction_result"
+  autoload :TransactionResult
 end

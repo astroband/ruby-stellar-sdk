@@ -5,7 +5,9 @@ require 'xdr'
 
 module Stellar
   class AllowTrustTx < XDR::Struct
-    autoload :Code, "#{File.dirname(__FILE__)}/allow_trust_tx/code"
+    include XDR::Namespace
+
+    autoload :Code
                           
     attribute :trustor,   AccountID
     attribute :code,      Code

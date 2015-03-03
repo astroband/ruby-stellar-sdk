@@ -4,19 +4,21 @@
 require 'xdr'
 
 module Stellar
-  autoload :CLFBucketHeader, "#{File.dirname(__FILE__)}/stellar/clf_bucket_header"
-  autoload :CLFLevel, "#{File.dirname(__FILE__)}/stellar/clf_level"
-  autoload :LedgerHeader, "#{File.dirname(__FILE__)}/stellar/ledger_header"
+  include XDR::Namespace
 
-  autoload :CLFType, "#{File.dirname(__FILE__)}/stellar/clf_type"
+  autoload :CLFBucketHeader
+  autoload :CLFLevel
+  autoload :LedgerHeader
 
-  autoload :LedgerKey, "#{File.dirname(__FILE__)}/stellar/ledger_key"
+  autoload :CLFType
 
-  autoload :TransactionSet, "#{File.dirname(__FILE__)}/stellar/transaction_set"
-  autoload :HistoryEntry, "#{File.dirname(__FILE__)}/stellar/history_entry"
-  autoload :History, "#{File.dirname(__FILE__)}/stellar/history"
+  autoload :LedgerKey
 
-  autoload :CLFEntry, "#{File.dirname(__FILE__)}/stellar/clf_entry"
+  autoload :TransactionSet
+  autoload :HistoryEntry
+  autoload :History
 
-  autoload :TransactionMeta, "#{File.dirname(__FILE__)}/stellar/transaction_meta"
+  autoload :CLFEntry
+
+  autoload :TransactionMeta
 end

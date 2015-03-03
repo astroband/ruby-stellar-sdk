@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class AccountEntry < XDR::Struct
-
-                                
     attribute :account_id,      Uint256
     attribute :balance,         Int64
     attribute :num_sub_entries, Uint32

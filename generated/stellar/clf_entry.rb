@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class CLFEntry < XDR::Union
-
-
     switch_on CLFType, :type
                        
     switch :liveentry, :live_entry

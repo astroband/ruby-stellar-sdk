@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class TransactionMeta < XDR::Struct
-
-                        
     attribute :entries, XDR::VarArray[CLFEntry]
   end
 end

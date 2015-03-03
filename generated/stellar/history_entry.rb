@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class HistoryEntry < XDR::Struct
-
-                       
     attribute :header, LedgerHeader
     attribute :tx_set, TransactionSet
   end

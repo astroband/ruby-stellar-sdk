@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class StellarMessage < XDR::Union
-
-
     switch_on MessageType, :type
                                
     switch :error_msg,         :error

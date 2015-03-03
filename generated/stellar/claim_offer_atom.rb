@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class ClaimOfferAtom < XDR::Struct
-
-                                 
     attribute :offer_owner,      AccountID
     attribute :offer_id,         Uint64
     attribute :currency_claimed, Currency

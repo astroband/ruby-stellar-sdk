@@ -10,6 +10,7 @@ namespace :xdr do
     "src/xdr/Stellar-transaction.x",
     "src/xdr/Stellar-types.x",
     "src/overlay/StellarXDR.x",
+    "src/fba/FBAXDR.x",
   ]
 
   task :update => [:download, :generate]
@@ -17,6 +18,7 @@ namespace :xdr do
   task :download do
     require 'octokit'
     require 'base64'
+    
     client = Octokit::Client.new(:netrc => true)
 
     HAYASHI_XDR.each do |src|
@@ -31,6 +33,8 @@ namespace :xdr do
   task :generate do
     require "pathname"
     require "xdrgen"
+    require 'fileutils'
+    FileUtils.rm_rf "generated"
 
     Pathname.glob("xdr/**/*.x").each do |path|
       $stderr.puts "Generating #{path}"

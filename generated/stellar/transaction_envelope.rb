@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class TransactionEnvelope < XDR::Struct
-
-                           
     attribute :tx,         Transaction
     attribute :signatures, XDR::VarArray[Uint512]
   end

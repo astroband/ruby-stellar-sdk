@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class CreateOfferTx < XDR::Struct
-
-                           
     attribute :taker_gets, Currency
     attribute :taker_pays, Currency
     attribute :amount,     Int64

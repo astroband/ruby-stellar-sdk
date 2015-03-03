@@ -6,7 +6,9 @@ require 'xdr'
 module Stellar
   class TransactionResult
     class Body < XDR::Union
-      autoload :Tr, "#{File.dirname(__FILE__)}/body/tr"
+      include XDR::Namespace
+
+      autoload :Tr
 
       switch_on TransactionResultCode, :code
                         

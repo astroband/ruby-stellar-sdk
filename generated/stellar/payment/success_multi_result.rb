@@ -6,8 +6,6 @@ require 'xdr'
 module Stellar
   module Payment
     class SuccessMultiResult < XDR::Struct
-
-                         
       attribute :offers, XDR::VarArray[ClaimOfferAtom]
       attribute :last,   SimplePaymentResult
     end

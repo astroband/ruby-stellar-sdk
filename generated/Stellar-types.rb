@@ -4,6 +4,8 @@
 require 'xdr'
 
 module Stellar
+  include XDR::Namespace
+
   Uint512 = XDR::Opaque[64]
   Uint256 = XDR::Opaque[32]
   Uint64 = XDR::UnsignedHyper
@@ -15,11 +17,11 @@ module Stellar
   Hash = XDR::Opaque[32]
   Thresholds = XDR::Opaque[4]
 
-  autoload :CurrencyType, "#{File.dirname(__FILE__)}/stellar/currency_type"
+  autoload :CurrencyType
 
-  autoload :ISOCurrencyIssuer, "#{File.dirname(__FILE__)}/stellar/iso_currency_issuer"
+  autoload :ISOCurrencyIssuer
 
-  autoload :Currency, "#{File.dirname(__FILE__)}/stellar/currency"
+  autoload :Currency
 
-  autoload :Price, "#{File.dirname(__FILE__)}/stellar/price"
+  autoload :Price
 end

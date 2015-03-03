@@ -4,4 +4,5 @@
 require 'xdr'
 
 module Stellar
+  include XDR::Namespace
 end

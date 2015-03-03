@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class CLFBucketHeader < XDR::Struct
-
-                             
     attribute :ledger_seq,   Uint64
     attribute :ledger_count, Uint32
     attribute :hash,         Hash

@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class TrustLineEntry < XDR::Struct
-
-                           
     attribute :account_id, Uint256
     attribute :currency,   Currency
     attribute :limit,      Int64

@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class ChangeTrustTx < XDR::Struct
-
-                      
     attribute :line,  Currency
     attribute :limit, Int64
   end

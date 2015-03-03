@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class PaymentTx < XDR::Struct
-
-                            
     attribute :destination, AccountID
     attribute :currency,    Currency
     attribute :amount,      Int64

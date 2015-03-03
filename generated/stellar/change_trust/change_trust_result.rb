@@ -6,8 +6,6 @@ require 'xdr'
 module Stellar
   module ChangeTrust
     class ChangeTrustResult < XDR::Union
-
-
       switch_on ChangeTrustResultCode, :code
 
       switch :success

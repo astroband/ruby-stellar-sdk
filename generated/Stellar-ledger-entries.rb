@@ -4,16 +4,18 @@
 require 'xdr'
 
 module Stellar
-  autoload :LedgerEntryType, "#{File.dirname(__FILE__)}/stellar/ledger_entry_type"
+  include XDR::Namespace
 
-  autoload :Signer, "#{File.dirname(__FILE__)}/stellar/signer"
-  autoload :KeyValue, "#{File.dirname(__FILE__)}/stellar/key_value"
+  autoload :LedgerEntryType
 
-  autoload :AccountFlags, "#{File.dirname(__FILE__)}/stellar/account_flags"
+  autoload :Signer
+  autoload :KeyValue
 
-  autoload :AccountEntry, "#{File.dirname(__FILE__)}/stellar/account_entry"
-  autoload :TrustLineEntry, "#{File.dirname(__FILE__)}/stellar/trust_line_entry"
-  autoload :OfferEntry, "#{File.dirname(__FILE__)}/stellar/offer_entry"
+  autoload :AccountFlags
 
-  autoload :LedgerEntry, "#{File.dirname(__FILE__)}/stellar/ledger_entry"
+  autoload :AccountEntry
+  autoload :TrustLineEntry
+  autoload :OfferEntry
+
+  autoload :LedgerEntry
 end

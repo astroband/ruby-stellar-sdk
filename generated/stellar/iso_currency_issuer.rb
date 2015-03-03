@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class ISOCurrencyIssuer < XDR::Struct
-
-                              
     attribute :currency_code, XDR::Opaque[4]
     attribute :issuer,        AccountID
   end

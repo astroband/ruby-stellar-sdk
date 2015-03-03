@@ -6,8 +6,6 @@ require 'xdr'
 module Stellar
   module SetSeqSlot
     class SetSeqSlotResult < XDR::Union
-
-
       switch_on SetSeqSlotResultCode, :code
 
       switch :success

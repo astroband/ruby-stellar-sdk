@@ -6,8 +6,6 @@ require 'xdr'
 module Stellar
   module AccountMerge
     class AccountMergeResult < XDR::Union
-
-
       switch_on AccountMergeResultCode, :code
 
       switch :success

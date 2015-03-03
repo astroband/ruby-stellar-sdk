@@ -4,15 +4,17 @@
 require 'xdr'
 
 module Stellar
-  autoload :StellarBallotValue, "#{File.dirname(__FILE__)}/stellar/stellar_ballot_value"
-  autoload :StellarBallot, "#{File.dirname(__FILE__)}/stellar/stellar_ballot"
-  autoload :Error, "#{File.dirname(__FILE__)}/stellar/error"
-  autoload :Hello, "#{File.dirname(__FILE__)}/stellar/hello"
-  autoload :PeerAddress, "#{File.dirname(__FILE__)}/stellar/peer_address"
+  include XDR::Namespace
 
-  autoload :MessageType, "#{File.dirname(__FILE__)}/stellar/message_type"
+  autoload :StellarBallotValue
+  autoload :StellarBallot
+  autoload :Error
+  autoload :Hello
+  autoload :PeerAddress
 
-  autoload :DontHave, "#{File.dirname(__FILE__)}/stellar/dont_have"
+  autoload :MessageType
 
-  autoload :StellarMessage, "#{File.dirname(__FILE__)}/stellar/stellar_message"
+  autoload :DontHave
+
+  autoload :StellarMessage
 end

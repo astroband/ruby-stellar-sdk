@@ -11,6 +11,7 @@ require 'Stellar-overlay'
 require 'Stellar-ledger'
 require 'Stellar-transaction'
 require 'Stellar-ledger-entries'
+Stellar.load_all!
 
 # extensions onto the generated files must be loaded manually, below
 

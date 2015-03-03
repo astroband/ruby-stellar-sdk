@@ -6,8 +6,6 @@ require 'xdr'
 module Stellar
   class LedgerKey
     class Offer < XDR::Struct
-
-                             
       attribute :account_id, Uint256
       attribute :offer_id,   Uint64
     end

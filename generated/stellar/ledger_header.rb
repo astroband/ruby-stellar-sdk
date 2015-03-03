@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class LedgerHeader < XDR::Struct
-
-                                     
     attribute :hash,                 Hash
     attribute :previous_ledger_hash, Hash
     attribute :tx_set_hash,          Hash

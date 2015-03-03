@@ -5,8 +5,6 @@ require 'xdr'
 
 module Stellar
   class Signer < XDR::Struct
-
-                        
     attribute :pub_key, Uint256
     attribute :weight,  Uint32
   end

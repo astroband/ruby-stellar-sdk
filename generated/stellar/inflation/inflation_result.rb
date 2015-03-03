@@ -6,8 +6,6 @@ require 'xdr'
 module Stellar
   module Inflation
     class InflationResult < XDR::Union
-
-
       switch_on InflationResultCode, :code
                        
       switch :success, :payouts
