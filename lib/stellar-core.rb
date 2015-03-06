@@ -3,15 +3,18 @@ require 'rbnacl'
 require 'digest/sha2'
 require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/enumerable'
+require 'active_support/core_ext/kernel/reporting'
 
 # See ../generated for code-gen'ed files
 
-require 'FBAXDR'
-require 'Stellar-types'
-require 'Stellar-overlay'
-require 'Stellar-ledger'
-require 'Stellar-transaction'
-require 'Stellar-ledger-entries'
+silence_warnings do
+  require 'FBAXDR'
+  require 'Stellar-types'
+  require 'Stellar-overlay'
+  require 'Stellar-ledger'
+  require 'Stellar-transaction'
+  require 'Stellar-ledger-entries'
+end
 Stellar.load_all!
 
 # extensions onto the generated files must be loaded manually, below
