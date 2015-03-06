@@ -42,7 +42,7 @@ module Stellar
       end 
 
       new.tap do |result|
-        result.seq_slot = sequence
+        result.seq_slot = sequence_slot
         result.seq_num  = sequence
         result.account  = account.public_key
         result.apply_defaults
