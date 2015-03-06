@@ -10,6 +10,12 @@
 
 require 'stellar-core'
 require 'faraday'
+require 'faraday_middleware'
+
+$server = Faraday.new(url: "http://localhost:39132") do |conn|
+  conn.response :json
+  conn.adapter Faraday.default_adapter
+end
 
 master      = Stellar::KeyPair.from_raw_seed("masterpassphrasemasterpassphrase")
 destination = Stellar::KeyPair.random
@@ -22,5 +28,6 @@ tx = Stellar::Transaction.payment({
 })
 
 hex    = tx.to_envelope(master).to_xdr(:hex)
-result = Faraday.get('http://localhost:39132/tx', blob: hex)
-puts result.body
+result = $server.get('tx', blob: hex)
+raw    = [result.body["result"]].pack("H*")
+p Stellar::TransactionResult.from_xdr(raw)
