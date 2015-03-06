@@ -30,14 +30,21 @@ module Stellar
     end
 
     def self.for_account(attributes={})
-      account     = attributes[:account]
-      sequence    = attributes[:sequence]
+      account       = attributes[:account]
+      sequence      = attributes[:sequence]
+      sequence_slot = attributes[:sequence_slot]
+      
       raise ArgumentError, "Bad :account" unless account.is_a?(KeyPair) && account.sign?
       raise ArgumentError, "Bad :sequence #{sequence}" unless sequence.is_a?(Integer)
 
+      unless sequence_slot.nil? || sequence_slot.is_a?(Integer)
+        raise ArgumentError, "Bad :sequence_slot #{sequence_slot}"
+      end 
+
       new.tap do |result|
-        result.seq_num = sequence
-        result.account = account.public_key
+        result.seq_slot = sequence
+        result.seq_num  = sequence
+        result.account  = account.public_key
         result.apply_defaults
       end
     end
