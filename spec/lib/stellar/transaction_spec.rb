@@ -9,7 +9,9 @@ describe Stellar::Transaction do
       seq_num:    1,
       max_ledger: 10,
       min_ledger: 0,
-      body:       Stellar::Transaction::Body.new(:cancel_offer, 1)
+      operations: [
+        Stellar::Operation.new(body: Stellar::Operation::Body.new(:cancel_offer, 1))
+      ]
     })
   end
   let(:key_pair){ Stellar::KeyPair.random }
