@@ -8,11 +8,11 @@ module Stellar
       raise ArgumentError unless destination.is_a?(KeyPair)
 
       for_account(attributes).tap do |result|
-        payment = PaymentTx.send(*amount)
+        payment = PaymentOp.send(*amount)
         payment.destination = destination.public_key
         payment.apply_defaults
 
-        result.body = payment.to_tx_body
+        result.operations = [payment.to_operation]
       end
     end
 
@@ -23,26 +23,19 @@ module Stellar
       raise ArgumentError, "Bad :limit #{limit}" unless limit.is_a?(Integer)
 
       for_account(attributes).tap do |result|
-        details = ChangeTrustTx.new(line: line, limit: limit)
-
-        result.body = details.to_tx_body
+        details = ChangeTrustOp.new(line: line, limit: limit)
+        result.operations = [payment.to_operation]
       end
     end
 
     def self.for_account(attributes={})
       account       = attributes[:account]
       sequence      = attributes[:sequence]
-      sequence_slot = attributes[:sequence_slot]
       
       raise ArgumentError, "Bad :account" unless account.is_a?(KeyPair) && account.sign?
       raise ArgumentError, "Bad :sequence #{sequence}" unless sequence.is_a?(Integer)
 
-      unless sequence_slot.nil? || sequence_slot.is_a?(Integer)
-        raise ArgumentError, "Bad :sequence_slot #{sequence_slot}"
-      end 
-
       new.tap do |result|
-        result.seq_slot = sequence_slot
         result.seq_num  = sequence
         result.account  = account.public_key
         result.apply_defaults
@@ -67,7 +60,7 @@ module Stellar
     end
 
     def apply_defaults
-      self.seq_slot   ||= 0
+      self.seq_slot   = 0 #TODO: remove when this vestigial organ is removed in the .x files
       self.max_fee    ||= 10
       self.min_ledger ||= 0
 

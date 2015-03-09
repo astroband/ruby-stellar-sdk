@@ -5,16 +5,12 @@ require 'xdr'
 
 module Stellar
   class Transaction < XDR::Struct
-    include XDR::Namespace
-
-    autoload :Body
-                           
     attribute :account,    AccountID
     attribute :max_fee,    Int32
     attribute :seq_slot,   Uint32
     attribute :seq_num,    Uint32
     attribute :min_ledger, Uint64
     attribute :max_ledger, Uint64
-    attribute :body,       Body
+    attribute :operations, XDR::VarArray[Operation]
   end
 end

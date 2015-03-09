@@ -8,7 +8,7 @@ require 'active_support/core_ext/kernel/reporting'
 # See ../generated for code-gen'ed files
 
 silence_warnings do
-  require 'FBAXDR'
+  require 'SCPXDR'
   require 'Stellar-types'
   require 'Stellar-overlay'
   require 'Stellar-ledger'
@@ -19,10 +19,10 @@ Stellar.load_all!
 
 # extensions onto the generated files must be loaded manually, below
 
-require_relative './stellar/change_trust_tx'
+require_relative './stellar/change_trust_op'
 require_relative './stellar/currency'
 require_relative './stellar/key_pair'
-require_relative './stellar/payment_tx'
+require_relative './stellar/payment_op'
 require_relative './stellar/transaction'
 require_relative './stellar/transaction_envelope'
 require_relative './stellar/util/base58'

@@ -6,14 +6,14 @@ require 'xdr'
 module Stellar
   include XDR::Namespace
 
-  autoload :TransactionType
+  autoload :OperationType
 
-  autoload :PaymentTx
-  autoload :CreateOfferTx
-  autoload :SetSeqSlotTx
-  autoload :SetOptionsTx
-  autoload :ChangeTrustTx
-  autoload :AllowTrustTx
+  autoload :PaymentOp
+  autoload :CreateOfferOp
+  autoload :SetOptionsOp
+  autoload :ChangeTrustOp
+  autoload :AllowTrustOp
+  autoload :Operation
   autoload :Transaction
   autoload :TransactionEnvelope
   autoload :ClaimOfferAtom
@@ -66,13 +66,6 @@ module Stellar
 
     autoload :AllowTrustResult
   end
-  module SetSeqSlot
-    include XDR::Namespace
-
-    autoload :SetSeqSlotResultCode
-
-    autoload :SetSeqSlotResult
-  end
   module AccountMerge
     include XDR::Namespace
 
@@ -89,6 +82,10 @@ module Stellar
 
     autoload :InflationResult
   end
+
+  autoload :OperationResultCode
+
+  autoload :OperationResult
 
   autoload :TransactionResultCode
 

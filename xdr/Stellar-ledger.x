@@ -2,26 +2,12 @@
 
 namespace stellar {
 
-struct CLFBucketHeader
-{
-    uint64 ledgerSeq;
-    uint32 ledgerCount;
-    Hash hash;
-};
-
-struct CLFLevel
-{
-    CLFBucketHeader curr;
-    CLFBucketHeader snap;
-};
-
 struct LedgerHeader
 {
     Hash hash;
     Hash previousLedgerHash;
-    Hash txSetHash;            // the tx set that was FBA confirmed
+    Hash txSetHash;            // the tx set that was SCP confirmed
     Hash clfHash;
-    CLFLevel clfLevels[5];
 
     int64 totalCoins;
     int64 feePool;
@@ -31,11 +17,6 @@ struct LedgerHeader
     int32 baseFee;
     int32 baseReserve;
     uint64 closeTime;
-};
-
-enum CLFType {
-    LIVEENTRY,
-    DEADENTRY
 };
 
 union LedgerKey switch (LedgerEntryType type)
@@ -58,23 +39,9 @@ union LedgerKey switch (LedgerEntryType type)
         } offer;
 };
 
-struct TransactionSet
-{
-    Hash previousLedgerHash;
-    TransactionEnvelope txs<>;
-};
-
-struct HistoryEntry
-{
-    LedgerHeader header;
-    TransactionSet txSet;
-};
-
-struct History
-{
-    uint64 fromLedger;
-    uint64 toLedger;
-    HistoryEntry entries<>;
+enum CLFType {
+    LIVEENTRY,
+    DEADENTRY
 };
 
 union CLFEntry switch (CLFType type)
@@ -86,9 +53,22 @@ union CLFEntry switch (CLFType type)
         LedgerKey deadEntry;
 };
 
+struct TransactionSet
+{
+    Hash previousLedgerHash;
+    TransactionEnvelope txs<>;
+};
+
 struct TransactionMeta
 {
     CLFEntry entries<>;
+};
+
+struct TransactionHistoryEntry
+{
+    uint64 ledgerSeq;
+    TransactionEnvelope envelope;
+    TransactionResult result;
 };
 
 }

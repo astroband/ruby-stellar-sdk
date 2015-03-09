@@ -4,12 +4,12 @@
 require 'xdr'
 
 module Stellar
-  class TransactionResult < XDR::Struct
+  class Operation < XDR::Struct
     include XDR::Namespace
 
-    autoload :Result
-                            
-    attribute :fee_charged, Int64
-    attribute :result,      Result
+    autoload :Body
+                               
+    attribute :source_account, XDR::Option[AccountID]
+    attribute :body,           Body
   end
 end

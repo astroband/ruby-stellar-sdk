@@ -9,7 +9,6 @@ module Stellar
     attribute :previous_ledger_hash, Hash
     attribute :tx_set_hash,          Hash
     attribute :clf_hash,             Hash
-    attribute :clf_levels,           XDR::Array[CLFLevel, 5]
     attribute :total_coins,          Int64
     attribute :fee_pool,             Int64
     attribute :ledger_seq,           Uint64

@@ -6,19 +6,15 @@ require 'xdr'
 module Stellar
   include XDR::Namespace
 
-  autoload :CLFBucketHeader
-  autoload :CLFLevel
   autoload :LedgerHeader
-
-  autoload :CLFType
 
   autoload :LedgerKey
 
-  autoload :TransactionSet
-  autoload :HistoryEntry
-  autoload :History
+  autoload :CLFType
 
   autoload :CLFEntry
 
+  autoload :TransactionSet
   autoload :TransactionMeta
+  autoload :TransactionHistoryEntry
 end

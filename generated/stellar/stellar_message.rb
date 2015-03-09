@@ -17,9 +17,9 @@ module Stellar
     switch :get_validations,   :ledger_hash
     switch :validations,       :validations
     switch :transaction,       :transaction
-    switch :get_fba_quorumset, :q_set_hash
-    switch :fba_quorumset,     :q_set
-    switch :fba_message,       :envelope
+    switch :get_scp_quorumset, :q_set_hash
+    switch :scp_quorumset,     :q_set
+    switch :scp_message,       :envelope
                             
     attribute :error,       Error
     attribute :hello,       Hello
@@ -28,10 +28,10 @@ module Stellar
     attribute :tx_set_hash, Uint256
     attribute :tx_set,      TransactionSet
     attribute :ledger_hash, Uint256
-    attribute :validations, XDR::VarArray[FBAEnvelope]
+    attribute :validations, XDR::VarArray[SCPEnvelope]
     attribute :transaction, TransactionEnvelope
     attribute :q_set_hash,  Uint256
-    attribute :q_set,       FBAQuorumSet
-    attribute :envelope,    FBAEnvelope
+    attribute :q_set,       SCPQuorumSet
+    attribute :envelope,    SCPEnvelope
   end
 end

@@ -16,9 +16,9 @@ module Stellar
     member :validations,       8
     member :transaction,       9
     member :json_transaction,  10
-    member :get_fba_quorumset, 11
-    member :fba_quorumset,     12
-    member :fba_message,       13
+    member :get_scp_quorumset, 11
+    member :scp_quorumset,     12
+    member :scp_message,       13
 
     seal
   end

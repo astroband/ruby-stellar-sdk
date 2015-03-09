@@ -10,7 +10,7 @@ namespace :xdr do
     "src/xdr/Stellar-transaction.x",
     "src/xdr/Stellar-types.x",
     "src/overlay/StellarXDR.x",
-    "src/fba/FBAXDR.x",
+    "src/scp/SCPXDR.x",
   ]
 
   task :update => [:download, :generate]
@@ -37,9 +37,10 @@ namespace :xdr do
     FileUtils.rm_rf "generated"
 
     Pathname.glob("xdr/**/*.x").each do |path|
-      $stderr.puts "Generating #{path}"
+      $stderr.write "Generating #{path}... "
       compilation = Xdrgen::Compilation.new(path, "generated")
       compilation.compile
+      $stderr.puts "done"
     end
   end
 end
