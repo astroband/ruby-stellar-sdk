@@ -7,10 +7,9 @@ module Stellar
   class Transaction < XDR::Struct
     attribute :account,    AccountID
     attribute :max_fee,    Int32
-    attribute :seq_slot,   Uint32
-    attribute :seq_num,    Uint32
-    attribute :min_ledger, Uint64
-    attribute :max_ledger, Uint64
-    attribute :operations, XDR::VarArray[Operation]
+    attribute :seq_num,    SequenceNumber
+    attribute :min_ledger, Uint32
+    attribute :max_ledger, Uint32
+    attribute :operations, XDR::VarArray[Operation, 100]
   end
 end

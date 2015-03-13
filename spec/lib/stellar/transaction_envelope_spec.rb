@@ -33,12 +33,12 @@ describe Stellar::TransactionEnvelope do
       end
 
       context "and the signature is corrupted" do
-        before(:each){ envelope.signatures = ["\xFF" * 32]}
+        before(:each){ envelope.signatures.first.signature = "\xFF" * 32}
         it{ should be_falsey }
       end
 
       context "and the signature is from a different message" do
-        before(:each){ envelope.signatures = [sender.sign("hello")]}
+        before(:each){ envelope.signatures = [sender.sign_decorated("hello")]}
         it{ should be_falsey }
       end
 
@@ -73,12 +73,12 @@ describe Stellar::TransactionEnvelope do
       end
 
       context "and one of the signatures is corrupted" do
-        before(:each){ envelope.signatures[-1] = "\xFF" * 32}
+        before(:each){ envelope.signatures.last.signature = "\xFF" * 32}
         it{ should be_falsey }
       end
 
       context "and the signature is from a different message" do
-        before(:each){ envelope.signatures = signers.map{|s| s.sign("hello")}}
+        before(:each){ envelope.signatures = signers.map{|s| s.sign_decorated("hello")}}
         it{ should be_falsey }
       end
     end

@@ -16,6 +16,7 @@ module Stellar
   Signature = XDR::Opaque[64]
   Hash = XDR::Opaque[32]
   Thresholds = XDR::Opaque[4]
+  SequenceNumber = Uint64
 
   autoload :CurrencyType
 

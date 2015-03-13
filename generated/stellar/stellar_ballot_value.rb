@@ -7,6 +7,6 @@ module Stellar
   class StellarBallotValue < XDR::Struct
     attribute :tx_set_hash, Hash
     attribute :close_time,  Uint64
-    attribute :base_fee,    Int32
+    attribute :base_fee,    Uint32
   end
 end

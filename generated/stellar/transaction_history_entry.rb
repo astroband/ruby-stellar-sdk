@@ -5,7 +5,7 @@ require 'xdr'
 
 module Stellar
   class TransactionHistoryEntry < XDR::Struct
-    attribute :ledger_seq, Uint64
+    attribute :ledger_seq, Uint32
     attribute :envelope,   TransactionEnvelope
     attribute :result,     TransactionResult
   end

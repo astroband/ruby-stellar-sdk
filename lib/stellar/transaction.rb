@@ -24,7 +24,7 @@ module Stellar
 
       for_account(attributes).tap do |result|
         details = ChangeTrustOp.new(line: line, limit: limit)
-        result.operations = [payment.to_operation]
+        result.operations = [details.to_operation]
       end
     end
 
@@ -46,12 +46,16 @@ module Stellar
       key_pair.sign(hash)
     end
 
+    def sign_decorated(key_pair)
+      key_pair.sign_decorated(hash)
+    end
+
     def hash
       Digest::SHA256.digest(to_xdr)
     end
 
     def to_envelope(*key_pairs)
-      signatures = key_pairs.map(&method(:sign))
+      signatures = key_pairs.map(&method(:sign_decorated))
       
       TransactionEnvelope.new({
         :signatures => signatures,
@@ -60,14 +64,9 @@ module Stellar
     end
 
     def apply_defaults
-      self.seq_slot   = 0 #TODO: remove when this vestigial organ is removed in the .x files
       self.max_fee    ||= 10
       self.min_ledger ||= 0
-
-      # NOTE: the effective limit of max_ledger is (2^63 - 1), since while
-      # the XDR for is an unsigned 64-bit integer, the sql systems that store
-      # the transaction data do not support unsigned 64-bit integers. 
-      self.max_ledger ||= 2**63 - 1
+      self.max_ledger ||= 2**32 - 1
     end
   end
 end

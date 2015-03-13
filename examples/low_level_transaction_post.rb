@@ -17,7 +17,6 @@ destination = RbNaCl::SigningKey.new("masterpassphrasemasterpassphras3")
 tx            = Stellar::Transaction.new
 tx.account    = master.verify_key.to_bytes
 tx.max_fee    = 1000
-tx.seq_slot   = 0
 tx.seq_num    = 1
 tx.max_ledger = 1000
 tx.min_ledger = 0
@@ -42,7 +41,10 @@ signature = master.sign(tx_hash)
 
 env = Stellar::TransactionEnvelope.new
 env.tx = tx
-env.signatures = [signature]
+env.signatures = [Stellar::DecoratedSignature.new({
+  hint:master.verify_key.to_bytes[0...4], 
+  signature:signature
+})]
 
 env_hex = env.to_xdr.unpack("H*").first
 

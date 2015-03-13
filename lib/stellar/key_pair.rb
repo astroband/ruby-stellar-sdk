@@ -36,6 +36,10 @@ module Stellar
       @public_key.to_bytes
     end
 
+    def public_key_hint
+      public_key.slice(0, 4)
+    end
+
     def raw_seed
       @secret_key.to_bytes
     end
@@ -68,6 +72,14 @@ module Stellar
       raise "no private key" if @secret_key.nil?
       #TODO: improve the error class above
       @secret_key.sign(message)
+    end
+
+    def sign_decorated(message)
+      raw_signature = sign(message)
+      Stellar::DecoratedSignature.new({
+        hint:      public_key_hint,
+        signature: raw_signature
+      })
     end
 
     def verify(signature, message)

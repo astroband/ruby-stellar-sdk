@@ -14,8 +14,15 @@ module Stellar
     def signed_correctly?(*key_pairs)
       hash = tx.hash
       return false if signatures.empty?
+
+      key_index = key_pairs.index_by(&:public_key_hint)
       
-      signatures.all?{|sig| key_pairs.any?{|kp| kp.verify(sig, hash)}}
+      signatures.all? do |sig| 
+        key_pair = key_index[sig.hint]
+        break false if key_pair.nil?
+
+        key_pair.verify(sig.signature, hash)
+      end
     end
   end
 end

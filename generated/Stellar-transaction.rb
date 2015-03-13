@@ -6,6 +6,8 @@ require 'xdr'
 module Stellar
   include XDR::Namespace
 
+  autoload :DecoratedSignature
+
   autoload :OperationType
 
   autoload :PaymentOp

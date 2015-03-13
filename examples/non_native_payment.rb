@@ -7,6 +7,10 @@
 # You can see where these helpers are defined in the files underneath /lib,
 # which is where we extend the xdrgen generated source files with our higher
 # level api.
+# 
+# NOTE: due to the way that sequence number for a new account are set, this
+# example is pretty cumbersome to run.  It is only used for illustrative purposes
+# of the flow
 
 require 'stellar-core'
 require 'faraday'
@@ -21,11 +25,11 @@ def submit(key, tx)
   hex      = tx.to_envelope(key).to_xdr(:hex)
   response = $server.get('tx', blob: hex)
   raw = [response.body["result"]].pack("H*")
-  Stellar::TransactionResult.from_xdr(raw)
+  p Stellar::TransactionResult.from_xdr(raw)
 end
 
 master      = Stellar::KeyPair.from_raw_seed("masterpassphrasemasterpassphrase")
-destination = Stellar::KeyPair.random
+destination = Stellar::KeyPair.from_raw_seed("masterpassphrasemasterpassphras3")
 
 submit master, Stellar::Transaction.payment({
   account:     master,
@@ -34,9 +38,16 @@ submit master, Stellar::Transaction.payment({
   amount:      [:native, 2000_000000]
 })
 
+# NOTE: after this step, you need to get the sequence number for destination
+# Which is based off of the ledger sequence number it was funded in.
+gets # pause to get the account's sequence from the hayashi db
+
+destination_sequence = FILL_ME_IN 
+# destination_sequence = 17179869185
+
 submit destination, Stellar::Transaction.change_trust({
   account:    destination,
-  sequence:   1,
+  sequence:   destination_sequence,
   line:       [:iso4217, "USD\x00", master],
   limit:      1000
 })
@@ -44,6 +55,6 @@ submit destination, Stellar::Transaction.change_trust({
 submit master, Stellar::Transaction.payment({
   account:     master,
   destination: destination,
-  sequence:    2,
+  sequence:    3,
   amount:      [:iso4217, "USD\x00", master, 100]
 })

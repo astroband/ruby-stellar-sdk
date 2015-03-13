@@ -5,9 +5,9 @@ namespace stellar {
 
 struct StellarBallotValue
 {
-	Hash txSetHash;
+    Hash txSetHash;
     uint64 closeTime;
-    int32 baseFee;
+    uint32 baseFee;
 };
 
 struct StellarBallot
@@ -28,7 +28,7 @@ struct Hello
     int protocolVersion;
     string versionStr<100>;
     int listeningPort;
-	opaque peerID[32];
+    opaque peerID[32];
 };
 
 struct PeerAddress

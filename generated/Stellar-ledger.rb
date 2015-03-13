@@ -17,4 +17,5 @@ module Stellar
   autoload :TransactionSet
   autoload :TransactionMeta
   autoload :TransactionHistoryEntry
+  autoload :LedgerHeaderHistoryEntry
 end

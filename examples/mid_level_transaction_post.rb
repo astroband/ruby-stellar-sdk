@@ -18,7 +18,7 @@ $server = Faraday.new(url: "http://localhost:39132") do |conn|
 end
 
 master      = Stellar::KeyPair.from_raw_seed("masterpassphrasemasterpassphrase")
-destination = Stellar::KeyPair.random
+destination = Stellar::KeyPair.from_raw_seed("masterpassphrasemasterpassphras3")
 
 tx = Stellar::Transaction.payment({
   account:     master,
@@ -28,6 +28,7 @@ tx = Stellar::Transaction.payment({
 })
 
 hex    = tx.to_envelope(master).to_xdr(:hex)
+
 result = $server.get('tx', blob: hex)
 raw    = [result.body["result"]].pack("H*")
 p Stellar::TransactionResult.from_xdr(raw)
