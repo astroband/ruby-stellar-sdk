@@ -24,5 +24,9 @@ module Stellar
         key_pair.verify(sig.signature, hash)
       end
     end
+
+    def hash
+      Digest::SHA256.digest(to_xdr)
+    end
   end
 end

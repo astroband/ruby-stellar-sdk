@@ -84,4 +84,10 @@ describe Stellar::TransactionEnvelope do
     end
     
   end
+
+  describe "#hash" do
+    let(:signers)  { [sender] }
+    subject{ envelope.hash }
+    it{ should eq(Digest::SHA256.digest envelope.to_xdr)}
+  end
 end
