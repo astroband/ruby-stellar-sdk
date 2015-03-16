@@ -4,8 +4,8 @@
 require 'xdr'
 
 module Stellar
-  class TransactionHistoryEntry < XDR::Struct
-    attribute :ledger_seq, Uint32
-    attribute :tx_set,     TransactionSet
+  class TransactionResultPair < XDR::Struct
+    attribute :transaction_hash, Hash
+    attribute :result,           TransactionResult
   end
 end

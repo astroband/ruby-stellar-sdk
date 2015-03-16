@@ -7,6 +7,7 @@ module Stellar
   class LedgerHeader < XDR::Struct
     attribute :previous_ledger_hash, Hash
     attribute :tx_set_hash,          Hash
+    attribute :tx_set_result_hash,   Hash
     attribute :clf_hash,             Hash
     attribute :ledger_seq,           Uint32
     attribute :close_time,           Uint64

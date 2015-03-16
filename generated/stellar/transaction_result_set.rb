@@ -4,8 +4,7 @@
 require 'xdr'
 
 module Stellar
-  class TransactionHistoryEntry < XDR::Struct
-    attribute :ledger_seq, Uint32
-    attribute :tx_set,     TransactionSet
+  class TransactionResultSet < XDR::Struct
+    attribute :results, XDR::VarArray[TransactionResultPair, 5000]
   end
 end

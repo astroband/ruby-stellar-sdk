@@ -15,7 +15,10 @@ module Stellar
   autoload :CLFEntry
 
   autoload :TransactionSet
+  autoload :TransactionResultPair
+  autoload :TransactionResultSet
   autoload :TransactionMeta
   autoload :TransactionHistoryEntry
+  autoload :TransactionHistoryResultEntry
   autoload :LedgerHeaderHistoryEntry
 end
