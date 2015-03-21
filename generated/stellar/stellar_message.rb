@@ -6,11 +6,11 @@ require 'xdr'
 module Stellar
   class StellarMessage < XDR::Union
     switch_on MessageType, :type
-                               
+
     switch :error_msg,         :error
     switch :hello,             :hello
     switch :dont_have,         :dont_have
-                                   switch :get_peers
+    switch :get_peers
     switch :peers,             :peers
     switch :get_tx_set,        :tx_set_hash
     switch :tx_set,            :tx_set
@@ -20,7 +20,7 @@ module Stellar
     switch :get_scp_quorumset, :q_set_hash
     switch :scp_quorumset,     :q_set
     switch :scp_message,       :envelope
-                            
+
     attribute :error,       Error
     attribute :hello,       Hello
     attribute :dont_have,   DontHave

@@ -6,10 +6,10 @@ require 'xdr'
 module Stellar
   class Currency < XDR::Union
     switch_on CurrencyType, :type
-                     
-                         switch :native
+
+    switch :native
     switch :iso4217, :iso_ci
-                       
+
     attribute :iso_ci, ISOCurrencyIssuer
   end
 end

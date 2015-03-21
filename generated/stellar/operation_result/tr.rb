@@ -7,7 +7,7 @@ module Stellar
   class OperationResult
     class Tr < XDR::Union
       switch_on OperationType, :type
-                             
+
       switch :payment,       :payment_result
       switch :create_offer,  :create_offer_result
       switch :cancel_offer,  :cancel_offer_result
@@ -16,7 +16,7 @@ module Stellar
       switch :allow_trust,   :allow_trust_result
       switch :account_merge, :account_merge_result
       switch :inflation,     :inflation_result
-                                       
+
       attribute :payment_result,       Payment::PaymentResult
       attribute :create_offer_result,  CreateOffer::CreateOfferResult
       attribute :cancel_offer_result,  CancelOffer::CancelOfferResult

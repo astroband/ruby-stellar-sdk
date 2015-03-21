@@ -10,10 +10,10 @@ module Stellar
     autoload :Tr
 
     switch_on OperationResultCode, :code
-                      
+
     switch :op_inner, :tr
-                          switch :default
-                   
+    switch :default
+
     attribute :tr, Tr
   end
 end

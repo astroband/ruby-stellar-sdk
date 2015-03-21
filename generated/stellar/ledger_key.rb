@@ -12,11 +12,11 @@ module Stellar
     autoload :Offer
 
     switch_on LedgerEntryType, :type
-                       
+
     switch :account,   :account
     switch :trustline, :trust_line
     switch :offer,     :offer
-                           
+
     attribute :account,    Account
     attribute :trust_line, TrustLine
     attribute :offer,      Offer

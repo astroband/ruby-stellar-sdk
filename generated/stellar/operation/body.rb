@@ -7,7 +7,7 @@ module Stellar
   class Operation
     class Body < XDR::Union
       switch_on OperationType, :type
-                             
+
       switch :payment,       :payment_op
       switch :create_offer,  :create_offer_op
       switch :cancel_offer,  :offer_id
@@ -16,7 +16,7 @@ module Stellar
       switch :allow_trust,   :allow_trust_op
       switch :account_merge, :destination
       switch :inflation,     :inflation_seq
-                                  
+
       attribute :payment_op,      PaymentOp
       attribute :create_offer_op, CreateOfferOp
       attribute :offer_id,        Uint64

@@ -6,11 +6,11 @@ require 'xdr'
 module Stellar
   class LedgerEntry < XDR::Union
     switch_on LedgerEntryType, :type
-                       
+
     switch :account,   :account
     switch :trustline, :trust_line
     switch :offer,     :offer
-                           
+
     attribute :account,    AccountEntry
     attribute :trust_line, TrustLineEntry
     attribute :offer,      OfferEntry

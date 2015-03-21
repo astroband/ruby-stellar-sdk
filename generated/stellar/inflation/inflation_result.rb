@@ -7,10 +7,10 @@ module Stellar
   module Inflation
     class InflationResult < XDR::Union
       switch_on InflationResultCode, :code
-                       
+
       switch :success, :payouts
-                             switch :default
-                          
+      switch :default
+
       attribute :payouts, XDR::VarArray[InflationPayout]
     end
   end

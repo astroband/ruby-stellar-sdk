@@ -8,7 +8,7 @@ module Stellar
     include XDR::Namespace
 
     autoload :Result
-                            
+
     attribute :fee_charged, Int64
     attribute :result,      Result
   end

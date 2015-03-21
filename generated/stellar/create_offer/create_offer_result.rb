@@ -7,10 +7,10 @@ module Stellar
   module CreateOffer
     class CreateOfferResult < XDR::Union
       switch_on CreateOfferResultCode, :code
-                       
+
       switch :success, :success
-                             switch :default
-                          
+      switch :default
+
       attribute :success, CreateOfferSuccessResult
     end
   end

@@ -8,7 +8,7 @@ module Stellar
     include XDR::Namespace
 
     autoload :Currency
-                          
+
     attribute :trustor,   AccountID
     attribute :currency,  Currency
     attribute :authorize, XDR::Bool

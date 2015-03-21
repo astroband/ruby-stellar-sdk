@@ -8,10 +8,10 @@ module Stellar
     class CreateOfferSuccessResult
       class Offer < XDR::Union
         switch_on CreateOfferEffect, :effect
-                         
+
         switch :created, :offer_created
-                                 switch :default
-                                  
+        switch :default
+
         attribute :offer_created, OfferEntry
       end
     end

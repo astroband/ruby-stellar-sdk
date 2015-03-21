@@ -7,11 +7,11 @@ module Stellar
   class TransactionResult
     class Result < XDR::Union
       switch_on TransactionResultCode, :code
-                          
+
       switch :tx_success, :results
       switch :tx_failed,  :results
-                                switch :default
-                          
+      switch :default
+
       attribute :results, XDR::VarArray[OperationResult]
     end
   end

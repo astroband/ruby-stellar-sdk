@@ -9,7 +9,7 @@ module Stellar
       include XDR::Namespace
 
       autoload :Offer
-                                 
+
       attribute :offers_claimed, XDR::VarArray[ClaimOfferAtom]
       attribute :offer,          Offer
     end

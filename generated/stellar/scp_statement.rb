@@ -8,7 +8,7 @@ module Stellar
     include XDR::Namespace
 
     autoload :Pledges
-                                
+
     attribute :slot_index,      Uint64
     attribute :ballot,          SCPBallot
     attribute :quorum_set_hash, Hash

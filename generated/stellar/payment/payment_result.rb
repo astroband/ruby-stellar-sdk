@@ -7,11 +7,11 @@ module Stellar
   module Payment
     class PaymentResult < XDR::Union
       switch_on PaymentResultCode, :code
-                             
-                                   switch :success
+
+      switch :success
       switch :success_multi, :multi
-                                   switch :default
-                        
+      switch :default
+
       attribute :multi, SuccessMultiResult
     end
   end

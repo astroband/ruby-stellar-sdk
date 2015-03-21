@@ -8,7 +8,7 @@ module Stellar
     include XDR::Namespace
 
     autoload :Body
-                               
+
     attribute :source_account, XDR::Option[AccountID]
     attribute :body,           Body
   end

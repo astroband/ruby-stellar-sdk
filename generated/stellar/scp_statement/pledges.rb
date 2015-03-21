@@ -11,12 +11,12 @@ module Stellar
       autoload :Prepare
 
       switch_on SCPStatementType, :type
-                       
+
       switch :prepare, :prepare
-                             switch :prepared
-                             switch :commit
-                             switch :committed
-                          
+      switch :prepared
+      switch :commit
+      switch :committed
+
       attribute :prepare, Prepare
     end
   end
