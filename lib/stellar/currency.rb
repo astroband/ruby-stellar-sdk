@@ -1,6 +1,6 @@
 module Stellar
   Currency.class_eval do
-    def self.native(amount)
+    def self.native
       new(:native)
     end
 
