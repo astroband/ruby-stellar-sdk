@@ -64,13 +64,17 @@ module Stellar
     end
 
     Contract ({
-      account:  Maybe[Stellar::Account], 
+      account:  Maybe[Stellar::Account],
+      limit: Maybe[Pos]
     }) => TransactionPage
     def transactions(options={})
+      args = options.slice(:limit)
+
       resource = if options[:account]
-        @horizon.account_transactions(address: options[:account].address)
+        args = args.merge(address: options[:account].address)
+        @horizon.account_transactions(args)
       else
-        @horizon.transactions()
+        @horizon.transactions(args)
       end
 
       TransactionPage.new(resource)
