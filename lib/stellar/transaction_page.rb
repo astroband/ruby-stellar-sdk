@@ -8,7 +8,6 @@ module Stellar
       @resource = resource
     end
 
-
     def each
       @resource.records.each do |tx|
         yield tx if block_given?
@@ -17,11 +16,11 @@ module Stellar
 
     Contract None => TransactionPage
     def next_page
-      new(@resource.next)
+      self.class.new(@resource.next)
     end
 
     def next_page!
-      @resource = @resouce.next
+      @resource = @resource.next
     end
 
   end
