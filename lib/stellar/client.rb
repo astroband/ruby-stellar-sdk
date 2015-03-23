@@ -63,24 +63,18 @@ module Stellar
       @horizon.transactions._post(tx: envelope_hex)
     end
 
-    private
-    # Contract HashOf[Symbol,Any] => Stellar::Horizon::Response
-    # def horizon_request(options={})
-    #   load_horizon_root
+    Contract ({
+      account:  Maybe[Stellar::Account], 
+    }) => TransactionPage
+    def transactions(options={})
+      resource = if options[:account]
+        @horizon.account_transactions(address: options[:account].address)
+      else
+        @horizon.transactions()
+      end
 
-    #   response = @horizon.request(options)
-
-    #   if response.
-    # end
-
-    def friendbot_request
-      
+      TransactionPage.new(resource)
     end
 
-    def load_horizon_root
-      return if defined? @horizon_root
-
-      # TODO: load uri templates from api root
-    end
   end
 end
