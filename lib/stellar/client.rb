@@ -28,7 +28,18 @@ module Stellar
     Contract ({horizon: String}) => Any
     def initialize(options)
       @options = options
-      @horizon = Hyperclient.new(options[:horizon])
+      @horizon = Hyperclient.new(options[:horizon]) do |client|
+        client.faraday_block = lambda do |conn|
+          conn.use Faraday::Response::RaiseError
+          conn.use FaradayMiddleware::FollowRedirects
+          conn.request :url_encoded
+          conn.response :hal_json, content_type: /\bjson$/
+          conn.adapter :excon
+        end
+        client.headers = { 
+          'Accept' => 'application/hal+json,application/problem+json,application/json' 
+        }
+      end
     end
 
     def friendbot(account)
@@ -65,7 +76,7 @@ module Stellar
 
     Contract ({
       account:  Maybe[Stellar::Account],
-      limit: Maybe[Pos]
+      limit:    Maybe[Pos]
     }) => TransactionPage
     def transactions(options={})
       args = options.slice(:limit)
