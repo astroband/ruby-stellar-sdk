@@ -50,7 +50,7 @@ module Stellar
     Contract Stellar::Account => Any
     def account_info(account)
       address  = account.address
-      @horizon.accounts(address:address)
+      @horizon.account(address:address)
     end
 
     Contract ({
