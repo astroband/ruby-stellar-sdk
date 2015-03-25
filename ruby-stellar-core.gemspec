@@ -29,6 +29,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "simplecov"
   spec.add_development_dependency "octokit"
   spec.add_development_dependency "netrc"
-  spec.add_development_dependency "yardoc"
+  spec.add_development_dependency "yard"
 
 end
