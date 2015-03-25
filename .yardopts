@@ -1,0 +1,8 @@
+--output-dir doc/generated
+--protected
+--no-private
+--embed-mixin ClassMethods
+lib/**/*.rb
+generated/**/*.rb
+-
+doc/*.md
