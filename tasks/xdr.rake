@@ -38,7 +38,7 @@ namespace :xdr do
 
     Pathname.glob("xdr/**/*.x").each do |path|
       $stderr.write "Generating #{path}... "
-      compilation = Xdrgen::Compilation.new(path, "generated")
+      compilation = Xdrgen::Compilation.new(path, output_dir:"generated", namespace:"Stellar::XDR")
       compilation.compile
       $stderr.puts "done"
     end
