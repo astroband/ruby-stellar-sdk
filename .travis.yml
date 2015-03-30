@@ -6,7 +6,10 @@ rvm:
 - 1.9.3
 - jruby-1.7.9
 - jruby-head
-script: "LD_LIBRARY_PATH=lib bundle exec rake travis"
+script: LD_LIBRARY_PATH=lib bundle exec rake travis
 matrix:
   allow_failures:
-    - rvm: jruby-head
+  - rvm: jruby-head
+notifications:
+  slack:
+    secure: D1gWWsjE9i9XLRM6Bfw2pu3tTPW025iqjhgwE3KNw1QwP2TrehbCwRpjVR4rrnaju9FhYqM0+eT4rFc9g6itBPf2pfN1WziVf/CVJORYTzR9HbLL1rMOaWhEv4x/+Uwu0kxQon9ThnM9w6XjjD1+NoBfGn4Lcgc/OgmUGw1jAvQ=
