@@ -8,12 +8,7 @@ require 'active_support/core_ext/kernel/reporting'
 # See ../generated for code-gen'ed files
 
 silence_warnings do
-  require 'SCPXDR'
-  require 'Stellar-types'
-  require 'Stellar-overlay'
-  require 'Stellar-ledger'
-  require 'Stellar-transaction'
-  require 'Stellar-ledger-entries'
+  require 'Stellar'
 end
 Stellar.load_all!
 
