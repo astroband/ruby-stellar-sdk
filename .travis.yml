@@ -10,3 +10,6 @@ script: LD_LIBRARY_PATH=lib bundle exec rake travis
 notifications:
   slack:
     secure: KM3guRjiX+LAjmALKtPvHBRbEaGdP2tjJOKymNDzl/+LpKME3sqkWnjNTyitgkpfmE66y7Dct9+NyNhzQfZ6iX0qN2i4sVr1WbGy90Duj+PyBf2t2juL0hIY3uQLBLt850TzlHgtTOQtTv0XsmpKLSa3bb00MHtD2TJ0zO66oc8=
+matrix:
+  allow_failures:
+    - rvm: jruby-head
