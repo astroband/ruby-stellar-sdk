@@ -4,12 +4,12 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'stellar/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "stellar"
+  spec.name          = "stellar-lib"
   spec.version       = Stellar::VERSION
   spec.authors       = ["Scott Fleckenstein"]
   spec.email         = ["scott@stellar.org"]
   spec.summary       = %q{Stellar client library}
-  spec.homepage      = ""
+  spec.homepage      = "http://github.com/stellar/ruby-stellar-lib"
   spec.license       = "ISC"
 
   spec.files         = `git ls-files -z`.split("\x0")
@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "stellar-core"
+  spec.add_dependency "stellar-base"
   spec.add_dependency "hyperclient", "~> 0.7.0"
   spec.add_dependency "excon", "~> 0.44.4"
   spec.add_dependency "contracts", "~> 0.7"
