@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'stellar/core/version'
+require 'stellar/base/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "stellar-core"
-  spec.version       = Stellar::Core::VERSION
+  spec.name          = "stellar-base"
+  spec.version       = Stellar::Base::VERSION
   spec.authors       = ["Scott Fleckenstein"]
   spec.email         = ["scott@stellar.org"]
   spec.summary       = %q{Stellar client library: XDR}

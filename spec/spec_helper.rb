@@ -5,7 +5,7 @@ require 'simplecov'
 SimpleCov.start
 
 require 'pry'
-require 'stellar-core'
+require 'stellar-base'
 
 SPEC_ROOT = File.dirname(__FILE__)
 

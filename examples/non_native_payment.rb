@@ -12,7 +12,7 @@
 # example is pretty cumbersome to run.  It is only used for illustrative purposes
 # of the flow
 
-require 'stellar-core'
+require 'stellar-base'
 require 'faraday'
 require 'faraday_middleware'
 

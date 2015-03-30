@@ -8,7 +8,7 @@
 # which is where we extend the xdrgen generated source files with our higher
 # level api.
 
-require 'stellar-core'
+require 'stellar-base'
 require 'faraday'
 require 'faraday_middleware'
 

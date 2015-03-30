@@ -1,6 +1,6 @@
-# Stellar::Core
+# Stellar::Base
 
-The stellar-core library is the lowest-level stellar helper library.  It consists of classes
+The stellar-base library is the lowest-level stellar helper library.  It consists of classes
 to read, write, hash, and sign the xdr structures that are used in stellard.
 
 ## Installation
@@ -8,7 +8,7 @@ to read, write, hash, and sign the xdr structures that are used in stellard.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'stellar-core'
+gem 'stellar-base'
 ```
 
 And then execute:
@@ -17,7 +17,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install stellar-core
+    $ gem install stellar-base
 
 Also requires libsodium. Installable via `brew install libsodium` on OS X.
 
@@ -71,7 +71,7 @@ The current integration of user-written code with auto-generated classes is to p
 
 ## Contributing
 
-1. Fork it ( https://github.com/stellar/ruby-stellar-core/fork )
+1. Fork it ( https://github.com/stellar/ruby-stellar-base/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)

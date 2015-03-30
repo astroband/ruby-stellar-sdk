@@ -7,7 +7,7 @@
 # Look at mid_level_transaction_post.rb to see a friendlier form
 
 require 'rbnacl'
-require 'stellar-core'
+require 'stellar-base'
 require 'faraday'
 require 'digest/sha2'
 

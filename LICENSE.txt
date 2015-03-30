@@ -1,4 +1,4 @@
-stellar-core is released under the ISC license.
+stellar-base is released under the ISC license.
 
 Copyright (c) 2015, Stellar Development Foundation
 

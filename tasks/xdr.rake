@@ -36,11 +36,13 @@ namespace :xdr do
     require 'fileutils'
     FileUtils.rm_rf "generated"
 
-    Pathname.glob("xdr/**/*.x").each do |path|
-      $stderr.write "Generating #{path}... "
-      compilation = Xdrgen::Compilation.new(path, output_dir:"generated", namespace:"Stellar::XDR")
-      compilation.compile
-      $stderr.puts "done"
-    end
+    paths = Pathname.glob("xdr/**/*.x")
+    compilation = Xdrgen::Compilation.new(
+      paths, 
+      output_dir: "generated", 
+      namespace:  "Stellar",
+      language:   :ruby
+    )
+    compilation.compile
   end
 end
