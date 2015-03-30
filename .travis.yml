@@ -7,3 +7,6 @@ rvm:
 - jruby-1.7.9
 - jruby-head
 script: "LD_LIBRARY_PATH=lib bundle exec rake travis"
+matrix:
+  allow_failures:
+    - rvm: jruby-head
