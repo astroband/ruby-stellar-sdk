@@ -1,8 +1,33 @@
-# Automatically generated on 2015-03-30T09:46:31-07:00
+# Automatically generated on 2015-03-31T14:32:44-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
 
+# === xdr source ============================================================
+#
+#   struct SCPStatement
+#   {
+#       uint64 slotIndex;   // i
+#       SCPBallot ballot;   // b
+#       Hash quorumSetHash; // D
+#   
+#       union switch (SCPStatementType type)
+#       {
+#       case PREPARING:
+#           struct
+#           {
+#               SCPBallot excepted<>; // B_c
+#               SCPBallot* prepared;  // p
+#           } prepare;
+#       case PREPARED:
+#       case COMMITTING:
+#       case COMMITTED:
+#           void;
+#       }
+#       pledges;
+#   };
+#
+# ===========================================================================
 module Stellar
   class SCPStatement < XDR::Struct
     include XDR::Namespace

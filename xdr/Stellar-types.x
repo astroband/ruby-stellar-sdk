@@ -1,6 +1,11 @@
+// Copyright 2015 Stellar Development Foundation and contributors. Licensed
+// under the ISC License. See the COPYING file at the top-level directory of
+// this distribution or at http://opensource.org/licenses/ISC
+
 %#include "generated/SCPXDR.h"
 
-namespace stellar {
+namespace stellar
+{
 
 // messages
 typedef opaque uint512[64];
@@ -18,8 +23,8 @@ typedef uint64 SequenceNumber;
 
 enum CurrencyType
 {
-    NATIVE,
-    ISO4217
+    NATIVE = 0,
+    ISO4217 = 1
 };
 
 struct ISOCurrencyIssuer
@@ -28,21 +33,21 @@ struct ISOCurrencyIssuer
     AccountID issuer;
 };
 
-union Currency switch(CurrencyType type)
+union Currency switch (CurrencyType type)
 {
-    case NATIVE: 
-        void;
+case NATIVE:
+    void;
 
-    case ISO4217: 
-        ISOCurrencyIssuer isoCI;
+case ISO4217:
+    ISOCurrencyIssuer isoCI;
 
     // add other currency types here in the future
 };
 
+// price in fractional representation
 struct Price
 {
-    int32 n;
-    int32 d;
+    int32 n; // numerator
+    int32 d; // denominator
 };
-
 }

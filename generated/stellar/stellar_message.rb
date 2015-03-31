@@ -1,8 +1,41 @@
-# Automatically generated on 2015-03-30T09:46:31-07:00
+# Automatically generated on 2015-03-31T14:32:44-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
 
+# === xdr source ============================================================
+#
+#   union StellarMessage switch (MessageType type)
+#   {
+#   case ERROR_MSG:
+#       Error error;
+#   case HELLO:
+#       Hello hello;
+#   case DONT_HAVE:
+#       DontHave dontHave;
+#   case GET_PEERS:
+#       void;
+#   case PEERS:
+#       PeerAddress peers<>;
+#   
+#   case GET_TX_SET:
+#       uint256 txSetHash;
+#   case TX_SET:
+#       TransactionSet txSet;
+#   
+#   case TRANSACTION:
+#       TransactionEnvelope transaction;
+#   
+#   // SCP
+#   case GET_SCP_QUORUMSET:
+#       uint256 qSetHash;
+#   case SCP_QUORUMSET:
+#       SCPQuorumSet qSet;
+#   case SCP_MESSAGE:
+#       SCPEnvelope envelope;
+#   };
+#
+# ===========================================================================
 module Stellar
   class StellarMessage < XDR::Union
     switch_on MessageType, :type
@@ -14,8 +47,6 @@ module Stellar
     switch :peers,             :peers
     switch :get_tx_set,        :tx_set_hash
     switch :tx_set,            :tx_set
-    switch :get_validations,   :ledger_hash
-    switch :validations,       :validations
     switch :transaction,       :transaction
     switch :get_scp_quorumset, :q_set_hash
     switch :scp_quorumset,     :q_set
@@ -27,8 +58,6 @@ module Stellar
     attribute :peers,       XDR::VarArray[PeerAddress]
     attribute :tx_set_hash, Uint256
     attribute :tx_set,      TransactionSet
-    attribute :ledger_hash, Uint256
-    attribute :validations, XDR::VarArray[SCPEnvelope]
     attribute :transaction, TransactionEnvelope
     attribute :q_set_hash,  Uint256
     attribute :q_set,       SCPQuorumSet

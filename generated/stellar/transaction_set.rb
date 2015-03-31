@@ -1,8 +1,17 @@
-# Automatically generated on 2015-03-30T09:46:31-07:00
+# Automatically generated on 2015-03-31T14:32:44-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
 
+# === xdr source ============================================================
+#
+#   struct TransactionSet
+#   {
+#       Hash previousLedgerHash;
+#       TransactionEnvelope txs<5000>;
+#   };
+#
+# ===========================================================================
 module Stellar
   class TransactionSet < XDR::Struct
     attribute :previous_ledger_hash, Hash

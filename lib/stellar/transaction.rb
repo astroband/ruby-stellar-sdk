@@ -37,7 +37,7 @@ module Stellar
 
       new.tap do |result|
         result.seq_num  = sequence
-        result.account  = account.public_key
+        result.source_account  = account.public_key
         result.apply_defaults
       end
     end

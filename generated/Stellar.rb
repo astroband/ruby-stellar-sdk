@@ -1,4 +1,4 @@
-# Automatically generated on 2015-03-30T09:46:31-07:00
+# Automatically generated on 2015-03-31T14:32:44-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -28,7 +28,6 @@ module Stellar
   autoload :LedgerEntryType
 
   autoload :Signer
-  autoload :KeyValue
 
   autoload :AccountFlags
 
@@ -45,9 +44,9 @@ module Stellar
 
   autoload :LedgerKey
 
-  autoload :CLFType
+  autoload :BucketEntryType
 
-  autoload :CLFEntry
+  autoload :BucketEntry
 
   autoload :TransactionSet
   autoload :TransactionResultPair
@@ -89,70 +88,41 @@ module Stellar
   autoload :TransactionEnvelope
   autoload :ClaimOfferAtom
 
-  module Payment
-    include XDR::Namespace
+  autoload :PaymentResultCode
 
-    autoload :PaymentResultCode
+  autoload :SimplePaymentResult
+  autoload :PaymentSuccessMultiResult
 
-    autoload :SimplePaymentResult
-    autoload :SuccessMultiResult
+  autoload :PaymentResult
 
-    autoload :PaymentResult
-  end
-  module CreateOffer
-    include XDR::Namespace
+  autoload :CreateOfferResultCode
+  autoload :CreateOfferEffect
 
-    autoload :CreateOfferResultCode
-    autoload :CreateOfferEffect
+  autoload :CreateOfferSuccessResult
 
-    autoload :CreateOfferSuccessResult
+  autoload :CreateOfferResult
 
-    autoload :CreateOfferResult
-  end
-  module CancelOffer
-    include XDR::Namespace
+  autoload :SetOptionsResultCode
 
-    autoload :CancelOfferResultCode
+  autoload :SetOptionsResult
 
-    autoload :CancelOfferResult
-  end
-  module SetOptions
-    include XDR::Namespace
+  autoload :ChangeTrustResultCode
 
-    autoload :SetOptionsResultCode
+  autoload :ChangeTrustResult
 
-    autoload :SetOptionsResult
-  end
-  module ChangeTrust
-    include XDR::Namespace
+  autoload :AllowTrustResultCode
 
-    autoload :ChangeTrustResultCode
+  autoload :AllowTrustResult
 
-    autoload :ChangeTrustResult
-  end
-  module AllowTrust
-    include XDR::Namespace
+  autoload :AccountMergeResultCode
 
-    autoload :AllowTrustResultCode
+  autoload :AccountMergeResult
 
-    autoload :AllowTrustResult
-  end
-  module AccountMerge
-    include XDR::Namespace
+  autoload :InflationResultCode
 
-    autoload :AccountMergeResultCode
+  autoload :InflationPayout
 
-    autoload :AccountMergeResult
-  end
-  module Inflation
-    include XDR::Namespace
-
-    autoload :InflationResultCode
-
-    autoload :InflationPayout
-
-    autoload :InflationResult
-  end
+  autoload :InflationResult
 
   autoload :OperationResultCode
 

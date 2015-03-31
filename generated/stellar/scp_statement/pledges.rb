@@ -1,8 +1,25 @@
-# Automatically generated on 2015-03-30T09:46:31-07:00
+# Automatically generated on 2015-03-31T14:32:44-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
 
+# === xdr source ============================================================
+#
+#   union switch (SCPStatementType type)
+#       {
+#       case PREPARING:
+#           struct
+#           {
+#               SCPBallot excepted<>; // B_c
+#               SCPBallot* prepared;  // p
+#           } prepare;
+#       case PREPARED:
+#       case COMMITTING:
+#       case COMMITTED:
+#           void;
+#       }
+#
+# ===========================================================================
 module Stellar
   class SCPStatement
     class Pledges < XDR::Union
@@ -12,9 +29,9 @@ module Stellar
 
       switch_on SCPStatementType, :type
 
-      switch :prepare, :prepare
+      switch :preparing, :prepare
       switch :prepared
-      switch :commit
+      switch :committing
       switch :committed
 
       attribute :prepare, Prepare

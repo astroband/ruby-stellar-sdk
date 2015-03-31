@@ -1,18 +1,31 @@
-# Automatically generated on 2015-03-30T09:46:31-07:00
+# Automatically generated on 2015-03-31T14:32:44-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
 
+# === xdr source ============================================================
+#
+#   enum OperationType
+#   {
+#       PAYMENT = 0,
+#       CREATE_OFFER = 1,
+#       SET_OPTIONS = 2,
+#       CHANGE_TRUST = 3,
+#       ALLOW_TRUST = 4,
+#       ACCOUNT_MERGE = 5,
+#       INFLATION = 6
+#   };
+#
+# ===========================================================================
 module Stellar
   class OperationType < XDR::Enum
     member :payment,       0
     member :create_offer,  1
-    member :cancel_offer,  2
-    member :set_options,   3
-    member :change_trust,  4
-    member :allow_trust,   5
-    member :account_merge, 6
-    member :inflation,     7
+    member :set_options,   2
+    member :change_trust,  3
+    member :allow_trust,   4
+    member :account_merge, 5
+    member :inflation,     6
 
     seal
   end

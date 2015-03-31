@@ -1,8 +1,22 @@
-# Automatically generated on 2015-03-30T09:46:32-07:00
+# Automatically generated on 2015-03-31T14:32:44-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
 
+# === xdr source ============================================================
+#
+#   union Currency switch (CurrencyType type)
+#   {
+#   case NATIVE:
+#       void;
+#   
+#   case ISO4217:
+#       ISOCurrencyIssuer isoCI;
+#   
+#       // add other currency types here in the future
+#   };
+#
+# ===========================================================================
 module Stellar
   class Currency < XDR::Union
     switch_on CurrencyType, :type
