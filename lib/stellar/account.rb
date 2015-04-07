@@ -24,7 +24,7 @@ module Stellar
     end
 
     def self.master
-      keypair = Stellar::KeyPair.from_raw_seed("masterpassphrasemasterpassphrase")
+      keypair = Stellar::KeyPair.from_raw_seed("allmylifemyhearthasbeensearching")
       new(keypair)
     end
 
