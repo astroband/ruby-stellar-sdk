@@ -28,8 +28,8 @@ def submit(key, tx)
   p Stellar::TransactionResult.from_xdr(raw)
 end
 
-master      = Stellar::KeyPair.from_raw_seed("masterpassphrasemasterpassphrase")
-destination = Stellar::KeyPair.from_raw_seed("masterpassphrasemasterpassphras3")
+master      = Stellar::KeyPair.from_raw_seed("allmylifemyhearthasbeensearching")
+destination = Stellar::KeyPair.from_raw_seed("allmylifemyhearthasbeensearching")
 
 submit master, Stellar::Transaction.payment({
   account:     master,

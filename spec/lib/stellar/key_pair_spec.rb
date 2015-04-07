@@ -12,12 +12,12 @@ describe Stellar::KeyPair do
     end
 
     context "provided value is not base58 encoded" do
-      let(:seed){ "masterpassphrasemasterpassphrase" }
+      let(:seed){ "allmylifemyhearthasbeensearching" }
       it { expect{ subject }.to raise_error(ArgumentError) }
     end
 
     context "provided value is not base58 encoded as a seed" do
-      let(:raw_seed){ "masterpassphrasemasterpassphrase" }
+      let(:raw_seed){ "allmylifemyhearthasbeensearching" }
       let(:seed){ Stellar::Util::Base58.stellar.check_encode(:account_id, raw_seed) }
       it { expect{ subject }.to raise_error(ArgumentError) }
     end
@@ -27,7 +27,7 @@ describe Stellar::KeyPair do
     subject{ Stellar::KeyPair.from_raw_seed(raw_seed) }
     
     context "when the provided value is a 32-byte string" do
-      let(:raw_seed){ "masterpassphrasemasterpassphrase" }
+      let(:raw_seed){ "allmylifemyhearthasbeensearching" }
       it { should be_a(Stellar::KeyPair) }
     end
 

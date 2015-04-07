@@ -17,8 +17,8 @@ $server = Faraday.new(url: "http://localhost:39132") do |conn|
   conn.adapter Faraday.default_adapter
 end
 
-master      = Stellar::KeyPair.from_raw_seed("masterpassphrasemasterpassphrase")
-destination = Stellar::KeyPair.from_raw_seed("masterpassphrasemasterpassphras3")
+master      = Stellar::KeyPair.from_raw_seed("allmylifemyhearthasbeensearching")
+destination = Stellar::KeyPair.from_raw_seed("allmylifemyhearthasbeensearching")
 
 tx = Stellar::Transaction.payment({
   account:     master,

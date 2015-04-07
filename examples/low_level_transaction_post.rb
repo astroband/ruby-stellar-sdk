@@ -11,8 +11,8 @@ require 'stellar-base'
 require 'faraday'
 require 'digest/sha2'
 
-master      = RbNaCl::SigningKey.new("masterpassphrasemasterpassphrase")
-destination = RbNaCl::SigningKey.new("masterpassphrasemasterpassphras3")
+master      = RbNaCl::SigningKey.new("allmylifemyhearthasbeensearching")
+destination = RbNaCl::SigningKey.new("allmylifemyhearthasbeensearching")
 
 tx            = Stellar::Transaction.new
 tx.account    = master.verify_key.to_bytes
