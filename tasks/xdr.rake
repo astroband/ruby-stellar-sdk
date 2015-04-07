@@ -40,7 +40,7 @@ namespace :xdr do
     compilation = Xdrgen::Compilation.new(
       paths, 
       output_dir: "generated", 
-      namespace:  "Stellar",
+      namespace:  "stellar-base-generated",
       language:   :ruby
     )
     compilation.compile

@@ -8,7 +8,7 @@ require 'active_support/core_ext/kernel/reporting'
 # See ../generated for code-gen'ed files
 
 silence_warnings do
-  require 'Stellar'
+  require 'stellar-base-generated'
 end
 Stellar.load_all!
 
