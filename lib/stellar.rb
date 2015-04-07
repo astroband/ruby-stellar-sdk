@@ -1,4 +1,4 @@
-require 'stellar-core'
+require 'stellar-base'
 require 'contracts'
 
 module Stellar

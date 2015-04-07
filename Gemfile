@@ -5,8 +5,8 @@ gemspec
 gem "xdr", git: "git@github.com:stellar/ruby-xdr.git"
 # gem "xdr", path: "../ruby-xdr"
 
-gem "stellar-core", git: "git@github.com:stellar/ruby-stellar-core.git"
-# gem "stellar-core", path: "../ruby-stellar-core"
+gem "stellar-base", git: "git@github.com:stellar/ruby-stellar-base.git"
+# gem "stellar-base", path: "../ruby-stellar-base"
 
 group :development do
   gem "pry"
