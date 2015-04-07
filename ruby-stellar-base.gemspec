@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Scott Fleckenstein"]
   spec.email         = ["scott@stellar.org"]
   spec.summary       = %q{Stellar client library: XDR}
-  spec.homepage      = ""
-  spec.license       = "ISC"
+  spec.homepage      = "https://github.com/stellar/ruby-stellar-vase"
+  spec.license       = "Apache 2.0"
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }

@@ -1,4 +1,4 @@
-# Automatically generated on 2015-03-31T14:32:44-07:00
+# Automatically generated on 2015-04-07T10:52:07-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -17,8 +17,9 @@ require 'xdr'
 #       PAYMENT_NO_TRUST = 4,       // destination missing a trust line for currency
 #       PAYMENT_NOT_AUTHORIZED = 5, // destination not authorized to hold currency
 #       PAYMENT_LINE_FULL = 6,      // destination would go above their limit
-#       PAYMENT_OVER_SENDMAX = 7,   // multi-path payment could not satisfy sendmax
-#       PAYMENT_LOW_RESERVE = 8     // would create an account below the min reserve
+#       PAYMENT_TOO_FEW_OFFERS = 7, // not enough offers to satisfy path payment
+#       PAYMENT_OVER_SENDMAX = 8,   // multi-path payment could not satisfy sendmax
+#       PAYMENT_LOW_RESERVE = 9     // would create an account below the min reserve
 #   };
 #
 # ===========================================================================
@@ -31,8 +32,9 @@ module Stellar
     member :payment_no_trust,       4
     member :payment_not_authorized, 5
     member :payment_line_full,      6
-    member :payment_over_sendmax,   7
-    member :payment_low_reserve,    8
+    member :payment_too_few_offers, 7
+    member :payment_over_sendmax,   8
+    member :payment_low_reserve,    9
 
     seal
   end
