@@ -12,8 +12,8 @@ module Stellar
 
     def self.default_testnet(options={})
       new options.merge({
-        horizon:   "https://demo.stellar.org",
-        friendbot: "https://demo.stellar.org",
+        horizon:   "https://horizon-testnet.stellar.org",
+        friendbot: "https://horizon-testnet.stellar.org",
       })
     end
 
