@@ -6,14 +6,14 @@ module Stellar
 
     def self.default(options={})
       new options.merge({
-        horizon:   "http://horizon.stellar.org"
+        horizon:   "https://horizon.stellar.org"
       })
     end
 
     def self.default_testnet(options={})
       new options.merge({
-        horizon:   "http://horizon-stg.stellar.org",
-        friendbot: "http://api-stg.stellar.org",
+        horizon:   "https://demo.stellar.org",
+        friendbot: "https://demo.stellar.org",
       })
     end
 
@@ -65,7 +65,7 @@ module Stellar
       payment = Stellar::Transaction.payment({
         account:     from.keypair,
         destination: options[:to].keypair,
-        sequence:    sequence,
+        sequence:    sequence + 1,
         amount:      options[:amount].to_payment,
       })
 
