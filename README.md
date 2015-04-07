@@ -1,6 +1,8 @@
 # Stellar
 
-TODO
+*STATUS:  this library is very early and incomplete.  The examples provided do not work, yet*
+
+This library helps you to integrate your application into the [Stellar network](http://stellar.org).
 
 ## Installation
 
@@ -22,7 +24,23 @@ Also requires libsodium. Installable via `brew install libsodium` on OS X.
 
 ## Usage
 
-TODO: Write usage instructions here
+See [examples](examples).
+
+A simple payment from the root account to some random accounts
+
+```ruby
+require 'stellar'
+
+account   = Stellar::Account.master
+client    = Stellar::Client.default_testnet()
+recipient = Stellar::Account.random
+
+client.send_payment({
+  from:   account,
+  to:     recipient,
+  amount: Stellar::Amount.new(100_000000)
+}) 
+```
 
 ## Contributing
 
