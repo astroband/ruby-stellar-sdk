@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["scott@stellar.org"]
   spec.summary       = %q{Stellar client library}
   spec.homepage      = "http://github.com/stellar/ruby-stellar-lib"
-  spec.license       = "ISC"
+  spec.license       = "Apache 2.0"
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
