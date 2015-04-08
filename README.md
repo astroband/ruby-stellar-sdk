@@ -1,4 +1,7 @@
-# Stellar
+# Ruby Stellar
+
+[![Build Status](https://travis-ci.org/stellar/ruby-stellar-lib.svg)](https://travis-ci.org/stellar/ruby-stellar-lib)
+[![Code Climate](https://codeclimate.com/github/stellar/ruby-stellar-lib/badges/gpa.svg)](https://codeclimate.com/github/stellar/ruby-stellar-lib)
 
 *STATUS:  this library is very early and incomplete.  The examples provided do not work, yet*
 
