@@ -9,7 +9,7 @@ rvm:
 script: LD_LIBRARY_PATH=lib bundle exec rake travis
 notifications:
   slack:
-    secure: KM3guRjiX+LAjmALKtPvHBRbEaGdP2tjJOKymNDzl/+LpKME3sqkWnjNTyitgkpfmE66y7Dct9+NyNhzQfZ6iX0qN2i4sVr1WbGy90Duj+PyBf2t2juL0hIY3uQLBLt850TzlHgtTOQtTv0XsmpKLSa3bb00MHtD2TJ0zO66oc8=
+    secure: V/6a8KFe067uukrbCJA2R1HPO4xy0YSQ1pwmHVRi5StX+yl+lYsWWJdjdBdT0j3iJBYyPRqU4bQYck+OloxtELnrHCX+OkodxcxW8W/ACc914iIf0FyY9pnusK7ck2awmt4Iuf94YPgi0XTm1aCcm+f0yU7wiIVFpftoXSk1EDY=
 matrix:
   allow_failures:
-    - rvm: jruby-head
+  - rvm: jruby-head
