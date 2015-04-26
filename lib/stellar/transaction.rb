@@ -28,6 +28,25 @@ module Stellar
       end
     end
 
+    def self.create_offer(attributes={})
+      taker_pays = Currency.send(*attributes[:taker_pays])
+      taker_gets = Currency.send(*attributes[:taker_gets])
+      amount     = attributes[:amount]
+      offer_id   = attributes[:offer_id] || 0
+      price      = Price.from_f(attributes[:price])
+
+      for_account(attributes).tap do |result|
+        details = CreateOfferOp.new({
+          taker_pays: taker_pays, 
+          taker_gets: taker_gets,
+          amount:     amount,
+          price:      price,
+          offer_id:   offer_id
+        })
+        result.operations = [details.to_operation]
+      end
+    end
+
     def self.for_account(attributes={})
       account       = attributes[:account]
       sequence      = attributes[:sequence]

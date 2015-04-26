@@ -16,6 +16,7 @@ Stellar.load_all!
 # extensions onto the generated files must be loaded manually, below
 
 require_relative './stellar/change_trust_op'
+require_relative './stellar/create_offer_op'
 require_relative './stellar/currency'
 require_relative './stellar/key_pair'
 require_relative './stellar/payment_op'
