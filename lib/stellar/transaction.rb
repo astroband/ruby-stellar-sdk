@@ -5,8 +5,7 @@ module Stellar
       destination = attributes[:destination]
       amount      = attributes[:amount]
       path        = attributes[:path] || []
-      path        = path.map{|p| Stellar::Currency.iso4217(*p)}
-
+      path        = path.map{|p| Stellar::Currency.send(*p)}
 
       raise ArgumentError unless destination.is_a?(KeyPair)
 
