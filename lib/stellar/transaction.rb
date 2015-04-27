@@ -4,12 +4,16 @@ module Stellar
     def self.payment(attributes={})
       destination = attributes[:destination]
       amount      = attributes[:amount]
+      path        = attributes[:path] || []
+      path        = path.map{|p| Stellar::Currency.iso4217(*p)}
+
 
       raise ArgumentError unless destination.is_a?(KeyPair)
 
       for_account(attributes).tap do |result|
         payment = PaymentOp.send(*amount)
         payment.destination = destination.public_key
+        payment.path = path
         payment.apply_defaults
 
         result.operations = [payment.to_operation]
