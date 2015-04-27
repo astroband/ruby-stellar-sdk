@@ -17,10 +17,9 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["generated", "lib"]
 
-  spec.add_dependency "xdr"
+  spec.add_dependency "xdr", "~> 0.0.2"
   spec.add_dependency "rbnacl"
   spec.add_dependency "activesupport", "~> 4"
-  spec.add_dependency "fraction", "~> 0.3.2"
 
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
