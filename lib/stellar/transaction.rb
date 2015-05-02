@@ -1,33 +1,64 @@
 module Stellar
   Transaction.class_eval do
 
+    # 
+    # @see  Stellar::Operation.payment
     def self.payment(attributes={})
-      for_account(attributes).tap do |result|
-        result.operations = [Operation.payment(attributes)]
-      end
+      make :payment, attributes
     end
 
+    # 
+    # @see  Stellar::Operation.change_trust
     def self.change_trust(attributes={})
-      for_account(attributes).tap do |result|
-        result.operations = [Operation.change_trust(attributes)]
-      end
+      make :change_trust, attributes
     end
 
+    # 
+    # @see  Stellar::Operation.create_offer
     def self.create_offer(attributes={})
+      make :create_offer, attributes
+    end
+
+    # 
+    # Helper method to create a transaction with a single
+    # operation of the provided type.  See class methods
+    # on Stellar::Operation for available values for 
+    # operation_type.
+    # 
+    # @see  Stellar::Operation
+    # 
+    # @param operation_type [Symbol] the operation to use
+    # @param attributes={} [Hash] attributes to use for both the transaction and the operation
+    # 
+    # @return [Stellar::Transaction] the resulting transaction
+    def self.make(operation_type, attributes={})
       for_account(attributes).tap do |result|
-        result.operations = [Operation.create_offer(attributes)]
+        result.operations = [Operation.send(operation_type, attributes)]
       end
     end
 
+
+    # 
+    # Helper method to create the skeleton of a transaction.  
+    # The resulting transaction will have its source account,
+    # sequence, fee, min ledger and max ledger set.  
+    # 
+    # 
+    # @param attributes={} [type] [description]
+    # 
+    # @return [Stellar::Transaction] the resulting skeleton
     def self.for_account(attributes={})
-      account       = attributes[:account]
-      sequence      = attributes[:sequence]
+      account  = attributes[:account]
+      sequence = attributes[:sequence]
+      max_fee  = attributes[:max_fee]
       
       raise ArgumentError, "Bad :account" unless account.is_a?(KeyPair) && account.sign?
       raise ArgumentError, "Bad :sequence #{sequence}" unless sequence.is_a?(Integer)
+      raise ArgumentError, "Bad :max_fee #{sequence}" if max_fee.present? && !max_fee.is_a?(Integer)
 
       new.tap do |result|
         result.seq_num  = sequence
+        result.max_fee  = max_fee
         result.source_account  = account.public_key
         result.apply_defaults
       end
