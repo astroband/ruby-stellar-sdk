@@ -2,7 +2,7 @@ module Stellar
   class Operation
     # 
     # Helper method to create a valid PaymentOp, wrapped
-    # in the nexessary XDR structs to be included within a 
+    # in the necessary XDR structs to be included within a 
     # transactions `operations` array.
     # 
     # @see Stellar::Currency
@@ -32,7 +32,7 @@ module Stellar
 
     # 
     # Helper method to create a valid ChangeTrustOp, wrapped
-    # in the nexessary XDR structs to be included within a 
+    # in the necessary XDR structs to be included within a 
     # transactions `operations` array.
     # 
     # @param [Hash] attributes the attributes to create the operation with
@@ -70,7 +70,7 @@ module Stellar
 
     # 
     # Helper method to create a valid SetOptionsOp, wrapped
-    # in the nexessary XDR structs to be included within a 
+    # in the necessary XDR structs to be included within a 
     # transactions `operations` array.
     # 
     # @param [Hash] attributes the attributes to create the operation with
@@ -101,7 +101,7 @@ module Stellar
 
     # 
     # Helper method to create a valid AllowTrustOp, wrapped
-    # in the nexessary XDR structs to be included within a 
+    # in the necessary XDR structs to be included within a 
     # transactions `operations` array.
     # 
     # @param [Hash] attributes the attributes to create the operation with
@@ -127,6 +127,25 @@ module Stellar
       op.currency  = currency
 
       op.to_operation
+    end
+
+    # 
+    # Helper method to create an account merge operation
+    # 
+    # @param [Hash] attributes the attributes to create the operation with
+    # @option attributes [Stellar::KeyPair]  :destination
+    # 
+    # @return [Stellar::Operation] the built operation
+    def self.account_merge(attributes={})
+      destination = attributes[:destination]
+
+      raise ArgumentError, "Bad :destination" unless destination.is_a?(KeyPair)
+
+      # TODO: add source_account support
+
+      Stellar::Operation.new({
+        body:Stellar::Operation::Body.new(:account_merge, destination.public_key),
+      })
     end
   end
 end
