@@ -13,9 +13,20 @@ module Stellar
       })
     end
 
+    def invert
+      self.class.new(n:d,d:n)
+    end
+
     def to_f
       n / d.to_f
     end
 
+    def to_s
+      "#{n} / #{d}"
+    end
+
+    def inspect
+      "#<Stellar::Price #{self}>"
+    end
   end
 end
