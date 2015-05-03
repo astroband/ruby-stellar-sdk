@@ -1,5 +1,5 @@
 module Stellar
-  TransactionEnvelope.class_eval do
+  class TransactionEnvelope
 
     # 
     # Checks to ensure that every signature for the envelope is

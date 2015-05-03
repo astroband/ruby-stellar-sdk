@@ -1,5 +1,5 @@
 module Stellar
-  Transaction.class_eval do
+  class Transaction
 
     # 
     # @see  Stellar::Operation.payment
@@ -57,7 +57,7 @@ module Stellar
     # @return [Stellar::Transaction] the resulting transaction
     def self.make(operation_type, attributes={})
       for_account(attributes).tap do |result|
-        result.operations = [Operation.send(operation_type, attributes)]
+        result.operations << Operation.send(operation_type, attributes)
       end
     end
 
@@ -109,7 +109,29 @@ module Stellar
       })
     end
 
+    def merge(other)
+      cloned = Marshal.load Marshal.dump(self)
+      cloned.operations += other.to_operations
+      cloned
+    end
+
+
+    # 
+    # Extracts the operations from this single transaction,
+    # setting the source account on the extracted operations.
+    # 
+    # Useful for merging transactions.
+    # 
+    # @return [Array<Operation>] the operations
+    def to_operations
+      cloned = Marshal.load Marshal.dump(operations)
+      operations.each do |op|
+        op.source_account = self.source_account
+      end
+    end
+
     def apply_defaults
+      self.operations ||= []
       self.max_fee    ||= 10
       self.min_ledger ||= 0
       self.max_ledger ||= 2**32 - 1
