@@ -68,5 +68,35 @@ module Stellar
       op.to_operation
     end
 
+    # 
+    # Helper method to create a valid SetOptionsOp, wrapped
+    # in the nexessary XDR structs to be included within a 
+    # transactions `operations` array.
+    # 
+    # @param [Hash] attributes the attributes to create the operation with
+    # @option attributes [Stellar::KeyPair] :inflation_dest
+    # @option attributes [Fixnum] :set flags to set
+    # @option attributes [Fixnum] :clear flags to clear
+    # @option attributes [String] :thresholds
+    # @option attributes [Stellar::Signer] :signer
+    # 
+    # @return [Stellar::Operation] the built operation, containing a 
+    #                              Stellar::SetOptionsOp body
+    def self.set_options(attributes={})
+      op             = SetOptionsOp.new()
+      op.set_flags   = attributes[:set]
+      op.clear_flags = attributes[:clear]
+      op.thresholds  = attributes[:thresholds]
+      op.signer      = attributes[:signer]
+
+
+      inflation_dest = attributes[:inflation_dest]
+      if inflation_dest
+        raise ArgumentError, "Bad :inflation_dest" unless inflation_dest.is_a?(Stellar::KeyPair)
+        op.inflation_dest = inflation_dest.public_key
+      end
+
+      op.to_operation
+    end
   end
 end
