@@ -1,22 +1,15 @@
 module Stellar
-  Price.class_eval do
+
+  # reopen class
+  class Price
+
+    MAX_PRECISION = (2**31) - 1
+
     def self.from_f(number)
-      return new(n:0,d:0)  if number == 0.0
-
-      inverted = number > 0.0 
-
-      # normalize
-      number = 1.0 / number if inverted
-
-      # fractionalize
-      r = number.to_r
-      n = r.numerator
-      d = r.denominator
-
-      # pricify
+      best_r = Util::ContinuedFraction.best_r(number, MAX_PRECISION)
       new({
-        n:inverted ? d : n, 
-        d:inverted ? n : d,
+        n: best_r.numerator,
+        d: best_r.denominator
       })
     end
 
