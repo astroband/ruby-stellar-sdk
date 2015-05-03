@@ -1,10 +1,9 @@
 module Stellar
-  CreateOfferOp.class_eval do
+  class CreateOfferOp
+    include Stellar::Concerns::Operation
 
-    def to_operation(source_account=nil)
-      body = Operation::Body.new(:create_offer, self)
-      Operation.new(source_account: source_account, body:body)
-    end
-    
+    def operation_switch
+      :create_offer
+    end 
   end
 end

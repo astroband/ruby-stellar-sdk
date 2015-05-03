@@ -1,5 +1,11 @@
 module Stellar
-  PaymentOp.class_eval do
+  class PaymentOp
+
+    include Stellar::Concerns::Operation
+
+    def operation_switch
+      :payment
+    end
 
     def self.native(amount)
       currency = Stellar::Currency.new(:native)
@@ -27,11 +33,6 @@ module Stellar
     def apply_defaults
       self.source_memo ||= ""
       self.memo ||= ""
-    end
-
-    def to_operation(source_account=nil)
-      body = Operation::Body.new(:payment, self)
-      Operation.new(source_account: source_account, body:body)
     end
 
   end

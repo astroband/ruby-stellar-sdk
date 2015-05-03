@@ -1,8 +1,5 @@
 module Stellar
-  Operation
-
   class Operation
-
     # 
     # Helper method to create a valid PaymentOp, wrapped
     # in the nexessary XDR structs to be included within a 
