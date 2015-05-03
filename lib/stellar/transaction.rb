@@ -20,6 +20,30 @@ module Stellar
     end
 
     # 
+    # @see  Stellar::Operation.set_options
+    def self.set_options(attributes={})
+      make :set_options, attributes
+    end
+
+    # 
+    # @see  Stellar::Operation.allow_trust
+    def self.allow_trust(attributes={})
+      make :allow_trust, attributes
+    end
+    
+    # 
+    # @see  Stellar::Operation.account_merge
+    def self.account_merge(attributes={})
+      make :account_merge, attributes
+    end
+     
+    # 
+    # @see  Stellar::Operation.inflation
+    def self.inflation(attributes={})
+      make :inflation, attributes
+    end
+
+    # 
     # Helper method to create a transaction with a single
     # operation of the provided type.  See class methods
     # on Stellar::Operation for available values for 

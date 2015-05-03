@@ -109,8 +109,8 @@ module Stellar
     # 
     # @param [Hash] attributes the attributes to create the operation with
     # @option attributes [Stellar::KeyPair] :inflation_dest
-    # @option attributes [Fixnum] :set flags to set
-    # @option attributes [Fixnum] :clear flags to clear
+    # @option attributes [Array<Stellar::AccountFlags>] :set flags to set
+    # @option attributes [Array<Stellar::AccountFlags>] :clear flags to clear
     # @option attributes [String] :thresholds
     # @option attributes [Stellar::Signer] :signer
     # 
@@ -118,8 +118,8 @@ module Stellar
     #                              Stellar::SetOptionsOp body
     def self.set_options(attributes={})
       op             = SetOptionsOp.new()
-      op.set_flags   = attributes[:set]
-      op.clear_flags = attributes[:clear]
+      op.set_flags   = Stellar::AccountFlags.make_mask attributes[:set]
+      op.clear_flags = Stellar::AccountFlags.make_mask attributes[:clear]
       op.thresholds  = attributes[:thresholds]
       op.signer      = attributes[:signer]
 
@@ -152,11 +152,10 @@ module Stellar
       
       trustor   = attributes[:trustor]
       authorize = attributes[:authorize]
-      currency  = attributes[:currency]
+      currency  = Currency.send(*attributes[:currency])
 
       raise ArgumentError, "Bad :trustor" unless trustor.is_a?(Stellar::KeyPair)
       raise ArgumentError, "Bad :authorize" unless authorize == !!authorize # check boolean
-      raise ArgumentError, "Bad :currency" unless currency.is_a?(Stellar::Currency)
       raise ArgumentError, "Bad :currency" unless currency.type == Stellar::CurrencyType.iso4217
 
       op.trustor   = trustor.public_key
