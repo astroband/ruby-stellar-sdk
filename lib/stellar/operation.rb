@@ -158,9 +158,11 @@ module Stellar
       raise ArgumentError, "Bad :authorize" unless authorize == !!authorize # check boolean
       raise ArgumentError, "Bad :currency" unless currency.type == Stellar::CurrencyType.iso4217
 
+      atc = AllowTrustOp::Currency.new(:iso4217, currency.code)
+
       op.trustor   = trustor.public_key
       op.authorize = authorize
-      op.currency  = currency
+      op.currency  = atc
 
       return make(attributes.merge({
         body:[:allow_trust, op]

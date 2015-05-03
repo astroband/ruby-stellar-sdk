@@ -1,5 +1,5 @@
 module Stellar
-  Currency.class_eval do
+  class Currency
     def self.native
       new(:native)
     end
@@ -23,6 +23,10 @@ module Stellar
     def inspect
       label = switch.to_s
       "#<Stellar::Currency #{to_s}>"
+    end
+
+    def code
+      self.iso_ci!.currency_code
     end
   end
 end
