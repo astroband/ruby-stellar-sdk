@@ -1,6 +1,22 @@
 module Stellar
-  Operation.class_eval do
+  Operation
 
+  class Operation
+
+    # 
+    # Helper method to create a valid PaymentOp, wrapped
+    # in the nexessary XDR structs to be included within a 
+    # transactions `operations` array.
+    # 
+    # @see Stellar::Currency
+    # 
+    # @param [Hash] attributes the attributes to create the operation with
+    # @option attributes [Stellar::KeyPair] :destination the receiver of the payment
+    # @option attributes [Array] :amount the amount to pay
+    # @option attributes [Array<Stellar::Currency>] :path the payment path to use
+    # 
+    # @return [Stellar::Operation] the built operation, containing a 
+    #                              Stellar::PaymentOp body
     def self.payment(attributes={})
       destination = attributes[:destination]
       amount      = attributes[:amount]
@@ -17,6 +33,17 @@ module Stellar
       op.to_operation
     end
 
+    # 
+    # Helper method to create a valid ChangeTrustOp, wrapped
+    # in the nexessary XDR structs to be included within a 
+    # transactions `operations` array.
+    # 
+    # @param [Hash] attributes the attributes to create the operation with
+    # @option attributes [Stellar::Currrency] :line the currency to trust
+    # @option attributes [Fixnum] :limit the maximum amount to trust
+    # 
+    # @return [Stellar::Operation] the built operation, containing a 
+    #                              Stellar::ChangeTrustOp body
     def self.change_trust(attributes={})
       line  = Currency.send(*attributes[:line])
       limit = attributes[:limit]
