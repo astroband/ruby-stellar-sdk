@@ -1,5 +1,31 @@
 module Stellar
   class Operation
+
+
+    # 
+    # Construct a new Stellar::Operation from the provided
+    # source account and body
+    # 
+    # @param [Hash] attributes the attributes to create the operation with
+    # @option attributes [Stellar::KeyPair] :source_account
+    # @option attributes [Stellar::Operation::Body] :body
+    # 
+    # @return [Stellar::Operation] the built operation
+    def self.make(attributes={})
+      source_account = attributes[:source_account]
+      body           = Stellar::Operation::Body.new(*attributes[:body])
+
+      op = Stellar::Operation.new(body:body)
+
+      if source_account
+        raise ArgumentError, "Bad :source_account" unless source_account.is_a?(Stellar::KeyPair)
+        op.source_account = source_account.public_key
+      end
+
+      return op
+    end
+
+
     # 
     # Helper method to create a valid PaymentOp, wrapped
     # in the necessary XDR structs to be included within a 
@@ -27,7 +53,9 @@ module Stellar
       op.path = path
       op.apply_defaults
 
-      op.to_operation
+      return make(attributes.merge({
+        body:[:payment, op]
+      }))
     end
 
     # 
@@ -48,7 +76,10 @@ module Stellar
       raise ArgumentError, "Bad :limit #{limit}" unless limit.is_a?(Integer)
 
       op = ChangeTrustOp.new(line: line, limit: limit)
-      op.to_operation
+
+      return make(attributes.merge({
+        body:[:change_trust, op]
+      }))
     end
 
     def self.create_offer(attributes={})
@@ -65,7 +96,10 @@ module Stellar
         price:      price,
         offer_id:   offer_id
       })
-      op.to_operation
+      
+      return make(attributes.merge({
+        body:[:create_offer, op]
+      }))
     end
 
     # 
@@ -96,7 +130,10 @@ module Stellar
         op.inflation_dest = inflation_dest.public_key
       end
 
-      op.to_operation
+            
+      return make(attributes.merge({
+        body:[:set_options, op]
+      }))
     end
 
     # 
@@ -126,7 +163,9 @@ module Stellar
       op.authorize = authorize
       op.currency  = currency
 
-      op.to_operation
+      return make(attributes.merge({
+        body:[:allow_trust, op]
+      }))
     end
 
     # 
@@ -142,10 +181,9 @@ module Stellar
       raise ArgumentError, "Bad :destination" unless destination.is_a?(KeyPair)
 
       # TODO: add source_account support
-
-      Stellar::Operation.new({
-        body:Stellar::Operation::Body.new(:account_merge, destination.public_key),
-      })
+      return make(attributes.merge({
+        body:[:account_merge, destination.public_key]
+      }))
     end
   end
 end

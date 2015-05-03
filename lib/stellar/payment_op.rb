@@ -1,12 +1,6 @@
 module Stellar
   class PaymentOp
 
-    include Stellar::Concerns::Operation
-
-    def operation_switch
-      :payment
-    end
-
     def self.native(amount)
       currency = Stellar::Currency.new(:native)
       with_currency(currency).tap do |result|
