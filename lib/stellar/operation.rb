@@ -98,5 +98,35 @@ module Stellar
 
       op.to_operation
     end
+
+    # 
+    # Helper method to create a valid AllowTrustOp, wrapped
+    # in the nexessary XDR structs to be included within a 
+    # transactions `operations` array.
+    # 
+    # @param [Hash] attributes the attributes to create the operation with
+    # @option attributes [Stellar::KeyPair]  :trustor
+    # @option attributes [Stellar::Currency] :currency
+    # 
+    # @return [Stellar::Operation] the built operation, containing a 
+    #                              Stellar::AllowTrustOp body
+    def self.allow_trust(attributes={})
+      op = AllowTrustOp.new()
+      
+      trustor   = attributes[:trustor]
+      authorize = attributes[:authorize]
+      currency  = attributes[:currency]
+
+      raise ArgumentError, "Bad :trustor" unless trustor.is_a?(Stellar::KeyPair)
+      raise ArgumentError, "Bad :authorize" unless authorize == !!authorize # check boolean
+      raise ArgumentError, "Bad :currency" unless currency.is_a?(Stellar::Currency)
+      raise ArgumentError, "Bad :currency" unless currency.type == Stellar::CurrencyType.iso4217
+
+      op.trustor   = trustor.public_key
+      op.authorize = authorize
+      op.currency  = currency
+
+      op.to_operation
+    end
   end
 end
