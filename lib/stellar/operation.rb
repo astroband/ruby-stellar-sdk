@@ -185,5 +185,23 @@ module Stellar
         body:[:account_merge, destination.public_key]
       }))
     end
+
+    # 
+    # Helper method to create an inflation operation
+    # 
+    # @param [Hash] attributes the attributes to create the operation with
+    # @option attributes [Integer]  :sequence
+    # 
+    # @return [Stellar::Operation] the built operation
+    def self.inflation(attributes={})
+      sequence = attributes[:sequence]
+
+      raise ArgumentError, "Bad :sequence #{sequence}" unless sequence.is_a?(Integer)
+
+      # TODO: add source_account support
+      return make(attributes.merge({
+        body:[:inflation, sequence]
+      }))
+    end
   end
 end
