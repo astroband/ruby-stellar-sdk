@@ -1,4 +1,4 @@
-# Automatically generated on 2015-04-26T19:13:29-07:00
+# Automatically generated on 2015-05-07T07:56:23-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -20,7 +20,7 @@ require 'xdr'
 #       case ACCOUNT_MERGE:
 #           uint256 destination;
 #       case INFLATION:
-#           uint32 inflationSeq;
+#           void;
 #       }
 #
 # ===========================================================================
@@ -35,7 +35,7 @@ module Stellar
       switch :change_trust,  :change_trust_op
       switch :allow_trust,   :allow_trust_op
       switch :account_merge, :destination
-      switch :inflation,     :inflation_seq
+      switch :inflation
 
       attribute :payment_op,      PaymentOp
       attribute :create_offer_op, CreateOfferOp
@@ -43,7 +43,6 @@ module Stellar
       attribute :change_trust_op, ChangeTrustOp
       attribute :allow_trust_op,  AllowTrustOp
       attribute :destination,     Uint256
-      attribute :inflation_seq,   Uint32
     end
   end
 end

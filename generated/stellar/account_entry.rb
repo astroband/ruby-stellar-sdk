@@ -1,4 +1,4 @@
-# Automatically generated on 2015-04-26T19:13:29-07:00
+# Automatically generated on 2015-05-07T07:56:23-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -19,6 +19,8 @@ require 'xdr'
 #       // thresholds stores unsigned bytes: [weight of master|low|medium|high]
 #       Thresholds thresholds;
 #   
+#       string32 homeDomain; // can be used for reverse federation and memo lookup
+#   
 #       Signer signers<20>; // possible signers for this account
 #   };
 #
@@ -32,6 +34,7 @@ module Stellar
     attribute :inflation_dest,  XDR::Option[AccountID]
     attribute :flags,           Uint32
     attribute :thresholds,      Thresholds
+    attribute :home_domain,     String32
     attribute :signers,         XDR::VarArray[Signer, 20]
   end
 end

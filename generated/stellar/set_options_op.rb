@@ -1,4 +1,4 @@
-# Automatically generated on 2015-04-26T19:13:29-07:00
+# Automatically generated on 2015-05-07T07:56:23-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -14,6 +14,8 @@ require 'xdr'
 #   
 #       Thresholds* thresholds; // update the thresholds for the account
 #   
+#   	string32* homeDomain;  // sets the home domain
+#   
 #       // Add, update or remove a signer for the account
 #       // signer is deleted if the weight is 0
 #       Signer* signer;
@@ -26,6 +28,7 @@ module Stellar
     attribute :clear_flags,    XDR::Option[Uint32]
     attribute :set_flags,      XDR::Option[Uint32]
     attribute :thresholds,     XDR::Option[Thresholds]
+    attribute :home_domain,    XDR::Option[String32]
     attribute :signer,         XDR::Option[Signer]
   end
 end

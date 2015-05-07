@@ -1,4 +1,4 @@
-# Automatically generated on 2015-04-26T19:13:29-07:00
+# Automatically generated on 2015-05-07T07:56:23-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -13,7 +13,8 @@ require 'xdr'
 #       SET_OPTIONS_LOW_RESERVE = -1,      // not enough funds to add a signer
 #       SET_OPTIONS_TOO_MANY_SIGNERS = -2, // max number of signers already reached
 #       SET_OPTIONS_BAD_FLAGS = -3,        // invalid combination of clear/set flags
-#       SET_OPTIONS_INVALID_INFLATION = -4 // inflation account does not exist
+#       SET_OPTIONS_INVALID_INFLATION = -4,// inflation account does not exist
+#       SET_OPTIONS_CANT_CHANGE = -5      // can no longer change this option
 #   };
 #
 # ===========================================================================
@@ -24,6 +25,7 @@ module Stellar
     member :set_options_too_many_signers,  -2
     member :set_options_bad_flags,         -3
     member :set_options_invalid_inflation, -4
+    member :set_options_cant_change,       -5
 
     seal
   end
