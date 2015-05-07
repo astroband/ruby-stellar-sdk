@@ -135,6 +135,7 @@ module Stellar
       self.max_fee    ||= 10
       self.min_ledger ||= 0
       self.max_ledger ||= 2**32 - 1
+      self.memo       ||= Memo.new(:memo_type_none)
     end
   end
 end

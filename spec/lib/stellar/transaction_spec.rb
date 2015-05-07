@@ -8,8 +8,9 @@ describe Stellar::Transaction do
       seq_num:        1,
       max_ledger:     10,
       min_ledger:     0,
+      memo:           Stellar::Memo.new(:memo_type_none),
       operations:     [
-        Stellar::Operation.new(body: Stellar::Operation::Body.new(:inflation, 1))
+        Stellar::Operation.new(body: Stellar::Operation::Body.new(:inflation))
       ]
     })
   end
