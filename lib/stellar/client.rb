@@ -60,17 +60,16 @@ module Stellar
     }) => Any
     def send_payment(options={})
       from     = options[:from]
-      sequence = options[:sequence] || account_info(from).sequence
+      sequence = options[:sequence] || (account_info(from).sequence + 1)
 
       payment = Stellar::Transaction.payment({
         account:     from.keypair,
         destination: options[:to].keypair,
-        sequence:    sequence + 1,
+        sequence:    sequence,
         amount:      options[:amount].to_payment,
       })
 
       envelope_hex = payment.to_envelope(from.keypair).to_xdr(:hex)
-
       @horizon.transactions._post(tx: envelope_hex)
     end
 
