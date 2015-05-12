@@ -1,4 +1,4 @@
-# Automatically generated on 2015-05-07T07:56:23-07:00
+# Automatically generated on 2015-05-12T09:08:23-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -10,8 +10,8 @@ require 'xdr'
 #       AccountID trustor;
 #       union switch (CurrencyType type)
 #       {
-#       // NATIVE is not allowed
-#       case ISO4217:
+#       // CURRENCY_TYPE_NATIVE is not allowed
+#       case CURRENCY_TYPE_ALPHANUM:
 #           opaque currencyCode[4];
 #   
 #           // add other currency types here in the future

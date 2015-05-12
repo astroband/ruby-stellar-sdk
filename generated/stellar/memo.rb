@@ -1,4 +1,4 @@
-# Automatically generated on 2015-05-07T07:56:23-07:00
+# Automatically generated on 2015-05-12T09:08:23-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -7,16 +7,16 @@ require 'xdr'
 #
 #   union Memo switch (MemoType type)
 #   {
-#   	case MEMO_TYPE_NONE:
-#   		void;
-#       case MEMO_TYPE_TEXT:
-#   		string text<28>;
-#   	case MEMO_TYPE_ID:
-#   		uint64 id;
-#       case MEMO_TYPE_HASH:
-#   		Hash hash;         // the hash of what to pull from the content server
-#   	case MEMO_TYPE_RETURN:
-#   		Hash retHash;      // the hash of the tx you are rejecting
+#   case MEMO_TYPE_NONE:
+#       void;
+#   case MEMO_TYPE_TEXT:
+#       string text<28>;
+#   case MEMO_TYPE_ID:
+#       uint64 id;
+#   case MEMO_TYPE_HASH:
+#       Hash hash; // the hash of what to pull from the content server
+#   case MEMO_TYPE_RETURN:
+#       Hash retHash; // the hash of the tx you are rejecting
 #   };
 #
 # ===========================================================================

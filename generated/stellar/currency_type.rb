@@ -1,4 +1,4 @@
-# Automatically generated on 2015-05-07T07:56:23-07:00
+# Automatically generated on 2015-05-12T09:08:23-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -7,15 +7,15 @@ require 'xdr'
 #
 #   enum CurrencyType
 #   {
-#       NATIVE = 0,
-#       ISO4217 = 1
+#       CURRENCY_TYPE_NATIVE = 0,
+#       CURRENCY_TYPE_ALPHANUM = 1
 #   };
 #
 # ===========================================================================
 module Stellar
   class CurrencyType < XDR::Enum
-    member :native,  0
-    member :iso4217, 1
+    member :currency_type_native,   0
+    member :currency_type_alphanum, 1
 
     seal
   end

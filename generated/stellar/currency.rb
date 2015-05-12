@@ -1,4 +1,4 @@
-# Automatically generated on 2015-05-07T07:56:23-07:00
+# Automatically generated on 2015-05-12T09:08:23-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -7,11 +7,15 @@ require 'xdr'
 #
 #   union Currency switch (CurrencyType type)
 #   {
-#   case NATIVE:
+#   case CURRENCY_TYPE_NATIVE:
 #       void;
 #   
-#   case ISO4217:
-#       ISOCurrencyIssuer isoCI;
+#   case CURRENCY_TYPE_ALPHANUM:
+#       struct
+#       {
+#           opaque currencyCode[4];
+#           AccountID issuer;
+#       } alphaNum;
 #   
 #       // add other currency types here in the future
 #   };
@@ -19,11 +23,15 @@ require 'xdr'
 # ===========================================================================
 module Stellar
   class Currency < XDR::Union
+    include XDR::Namespace
+
+    autoload :AlphaNum
+
     switch_on CurrencyType, :type
 
-    switch :native
-    switch :iso4217, :iso_ci
+    switch :currency_type_native
+    switch :currency_type_alphanum, :alpha_num
 
-    attribute :iso_ci, ISOCurrencyIssuer
+    attribute :alpha_num, AlphaNum
   end
 end

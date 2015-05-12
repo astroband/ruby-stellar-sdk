@@ -1,20 +1,20 @@
-# Automatically generated on 2015-05-07T07:56:23-07:00
+# Automatically generated on 2015-05-12T09:08:23-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct ISOCurrencyIssuer
+#   enum TrustLineFlags
 #   {
-#       opaque currencyCode[4];
-#       AccountID issuer;
+#       AUTHORIZED_FLAG = 1 // issuer has authorized account to hold its credit
 #   };
 #
 # ===========================================================================
 module Stellar
-  class ISOCurrencyIssuer < XDR::Struct
-    attribute :currency_code, XDR::Opaque[4]
-    attribute :issuer,        AccountID
+  class TrustLineFlags < XDR::Enum
+    member :authorized_flag, 1
+
+    seal
   end
 end

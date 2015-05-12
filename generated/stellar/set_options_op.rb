@@ -1,4 +1,4 @@
-# Automatically generated on 2015-05-07T07:56:23-07:00
+# Automatically generated on 2015-05-12T09:08:23-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -14,7 +14,7 @@ require 'xdr'
 #   
 #       Thresholds* thresholds; // update the thresholds for the account
 #   
-#   	string32* homeDomain;  // sets the home domain
+#       string32* homeDomain; // sets the home domain
 #   
 #       // Add, update or remove a signer for the account
 #       // signer is deleted if the weight is 0

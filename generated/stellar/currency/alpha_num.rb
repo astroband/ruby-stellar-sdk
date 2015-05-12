@@ -6,19 +6,17 @@ require 'xdr'
 # === xdr source ============================================================
 #
 #   struct
-#           {
-#               SCPBallot excepted<>; // B_c
-#               SCPBallot* prepared;  // p
-#           }
+#       {
+#           opaque currencyCode[4];
+#           AccountID issuer;
+#       }
 #
 # ===========================================================================
 module Stellar
-  class SCPStatement
-    class Pledges
-      class Prepare < XDR::Struct
-        attribute :excepted, XDR::VarArray[SCPBallot]
-        attribute :prepared, XDR::Option[SCPBallot]
-      end
+  class Currency
+    class AlphaNum < XDR::Struct
+      attribute :currency_code, XDR::Opaque[4]
+      attribute :issuer,        AccountID
     end
   end
 end
