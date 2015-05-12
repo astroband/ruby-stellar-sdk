@@ -16,7 +16,7 @@ destination = RbNaCl::SigningKey.new("allmylifemyhearthasbeensearching")
 
 tx            = Stellar::Transaction.new
 tx.account    = master.verify_key.to_bytes
-tx.max_fee    = 1000
+tx.fee        = 1000
 tx.seq_num    = 1
 tx.max_ledger = 1000
 tx.min_ledger = 0

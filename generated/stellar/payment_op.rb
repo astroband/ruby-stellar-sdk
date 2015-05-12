@@ -1,4 +1,4 @@
-# Automatically generated on 2015-05-12T09:08:23-07:00
+# Automatically generated on 2015-05-12T13:13:19-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -10,9 +10,6 @@ require 'xdr'
 #       AccountID destination; // recipient of the payment
 #       Currency currency;     // what they end up with
 #       int64 amount;          // amount they end up with
-#   
-#       opaque memo<32>;
-#       opaque sourceMemo<32>; // used to return a payment
 #   
 #       // payment over path
 #       Currency path<5>; // what hops it must go through to get there
@@ -27,8 +24,6 @@ module Stellar
     attribute :destination, AccountID
     attribute :currency,    Currency
     attribute :amount,      Int64
-    attribute :memo,        XDR::VarOpaque[32]
-    attribute :source_memo, XDR::VarOpaque[32]
     attribute :path,        XDR::VarArray[Currency, 5]
     attribute :send_max,    Int64
   end

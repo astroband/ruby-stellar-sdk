@@ -4,7 +4,7 @@ describe Stellar::Transaction do
   subject do
     Stellar::Transaction.new({
       source_account: "\x00" * 32,
-      max_fee:        10,
+      fee:            10,
       seq_num:        1,
       max_ledger:     10,
       min_ledger:     0,

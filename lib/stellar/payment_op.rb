@@ -25,8 +25,6 @@ module Stellar
     end
 
     def apply_defaults
-      self.source_memo ||= ""
-      self.memo ||= ""
     end
 
   end

@@ -74,16 +74,16 @@ module Stellar
     def self.for_account(attributes={})
       account  = attributes[:account]
       sequence = attributes[:sequence]
-      max_fee  = attributes[:max_fee]
+      fee      = attributes[:fee]
       
       raise ArgumentError, "Bad :account" unless account.is_a?(KeyPair) && account.sign?
       raise ArgumentError, "Bad :sequence #{sequence}" unless sequence.is_a?(Integer)
-      raise ArgumentError, "Bad :max_fee #{sequence}" if max_fee.present? && !max_fee.is_a?(Integer)
+      raise ArgumentError, "Bad :fee #{sequence}" if fee.present? && !fee.is_a?(Integer)
 
       new.tap do |result|
-        result.seq_num  = sequence
-        result.max_fee  = max_fee
-        result.source_account  = account.public_key
+        result.seq_num        = sequence
+        result.fee            = fee
+        result.source_account = account.public_key
         result.apply_defaults
       end
     end
@@ -132,7 +132,7 @@ module Stellar
 
     def apply_defaults
       self.operations ||= []
-      self.max_fee    ||= 10
+      self.fee        ||= 10
       self.min_ledger ||= 0
       self.max_ledger ||= 2**32 - 1
       self.memo       ||= Memo.new(:memo_type_none)
