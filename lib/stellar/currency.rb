@@ -1,22 +1,22 @@
 module Stellar
   class Currency
     def self.native
-      new(:native)
+      new(:currency_type_native)
     end
 
     def self.iso4217(code, issuer)
       raise ArgumentError, "Bad :issuer" unless issuer.is_a?(KeyPair)
-      ici = ISOCurrencyIssuer.new({currency_code:code, issuer:issuer.public_key})
-      new(:iso4217, ici)
+      an = AlphaNum.new({currency_code:code, issuer:issuer.public_key})
+      new(:currency_type_alphanum, an)
     end
 
     def to_s
-      if switch == CurrencyType.native
+      if switch == CurrencyType.currency_type_native
         "native"
       else
         encoder = Stellar::Util::Base58.stellar
-        issuer_address = encoder.check_encode(:account_id,iso_ci.issuer)
-        "#{iso_ci.currency_code}/#{issuer_address}"
+        issuer_address = encoder.check_encode(:account_id,alpha_num.issuer)
+        "#{alpha_num.currency_code}/#{issuer_address}"
       end
     end
 
@@ -26,7 +26,7 @@ module Stellar
     end
 
     def code
-      self.iso_ci!.currency_code
+      self.alpha_num!.currency_code
     end
   end
 end

@@ -2,7 +2,7 @@ module Stellar
   class PaymentOp
 
     def self.native(amount)
-      currency = Stellar::Currency.new(:native)
+      currency = Stellar::Currency.native
       with_currency(currency).tap do |result|
         result.amount   = amount
         result.send_max = amount
