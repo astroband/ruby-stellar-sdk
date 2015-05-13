@@ -20,9 +20,9 @@ module Stellar
     ]
     def to_payment
       case currency.type 
-      when CurrencyType.native
+      when CurrencyType.currency_type_native
         [:native, amount]
-      when CurrencyType.iso4217
+      when CurrencyType.currency_type_alphanum
         keypair = KeyPair.from_public_key(currency.issuer)
         [:iso4217, currency, keypair, amount]
       else
