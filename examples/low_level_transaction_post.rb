@@ -18,17 +18,11 @@ tx            = Stellar::Transaction.new
 tx.account    = master.verify_key.to_bytes
 tx.fee        = 1000
 tx.seq_num    = 1
-tx.max_ledger = 1000
-tx.min_ledger = 0
 
 payment = Stellar::PaymentOp.new
 payment.destination = destination.verify_key.to_bytes
 payment.currency = Stellar::Currency.new(:native)
-payment.path = []
 payment.amount = 200_000000
-payment.send_max = 200_000000
-payment.source_memo = ""
-payment.memo = ""
 
 op = Stellar::Operation.new
 op.body = Stellar::Operation::Body.new(:payment, payment)

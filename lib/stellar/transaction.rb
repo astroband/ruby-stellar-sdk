@@ -8,6 +8,12 @@ module Stellar
     end
 
     # 
+    # @see  Stellar::Operation.create_account
+    def self.create_account(attributes={})
+      make :create_account, attributes
+    end
+
+    # 
     # @see  Stellar::Operation.change_trust
     def self.change_trust(attributes={})
       make :change_trust, attributes
@@ -133,9 +139,7 @@ module Stellar
     def apply_defaults
       self.operations ||= []
       self.fee        ||= 10
-      self.min_ledger ||= 0
-      self.max_ledger ||= 2**32 - 1
-      self.memo       ||= Memo.new(:memo_type_none)
+      self.memo       ||= Memo.new(:memo_none)
     end
   end
 end

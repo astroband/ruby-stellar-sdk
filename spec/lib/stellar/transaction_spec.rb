@@ -6,9 +6,7 @@ describe Stellar::Transaction do
       source_account: "\x00" * 32,
       fee:            10,
       seq_num:        1,
-      max_ledger:     10,
-      min_ledger:     0,
-      memo:           Stellar::Memo.new(:memo_type_none),
+      memo:           Stellar::Memo.new(:memo_none),
       operations:     [
         Stellar::Operation.new(body: Stellar::Operation::Body.new(:inflation))
       ]

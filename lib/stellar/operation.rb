@@ -43,18 +43,33 @@ module Stellar
     def self.payment(attributes={})
       destination = attributes[:destination]
       amount      = attributes[:amount]
-      path        = attributes[:path] || []
-      path        = path.map{|p| Stellar::Currency.send(*p)}
+      # path        = attributes[:path] || []
+      # path        = path.map{|p| Stellar::Currency.send(*p)}
 
       raise ArgumentError unless destination.is_a?(KeyPair)
 
       op = PaymentOp.send(*amount)
       op.destination = destination.public_key
-      op.path = path
       op.apply_defaults
 
       return make(attributes.merge({
         body:[:payment, op]
+      }))
+    end
+
+
+    def self.create_account(attributes={})
+      destination      = attributes[:destination]
+      starting_balance = attributes[:starting_balance]
+
+      raise ArgumentError unless destination.is_a?(KeyPair)
+
+      op = CreateAccountOp.new()
+      op.destination = destination.public_key
+      op.starting_balance = starting_balance
+
+      return make(attributes.merge({
+        body:[:create_account, op]
       }))
     end
 
