@@ -5,16 +5,16 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct DecoratedSignature
+#   struct CreateAccountOp
 #   {
-#       opaque hint[4];    // first 4 bytes of the public key, used as a hint
-#       uint512 signature; // actual signature
+#       AccountID destination; // account to create
+#       int64 startingBalance; // amount they end up with
 #   };
 #
 # ===========================================================================
 module Stellar
-  class DecoratedSignature < XDR::Struct
-    attribute :hint,      XDR::Opaque[4]
-    attribute :signature, Uint512
+  class CreateAccountOp < XDR::Struct
+    attribute :destination,      AccountID
+    attribute :starting_balance, Int64
   end
 end

@@ -5,16 +5,18 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct DecoratedSignature
-#   {
-#       opaque hint[4];    // first 4 bytes of the public key, used as a hint
-#       uint512 signature; // actual signature
-#   };
+#   struct
+#       {
+#           ClaimOfferAtom offers<>;
+#           SimplePaymentResult last;
+#       }
 #
 # ===========================================================================
 module Stellar
-  class DecoratedSignature < XDR::Struct
-    attribute :hint,      XDR::Opaque[4]
-    attribute :signature, Uint512
+  class PathPaymentResult
+    class Success < XDR::Struct
+      attribute :offers, XDR::VarArray[ClaimOfferAtom]
+      attribute :last,   SimplePaymentResult
+    end
   end
 end

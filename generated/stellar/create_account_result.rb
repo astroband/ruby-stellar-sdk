@@ -5,22 +5,21 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   union InflationResult switch (InflationResultCode code)
+#   union CreateAccountResult switch (CreateAccountResultCode code)
 #   {
-#   case INFLATION_SUCCESS:
-#       inflationPayout payouts<>;
+#   case CREATE_ACCOUNT_SUCCESS:
+#       void;
 #   default:
 #       void;
 #   };
 #
 # ===========================================================================
 module Stellar
-  class InflationResult < XDR::Union
-    switch_on InflationResultCode, :code
+  class CreateAccountResult < XDR::Union
+    switch_on CreateAccountResultCode, :code
 
-    switch :inflation_success, :payouts
+    switch :create_account_success
     switch :default
 
-    attribute :payouts, XDR::VarArray[InflationPayout]
   end
 end

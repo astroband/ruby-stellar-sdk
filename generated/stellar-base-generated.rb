@@ -1,4 +1,4 @@
-# Automatically generated on 2015-05-12T09:08:23-07:00
+# Automatically generated on 2015-05-13T15:00:04-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -81,7 +81,9 @@ module Stellar
 
   autoload :OperationType
 
+  autoload :CreateAccountOp
   autoload :PaymentOp
+  autoload :PathPaymentOp
   autoload :CreateOfferOp
   autoload :SetOptionsOp
   autoload :ChangeTrustOp
@@ -92,16 +94,24 @@ module Stellar
 
   autoload :Memo
 
+  autoload :TimeBounds
   autoload :Transaction
   autoload :TransactionEnvelope
   autoload :ClaimOfferAtom
 
+  autoload :CreateAccountResultCode
+
+  autoload :CreateAccountResult
+
   autoload :PaymentResultCode
 
-  autoload :SimplePaymentResult
-  autoload :PaymentSuccessMultiResult
-
   autoload :PaymentResult
+
+  autoload :PathPaymentResultCode
+
+  autoload :SimplePaymentResult
+
+  autoload :PathPaymentResult
 
   autoload :CreateOfferResultCode
   autoload :CreateOfferEffect

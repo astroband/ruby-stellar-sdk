@@ -1,4 +1,4 @@
-# Automatically generated on 2015-05-12T09:08:23-07:00
+# Automatically generated on 2015-05-13T15:00:04-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -10,8 +10,12 @@ require 'xdr'
 #   case opINNER:
 #       union switch (OperationType type)
 #       {
+#       case CREATE_ACCOUNT:
+#           CreateAccountResult createAccountResult;
 #       case PAYMENT:
 #           PaymentResult paymentResult;
+#       case PATH_PAYMENT:
+#           PathPaymentResult pathPaymentResult;
 #       case CREATE_OFFER:
 #           CreateOfferResult createOfferResult;
 #       case SET_OPTIONS:

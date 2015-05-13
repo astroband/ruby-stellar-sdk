@@ -1,4 +1,4 @@
-# Automatically generated on 2015-05-12T09:08:23-07:00
+# Automatically generated on 2015-05-13T15:00:04-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -7,8 +7,12 @@ require 'xdr'
 #
 #   union switch (OperationType type)
 #       {
+#       case CREATE_ACCOUNT:
+#           CreateAccountResult createAccountResult;
 #       case PAYMENT:
 #           PaymentResult paymentResult;
+#       case PATH_PAYMENT:
+#           PathPaymentResult pathPaymentResult;
 #       case CREATE_OFFER:
 #           CreateOfferResult createOfferResult;
 #       case SET_OPTIONS:
@@ -29,21 +33,25 @@ module Stellar
     class Tr < XDR::Union
       switch_on OperationType, :type
 
-      switch :payment,       :payment_result
-      switch :create_offer,  :create_offer_result
-      switch :set_options,   :set_options_result
-      switch :change_trust,  :change_trust_result
-      switch :allow_trust,   :allow_trust_result
-      switch :account_merge, :account_merge_result
-      switch :inflation,     :inflation_result
+      switch :create_account, :create_account_result
+      switch :payment,        :payment_result
+      switch :path_payment,   :path_payment_result
+      switch :create_offer,   :create_offer_result
+      switch :set_options,    :set_options_result
+      switch :change_trust,   :change_trust_result
+      switch :allow_trust,    :allow_trust_result
+      switch :account_merge,  :account_merge_result
+      switch :inflation,      :inflation_result
 
-      attribute :payment_result,       PaymentResult
-      attribute :create_offer_result,  CreateOfferResult
-      attribute :set_options_result,   SetOptionsResult
-      attribute :change_trust_result,  ChangeTrustResult
-      attribute :allow_trust_result,   AllowTrustResult
-      attribute :account_merge_result, AccountMergeResult
-      attribute :inflation_result,     InflationResult
+      attribute :create_account_result, CreateAccountResult
+      attribute :payment_result,        PaymentResult
+      attribute :path_payment_result,   PathPaymentResult
+      attribute :create_offer_result,   CreateOfferResult
+      attribute :set_options_result,    SetOptionsResult
+      attribute :change_trust_result,   ChangeTrustResult
+      attribute :allow_trust_result,    AllowTrustResult
+      attribute :account_merge_result,  AccountMergeResult
+      attribute :inflation_result,      InflationResult
     end
   end
 end

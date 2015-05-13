@@ -1,4 +1,4 @@
-# Automatically generated on 2015-05-12T09:08:23-07:00
+# Automatically generated on 2015-05-13T15:00:04-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -7,21 +7,21 @@ require 'xdr'
 #
 #   enum MemoType
 #   {
-#       MEMO_TYPE_NONE = 0,
-#       MEMO_TYPE_TEXT = 1,
-#       MEMO_TYPE_ID = 2,
-#       MEMO_TYPE_HASH = 3,
-#       MEMO_TYPE_RETURN = 4
+#       MEMO_NONE = 0,
+#       MEMO_TEXT = 1,
+#       MEMO_ID = 2,
+#       MEMO_HASH = 3,
+#       MEMO_RETURN = 4
 #   };
 #
 # ===========================================================================
 module Stellar
   class MemoType < XDR::Enum
-    member :memo_type_none,   0
-    member :memo_type_text,   1
-    member :memo_type_id,     2
-    member :memo_type_hash,   3
-    member :memo_type_return, 4
+    member :memo_none,   0
+    member :memo_text,   1
+    member :memo_id,     2
+    member :memo_hash,   3
+    member :memo_return, 4
 
     seal
   end
