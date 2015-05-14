@@ -1,4 +1,4 @@
-# Automatically generated on 2015-05-13T15:00:04-07:00
+# Automatically generated on 2015-05-14T08:36:04-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -54,10 +54,15 @@ module Stellar
   autoload :TransactionSet
   autoload :TransactionResultPair
   autoload :TransactionResultSet
-  autoload :TransactionMeta
   autoload :TransactionHistoryEntry
   autoload :TransactionHistoryResultEntry
   autoload :LedgerHeaderHistoryEntry
+
+  autoload :LedgerEntryChangeType
+
+  autoload :LedgerEntryChange
+
+  autoload :TransactionMeta
 end
 module Stellar
   include XDR::Namespace
