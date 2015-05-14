@@ -74,6 +74,26 @@ module Stellar
     end
 
     Contract ({
+      account:          Stellar::Account, 
+      funder:           Stellar::Account, 
+      starting_balance: Fixnum
+    }) => Any
+    def create_account(options={})
+      funder   = options[:funder]
+      sequence = options[:sequence] || (account_info(funder).sequence + 1)
+
+      payment = Stellar::Transaction.create_account({
+        account:          funder.keypair,
+        destination:      options[:account].keypair,
+        sequence:         sequence,
+        starting_balance: options[:starting_balance],
+      })
+
+      envelope_hex = payment.to_envelope(funder.keypair).to_xdr(:hex)
+      @horizon.transactions._post(tx: envelope_hex)
+    end
+
+    Contract ({
       account:  Maybe[Stellar::Account],
       limit:    Maybe[Pos]
     }) => TransactionPage
