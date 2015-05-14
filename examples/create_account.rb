@@ -16,7 +16,7 @@ destination = Stellar::KeyPair.random
 tx = Stellar::Transaction.create_account({
   account:     master,
   destination: destination,
-  sequence:    1,
+  sequence:    2,
   starting_balance:  50_0000000
 })
 
@@ -24,5 +24,3 @@ hex    = tx.to_envelope(master).to_xdr(:hex)
 
 result = $server.get('tx', blob: hex)
 p result.body
-raw    = [result.body["result"]].pack("H*")
-p Stellar::TransactionResult.from_xdr(raw)

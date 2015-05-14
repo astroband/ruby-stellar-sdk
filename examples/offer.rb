@@ -24,8 +24,7 @@ end
 def submit(key, tx)
   hex      = tx.to_envelope(key).to_xdr(:hex)
   response = $server.get('tx', blob: hex)
-  raw = [response.body["result"]].pack("H*")
-  p Stellar::TransactionResult.from_xdr(raw)
+  p response.body
 end
 
 master      = Stellar::KeyPair.from_raw_seed("allmylifemyhearthasbeensearching")

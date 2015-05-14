@@ -30,5 +30,4 @@ tx = Stellar::Transaction.payment({
 hex    = tx.to_envelope(master).to_xdr(:hex)
 
 result = $server.get('tx', blob: hex)
-raw    = [result.body["result"]].pack("H*")
-p Stellar::TransactionResult.from_xdr(raw)
+p result.body
