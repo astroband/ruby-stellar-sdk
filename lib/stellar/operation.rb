@@ -2,14 +2,14 @@ module Stellar
   class Operation
 
 
-    # 
+    #
     # Construct a new Stellar::Operation from the provided
     # source account and body
-    # 
+    #
     # @param [Hash] attributes the attributes to create the operation with
     # @option attributes [Stellar::KeyPair] :source_account
     # @option attributes [Stellar::Operation::Body] :body
-    # 
+    #
     # @return [Stellar::Operation] the built operation
     def self.make(attributes={})
       source_account = attributes[:source_account]
@@ -26,37 +26,70 @@ module Stellar
     end
 
 
-    # 
+    #
     # Helper method to create a valid PaymentOp, wrapped
-    # in the necessary XDR structs to be included within a 
+    # in the necessary XDR structs to be included within a
     # transactions `operations` array.
-    # 
+    #
     # @see Stellar::Currency
-    # 
+    #
     # @param [Hash] attributes the attributes to create the operation with
     # @option attributes [Stellar::KeyPair] :destination the receiver of the payment
     # @option attributes [Array] :amount the amount to pay
-    # @option attributes [Array<Stellar::Currency>] :path the payment path to use
-    # 
-    # @return [Stellar::Operation] the built operation, containing a 
+    # @return [Stellar::Operation] the built operation, containing a
     #                              Stellar::PaymentOp body
     def self.payment(attributes={})
       destination = attributes[:destination]
-      amount      = attributes[:amount]
-      # path        = attributes[:path] || []
-      # path        = path.map{|p| Stellar::Currency.send(*p)}
+      currency, amount = extract_amount(attributes[:amount])
 
       raise ArgumentError unless destination.is_a?(KeyPair)
 
-      op = PaymentOp.send(*amount)
+
+      op             = PaymentOp.new
+      op.currency    = currency
+      op.amount      = amount
       op.destination = destination.public_key
-      op.apply_defaults
 
       return make(attributes.merge({
         body:[:payment, op]
       }))
     end
 
+    #
+    # Helper method to create a valid PathPaymentOp, wrapped
+    # in the necessary XDR structs to be included within a
+    # transactions `operations` array.
+    #
+    # @see Stellar::Currency
+    #
+    # @param [Hash] attributes the attributes to create the operation with
+    # @option attributes [Stellar::KeyPair] :destination the receiver of the payment
+    # @option attributes [Array] :amount the amount to pay
+    # @option attributes [Array] :with the source currency and maximum allowed source amount to pay with
+    # @option attributes [Array<Stellar::Currency>] :path the payment path to use
+    #
+    # @return [Stellar::Operation] the built operation, containing a
+    #                              Stellar::PaymentOp body
+    def self.path_payment(attributes={})
+      destination             = attributes[:destination]
+      currency, amount        = extract_amount(attributes[:amount])
+      send_currency, send_max = extract_amount(attributes[:with])
+      path                    = (attributes[:path] || []).map{|p| Stellar::Currency.send(*p)}
+
+      raise ArgumentError unless destination.is_a?(KeyPair)
+
+      op               = PathPaymentOp.new
+      op.send_currency = send_currency
+      op.send_max      = send_max
+      op.destination   = destination.public_key
+      op.dest_currency = currency
+      op.dest_amount   = amount
+      op.path          = path
+
+      return make(attributes.merge({
+        body:[:path_payment, op]
+      }))
+    end
 
     def self.create_account(attributes={})
       destination      = attributes[:destination]
@@ -73,16 +106,16 @@ module Stellar
       }))
     end
 
-    # 
+    #
     # Helper method to create a valid ChangeTrustOp, wrapped
-    # in the necessary XDR structs to be included within a 
+    # in the necessary XDR structs to be included within a
     # transactions `operations` array.
-    # 
+    #
     # @param [Hash] attributes the attributes to create the operation with
     # @option attributes [Stellar::Currrency] :line the currency to trust
     # @option attributes [Fixnum] :limit the maximum amount to trust
-    # 
-    # @return [Stellar::Operation] the built operation, containing a 
+    #
+    # @return [Stellar::Operation] the built operation, containing a
     #                              Stellar::ChangeTrustOp body
     def self.change_trust(attributes={})
       line  = Currency.send(*attributes[:line])
@@ -105,31 +138,31 @@ module Stellar
       price      = Price.from_f(attributes[:price])
 
       op = CreateOfferOp.new({
-        taker_pays: taker_pays, 
+        taker_pays: taker_pays,
         taker_gets: taker_gets,
         amount:     amount,
         price:      price,
         offer_id:   offer_id
       })
-      
+
       return make(attributes.merge({
         body:[:create_offer, op]
       }))
     end
 
-    # 
+    #
     # Helper method to create a valid SetOptionsOp, wrapped
-    # in the necessary XDR structs to be included within a 
+    # in the necessary XDR structs to be included within a
     # transactions `operations` array.
-    # 
+    #
     # @param [Hash] attributes the attributes to create the operation with
     # @option attributes [Stellar::KeyPair] :inflation_dest
     # @option attributes [Array<Stellar::AccountFlags>] :set flags to set
     # @option attributes [Array<Stellar::AccountFlags>] :clear flags to clear
     # @option attributes [String] :thresholds
     # @option attributes [Stellar::Signer] :signer
-    # 
-    # @return [Stellar::Operation] the built operation, containing a 
+    #
+    # @return [Stellar::Operation] the built operation, containing a
     #                              Stellar::SetOptionsOp body
     def self.set_options(attributes={})
       op             = SetOptionsOp.new()
@@ -145,35 +178,35 @@ module Stellar
         op.inflation_dest = inflation_dest.public_key
       end
 
-            
+
       return make(attributes.merge({
         body:[:set_options, op]
       }))
     end
 
-    # 
+    #
     # Helper method to create a valid AllowTrustOp, wrapped
-    # in the necessary XDR structs to be included within a 
+    # in the necessary XDR structs to be included within a
     # transactions `operations` array.
-    # 
+    #
     # @param [Hash] attributes the attributes to create the operation with
     # @option attributes [Stellar::KeyPair]  :trustor
     # @option attributes [Stellar::Currency] :currency
-    # 
-    # @return [Stellar::Operation] the built operation, containing a 
+    #
+    # @return [Stellar::Operation] the built operation, containing a
     #                              Stellar::AllowTrustOp body
     def self.allow_trust(attributes={})
       op = AllowTrustOp.new()
-      
+
       trustor   = attributes[:trustor]
       authorize = attributes[:authorize]
       currency  = Currency.send(*attributes[:currency])
 
       raise ArgumentError, "Bad :trustor" unless trustor.is_a?(Stellar::KeyPair)
       raise ArgumentError, "Bad :authorize" unless authorize == !!authorize # check boolean
-      raise ArgumentError, "Bad :currency" unless currency.type == Stellar::CurrencyType.iso4217
+      raise ArgumentError, "Bad :currency" unless currency.type == Stellar::CurrencyType.alphanum
 
-      atc = AllowTrustOp::Currency.new(:iso4217, currency.code)
+      atc = AllowTrustOp::Currency.new(:alphanum, currency.code)
 
       op.trustor   = trustor.public_key
       op.authorize = authorize
@@ -184,12 +217,12 @@ module Stellar
       }))
     end
 
-    # 
+    #
     # Helper method to create an account merge operation
-    # 
+    #
     # @param [Hash] attributes the attributes to create the operation with
     # @option attributes [Stellar::KeyPair]  :destination
-    # 
+    #
     # @return [Stellar::Operation] the built operation
     def self.account_merge(attributes={})
       destination = attributes[:destination]
@@ -202,12 +235,12 @@ module Stellar
       }))
     end
 
-    # 
+    #
     # Helper method to create an inflation operation
-    # 
+    #
     # @param [Hash] attributes the attributes to create the operation with
     # @option attributes [Integer]  :sequence
-    # 
+    #
     # @return [Stellar::Operation] the built operation
     def self.inflation(attributes={})
       sequence = attributes[:sequence]
@@ -218,6 +251,14 @@ module Stellar
       return make(attributes.merge({
         body:[:inflation, sequence]
       }))
+    end
+
+    private
+    def self.extract_amount(a)
+      amount   = a.last
+      currency = Stellar::Currency.send(*a[0...-1])
+
+      return currency, amount
     end
   end
 end

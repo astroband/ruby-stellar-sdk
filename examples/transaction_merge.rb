@@ -9,14 +9,14 @@ tx1 = Stellar::Transaction.payment({
   account:     master,
   destination: destination,
   sequence:    1,
-  amount:      [:native, 20_000000]
+  amount:      [:native, 20 * Stellar::ONE]
 })
 
 tx2 = Stellar::Transaction.payment({
   account:     master,
   destination: destination,
   sequence:    2,
-  amount:      [:native, 20_000000]
+  amount:      [:native, 20 * Stellar::ONE]
 })
 
 hex = tx1.merge(tx2).to_envelope(master).to_xdr(:hex)

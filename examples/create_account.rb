@@ -17,7 +17,7 @@ tx = Stellar::Transaction.create_account({
   account:     master,
   destination: destination,
   sequence:    2,
-  starting_balance:  50_0000000
+  starting_balance:  50 * Stellar::ONE
 })
 
 hex    = tx.to_envelope(master).to_xdr(:hex)

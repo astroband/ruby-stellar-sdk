@@ -4,8 +4,9 @@ module Stellar
       new(:currency_type_native)
     end
 
-    def self.iso4217(code, issuer)
+    def self.alphanum(code, issuer)
       raise ArgumentError, "Bad :issuer" unless issuer.is_a?(KeyPair)
+      code = normalize_code(code)
       an = AlphaNum.new({currency_code:code, issuer:issuer.public_key})
       new(:currency_type_alphanum, an)
     end
@@ -27,6 +28,12 @@ module Stellar
 
     def code
       self.alpha_num!.currency_code
+    end
+
+    def self.normalize_code(code)
+      raise ArgumentError, "Invalid currency code: #{code}, must be <= 4 bytes" if code.length > 4
+
+      code.ljust(4, "\x00")
     end
   end
 end

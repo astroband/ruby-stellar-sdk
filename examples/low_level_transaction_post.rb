@@ -2,7 +2,7 @@
 
 # This is an example of using the raw xdr objects to post a transaction
 # notice that we must manually hash/sign the structures and we must manually
-# fill out all the fields. 
+# fill out all the fields.
 #
 # Look at mid_level_transaction_post.rb to see a friendlier form
 
@@ -22,7 +22,7 @@ tx.seq_num    = 1
 payment = Stellar::PaymentOp.new
 payment.destination = destination.verify_key.to_bytes
 payment.currency = Stellar::Currency.new(:native)
-payment.amount = 200_000000
+payment.amount = 200 * Stellar::ONE
 
 op = Stellar::Operation.new
 op.body = Stellar::Operation::Body.new(:payment, payment)
@@ -36,7 +36,7 @@ signature = master.sign(tx_hash)
 env = Stellar::TransactionEnvelope.new
 env.tx = tx
 env.signatures = [Stellar::DecoratedSignature.new({
-  hint:master.verify_key.to_bytes[0...4], 
+  hint:master.verify_key.to_bytes[0...4],
   signature:signature
 })]
 
@@ -44,4 +44,3 @@ env_hex = env.to_xdr.unpack("H*").first
 
 result = Faraday.get('http://localhost:39132/tx', blob: env_hex)
 puts result.body
-
