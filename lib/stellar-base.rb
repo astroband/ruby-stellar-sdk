@@ -1,5 +1,5 @@
 require 'xdr'
-require 'rbnacl'
+require 'rbnacl/libsodium'
 require 'digest/sha2'
 require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/enumerable'
