@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "stellar-base", "= 0.0.8"
+  spec.add_dependency "stellar-base", "= 0.0.10"
   spec.add_dependency "hyperclient", "~> 0.7.0"
   spec.add_dependency "excon", "~> 0.44.4"
   spec.add_dependency "contracts", "~> 0.7"

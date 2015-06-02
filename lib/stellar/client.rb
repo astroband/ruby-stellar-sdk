@@ -19,7 +19,7 @@ module Stellar
 
     def self.localhost(options={})
       new options.merge({
-        horizon: "http://127.0.0.1:3000", #TODO: figure out a real port
+        horizon: "http://127.0.0.1:8000"
       })
     end
 
@@ -36,8 +36,8 @@ module Stellar
           conn.response :hal_json, content_type: /\bjson$/
           conn.adapter :excon
         end
-        client.headers = { 
-          'Accept' => 'application/hal+json,application/problem+json,application/json' 
+        client.headers = {
+          'Accept' => 'application/hal+json,application/problem+json,application/json'
         }
       end
     end
@@ -54,8 +54,8 @@ module Stellar
     end
 
     Contract ({
-      from:     Stellar::Account, 
-      to:       Stellar::Account, 
+      from:     Stellar::Account,
+      to:       Stellar::Account,
       amount:   Stellar::Amount
     }) => Any
     def send_payment(options={})
@@ -74,8 +74,8 @@ module Stellar
     end
 
     Contract ({
-      account:          Stellar::Account, 
-      funder:           Stellar::Account, 
+      account:          Stellar::Account,
+      funder:           Stellar::Account,
       starting_balance: Fixnum
     }) => Any
     def create_account(options={})
