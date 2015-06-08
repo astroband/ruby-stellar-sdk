@@ -1,4 +1,4 @@
-# Automatically generated on 2015-05-13T15:00:04-07:00
+# Automatically generated on 2015-06-08T11:39:15-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -14,7 +14,8 @@ require 'xdr'
 #       SET_OPTIONS_TOO_MANY_SIGNERS = -2, // max number of signers already reached
 #       SET_OPTIONS_BAD_FLAGS = -3,        // invalid combination of clear/set flags
 #       SET_OPTIONS_INVALID_INFLATION = -4, // inflation account does not exist
-#       SET_OPTIONS_CANT_CHANGE = -5        // can no longer change this option
+#       SET_OPTIONS_CANT_CHANGE = -5,       // can no longer change this option
+#       SET_OPTIONS_UNKNOWN_FLAG = -6		// can't set an unknown flag
 #   };
 #
 # ===========================================================================
@@ -26,6 +27,7 @@ module Stellar
     member :set_options_bad_flags,         -3
     member :set_options_invalid_inflation, -4
     member :set_options_cant_change,       -5
+    member :set_options_unknown_flag,      -6
 
     seal
   end

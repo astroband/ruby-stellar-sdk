@@ -1,4 +1,4 @@
-# Automatically generated on 2015-05-13T15:00:04-07:00
+# Automatically generated on 2015-06-08T11:39:14-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -7,7 +7,12 @@ require 'xdr'
 #
 #   enum AccountFlags
 #   { // masks for each flag
+#   
+#       // if set, TrustLines are created with authorized set to "false"
+#       // requiring the issuer to set it for each TrustLine
 #       AUTH_REQUIRED_FLAG = 0x1,
+#       // if set, the authorized flag in TrustTines can be cleared
+#       // otherwise, authorization cannot be revoked
 #       AUTH_REVOCABLE_FLAG = 0x2
 #   };
 #

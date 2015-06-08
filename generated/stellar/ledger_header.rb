@@ -1,4 +1,4 @@
-# Automatically generated on 2015-05-13T15:00:04-07:00
+# Automatically generated on 2015-06-08T11:39:14-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -24,6 +24,9 @@ require 'xdr'
 #   
 #       int32 baseFee;     // base fee per operation in stroops
 #       int32 baseReserve; // account base reserve in stroops
+#   
+#       Hash skipList[4];  // hashes of ledgers in the past. allows you to jump back
+#                          // in time without walking the chain back ledger by ledger
 #   };
 #
 # ===========================================================================
@@ -41,5 +44,6 @@ module Stellar
     attribute :id_pool,              Uint64
     attribute :base_fee,             Int32
     attribute :base_reserve,         Int32
+    attribute :skip_list,            XDR::Array[Hash, 4]
   end
 end

@@ -1,19 +1,19 @@
-# Automatically generated on 2015-05-13T15:00:04-07:00
+# Automatically generated on 2015-06-08T11:39:15-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct CreateOfferSuccessResult
+#   struct ManageOfferSuccessResult
 #   {
 #       // offers that got claimed while creating this offer
 #       ClaimOfferAtom offersClaimed<>;
 #   
-#       union switch (CreateOfferEffect effect)
+#       union switch (ManageOfferEffect effect)
 #       {
-#       case CREATE_OFFER_CREATED:
-#       case CREATE_OFFER_UPDATED:
+#       case MANAGE_OFFER_CREATED:
+#       case MANAGE_OFFER_UPDATED:
 #           OfferEntry offer;
 #       default:
 #           void;
@@ -23,7 +23,7 @@ require 'xdr'
 #
 # ===========================================================================
 module Stellar
-  class CreateOfferSuccessResult < XDR::Struct
+  class ManageOfferSuccessResult < XDR::Struct
     include XDR::Namespace
 
     autoload :Offer

@@ -5,16 +5,16 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   enum TrustLineFlags
+#   enum OfferEntryFlags
 #   {
 #       // issuer has authorized account to perform transactions with its credit
-#       AUTHORIZED_FLAG = 1
+#       PASSIVE_FLAG = 1
 #   };
 #
 # ===========================================================================
 module Stellar
-  class TrustLineFlags < XDR::Enum
-    member :authorized_flag, 1
+  class OfferEntryFlags < XDR::Enum
+    member :passive_flag, 1
 
     seal
   end

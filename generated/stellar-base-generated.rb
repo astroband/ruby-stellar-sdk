@@ -1,4 +1,4 @@
-# Automatically generated on 2015-05-14T08:36:04-07:00
+# Automatically generated on 2015-06-08T11:39:14-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -36,6 +36,9 @@ module Stellar
   autoload :TrustLineFlags
 
   autoload :TrustLineEntry
+
+  autoload :OfferEntryFlags
+
   autoload :OfferEntry
 
   autoload :LedgerEntry
@@ -89,7 +92,8 @@ module Stellar
   autoload :CreateAccountOp
   autoload :PaymentOp
   autoload :PathPaymentOp
-  autoload :CreateOfferOp
+  autoload :ManageOfferOp
+  autoload :CreatePassiveOfferOp
   autoload :SetOptionsOp
   autoload :ChangeTrustOp
   autoload :AllowTrustOp
@@ -118,12 +122,12 @@ module Stellar
 
   autoload :PathPaymentResult
 
-  autoload :CreateOfferResultCode
-  autoload :CreateOfferEffect
+  autoload :ManageOfferResultCode
+  autoload :ManageOfferEffect
 
-  autoload :CreateOfferSuccessResult
+  autoload :ManageOfferSuccessResult
 
-  autoload :CreateOfferResult
+  autoload :ManageOfferResult
 
   autoload :SetOptionsResultCode
 
@@ -159,14 +163,9 @@ module Stellar
   include XDR::Namespace
 
   Uint512 = XDR::Opaque[64]
-  Uint256 = XDR::Opaque[32]
-  Uint64 = XDR::UnsignedHyper
   Int64 = XDR::Hyper
-  Uint32 = XDR::UnsignedInt
   Int32 = XDR::Int
   AccountID = XDR::Opaque[32]
-  Signature = XDR::Opaque[64]
-  Hash = XDR::Opaque[32]
   Thresholds = XDR::Opaque[4]
   String32 = XDR::String[32]
   SequenceNumber = Uint64

@@ -1,4 +1,4 @@
-# Automatically generated on 2015-05-13T15:00:04-07:00
+# Automatically generated on 2015-06-08T11:39:14-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -19,6 +19,7 @@ require 'xdr'
 #           price is after fees
 #       */
 #       Price price;
+#       uint32 flags; // see OfferEntryFlags
 #   };
 #
 # ===========================================================================
@@ -30,5 +31,6 @@ module Stellar
     attribute :taker_pays, Currency
     attribute :amount,     Int64
     attribute :price,      Price
+    attribute :flags,      Uint32
   end
 end

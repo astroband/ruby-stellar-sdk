@@ -1,4 +1,4 @@
-# Automatically generated on 2015-05-13T15:00:04-07:00
+# Automatically generated on 2015-06-08T11:39:15-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -16,8 +16,10 @@ require 'xdr'
 #           PaymentResult paymentResult;
 #       case PATH_PAYMENT:
 #           PathPaymentResult pathPaymentResult;
-#       case CREATE_OFFER:
-#           CreateOfferResult createOfferResult;
+#       case MANAGE_OFFER:
+#           ManageOfferResult manageOfferResult;
+#       case CREATE_PASSIVE_OFFER:
+#           ManageOfferResult createPassiveOfferResult;
 #       case SET_OPTIONS:
 #           SetOptionsResult setOptionsResult;
 #       case CHANGE_TRUST:
