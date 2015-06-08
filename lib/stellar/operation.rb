@@ -130,14 +130,14 @@ module Stellar
       }))
     end
 
-    def self.create_offer(attributes={})
+    def self.manage_offer(attributes={})
       taker_pays = Currency.send(*attributes[:taker_pays])
       taker_gets = Currency.send(*attributes[:taker_gets])
       amount     = attributes[:amount]
       offer_id   = attributes[:offer_id] || 0
       price      = Price.from_f(attributes[:price])
 
-      op = CreateOfferOp.new({
+      op = ManageOfferOp.new({
         taker_pays: taker_pays,
         taker_gets: taker_gets,
         amount:     amount,
@@ -146,7 +146,25 @@ module Stellar
       })
 
       return make(attributes.merge({
-        body:[:create_offer, op]
+        body:[:manage_offer, op]
+      }))
+    end
+
+    def self.create_passive_offer(attributes={})
+      taker_pays = Currency.send(*attributes[:taker_pays])
+      taker_gets = Currency.send(*attributes[:taker_gets])
+      amount     = attributes[:amount]
+      price      = Price.from_f(attributes[:price])
+
+      op = CreatePassiveOfferOp.new({
+        taker_pays: taker_pays,
+        taker_gets: taker_gets,
+        amount:     amount,
+        price:      price,
+      })
+
+      return make(attributes.merge({
+        body:[:create_passive_offer, op]
       }))
     end
 

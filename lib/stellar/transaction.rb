@@ -27,8 +27,14 @@ module Stellar
 
     #
     # @see  Stellar::Operation.create_offer
-    def self.create_offer(attributes={})
-      make :create_offer, attributes
+    def self.manage_offer(attributes={})
+      make :manage_offer, attributes
+    end
+    
+    #
+    # @see  Stellar::Operation.create_passive_offer
+    def self.create_passive_offer(attributes={})
+      make :create_passive_offer, attributes
     end
 
     #

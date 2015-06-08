@@ -65,7 +65,7 @@ submit master, Stellar::Transaction.payment({
   amount:      [:alphanum, "USD\x00", master, 1000]
 })
 
-submit master, Stellar::Transaction.create_offer({
+submit master, Stellar::Transaction.manage_offer({
   account:    destination,
   sequence:   destination_sequence + 3
   taker_gets: [:alphanum, "USD\x00", usd_gateway],
