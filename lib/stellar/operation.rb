@@ -188,6 +188,7 @@ module Stellar
       op.clear_flags = Stellar::AccountFlags.make_mask attributes[:clear]
       op.thresholds  = attributes[:thresholds]
       op.signer      = attributes[:signer]
+      op.home_domain = attributes[:home_domain]
 
 
       inflation_dest = attributes[:inflation_dest]
