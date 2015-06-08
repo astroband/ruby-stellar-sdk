@@ -204,9 +204,9 @@ module Stellar
 
       raise ArgumentError, "Bad :trustor" unless trustor.is_a?(Stellar::KeyPair)
       raise ArgumentError, "Bad :authorize" unless authorize == !!authorize # check boolean
-      raise ArgumentError, "Bad :currency" unless currency.type == Stellar::CurrencyType.alphanum
+      raise ArgumentError, "Bad :currency" unless currency.type == Stellar::CurrencyType.currency_type_alphanum
 
-      atc = AllowTrustOp::Currency.new(:alphanum, currency.code)
+      atc = AllowTrustOp::Currency.new(:currency_type_alphanum, currency.code)
 
       op.trustor   = trustor.public_key
       op.authorize = authorize
