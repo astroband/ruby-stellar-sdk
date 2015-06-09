@@ -22,7 +22,7 @@ module Stellar
     #  @param combined [Fixnum]
     #  @return [Array<Stellar::AccountFlags>]
     def self.parse_mask(combined)
-      members.select{|m| (m.value & combined) != 0}
+      members.values.select{|m| (m.value & combined) != 0}
     end
   end
 end
