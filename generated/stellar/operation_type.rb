@@ -1,4 +1,4 @@
-# Automatically generated on 2015-06-08T11:39:14-07:00
+# Automatically generated on 2015-06-09T15:04:05-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -11,7 +11,7 @@ require 'xdr'
 #       PAYMENT = 1,
 #       PATH_PAYMENT = 2,
 #       MANAGE_OFFER = 3,
-#   	CREATE_PASSIVE_OFFER = 4,
+#       CREATE_PASSIVE_OFFER = 4,
 #       SET_OPTIONS = 5,
 #       CHANGE_TRUST = 6,
 #       ALLOW_TRUST = 7,

@@ -1,4 +1,4 @@
-# Automatically generated on 2015-06-08T11:39:15-07:00
+# Automatically generated on 2015-06-09T15:04:05-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -12,9 +12,9 @@ require 'xdr'
 #       // codes considered as "failure" for the operation
 #       ALLOW_TRUST_MALFORMED = -1,     // currency is not CURRENCY_TYPE_ALPHANUM
 #       ALLOW_TRUST_NO_TRUST_LINE = -2, // trustor does not have a trustline
-#   									// source account does not require trust
-#       ALLOW_TRUST_TRUST_NOT_REQUIRED = -3, 
-#       ALLOW_TRUST_CANT_REVOKE = -4    // source account can't revoke trust
+#                                       // source account does not require trust
+#       ALLOW_TRUST_TRUST_NOT_REQUIRED = -3,
+#       ALLOW_TRUST_CANT_REVOKE = -4 // source account can't revoke trust
 #   };
 #
 # ===========================================================================

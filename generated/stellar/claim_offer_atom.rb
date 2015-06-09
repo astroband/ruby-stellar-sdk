@@ -1,4 +1,4 @@
-# Automatically generated on 2015-05-13T15:00:04-07:00
+# Automatically generated on 2015-06-09T15:04:05-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -15,7 +15,9 @@ require 'xdr'
 #       Currency currencyClaimed;
 #       int64 amountClaimed;
 #   
-#       // should we also include the amount that the owner gets in return?
+#       // amount and currencysent to the owner
+#       Currency currencySend;
+#       int64 amountSend;
 #   };
 #
 # ===========================================================================
@@ -25,5 +27,7 @@ module Stellar
     attribute :offer_id,         Uint64
     attribute :currency_claimed, Currency
     attribute :amount_claimed,   Int64
+    attribute :currency_send,    Currency
+    attribute :amount_send,      Int64
   end
 end

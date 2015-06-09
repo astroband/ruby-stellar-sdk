@@ -1,4 +1,4 @@
-# Automatically generated on 2015-06-08T11:39:15-07:00
+# Automatically generated on 2015-06-09T15:04:05-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -22,7 +22,7 @@ require 'xdr'
 #           PathPaymentOp pathPaymentOp;
 #       case MANAGE_OFFER:
 #           ManageOfferOp manageOfferOp;
-#   	case CREATE_PASSIVE_OFFER:
+#       case CREATE_PASSIVE_OFFER:
 #           CreatePassiveOfferOp createPassiveOfferOp;
 #       case SET_OPTIONS:
 #           SetOptionsOp setOptionsOp;

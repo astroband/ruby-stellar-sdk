@@ -1,4 +1,4 @@
-# Automatically generated on 2015-06-08T11:39:15-07:00
+# Automatically generated on 2015-06-09T15:04:05-07:00
 # DO NOT EDIT or your changes may be overwritten
         
 require 'xdr'
@@ -15,7 +15,7 @@ require 'xdr'
 #       SET_OPTIONS_BAD_FLAGS = -3,        // invalid combination of clear/set flags
 #       SET_OPTIONS_INVALID_INFLATION = -4, // inflation account does not exist
 #       SET_OPTIONS_CANT_CHANGE = -5,       // can no longer change this option
-#       SET_OPTIONS_UNKNOWN_FLAG = -6		// can't set an unknown flag
+#       SET_OPTIONS_UNKNOWN_FLAG = -6       // can't set an unknown flag
 #   };
 #
 # ===========================================================================
