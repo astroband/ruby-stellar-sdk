@@ -68,6 +68,10 @@ b58.check_decode(:seed, encoded) # => throws ArgumentError: Unexpected version: 
 
 ```
 
+## Updating Generated Code
+
+The generated code of this library must be refreshed each time the Stellar network's protocol is updated.  To perform this task, run `rake xdr:update`, which will download the latest `.x` files into the `xdr` folder and will run `xdrgen` to regenerate the built ruby code.
+
 ## Caveats
 
 The current integration of user-written code with auto-generated classes is to put it nicely, weird.  We intend to segregate the auto-generated code into its own namespace and refrain from monkey patching them.  This will happen before 1.0, and hopefully will happen soon.
@@ -75,4 +79,3 @@ The current integration of user-written code with auto-generated classes is to p
 ## Contributing
 
 Please [see CONTRIBUTING.md for details](CONTRIBUTING.md).
-
