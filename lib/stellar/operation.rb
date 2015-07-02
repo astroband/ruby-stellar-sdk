@@ -268,7 +268,7 @@ module Stellar
 
       # TODO: add source_account support
       return make(attributes.merge({
-        body:[:inflation, sequence]
+        body:[:inflation]
       }))
     end
 
