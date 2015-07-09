@@ -183,10 +183,14 @@ module Stellar
     # @return [Stellar::Operation] the built operation, containing a
     #                              Stellar::SetOptionsOp body
     def self.set_options(attributes={})
-      op             = SetOptionsOp.new()
-      op.set_flags   = Stellar::AccountFlags.make_mask attributes[:set]
-      op.clear_flags = Stellar::AccountFlags.make_mask attributes[:clear]
-      op.thresholds  = attributes[:thresholds]
+      op                = SetOptionsOp.new()
+      op.set_flags      = Stellar::AccountFlags.make_mask attributes[:set]
+      op.clear_flags    = Stellar::AccountFlags.make_mask attributes[:clear]
+      op.master_weight  = attributes[:master_weight]
+      op.low_threshold  = attributes[:low_threshold]
+      op.med_threshold  = attributes[:med_threshold]
+      op.high_threshold = attributes[:high_threshold]
+
       op.signer      = attributes[:signer]
       op.home_domain = attributes[:home_domain]
 
