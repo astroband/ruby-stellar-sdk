@@ -1,6 +1,6 @@
-# Automatically generated on 2015-06-08T11:39:14-07:00
+# This code was automatically generated using xdrgen
 # DO NOT EDIT or your changes may be overwritten
-        
+
 require 'xdr'
 
 # === xdr source ============================================================
@@ -8,7 +8,7 @@ require 'xdr'
 #   struct SCPQuorumSet
 #   {
 #       uint32 threshold;
-#   	Hash validators<>;
+#       PublicKey validators<>;
 #       SCPQuorumSet innerSets<>;
 #   };
 #
@@ -16,7 +16,7 @@ require 'xdr'
 module Stellar
   class SCPQuorumSet < XDR::Struct
     attribute :threshold,  Uint32
-    attribute :validators, XDR::VarArray[Hash]
+    attribute :validators, XDR::VarArray[PublicKey]
     attribute :inner_sets, XDR::VarArray[SCPQuorumSet]
   end
 end

@@ -19,7 +19,7 @@ module Stellar
 
       if source_account
         raise ArgumentError, "Bad :source_account" unless source_account.is_a?(Stellar::KeyPair)
-        op.source_account = source_account.public_key
+        op.source_account = source_account.account_id
       end
 
       return op
@@ -48,7 +48,7 @@ module Stellar
       op             = PaymentOp.new
       op.currency    = currency
       op.amount      = amount
-      op.destination = destination.public_key
+      op.destination = destination.account_id
 
       return make(attributes.merge({
         body:[:payment, op]
@@ -81,7 +81,7 @@ module Stellar
       op               = PathPaymentOp.new
       op.send_currency = send_currency
       op.send_max      = send_max
-      op.destination   = destination.public_key
+      op.destination   = destination.account_id
       op.dest_currency = currency
       op.dest_amount   = amount
       op.path          = path
@@ -98,7 +98,7 @@ module Stellar
       raise ArgumentError unless destination.is_a?(KeyPair)
 
       op = CreateAccountOp.new()
-      op.destination = destination.public_key
+      op.destination = destination.account_id
       op.starting_balance = starting_balance
 
       return make(attributes.merge({
@@ -194,7 +194,7 @@ module Stellar
       inflation_dest = attributes[:inflation_dest]
       if inflation_dest
         raise ArgumentError, "Bad :inflation_dest" unless inflation_dest.is_a?(Stellar::KeyPair)
-        op.inflation_dest = inflation_dest.public_key
+        op.inflation_dest = inflation_dest.account_id
       end
 
 
@@ -227,7 +227,7 @@ module Stellar
 
       atc = AllowTrustOp::Currency.new(:currency_type_alphanum, currency.code)
 
-      op.trustor   = trustor.public_key
+      op.trustor   = trustor.account_id
       op.authorize = authorize
       op.currency  = atc
 
@@ -250,7 +250,7 @@ module Stellar
 
       # TODO: add source_account support
       return make(attributes.merge({
-        body:[:account_merge, destination.public_key]
+        body:[:account_merge, destination.account_id]
       }))
     end
 

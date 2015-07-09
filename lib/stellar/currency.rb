@@ -7,7 +7,7 @@ module Stellar
     def self.alphanum(code, issuer)
       raise ArgumentError, "Bad :issuer" unless issuer.is_a?(KeyPair)
       code = normalize_code(code)
-      an = AlphaNum.new({currency_code:code, issuer:issuer.public_key})
+      an = AlphaNum.new({currency_code:code, issuer:issuer.account_id})
       new(:currency_type_alphanum, an)
     end
 

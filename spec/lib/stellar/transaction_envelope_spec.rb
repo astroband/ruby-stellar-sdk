@@ -13,7 +13,7 @@ describe Stellar::TransactionEnvelope do
   end
 
   let(:envelope){ transaction.to_envelope(*signers) }
-  
+
   describe "#signed_correctly?" do
     subject{ envelope.signed_correctly?(*verifiers) }
 
@@ -82,7 +82,7 @@ describe Stellar::TransactionEnvelope do
         it{ should be_falsey }
       end
     end
-    
+
   end
 
   describe "#hash" do

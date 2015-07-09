@@ -1,6 +1,6 @@
-# Automatically generated on 2015-06-09T15:04:05-07:00
+# This code was automatically generated using xdrgen
 # DO NOT EDIT or your changes may be overwritten
-        
+
 require 'xdr'
 
 # === xdr source ============================================================
@@ -24,7 +24,7 @@ require 'xdr'
 #       case ALLOW_TRUST:
 #           AllowTrustOp allowTrustOp;
 #       case ACCOUNT_MERGE:
-#           uint256 destination;
+#           AccountID destination;
 #       case INFLATION:
 #           void;
 #       }
@@ -54,7 +54,7 @@ module Stellar
       attribute :set_options_op,          SetOptionsOp
       attribute :change_trust_op,         ChangeTrustOp
       attribute :allow_trust_op,          AllowTrustOp
-      attribute :destination,             Uint256
+      attribute :destination,             AccountID
     end
   end
 end

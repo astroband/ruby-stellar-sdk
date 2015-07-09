@@ -1,6 +1,6 @@
-# Automatically generated on 2015-06-09T15:04:05-07:00
+# This code was automatically generated using xdrgen
 # DO NOT EDIT or your changes may be overwritten
-        
+
 require 'xdr'
 
 # === xdr source ============================================================
@@ -8,7 +8,7 @@ require 'xdr'
 #   struct Operation
 #   {
 #       // sourceAccount is the account used to run the operation
-#       // if not set, the runtime defaults to "account" specified at
+#       // if not set, the runtime defaults to "sourceAccount" specified at
 #       // the transaction level
 #       AccountID* sourceAccount;
 #   
@@ -31,7 +31,7 @@ require 'xdr'
 #       case ALLOW_TRUST:
 #           AllowTrustOp allowTrustOp;
 #       case ACCOUNT_MERGE:
-#           uint256 destination;
+#           AccountID destination;
 #       case INFLATION:
 #           void;
 #       }

@@ -1,6 +1,6 @@
-# Automatically generated on 2015-05-13T15:00:04-07:00
+# This code was automatically generated using xdrgen
 # DO NOT EDIT or your changes may be overwritten
-        
+
 require 'xdr'
 
 # === xdr source ============================================================
@@ -9,12 +9,25 @@ require 'xdr'
 #   {
 #       uint32 ledgerSeq;
 #       TransactionSet txSet;
+#   
+#       // reserved for future use
+#       union switch (int v)
+#       {
+#       case 0:
+#           void;
+#       }
+#       ext;
 #   };
 #
 # ===========================================================================
 module Stellar
   class TransactionHistoryEntry < XDR::Struct
+    include XDR::Namespace
+
+    autoload :Ext
+
     attribute :ledger_seq, Uint32
     attribute :tx_set,     TransactionSet
+    attribute :ext,        Ext
   end
 end

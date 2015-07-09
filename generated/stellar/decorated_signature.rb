@@ -1,20 +1,20 @@
-# Automatically generated on 2015-05-13T15:00:04-07:00
+# This code was automatically generated using xdrgen
 # DO NOT EDIT or your changes may be overwritten
-        
+
 require 'xdr'
 
 # === xdr source ============================================================
 #
 #   struct DecoratedSignature
 #   {
-#       opaque hint[4];    // first 4 bytes of the public key, used as a hint
-#       uint512 signature; // actual signature
+#       SignatureHint hint;  // first 4 bytes of the public key, used as a hint
+#       Signature signature; // actual signature
 #   };
 #
 # ===========================================================================
 module Stellar
   class DecoratedSignature < XDR::Struct
-    attribute :hint,      XDR::Opaque[4]
-    attribute :signature, Uint512
+    attribute :hint,      SignatureHint
+    attribute :signature, Signature
   end
 end

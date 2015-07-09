@@ -15,7 +15,7 @@ module Stellar
       hash = tx.hash
       return false if signatures.empty?
 
-      key_index = key_pairs.index_by(&:public_key_hint)
+      key_index = key_pairs.index_by(&:signature_hint)
       
       signatures.all? do |sig| 
         key_pair = key_index[sig.hint]

@@ -1,6 +1,6 @@
-# Automatically generated on 2015-05-13T15:00:04-07:00
+# This code was automatically generated using xdrgen
 # DO NOT EDIT or your changes may be overwritten
-        
+
 require 'xdr'
 
 # === xdr source ============================================================
@@ -12,7 +12,11 @@ require 'xdr'
 #       uint32* clearFlags; // which flags to clear
 #       uint32* setFlags;   // which flags to set
 #   
-#       Thresholds* thresholds; // update the thresholds for the account
+#       // account threshold manipulation
+#       uint32* masterWeight; // weight of the master account
+#       uint32* lowThreshold;
+#       uint32* medThreshold;
+#       uint32* highThreshold;
 #   
 #       string32* homeDomain; // sets the home domain
 #   
@@ -27,7 +31,10 @@ module Stellar
     attribute :inflation_dest, XDR::Option[AccountID]
     attribute :clear_flags,    XDR::Option[Uint32]
     attribute :set_flags,      XDR::Option[Uint32]
-    attribute :thresholds,     XDR::Option[Thresholds]
+    attribute :master_weight,  XDR::Option[Uint32]
+    attribute :low_threshold,  XDR::Option[Uint32]
+    attribute :med_threshold,  XDR::Option[Uint32]
+    attribute :high_threshold, XDR::Option[Uint32]
     attribute :home_domain,    XDR::Option[String32]
     attribute :signer,         XDR::Option[Signer]
   end

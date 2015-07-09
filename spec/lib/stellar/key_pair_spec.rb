@@ -25,7 +25,7 @@ describe Stellar::KeyPair do
 
   describe ".from_raw_seed" do
     subject{ Stellar::KeyPair.from_raw_seed(raw_seed) }
-    
+
     context "when the provided value is a 32-byte string" do
       let(:raw_seed){ "allmylifemyhearthasbeensearching" }
       it { should be_a(Stellar::KeyPair) }
@@ -101,12 +101,30 @@ describe Stellar::KeyPair do
     end
   end
 
+  describe "#raw_public_key" do
+    let(:key_pair){ Stellar::KeyPair.random }
+    subject{ key_pair.raw_public_key }
+
+    it { should be_a(String) }
+    it { should have_length(32) }
+  end
+
   describe "#public_key" do
     let(:key_pair){ Stellar::KeyPair.random }
     subject{ key_pair.public_key }
 
-    it { should be_a(String) }
-    it { should have_length(32) }
+    it { should be_a(Stellar::PublicKey) }
+  end
+
+  describe "#account_id" do
+    let(:key_pair){ Stellar::KeyPair.random }
+    subject{ key_pair.account_id }
+
+    it { should be_a(Stellar::AccountID) }
+
+    it "contains the public key" do
+        expect(subject.ed25519!).to eql(key_pair.raw_public_key)
+    end
   end
 
   describe "#raw_seed" do
@@ -115,6 +133,19 @@ describe Stellar::KeyPair do
 
     it { should be_a(String) }
     it { should have_length(32) }
+  end
+
+  describe "#signature_hint" do
+    let(:key_pair){ Stellar::KeyPair.random }
+    subject{ key_pair.signature_hint }
+
+    it { should be_a(String) }
+    it { should have_length(4) }
+
+    it "is the last 4 bytes of the encoded account_id" do
+      expected = key_pair.account_id.to_xdr[-4..-1]
+      expect(subject).to eql(expected)
+    end
   end
 
   describe "#address" do
@@ -130,7 +161,7 @@ describe Stellar::KeyPair do
   end
 
   describe "#sign" do
-    let(:message) { "hello" } 
+    let(:message) { "hello" }
     subject{ key_pair.sign(message) }
 
     context "when the key_pair has no private key" do
@@ -158,26 +189,26 @@ describe Stellar::KeyPair do
 
   describe "#verify" do
     let(:key_pair)  { Stellar::KeyPair.random }
-    let(:message)   { "hello" } 
+    let(:message)   { "hello" }
     subject         { key_pair.verify(signature, message) }
 
     context "when the signature is correct" do
-      let(:signature) { key_pair.sign(message) } 
+      let(:signature) { key_pair.sign(message) }
       it{ should be_truthy }
     end
 
     context "when the signature is incorrect" do
-      let(:signature) { key_pair.sign("some other message") } 
+      let(:signature) { key_pair.sign("some other message") }
       it{ should be_falsey }
     end
 
     context "when the signature is invalid" do
-      let(:signature) { "food" } 
+      let(:signature) { "food" }
       it{ should be_falsey }
     end
 
     context "when the signature is from a different key" do
-      let(:signature) { Stellar::KeyPair.random.sign(message) } 
+      let(:signature) { Stellar::KeyPair.random.sign(message) }
       it{ should be_falsey }
     end
 

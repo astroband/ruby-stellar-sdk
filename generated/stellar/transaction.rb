@@ -1,6 +1,6 @@
-# Automatically generated on 2015-05-13T15:00:04-07:00
+# This code was automatically generated using xdrgen
 # DO NOT EDIT or your changes may be overwritten
-        
+
 require 'xdr'
 
 # === xdr source ============================================================
@@ -11,7 +11,7 @@ require 'xdr'
 #       AccountID sourceAccount;
 #   
 #       // the fee the sourceAccount will pay
-#       int32 fee;
+#       uint32 fee;
 #   
 #       // sequence number to consume in the account
 #       SequenceNumber seqNum;
@@ -22,16 +22,29 @@ require 'xdr'
 #       Memo memo;
 #   
 #       Operation operations<100>;
+#   
+#       // reserved for future use
+#       union switch (int v)
+#       {
+#       case 0:
+#           void;
+#       }
+#       ext;
 #   };
 #
 # ===========================================================================
 module Stellar
   class Transaction < XDR::Struct
+    include XDR::Namespace
+
+    autoload :Ext
+
     attribute :source_account, AccountID
-    attribute :fee,            Int32
+    attribute :fee,            Uint32
     attribute :seq_num,        SequenceNumber
     attribute :time_bounds,    XDR::Option[TimeBounds]
     attribute :memo,           Memo
     attribute :operations,     XDR::VarArray[Operation, 100]
+    attribute :ext,            Ext
   end
 end

@@ -32,12 +32,21 @@ module Stellar
       @secret_key = secret_key
     end
 
+    def account_id
+      Stellar::AccountID.new :key_types_ed25519, raw_public_key
+    end
+
     def public_key
+      Stellar::PublicKey.new :key_types_ed25519, raw_public_key
+    end
+
+    def raw_public_key
       @public_key.to_bytes
     end
 
-    def public_key_hint
-      public_key.slice(0, 4)
+    def signature_hint
+      # take last 4 bytes
+      account_id.to_xdr.slice(-4, 4)
     end
 
     def raw_seed
@@ -53,7 +62,7 @@ module Stellar
     end
 
     def address
-      pk_bytes = public_key
+      pk_bytes = raw_public_key
       Util::Base58.stellar.check_encode(:account_id, pk_bytes)
     end
 
@@ -77,7 +86,7 @@ module Stellar
     def sign_decorated(message)
       raw_signature = sign(message)
       Stellar::DecoratedSignature.new({
-        hint:      public_key_hint,
+        hint:      signature_hint,
         signature: raw_signature
       })
     end

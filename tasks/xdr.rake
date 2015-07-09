@@ -4,21 +4,25 @@ namespace :xdr do
   # Prior to launch, we should be separating our .x files into a separate
   # repo, and should be able to improve this integration.
   HAYASHI_XDR = [
+    "src/xdr/Stellar-types.x",
     "src/xdr/Stellar-ledger-entries.x",
+    "src/xdr/Stellar-transaction.x",
     "src/xdr/Stellar-ledger.x",
     "src/xdr/Stellar-overlay.x",
-    "src/xdr/Stellar-transaction.x",
-    "src/xdr/Stellar-types.x",
     "src/overlay/StellarXDR.x",
-    "src/scp/SCPXDR.x",
+    "src/scp/Stellar-SCP.x",
   ]
+
+  LOCAL_XDR_PATHS = HAYASHI_XDR.map{ |src| "xdr/" + File.basename(src) }
 
   task :update => [:download, :generate]
 
   task :download do
     require 'octokit'
     require 'base64'
-    
+    FileUtils.rm_rf "xdr/"
+    FileUtils.mkdir_p "xdr"
+
     client = Octokit::Client.new(:netrc => true)
 
     HAYASHI_XDR.each do |src|
@@ -36,10 +40,9 @@ namespace :xdr do
     require 'fileutils'
     FileUtils.rm_rf "generated"
 
-    paths = Pathname.glob("xdr/**/*.x")
     compilation = Xdrgen::Compilation.new(
-      paths, 
-      output_dir: "generated", 
+      LOCAL_XDR_PATHS,
+      output_dir: "generated",
       namespace:  "stellar-base-generated",
       language:   :ruby
     )

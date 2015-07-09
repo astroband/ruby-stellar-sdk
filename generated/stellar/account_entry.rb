@@ -1,6 +1,6 @@
-# Automatically generated on 2015-05-13T15:00:04-07:00
+# This code was automatically generated using xdrgen
 # DO NOT EDIT or your changes may be overwritten
-        
+
 require 'xdr'
 
 # === xdr source ============================================================
@@ -15,26 +15,39 @@ require 'xdr'
 #       AccountID* inflationDest; // Account to vote during inflation
 #       uint32 flags;             // see AccountFlags
 #   
+#       string32 homeDomain; // can be used for reverse federation and memo lookup
+#   
 #       // fields used for signatures
 #       // thresholds stores unsigned bytes: [weight of master|low|medium|high]
 #       Thresholds thresholds;
 #   
-#       string32 homeDomain; // can be used for reverse federation and memo lookup
-#   
 #       Signer signers<20>; // possible signers for this account
+#   
+#       // reserved for future use
+#       union switch (int v)
+#       {
+#       case 0:
+#           void;
+#       }
+#       ext;
 #   };
 #
 # ===========================================================================
 module Stellar
   class AccountEntry < XDR::Struct
+    include XDR::Namespace
+
+    autoload :Ext
+
     attribute :account_id,      AccountID
     attribute :balance,         Int64
     attribute :seq_num,         SequenceNumber
     attribute :num_sub_entries, Uint32
     attribute :inflation_dest,  XDR::Option[AccountID]
     attribute :flags,           Uint32
-    attribute :thresholds,      Thresholds
     attribute :home_domain,     String32
+    attribute :thresholds,      Thresholds
     attribute :signers,         XDR::VarArray[Signer, 20]
+    attribute :ext,             Ext
   end
 end

@@ -1,6 +1,6 @@
-# Automatically generated on 2015-06-08T11:39:15-07:00
+# This code was automatically generated using xdrgen
 # DO NOT EDIT or your changes may be overwritten
-        
+
 require 'xdr'
 
 # === xdr source ============================================================

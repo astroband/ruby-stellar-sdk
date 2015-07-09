@@ -30,7 +30,7 @@ module Stellar
     def self.manage_offer(attributes={})
       make :manage_offer, attributes
     end
-    
+
     #
     # @see  Stellar::Operation.create_passive_offer
     def self.create_passive_offer(attributes={})
@@ -101,7 +101,7 @@ module Stellar
       new.tap do |result|
         result.seq_num        = sequence
         result.fee            = fee
-        result.source_account = account.public_key
+        result.source_account = account.account_id
         result.apply_defaults
       end
     end
@@ -115,7 +115,18 @@ module Stellar
     end
 
     def hash
-      Digest::SHA256.digest(to_xdr)
+      Digest::SHA256.digest(signature_base)
+    end
+
+    # Returns the string of bytes that, when hashed, provide the value which
+    # should be signed to create a valid stellar transaciton signature
+    def signature_base
+      signature_base_prefix + to_xdr
+    end
+
+    def signature_base_prefix
+      val = Stellar::EnvelopeType.envelope_type_tx
+      Stellar::EnvelopeType.to_xdr(val)
     end
 
     def to_envelope(*key_pairs)
@@ -152,6 +163,7 @@ module Stellar
       self.operations ||= []
       self.fee        ||= 10
       self.memo       ||= Memo.new(:memo_none)
+      self.ext        ||= Stellar::Transaction::Ext.new 0
     end
   end
 end

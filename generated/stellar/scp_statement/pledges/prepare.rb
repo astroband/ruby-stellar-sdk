@@ -1,14 +1,18 @@
-# Automatically generated on 2015-05-13T15:00:04-07:00
+# This code was automatically generated using xdrgen
 # DO NOT EDIT or your changes may be overwritten
-        
+
 require 'xdr'
 
 # === xdr source ============================================================
 #
 #   struct
 #           {
-#               SCPBallot excepted<>; // B_c
-#               SCPBallot* prepared;  // p
+#               Hash quorumSetHash;       // D
+#               SCPBallot ballot;         // b
+#               SCPBallot* prepared;      // p
+#               SCPBallot* preparedPrime; // p'
+#               uint32 nC;                // n_c
+#               uint32 nP;                // n_P
 #           }
 #
 # ===========================================================================
@@ -16,8 +20,12 @@ module Stellar
   class SCPStatement
     class Pledges
       class Prepare < XDR::Struct
-        attribute :excepted, XDR::VarArray[SCPBallot]
-        attribute :prepared, XDR::Option[SCPBallot]
+        attribute :quorum_set_hash, Hash
+        attribute :ballot,          SCPBallot
+        attribute :prepared,        XDR::Option[SCPBallot]
+        attribute :prepared_prime,  XDR::Option[SCPBallot]
+        attribute :n_c,             Uint32
+        attribute :n_p,             Uint32
       end
     end
   end

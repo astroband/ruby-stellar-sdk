@@ -7,20 +7,6 @@
 namespace stellar
 {
 
-struct StellarBallotValue
-{
-    Hash txSetHash;
-    uint64 closeTime;
-    uint32 baseFee;
-};
-
-struct StellarBallot
-{
-    uint256 nodeID;
-    Signature signature;
-    StellarBallotValue value;
-};
-
 struct Error
 {
     int code;
@@ -29,10 +15,11 @@ struct Error
 
 struct Hello
 {
-    int protocolVersion;
+    uint32 ledgerVersion;
+    uint32 overlayVersion;
     string versionStr<100>;
     int listeningPort;
-    opaque peerID[32];
+    NodeID peerID;
 };
 
 struct PeerAddress

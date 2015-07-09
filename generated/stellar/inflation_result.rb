@@ -1,6 +1,6 @@
-# Automatically generated on 2015-05-13T15:00:04-07:00
+# This code was automatically generated using xdrgen
 # DO NOT EDIT or your changes may be overwritten
-        
+
 require 'xdr'
 
 # === xdr source ============================================================
@@ -8,7 +8,7 @@ require 'xdr'
 #   union InflationResult switch (InflationResultCode code)
 #   {
 #   case INFLATION_SUCCESS:
-#       inflationPayout payouts<>;
+#       InflationPayout payouts<>;
 #   default:
 #       void;
 #   };

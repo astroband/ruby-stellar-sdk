@@ -1,18 +1,18 @@
-# Automatically generated on 2015-05-13T15:00:04-07:00
+# This code was automatically generated using xdrgen
 # DO NOT EDIT or your changes may be overwritten
-        
+
 require 'xdr'
 
 # === xdr source ============================================================
 #
 #   struct TransactionResultSet
 #   {
-#       TransactionResultPair results<5000>;
+#       TransactionResultPair results<MAX_TX_PER_LEDGER>;
 #   };
 #
 # ===========================================================================
 module Stellar
   class TransactionResultSet < XDR::Struct
-    attribute :results, XDR::VarArray[TransactionResultPair, 5000]
+    attribute :results, XDR::VarArray[TransactionResultPair, MAX_TX_PER_LEDGER]
   end
 end

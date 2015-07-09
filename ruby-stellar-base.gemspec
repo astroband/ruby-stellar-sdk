@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["generated", "lib"]
 
-  spec.add_dependency "xdr", "~> 0.0.3"
+  spec.add_dependency "xdr", "~> 0.0.4"
   spec.add_dependency "rbnacl"
   spec.add_dependency "rbnacl-libsodium", "~> 1.0.3"
   spec.add_dependency "activesupport", "~> 4"
