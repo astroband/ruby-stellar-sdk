@@ -18,6 +18,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["generated", "lib"]
 
   spec.add_dependency "xdr", "~> 0.0.4"
+  spec.add_dependency "digest-crc"
+  spec.add_dependency "base32"
   spec.add_dependency "rbnacl"
   spec.add_dependency "rbnacl-libsodium", "~> 1.0.3"
   spec.add_dependency "activesupport", "~> 4"

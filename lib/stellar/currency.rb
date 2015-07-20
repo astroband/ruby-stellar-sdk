@@ -15,8 +15,7 @@ module Stellar
       if switch == CurrencyType.currency_type_native
         "native"
       else
-        encoder = Stellar::Util::Base58.stellar
-        issuer_address = encoder.check_encode(:account_id,alpha_num.issuer)
+        issuer_address = Stellar::Util::StrKey.check_encode(:account_id,alpha_num.issuer)
         "#{alpha_num.currency_code}/#{issuer_address}"
       end
     end

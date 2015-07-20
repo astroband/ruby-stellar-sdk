@@ -21,12 +21,8 @@ module Stellar
       Base64.strict_decode64(base64_string)
     end
 
-    def base58
-      Stellar::Util::Base58.stellar
-    end
-
     def pk_to_address(pk)
-      base58.check_encode(:account_id, pk)
+      Stellar::util::StrKey.check_encode(:account_id, pk)
     end
 
     extend self
