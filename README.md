@@ -35,10 +35,10 @@ We wrap rbnacl with `Stellar::KeyPair`, providing some stellar specific function
 ```ruby
 
 # Create a keypair from a stellar secret seed
-signer = Stellar::KeyPair.from_seed("s3tUdZbCmLoMdrZ6nhqztatMFaiD85P54oVj93g1NeSBwWQpTnE")
+signer = Stellar::KeyPair.from_seed("SCBASSEX34FJNIPLUYQPSMZHHYXXQNWOOV42XYZFXM6EGYX2DPIZVIA3")
 
 # Create a keypair from a stellar address
-verifier = Stellar::KeyPair.from_address("gsTe6bDX54bPwtUAm2TER4shBF8nQNVtEvB8fmRkRoWvq3Y8XmY")
+verifier = Stellar::KeyPair.from_address("GBQWWBFLRP3BXD2RI2FH7XNNU2MKIYVUI7QXUAIVG34JY6MQGXVUO3RX")
 
 # Produce a stellar compliant "decorated signature" that is compliant with stellar transactions
 
@@ -46,25 +46,19 @@ signer.sign_decorated("Hello world!") # => #<Stellar::DecoratedSignature ...>
 
 ```
 
-This library also provides an impementation of base58 and base58check encoding, with support for the bitcoin and stellar alphabets:
+This library also provides an impementation of Stellar's "StrKey" encoding (RFC-4648 Base32 + CCITT-XModem CRC16):
 
 ```ruby
-b58 = Stellar::Util::Base58.stellar
 
-encoded = b58.encode("\x00\x00\x00") # => "ggg"
-b58.decode(encoded) # => "\x00\x00\x00"
-
-# we can also use check encoding
-
-b58.check_encode(:account_id, "\x00\x00\x00") # => "gggghbdQd2"
-b58.check_encode(:seed, "\x00\x00\x00") # => "aX9UTew55Eh"
+Stellar::Util::StrCheck.check_encode(:account_id, "\xFF\xFF\xFF\xFF\xFF\xFF\xFF") # => "GD777777777764TU"
+Stellar::Util::StrCheck.check_encode(:seed, "\x00\x00\x00\x00\x00\x00\x39") # => "SAAAAAAAAAADST3H"
 
 # To prevent interpretation mistakes, you must pass the expected version byte
 # when decoding a check_encoded value
 
-encoded = b58.check_encode(:account_id, "\x00\x00\x00")
-b58.check_decode(:account_id, encoded) # => "\x00\x00\x00"
-b58.check_decode(:seed, encoded) # => throws ArgumentError: Unexpected version: :account_id
+encoded = Stellar::Util::StrCheck.check_encode(:account_id, "\x61\x6b\x04\xab\x8b\xf6\x1b")
+Stellar::Util::StrCheck.check_decode(:account_id, encoded) # => "\x61\x6b\x04\xab\x8b\xf6\x1b"
+Stellar::Util::StrCheck.check_decode(:seed, encoded) # => throws ArgumentError: Unexpected version: :account_id
 
 ```
 
