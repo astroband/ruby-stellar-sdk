@@ -20,7 +20,7 @@ tx = Stellar::Transaction.create_account({
   starting_balance:  50 * Stellar::ONE
 })
 
-hex    = tx.to_envelope(master).to_xdr(:hex)
+b64    = tx.to_envelope(master).to_xdr(:base64)
 
-result = $server.get('tx', blob: hex)
+result = $server.get('tx', blob: b64)
 p result.body

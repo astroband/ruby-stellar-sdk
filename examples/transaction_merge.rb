@@ -19,5 +19,5 @@ tx2 = Stellar::Transaction.payment({
   amount:      [:native, 20 * Stellar::ONE]
 })
 
-hex = tx1.merge(tx2).to_envelope(master).to_xdr(:hex)
+hex = tx1.merge(tx2).to_envelope(master).to_xdr(:base64)
 puts hex
