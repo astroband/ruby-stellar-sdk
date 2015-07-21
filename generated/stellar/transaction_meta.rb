@@ -5,14 +5,27 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct TransactionMeta
+#   union TransactionMeta switch (int v)
 #   {
-#       LedgerEntryChange changes<>;
+#   case 0:
+#       struct
+#       {
+#           LedgerEntryChanges changes;
+#           OperationMeta operations<>;
+#       } v0;
 #   };
 #
 # ===========================================================================
 module Stellar
-  class TransactionMeta < XDR::Struct
-    attribute :changes, XDR::VarArray[LedgerEntryChange]
+  class TransactionMeta < XDR::Union
+    include XDR::Namespace
+
+    autoload :V0
+
+    switch_on XDR::Int, :v
+
+    switch 0, :v0
+
+    attribute :v0, V0
   end
 end

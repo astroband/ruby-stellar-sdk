@@ -7,7 +7,7 @@ require 'xdr'
 #
 #   struct
 #       {
-#           AccountID accountID;
+#           AccountID sellerID;
 #           uint64 offerID;
 #       }
 #
@@ -15,8 +15,8 @@ require 'xdr'
 module Stellar
   class LedgerKey
     class Offer < XDR::Struct
-      attribute :account_id, AccountID
-      attribute :offer_id,   Uint64
+      attribute :seller_id, AccountID
+      attribute :offer_id,  Uint64
     end
   end
 end

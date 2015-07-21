@@ -7,10 +7,10 @@ require 'xdr'
 #
 #   struct OfferEntry
 #   {
-#       AccountID accountID;
+#       AccountID sellerID;
 #       uint64 offerID;
-#       Currency takerGets; // A
-#       Currency takerPays; // B
+#       Asset selling; // A
+#       Asset buying; // B
 #       int64 amount;       // amount of A
 #   
 #       /* price for this offer:
@@ -37,13 +37,13 @@ module Stellar
 
     autoload :Ext
 
-    attribute :account_id, AccountID
-    attribute :offer_id,   Uint64
-    attribute :taker_gets, Currency
-    attribute :taker_pays, Currency
-    attribute :amount,     Int64
-    attribute :price,      Price
-    attribute :flags,      Uint32
-    attribute :ext,        Ext
+    attribute :seller_id, AccountID
+    attribute :offer_id,  Uint64
+    attribute :selling,   Asset
+    attribute :buying,    Asset
+    attribute :amount,    Int64
+    attribute :price,     Price
+    attribute :flags,     Uint32
+    attribute :ext,       Ext
   end
 end

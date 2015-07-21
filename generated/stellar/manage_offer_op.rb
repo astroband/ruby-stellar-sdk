@@ -7,10 +7,10 @@ require 'xdr'
 #
 #   struct ManageOfferOp
 #   {
-#       Currency takerGets;
-#       Currency takerPays;
-#       int64 amount; // amount taker gets. if set to 0, delete the offer
-#       Price price;  // =takerPaysAmount/takerGetsAmount
+#       Asset selling;
+#       Asset buying;
+#       int64 amount; // amount being sold. if set to 0, delete the offer
+#       Price price;  // price of thing being sold in terms of what you are buying
 #   
 #       // 0=create a new offer, otherwise edit an existing offer
 #       uint64 offerID;
@@ -19,10 +19,10 @@ require 'xdr'
 # ===========================================================================
 module Stellar
   class ManageOfferOp < XDR::Struct
-    attribute :taker_gets, Currency
-    attribute :taker_pays, Currency
-    attribute :amount,     Int64
-    attribute :price,      Price
-    attribute :offer_id,   Uint64
+    attribute :selling,  Asset
+    attribute :buying,   Asset
+    attribute :amount,   Int64
+    attribute :price,    Price
+    attribute :offer_id, Uint64
   end
 end

@@ -16,8 +16,8 @@ require 'xdr'
 #       PAYMENT_SRC_NO_TRUST = -3,       // no trust line on source account
 #       PAYMENT_SRC_NOT_AUTHORIZED = -4, // source not authorized to transfer
 #       PAYMENT_NO_DESTINATION = -5,     // destination account does not exist
-#       PAYMENT_NO_TRUST = -6, // destination missing a trust line for currency
-#       PAYMENT_NOT_AUTHORIZED = -7, // destination not authorized to hold currency
+#       PAYMENT_NO_TRUST = -6, // destination missing a trust line for asset
+#       PAYMENT_NOT_AUTHORIZED = -7, // destination not authorized to hold asset
 #       PAYMENT_LINE_FULL = -8       // destination would go above their limit
 #   };
 #

@@ -7,16 +7,16 @@ require 'xdr'
 #
 #   struct
 #       {
-#           opaque currencyCode[4];
-#           AccountID issuer;
+#           LedgerEntryChanges changes;
+#           OperationMeta operations<>;
 #       }
 #
 # ===========================================================================
 module Stellar
-  class Currency
-    class AlphaNum < XDR::Struct
-      attribute :currency_code, XDR::Opaque[4]
-      attribute :issuer,        AccountID
+  class TransactionMeta
+    class V0 < XDR::Struct
+      attribute :changes,    LedgerEntryChanges
+      attribute :operations, XDR::VarArray[OperationMetum]
     end
   end
 end

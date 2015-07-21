@@ -8,7 +8,7 @@ require 'xdr'
 #   struct SimplePaymentResult
 #   {
 #       AccountID destination;
-#       Currency currency;
+#       Asset asset;
 #       int64 amount;
 #   };
 #
@@ -16,7 +16,7 @@ require 'xdr'
 module Stellar
   class SimplePaymentResult < XDR::Struct
     attribute :destination, AccountID
-    attribute :currency,    Currency
+    attribute :asset,       Asset
     attribute :amount,      Int64
   end
 end

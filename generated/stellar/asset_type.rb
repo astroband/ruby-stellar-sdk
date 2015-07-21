@@ -5,15 +5,19 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   enum CryptoKeyType
+#   enum AssetType
 #   {
-#       KEY_TYPE_ED25519 = 0
+#       ASSET_TYPE_NATIVE = 0,
+#       ASSET_TYPE_CREDIT_ALPHANUM4 = 1,
+#       ASSET_TYPE_CREDIT_ALPHANUM12 = 2
 #   };
 #
 # ===========================================================================
 module Stellar
-  class CryptoKeyType < XDR::Enum
-    member :key_type_ed25519, 0
+  class AssetType < XDR::Enum
+    member :asset_type_native,            0
+    member :asset_type_credit_alphanum4,  1
+    member :asset_type_credit_alphanum12, 2
 
     seal
   end

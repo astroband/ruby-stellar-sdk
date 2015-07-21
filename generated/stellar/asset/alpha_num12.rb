@@ -5,16 +5,18 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   enum CryptoKeyType
-#   {
-#       KEY_TYPE_ED25519 = 0
-#   };
+#   struct
+#       {
+#           opaque assetCode[12];
+#           AccountID issuer;
+#       }
 #
 # ===========================================================================
 module Stellar
-  class CryptoKeyType < XDR::Enum
-    member :key_type_ed25519, 0
-
-    seal
+  class Asset
+    class AlphaNum12 < XDR::Struct
+      attribute :asset_code, XDR::Opaque[12]
+      attribute :issuer,     AccountID
+    end
   end
 end
