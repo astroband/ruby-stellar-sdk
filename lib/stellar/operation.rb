@@ -131,15 +131,15 @@ module Stellar
     end
 
     def self.manage_offer(attributes={})
-      taker_pays = Asset.send(*attributes[:taker_pays])
-      taker_gets = Asset.send(*attributes[:taker_gets])
+      buying     = Asset.send(*attributes[:buying])
+      selling    = Asset.send(*attributes[:selling])
       amount     = attributes[:amount]
       offer_id   = attributes[:offer_id] || 0
       price      = Price.from_f(attributes[:price])
 
       op = ManageOfferOp.new({
-        taker_pays: taker_pays,
-        taker_gets: taker_gets,
+        buying:     buying,
+        selling:    selling,
         amount:     amount,
         price:      price,
         offer_id:   offer_id
@@ -151,14 +151,14 @@ module Stellar
     end
 
     def self.create_passive_offer(attributes={})
-      taker_pays = Asset.send(*attributes[:taker_pays])
-      taker_gets = Asset.send(*attributes[:taker_gets])
+      buying     = Asset.send(*attributes[:buying])
+      selling    = Asset.send(*attributes[:selling])
       amount     = attributes[:amount]
       price      = Price.from_f(attributes[:price])
 
       op = CreatePassiveOfferOp.new({
-        taker_pays: taker_pays,
-        taker_gets: taker_gets,
+        buying:     buying,
+        selling:    selling,
         amount:     amount,
         price:      price,
       })
