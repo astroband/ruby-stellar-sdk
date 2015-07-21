@@ -27,7 +27,7 @@ tx = Stellar::Transaction.payment({
   amount:      [:native, 20 * Stellar::ONE]
 })
 
-hex    = tx.to_envelope(master).to_xdr(:hex)
+b64    = tx.to_envelope(master).to_xdr(:base64)
 
-result = $server.get('tx', blob: hex)
+result = $server.get('tx', blob: b64)
 p result.body

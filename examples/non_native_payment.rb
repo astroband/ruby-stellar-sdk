@@ -22,8 +22,8 @@ $server = Faraday.new(url: "http://localhost:39132") do |conn|
 end
 
 def submit(key, tx)
-  hex      = tx.to_envelope(key).to_xdr(:hex)
-  response = $server.get('tx', blob: hex)
+  b64      = tx.to_envelope(key).to_xdr(:base64)
+  response = $server.get('tx', blob: b64)
   raw = [response.body["result"]].pack("H*")
   p response.body
 end
