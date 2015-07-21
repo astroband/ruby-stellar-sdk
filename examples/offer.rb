@@ -47,14 +47,14 @@ destination_sequence = FILL_ME_IN
 submit destination, Stellar::Transaction.change_trust({
   account:    destination,
   sequence:   destination_sequence,
-  line:       [:alphanum, "USD\x00", master],
+  line:       [:alphanum4, "USD\x00", master],
   limit:      1000
 })
 
 submit destination, Stellar::Transaction.change_trust({
   account:    destination,
   sequence:   destination_sequence + 1,
-  line:       [:alphanum, "EUR\x00", master],
+  line:       [:alphanum4, "EUR\x00", master],
   limit:      1000
 })
 
@@ -62,14 +62,14 @@ submit master, Stellar::Transaction.payment({
   account:     master,
   destination: destination,
   sequence:    destination_sequence + 2,
-  amount:      [:alphanum, "USD\x00", master, 1000]
+  amount:      [:alphanum4, "USD\x00", master, 1000]
 })
 
 submit master, Stellar::Transaction.manage_offer({
   account:    destination,
   sequence:   destination_sequence + 3
-  taker_gets: [:alphanum, "USD\x00", usd_gateway],
-  taker_pays: [:alphanum, "EUR\x00", eur_gateway],
+  taker_gets: [:alphanum4, "USD\x00", usd_gateway],
+  taker_pays: [:alphanum4, "EUR\x00", eur_gateway],
   amount:     100,
   price:      2.0,
 })

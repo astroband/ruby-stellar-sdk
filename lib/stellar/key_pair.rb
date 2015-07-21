@@ -33,11 +33,11 @@ module Stellar
     end
 
     def account_id
-      Stellar::AccountID.new :key_types_ed25519, raw_public_key
+      Stellar::AccountID.new :key_type_ed25519, raw_public_key
     end
 
     def public_key
-      Stellar::PublicKey.new :key_types_ed25519, raw_public_key
+      Stellar::PublicKey.new :key_type_ed25519, raw_public_key
     end
 
     def raw_public_key
