@@ -8,7 +8,7 @@ require 'xdr'
 #   struct PaymentOp
 #   {
 #       AccountID destination; // recipient of the payment
-#       Currency currency;     // what they end up with
+#       Asset asset;     // what they end up with
 #       int64 amount;          // amount they end up with
 #   };
 #
@@ -16,7 +16,7 @@ require 'xdr'
 module Stellar
   class PaymentOp < XDR::Struct
     attribute :destination, AccountID
-    attribute :currency,    Currency
+    attribute :asset,       Asset
     attribute :amount,      Int64
   end
 end

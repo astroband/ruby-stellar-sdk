@@ -31,7 +31,7 @@ module Stellar
     # in the necessary XDR structs to be included within a
     # transactions `operations` array.
     #
-    # @see Stellar::Currency
+    # @see Stellar::Asset
     #
     # @param [Hash] attributes the attributes to create the operation with
     # @option attributes [Stellar::KeyPair] :destination the receiver of the payment
@@ -40,13 +40,13 @@ module Stellar
     #                              Stellar::PaymentOp body
     def self.payment(attributes={})
       destination = attributes[:destination]
-      currency, amount = extract_amount(attributes[:amount])
+      asset, amount = extract_amount(attributes[:amount])
 
       raise ArgumentError unless destination.is_a?(KeyPair)
 
 
       op             = PaymentOp.new
-      op.currency    = currency
+      op.asset       = asset
       op.amount      = amount
       op.destination = destination.account_id
 
@@ -60,29 +60,29 @@ module Stellar
     # in the necessary XDR structs to be included within a
     # transactions `operations` array.
     #
-    # @see Stellar::Currency
+    # @see Stellar::Asset
     #
     # @param [Hash] attributes the attributes to create the operation with
     # @option attributes [Stellar::KeyPair] :destination the receiver of the payment
     # @option attributes [Array] :amount the amount to pay
-    # @option attributes [Array] :with the source currency and maximum allowed source amount to pay with
-    # @option attributes [Array<Stellar::Currency>] :path the payment path to use
+    # @option attributes [Array] :with the source asset and maximum allowed source amount to pay with
+    # @option attributes [Array<Stellar::Asset>] :path the payment path to use
     #
     # @return [Stellar::Operation] the built operation, containing a
     #                              Stellar::PaymentOp body
     def self.path_payment(attributes={})
       destination             = attributes[:destination]
-      currency, amount        = extract_amount(attributes[:amount])
-      send_currency, send_max = extract_amount(attributes[:with])
-      path                    = (attributes[:path] || []).map{|p| Stellar::Currency.send(*p)}
+      asset, amount           = extract_amount(attributes[:amount])
+      send_asset, send_max    = extract_amount(attributes[:with])
+      path                    = (attributes[:path] || []).map{|p| Stellar::Asset.send(*p)}
 
       raise ArgumentError unless destination.is_a?(KeyPair)
 
       op               = PathPaymentOp.new
-      op.send_currency = send_currency
+      op.send_asset    = send_asset
       op.send_max      = send_max
       op.destination   = destination.account_id
-      op.dest_currency = currency
+      op.dest_asset    = asset
       op.dest_amount   = amount
       op.path          = path
 
@@ -112,13 +112,13 @@ module Stellar
     # transactions `operations` array.
     #
     # @param [Hash] attributes the attributes to create the operation with
-    # @option attributes [Stellar::Currrency] :line the currency to trust
+    # @option attributes [Stellar::Currrency] :line the asset to trust
     # @option attributes [Fixnum] :limit the maximum amount to trust
     #
     # @return [Stellar::Operation] the built operation, containing a
     #                              Stellar::ChangeTrustOp body
     def self.change_trust(attributes={})
-      line  = Currency.send(*attributes[:line])
+      line  = Asset.send(*attributes[:line])
       limit = attributes[:limit]
 
       raise ArgumentError, "Bad :limit #{limit}" unless limit.is_a?(Integer)
@@ -131,8 +131,8 @@ module Stellar
     end
 
     def self.manage_offer(attributes={})
-      taker_pays = Currency.send(*attributes[:taker_pays])
-      taker_gets = Currency.send(*attributes[:taker_gets])
+      taker_pays = Asset.send(*attributes[:taker_pays])
+      taker_gets = Asset.send(*attributes[:taker_gets])
       amount     = attributes[:amount]
       offer_id   = attributes[:offer_id] || 0
       price      = Price.from_f(attributes[:price])
@@ -151,8 +151,8 @@ module Stellar
     end
 
     def self.create_passive_offer(attributes={})
-      taker_pays = Currency.send(*attributes[:taker_pays])
-      taker_gets = Currency.send(*attributes[:taker_gets])
+      taker_pays = Asset.send(*attributes[:taker_pays])
+      taker_gets = Asset.send(*attributes[:taker_gets])
       amount     = attributes[:amount]
       price      = Price.from_f(attributes[:price])
 
@@ -214,7 +214,7 @@ module Stellar
     #
     # @param [Hash] attributes the attributes to create the operation with
     # @option attributes [Stellar::KeyPair]  :trustor
-    # @option attributes [Stellar::Currency] :currency
+    # @option attributes [Stellar::Asset] :asset
     #
     # @return [Stellar::Operation] the built operation, containing a
     #                              Stellar::AllowTrustOp body
@@ -223,17 +223,17 @@ module Stellar
 
       trustor   = attributes[:trustor]
       authorize = attributes[:authorize]
-      currency  = Currency.send(*attributes[:currency])
+      asset     = Asset.send(*attributes[:asset])
 
       raise ArgumentError, "Bad :trustor" unless trustor.is_a?(Stellar::KeyPair)
       raise ArgumentError, "Bad :authorize" unless authorize == !!authorize # check boolean
-      raise ArgumentError, "Bad :currency" unless currency.type == Stellar::CurrencyType.currency_type_alphanum
+      raise ArgumentError, "Bad :asset" unless asset.type == Stellar::AssetType.asset_type_credit_alphanum4
 
-      atc = AllowTrustOp::Currency.new(:currency_type_alphanum, currency.code)
+      atc = AllowTrustOp::Asset.new(:asset_type_credit_alphanum4, asset.code)
 
       op.trustor   = trustor.account_id
       op.authorize = authorize
-      op.currency  = atc
+      op.asset     = atc
 
       return make(attributes.merge({
         body:[:allow_trust, op]
@@ -279,9 +279,9 @@ module Stellar
     private
     def self.extract_amount(a)
       amount   = a.last
-      currency = Stellar::Currency.send(*a[0...-1])
+      asset    = Stellar::Asset.send(*a[0...-1])
 
-      return currency, amount
+      return asset, amount
     end
   end
 end

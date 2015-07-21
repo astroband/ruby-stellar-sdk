@@ -5,10 +5,7 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct AllowTrustOp
-#   {
-#       AccountID trustor;
-#       union switch (AssetType type)
+#   union switch (AssetType type)
 #       {
 #       // ASSET_TYPE_NATIVE is not allowed
 #       case ASSET_TYPE_CREDIT_ALPHANUM4:
@@ -19,20 +16,18 @@ require 'xdr'
 #   
 #           // add other asset types here in the future
 #       }
-#       asset;
-#   
-#       bool authorize;
-#   };
 #
 # ===========================================================================
 module Stellar
-  class AllowTrustOp < XDR::Struct
-    include XDR::Namespace
+  class AllowTrustOp
+    class Asset < XDR::Union
+      switch_on AssetType, :type
 
-    autoload :Asset
+      switch :asset_type_credit_alphanum4,  :asset_code4
+      switch :asset_type_credit_alphanum12, :asset_code12
 
-    attribute :trustor,   AccountID
-    attribute :asset,     Asset
-    attribute :authorize, XDR::Bool
+      attribute :asset_code4,  XDR::Opaque[4]
+      attribute :asset_code12, XDR::Opaque[12]
+    end
   end
 end

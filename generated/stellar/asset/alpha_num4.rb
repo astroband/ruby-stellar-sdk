@@ -5,18 +5,18 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   enum CurrencyType
-#   {
-#       CURRENCY_TYPE_NATIVE = 0,
-#       CURRENCY_TYPE_ALPHANUM = 1
-#   };
+#   struct
+#       {
+#           opaque assetCode[4];
+#           AccountID issuer;
+#       }
 #
 # ===========================================================================
 module Stellar
-  class CurrencyType < XDR::Enum
-    member :currency_type_native,   0
-    member :currency_type_alphanum, 1
-
-    seal
+  class Asset
+    class AlphaNum4 < XDR::Struct
+      attribute :asset_code, XDR::Opaque[4]
+      attribute :issuer,     AccountID
+    end
   end
 end

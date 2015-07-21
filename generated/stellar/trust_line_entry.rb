@@ -8,9 +8,9 @@ require 'xdr'
 #   struct TrustLineEntry
 #   {
 #       AccountID accountID; // account this trustline belongs to
-#       Currency currency;   // currency (with issuer)
-#       int64 balance;       // how much of this currency the user has.
-#                            // Currency defines the unit for this;
+#       Asset asset;   // type of asset (with issuer)
+#       int64 balance;       // how much of this asset the user has.
+#                            // Asset defines the unit for this;
 #   
 #       int64 limit;  // balance cannot be above this
 #       uint32 flags; // see TrustLineFlags
@@ -32,7 +32,7 @@ module Stellar
     autoload :Ext
 
     attribute :account_id, AccountID
-    attribute :currency,   Currency
+    attribute :asset,      Asset
     attribute :balance,    Int64
     attribute :limit,      Int64
     attribute :flags,      Uint32

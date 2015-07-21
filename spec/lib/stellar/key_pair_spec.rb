@@ -6,19 +6,19 @@ describe Stellar::KeyPair do
   describe ".from_seed" do
     subject{ Stellar::KeyPair.from_seed(seed) }
 
-    context "when provided a base58check encoded seed" do
-      let(:seed){ "s9aaUNPaT9t1x7vCeDzQYvLZDm5XxSUKkwnqQowV6D3kMr678uZ" }
+    context "when provided a strkey encoded seed" do
+      let(:seed){ "SBDA4J4PYZJEXWDTHFZBIGFVF2745BTKDKADWDQF72QXP55BP6XOV3B6" }
       it { should be_a(Stellar::KeyPair) }
     end
 
-    context "provided value is not base58 encoded" do
+    context "provided value is not strkey encoded" do
       let(:seed){ "allmylifemyhearthasbeensearching" }
       it { expect{ subject }.to raise_error(ArgumentError) }
     end
 
-    context "provided value is not base58 encoded as a seed" do
+    context "provided value is not strkey encoded as a seed" do
       let(:raw_seed){ "allmylifemyhearthasbeensearching" }
-      let(:seed){ Stellar::Util::Base58.stellar.check_encode(:account_id, raw_seed) }
+      let(:seed){ Stellar::Util::StrKey.check_encode(:account_id, raw_seed) }
       it { expect{ subject }.to raise_error(ArgumentError) }
     end
   end
@@ -74,19 +74,19 @@ describe Stellar::KeyPair do
   describe ".from_address" do
     subject{ Stellar::KeyPair.from_address(address) }
 
-    context "when provided a base58check encoded account_id" do
-      let(:address){ "gsYRSEQhTffqA9opPepAENCr2WG6z5iBHHubxxbRzWaHf8FBWcu" }
+    context "when provided a strkey encoded account_id" do
+      let(:address){ "GBRAINV4XDXEINVTNN53GOIGTN4B3BK65N6Q2ZBOMXHGHT347OQVNYZQ" }
       it { should be_a(Stellar::KeyPair) }
     end
 
-    context "provided value is not base58 encoded" do
+    context "provided value is not strkey encoded" do
       let(:address){ "some address" }
       it { expect{ subject }.to raise_error(ArgumentError) }
     end
 
-    context "provided value is not base58 encoded as an account_id" do
+    context "provided value is not strkey encoded as an account_id" do
       let(:public_key){ "\xFF" * 32 }
-      let(:address){ Stellar::Util::Base58.stellar.check_encode(:seed, public_key) }
+      let(:address){ Stellar::Util::StrKey.check_encode(:seed, public_key) }
       it { expect{ subject }.to raise_error(ArgumentError) }
     end
 
@@ -151,13 +151,13 @@ describe Stellar::KeyPair do
   describe "#address" do
     let(:key_pair){ Stellar::KeyPair.random }
     subject{ key_pair.address }
-    it{ should be_base58_check(:account_id)}
+    it{ should be_strkey(:account_id)}
   end
 
   describe "#seed" do
     let(:key_pair){ Stellar::KeyPair.random }
     subject{ key_pair.seed }
-    it{ should be_base58_check(:seed)}
+    it{ should be_strkey(:seed)}
   end
 
   describe "#sign" do

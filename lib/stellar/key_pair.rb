@@ -1,7 +1,7 @@
 module Stellar
   class KeyPair
     def self.from_seed(seed)
-      seed_bytes = Util::Base58.stellar.check_decode(:seed, seed)
+      seed_bytes = Util::StrKey.check_decode(:seed, seed)
       from_raw_seed seed_bytes
     end
 
@@ -17,7 +17,7 @@ module Stellar
     end
 
     def self.from_address(address)
-      pk_bytes = Util::Base58.stellar.check_decode(:account_id, address)
+      pk_bytes = Util::StrKey.check_decode(:account_id, address)
       from_public_key(pk_bytes)
     end
 
@@ -33,11 +33,11 @@ module Stellar
     end
 
     def account_id
-      Stellar::AccountID.new :key_types_ed25519, raw_public_key
+      Stellar::AccountID.new :key_type_ed25519, raw_public_key
     end
 
     def public_key
-      Stellar::PublicKey.new :key_types_ed25519, raw_public_key
+      Stellar::PublicKey.new :key_type_ed25519, raw_public_key
     end
 
     def raw_public_key
@@ -63,14 +63,14 @@ module Stellar
 
     def address
       pk_bytes = raw_public_key
-      Util::Base58.stellar.check_encode(:account_id, pk_bytes)
+      Util::StrKey.check_encode(:account_id, pk_bytes)
     end
 
     def seed
       raise "no private key" if @secret_key.nil?
       #TODO: improve the error class above
       seed_bytes = raw_seed
-      encoder = Util::Base58.stellar.check_encode(:seed, seed_bytes)
+      encoder = Util::StrKey.check_encode(:seed, seed_bytes)
     end
 
     def sign?

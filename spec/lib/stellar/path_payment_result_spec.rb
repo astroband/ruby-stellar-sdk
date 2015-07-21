@@ -26,7 +26,7 @@ describe Stellar::PathPaymentResult, "#send_amount" do
   context "with simple 1-hop result" do
     let(:simple_success){ Stellar::SimplePaymentResult.new(amount: 100) }
     let(:offers) do
-      [Stellar::ClaimOfferAtom.new(currency_send: Stellar::Currency.native, amount_send: 200)]
+      [Stellar::ClaimOfferAtom.new(asset_send: Stellar::Asset.native, amount_send: 200)]
     end
 
     let(:path_success) do
@@ -47,8 +47,8 @@ describe Stellar::PathPaymentResult, "#send_amount" do
     let(:simple_success){ Stellar::SimplePaymentResult.new(amount: 100) }
     let(:offers) do
       [
-        Stellar::ClaimOfferAtom.new(currency_send: Stellar::Currency.native, amount_send: 200),
-        Stellar::ClaimOfferAtom.new(currency_send: Stellar::Currency.native, amount_send: 200),
+        Stellar::ClaimOfferAtom.new(asset_send: Stellar::Asset.native, amount_send: 200),
+        Stellar::ClaimOfferAtom.new(asset_send: Stellar::Asset.native, amount_send: 200),
       ]
     end
 
@@ -69,12 +69,12 @@ describe Stellar::PathPaymentResult, "#send_amount" do
 
   context "with multi-hop result that claimed multiple offers" do
     let(:simple_success){ Stellar::SimplePaymentResult.new(amount: 100) }
-    let(:otherCurrency){ Stellar::Currency.alphanum("USD", Stellar::KeyPair.random) }
+    let(:otherAsset){ Stellar::Asset.alphanum4("USD", Stellar::KeyPair.random) }
     let(:offers) do
       [
-        Stellar::ClaimOfferAtom.new(currency_send: Stellar::Currency.native, amount_send: 200),
-        Stellar::ClaimOfferAtom.new(currency_send: Stellar::Currency.native, amount_send: 200),
-        Stellar::ClaimOfferAtom.new(currency_send: otherCurrency, amount_send: 200),
+        Stellar::ClaimOfferAtom.new(asset_send: Stellar::Asset.native, amount_send: 200),
+        Stellar::ClaimOfferAtom.new(asset_send: Stellar::Asset.native, amount_send: 200),
+        Stellar::ClaimOfferAtom.new(asset_send: otherAsset, amount_send: 200),
       ]
     end
 

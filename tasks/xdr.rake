@@ -4,14 +4,13 @@ namespace :xdr do
   # Prior to launch, we should be separating our .x files into a separate
   # repo, and should be able to improve this integration.
   HAYASHI_XDR = [
-    "src/xdr/Stellar-types.x",
-    "src/xdr/Stellar-ledger-entries.x",
-    "src/xdr/Stellar-transaction.x",
-    "src/xdr/Stellar-ledger.x",
-    "src/xdr/Stellar-overlay.x",
-    "src/overlay/StellarXDR.x",
-    "src/scp/Stellar-SCP.x",
-  ]
+                 "src/xdr/Stellar-types.x",
+                 "src/xdr/Stellar-ledger-entries.x",
+                 "src/xdr/Stellar-transaction.x",
+                 "src/xdr/Stellar-ledger.x",
+                 "src/xdr/Stellar-overlay.x",
+                 "src/xdr/Stellar-SCP.x",
+                ]
 
   LOCAL_XDR_PATHS = HAYASHI_XDR.map{ |src| "xdr/" + File.basename(src) }
 

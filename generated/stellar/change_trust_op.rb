@@ -7,7 +7,7 @@ require 'xdr'
 #
 #   struct ChangeTrustOp
 #   {
-#       Currency line;
+#       Asset line;
 #   
 #       // if limit is set to 0, deletes the trust line
 #       int64 limit;
@@ -16,7 +16,7 @@ require 'xdr'
 # ===========================================================================
 module Stellar
   class ChangeTrustOp < XDR::Struct
-    attribute :line,  Currency
+    attribute :line,  Asset
     attribute :limit, Int64
   end
 end

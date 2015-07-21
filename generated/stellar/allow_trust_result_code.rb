@@ -10,7 +10,7 @@ require 'xdr'
 #       // codes considered as "success" for the operation
 #       ALLOW_TRUST_SUCCESS = 0,
 #       // codes considered as "failure" for the operation
-#       ALLOW_TRUST_MALFORMED = -1,     // currency is not CURRENCY_TYPE_ALPHANUM
+#       ALLOW_TRUST_MALFORMED = -1,     // asset is not ASSET_TYPE_ALPHANUM
 #       ALLOW_TRUST_NO_TRUST_LINE = -2, // trustor does not have a trustline
 #                                       // source account does not require trust
 #       ALLOW_TRUST_TRUST_NOT_REQUIRED = -3,

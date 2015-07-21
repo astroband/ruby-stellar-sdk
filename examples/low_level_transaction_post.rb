@@ -21,7 +21,7 @@ tx.seq_num    = 1
 
 payment = Stellar::PaymentOp.new
 payment.destination = destination.verify_key.to_bytes
-payment.currency = Stellar::Currency.new(:native)
+payment.asset = Stellar::Asset.new(:native)
 payment.amount = 200 * Stellar::ONE
 
 op = Stellar::Operation.new

@@ -5,16 +5,14 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   enum CryptoKeyType
+#   struct OperationMeta
 #   {
-#       KEY_TYPE_ED25519 = 0
+#       LedgerEntryChanges changes;
 #   };
 #
 # ===========================================================================
 module Stellar
-  class CryptoKeyType < XDR::Enum
-    member :key_type_ed25519, 0
-
-    seal
+  class OperationMeta < XDR::Struct
+    attribute :changes, LedgerEntryChanges
   end
 end

@@ -25,8 +25,8 @@ module Stellar
   Thresholds = XDR::Opaque[4]
   String32 = XDR::String[32]
   SequenceNumber = Uint64
-  autoload :CurrencyType
-  autoload :Currency
+  autoload :AssetType
+  autoload :Asset
   autoload :Price
   autoload :ThresholdIndexes
   autoload :LedgerEntryType
@@ -107,6 +107,8 @@ module Stellar
   autoload :LedgerHeaderHistoryEntry
   autoload :LedgerEntryChangeType
   autoload :LedgerEntryChange
+  LedgerEntryChanges = XDR::VarArray[LedgerEntryChange]
+  autoload :OperationMeta
   autoload :TransactionMeta
 end
 module Stellar
@@ -118,9 +120,6 @@ module Stellar
   autoload :MessageType
   autoload :DontHave
   autoload :StellarMessage
-end
-module Stellar
-  include XDR::Namespace
 end
 module Stellar
   include XDR::Namespace
