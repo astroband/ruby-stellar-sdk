@@ -16,7 +16,7 @@ module Stellar
   class TransactionMeta
     class V0 < XDR::Struct
       attribute :changes,    LedgerEntryChanges
-      attribute :operations, XDR::VarArray[OperationMetum]
+      attribute :operations, XDR::VarArray[OperationMeta]
     end
   end
 end
