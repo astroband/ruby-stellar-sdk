@@ -67,9 +67,9 @@ submit master, Stellar::Transaction.payment({
 
 submit master, Stellar::Transaction.manage_offer({
   account:    destination,
-  sequence:   destination_sequence + 3
-  taker_gets: [:alphanum4, "USD\x00", usd_gateway],
-  taker_pays: [:alphanum4, "EUR\x00", eur_gateway],
+  sequence:   destination_sequence + 3,
+  selling:    [:alphanum4, "USD\x00", usd_gateway],
+  buying:     [:alphanum4, "EUR\x00", eur_gateway],
   amount:     100,
   price:      2.0,
 })
