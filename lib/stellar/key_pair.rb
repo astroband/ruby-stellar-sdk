@@ -27,6 +27,10 @@ module Stellar
       new(public_key, secret_key)
     end
 
+    def self.master
+      from_raw_seed("allmylifemyhearthasbeensearching")
+    end
+
     def initialize(public_key, secret_key=nil)
       @public_key = public_key
       @secret_key = secret_key
