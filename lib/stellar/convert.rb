@@ -21,8 +21,10 @@ module Stellar
       Base64.strict_decode64(base64_string)
     end
 
+    ## Converts a Stellar::PublicKey instance (or any typedef of it such as
+    # Stellar::AccountID) to an address
     def pk_to_address(pk)
-      Stellar::util::StrKey.check_encode(:account_id, pk)
+      Stellar::Util::StrKey.check_encode(:account_id, pk.ed25519!)
     end
 
     extend self
