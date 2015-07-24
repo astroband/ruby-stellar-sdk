@@ -6,17 +6,30 @@ module Stellar
 
     def self.alphanum4(code, issuer)
       raise ArgumentError, "Bad :issuer" unless issuer.is_a?(KeyPair)
-      code = normalize_code(code)
+      code = normalize_code(code, 4)
       an = AlphaNum4.new({asset_code:code, issuer:issuer.account_id})
       new(:asset_type_credit_alphanum4, an)
     end
 
+    def self.alphanum12(code, issuer)
+      raise ArgumentError, "Bad :issuer" unless issuer.is_a?(KeyPair)
+      code = normalize_code(code, 12)
+      an = AlphaNum12.new({asset_code:code, issuer:issuer.account_id})
+      new(:asset_type_credit_alphanum12, an)
+    end
+
     def to_s
-      if switch == AssetType.asset_type_native
+      case switch
+      when AssetType.asset_type_native
         "native"
-      else
-        issuer_address = Stellar::Util::StrKey.check_encode(:account_id,alpha_num.issuer)
-        "#{alpha_num.asset_code}/#{issuer_address}"
+      when AssetType.asset_type_credit_alphanum4
+        anum = alpha_num4!
+        issuer_address = Stellar::Convert.pk_to_address(anum.issuer)
+        "#{anum.asset_code}/#{issuer_address}"
+      when AssetType.asset_type_credit_alphanum12
+        anum = alpha_num12!
+        issuer_address = Stellar::Convert.pk_to_address(anum.issuer)
+        "#{anum.asset_code}/#{issuer_address}"
       end
     end
 
@@ -26,13 +39,20 @@ module Stellar
     end
 
     def code
-      self.alpha_num!.asset_code
+      case switch
+      when AssetType.asset_type_credit_alphanum4
+        alpha_num4!.asset_code
+      when AssetType.asset_type_credit_alphanum12
+        alpha_num12!.asset_code
+      else
+        raise "#{switch} assets do not have a code"
+      end
     end
 
-    def self.normalize_code(code)
-      raise ArgumentError, "Invalid asset code: #{code}, must be <= 4 bytes" if code.length > 4
+    def self.normalize_code(code, length)
+      raise ArgumentError, "Invalid asset code: #{code}, must be <= #{length} bytes" if code.length > length
 
-      code.ljust(4, "\x00")
+      code.ljust(length, "\x00")
     end
   end
 end
