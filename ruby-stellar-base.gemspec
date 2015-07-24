@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["generated", "lib"]
 
-  spec.add_dependency "xdr", "~> 0.0.4"
+  spec.add_dependency "xdr", ">= 0.0.4"
   spec.add_dependency "digest-crc"
   spec.add_dependency "base32"
   spec.add_dependency "rbnacl"
