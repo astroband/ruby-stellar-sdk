@@ -48,6 +48,17 @@ module Stellar
         raise "#{switch} assets do not have a code"
       end
     end
+    
+    def issuer
+      case switch
+      when AssetType.asset_type_credit_alphanum4
+        alpha_num4!.issuer
+      when AssetType.asset_type_credit_alphanum12
+        alpha_num12!.issuer
+      else
+        raise "#{switch} assets do not have a isuuer"
+      end
+    end
 
     def self.normalize_code(code, length)
       raise ArgumentError, "Invalid asset code: #{code}, must be <= #{length} bytes" if code.length > length
