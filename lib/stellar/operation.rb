@@ -1,3 +1,5 @@
+require 'bigdecimal'
+
 module Stellar
   class Operation
 
@@ -135,7 +137,7 @@ module Stellar
       selling    = Asset.send(*attributes[:selling])
       amount     = attributes[:amount]
       offer_id   = attributes[:offer_id] || 0
-      price      = Price.from_f(attributes[:price])
+      price      = interpret_price(attributes[:price])
 
       op = ManageOfferOp.new({
         buying:     buying,
@@ -154,7 +156,7 @@ module Stellar
       buying     = Asset.send(*attributes[:buying])
       selling    = Asset.send(*attributes[:selling])
       amount     = attributes[:amount]
-      price      = Price.from_f(attributes[:price])
+      price      = interpret_price(attributes[:price])
 
       op = CreatePassiveOfferOp.new({
         buying:     buying,
@@ -282,6 +284,21 @@ module Stellar
       asset    = Stellar::Asset.send(*a[0...-1])
 
       return asset, amount
+    end
+
+
+    def self.interpret_price(price)
+      case price
+      when String
+        bd = BigDecimal.new(price)
+        Price.from_f(bd)
+      when Numeric
+        Price.from_f(price)
+      when Stellar::Price
+        price
+      else
+        raise ArgumentError, "Invalid price type: #{price.class}. Must be String, Numeric, or Stellar::Price"
+      end
     end
   end
 end
