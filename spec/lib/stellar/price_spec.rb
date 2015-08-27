@@ -19,7 +19,6 @@ describe Stellar::Price, "#from_f" do
   end
 
   it "works with bigdecimal" do
-    iterations.times do |i|
       whole      = random.rand(1_000_000)
       fractional = random.rand(10_000_000) # seven significant digits available for fractional
       
@@ -30,7 +29,6 @@ describe Stellar::Price, "#from_f" do
       expect(actual).to be_within(BigDecimal.new("0.000000001")).of(actual)
       expect(actual_p.n).to be <= Stellar::Price::MAX_PRECISION
       expect(actual_p.d).to be <= Stellar::Price::MAX_PRECISION
-    end
   end
 
 end
