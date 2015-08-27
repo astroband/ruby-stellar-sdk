@@ -24,6 +24,14 @@ Or install it yourself as:
 
 Also requires libsodium. Installable via `brew install libsodium` on OS X.
 
+## Supported Ruby Versions
+
+Please see [travis.yml](.travis.yml) for what versions of ruby are currently tested by our continuous integration system.  Any ruby in that list is officially supported.
+
+### JRuby
+
+It seems as though jruby is particularly slow when it comes to BigDecimal math; the source behind this slowness has not been investigated, but it is something to be aware of.
+
 ## Usage
 
 [Examples are here](examples)
