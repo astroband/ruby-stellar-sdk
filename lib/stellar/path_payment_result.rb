@@ -7,10 +7,10 @@ module Stellar
       s = success!
       return s.last.amount if s.offers.blank?
 
-      source_asset = s.offers.first.asset_send
-      source_offers = s.offers.take_while{|o| o.asset_send == source_asset}
+      source_asset = s.offers.first.asset_bought
+      source_offers = s.offers.take_while{|o| o.asset_bought == source_asset}
 
-      source_offers.map(&:amount_send).sum
+      source_offers.map(&:amount_bought).sum
     end
 
   end

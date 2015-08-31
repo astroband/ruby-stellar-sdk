@@ -8,7 +8,7 @@ require 'xdr'
 #   struct TrustLineEntry
 #   {
 #       AccountID accountID; // account this trustline belongs to
-#       Asset asset;   // type of asset (with issuer)
+#       Asset asset;         // type of asset (with issuer)
 #       int64 balance;       // how much of this asset the user has.
 #                            // Asset defines the unit for this;
 #   

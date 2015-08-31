@@ -31,28 +31,28 @@ describe Stellar::Thresholds, ".make" do
   end
 
   it "errors unless all components are provided" do
-    expect{ subject.make(good.except(:master_weight)) }.to raise_error
-    expect{ subject.make(good.except(:low)) }.to raise_error
-    expect{ subject.make(good.except(:medium)) }.to raise_error
-    expect{ subject.make(good.except(:high)) }.to raise_error
+    expect{ subject.make(good.except(:master_weight)) }.to raise_error(ArgumentError)
+    expect{ subject.make(good.except(:low)) }.to raise_error(ArgumentError)
+    expect{ subject.make(good.except(:medium)) }.to raise_error(ArgumentError)
+    expect{ subject.make(good.except(:high)) }.to raise_error(ArgumentError)
   end
 
   it "errors unless all components are numbers" do
-    expect{ subject.make(good.merge(master_weight: "hello")) }.to raise_error
-    expect{ subject.make(good.merge(low: "hello")) }.to raise_error
-    expect{ subject.make(good.merge(medium: "hello")) }.to raise_error
-    expect{ subject.make(good.merge(high: "hello")) }.to raise_error
+    expect{ subject.make(good.merge(master_weight: "hello")) }.to raise_error(ArgumentError)
+    expect{ subject.make(good.merge(low: "hello")) }.to raise_error(ArgumentError)
+    expect{ subject.make(good.merge(medium: "hello")) }.to raise_error(ArgumentError)
+    expect{ subject.make(good.merge(high: "hello")) }.to raise_error(ArgumentError)
   end
 
   it "errors unless all components are in (0..255)" do
-    expect{ subject.make(good.merge(master_weight: -1)) }.to raise_error
-    expect{ subject.make(good.merge(master_weight: 256)) }.to raise_error
-    expect{ subject.make(good.merge(low: -1)) }.to raise_error
-    expect{ subject.make(good.merge(low: 256)) }.to raise_error
-    expect{ subject.make(good.merge(medium: -1)) }.to raise_error
-    expect{ subject.make(good.merge(medium: 256)) }.to raise_error
-    expect{ subject.make(good.merge(high: -1)) }.to raise_error
-    expect{ subject.make(good.merge(high: 256)) }.to raise_error
+    expect{ subject.make(good.merge(master_weight: -1)) }.to raise_error(ArgumentError)
+    expect{ subject.make(good.merge(master_weight: 256)) }.to raise_error(ArgumentError)
+    expect{ subject.make(good.merge(low: -1)) }.to raise_error(ArgumentError)
+    expect{ subject.make(good.merge(low: 256)) }.to raise_error(ArgumentError)
+    expect{ subject.make(good.merge(medium: -1)) }.to raise_error(ArgumentError)
+    expect{ subject.make(good.merge(medium: 256)) }.to raise_error(ArgumentError)
+    expect{ subject.make(good.merge(high: -1)) }.to raise_error(ArgumentError)
+    expect{ subject.make(good.merge(high: 256)) }.to raise_error(ArgumentError)
   end
 
   it "ignores additional keys" do

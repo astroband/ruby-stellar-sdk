@@ -8,12 +8,12 @@ require 'xdr'
 #   struct PathPaymentOp
 #   {
 #       Asset sendAsset; // asset we pay with
-#       int64 sendMax;         // the maximum amount of sendAsset to
-#                              // send (excluding fees).
-#                              // The operation will fail if can't be met
+#       int64 sendMax;   // the maximum amount of sendAsset to
+#                        // send (excluding fees).
+#                        // The operation will fail if can't be met
 #   
 #       AccountID destination; // recipient of the payment
-#       Asset destAsset; // what they end up with
+#       Asset destAsset;       // what they end up with
 #       int64 destAmount;      // amount they end up with
 #   
 #       Asset path<5>; // additional hops it must go through to get there

@@ -14,7 +14,7 @@ require 'xdr'
 #       case ASSET_TYPE_CREDIT_ALPHANUM4:
 #           opaque assetCode4[4];
 #   
-#   	case ASSET_TYPE_CREDIT_ALPHANUM12:
+#       case ASSET_TYPE_CREDIT_ALPHANUM12:
 #           opaque assetCode12[12];
 #   
 #           // add other asset types here in the future

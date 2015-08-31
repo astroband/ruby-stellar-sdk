@@ -5,27 +5,40 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   union LedgerEntry switch (LedgerEntryType type)
+#   struct LedgerEntry
 #   {
-#   case ACCOUNT:
-#       AccountEntry account;
-#   case TRUSTLINE:
-#       TrustLineEntry trustLine;
-#   case OFFER:
-#       OfferEntry offer;
+#       uint32 lastModifiedLedgerSeq; // ledger the LedgerEntry was last changed
+#   
+#       union switch (LedgerEntryType type)
+#       {
+#       case ACCOUNT:
+#           AccountEntry account;
+#       case TRUSTLINE:
+#           TrustLineEntry trustLine;
+#       case OFFER:
+#           OfferEntry offer;
+#       }
+#       data;
+#   
+#       // reserved for future use
+#       union switch (int v)
+#       {
+#       case 0:
+#           void;
+#       }
+#       ext;
 #   };
 #
 # ===========================================================================
 module Stellar
-  class LedgerEntry < XDR::Union
-    switch_on LedgerEntryType, :type
+  class LedgerEntry < XDR::Struct
+    include XDR::Namespace
 
-    switch :account,   :account
-    switch :trustline, :trust_line
-    switch :offer,     :offer
+    autoload :Data
+    autoload :Ext
 
-    attribute :account,    AccountEntry
-    attribute :trust_line, TrustLineEntry
-    attribute :offer,      OfferEntry
+    attribute :last_modified_ledger_seq, Uint32
+    attribute :data,                     Data
+    attribute :ext,                      Ext
   end
 end
