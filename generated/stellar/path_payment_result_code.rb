@@ -16,11 +16,12 @@ require 'xdr'
 #       PATH_PAYMENT_SRC_NO_TRUST = -3,       // no trust line on source account
 #       PATH_PAYMENT_SRC_NOT_AUTHORIZED = -4, // source not authorized to transfer
 #       PATH_PAYMENT_NO_DESTINATION = -5,     // destination account does not exist
-#       PATH_PAYMENT_NO_TRUST = -6,       // dest missing a trust line for asset
-#       PATH_PAYMENT_NOT_AUTHORIZED = -7, // dest not authorized to hold asset
-#       PATH_PAYMENT_LINE_FULL = -8,      // dest would go above their limit
-#       PATH_PAYMENT_TOO_FEW_OFFERS = -9, // not enough offers to satisfy path
-#       PATH_PAYMENT_OVER_SENDMAX = -10   // could not satisfy sendmax
+#       PATH_PAYMENT_NO_TRUST = -6,           // dest missing a trust line for asset
+#       PATH_PAYMENT_NOT_AUTHORIZED = -7,     // dest not authorized to hold asset
+#       PATH_PAYMENT_LINE_FULL = -8,          // dest would go above their limit
+#       PATH_PAYMENT_TOO_FEW_OFFERS = -9,     // not enough offers to satisfy path
+#       PATH_PAYMENT_OFFER_CROSS_SELF = -10,  // would cross one of its own offers
+#       PATH_PAYMENT_OVER_SENDMAX = -11       // could not satisfy sendmax
 #   };
 #
 # ===========================================================================
@@ -36,7 +37,8 @@ module Stellar
     member :path_payment_not_authorized,     -7
     member :path_payment_line_full,          -8
     member :path_payment_too_few_offers,     -9
-    member :path_payment_over_sendmax,       -10
+    member :path_payment_offer_cross_self,   -10
+    member :path_payment_over_sendmax,       -11
 
     seal
   end

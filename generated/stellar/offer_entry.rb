@@ -10,8 +10,8 @@ require 'xdr'
 #       AccountID sellerID;
 #       uint64 offerID;
 #       Asset selling; // A
-#       Asset buying; // B
-#       int64 amount;       // amount of A
+#       Asset buying;  // B
+#       int64 amount;  // amount of A
 #   
 #       /* price for this offer:
 #           price of A in terms of B
