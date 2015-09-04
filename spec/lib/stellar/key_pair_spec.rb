@@ -101,6 +101,14 @@ describe Stellar::KeyPair do
     end
   end
 
+  describe ".master" do
+    subject{ Stellar::KeyPair.master }
+
+    it "returns a keypair whose raw_seed is the current_network_id" do
+      expect(subject.raw_seed).to eql(Stellar.current_network_id)
+    end
+  end
+
   describe "#raw_public_key" do
     let(:key_pair){ Stellar::KeyPair.random }
     subject{ key_pair.raw_public_key }
