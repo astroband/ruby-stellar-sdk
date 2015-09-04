@@ -126,7 +126,8 @@ module Stellar
 
     def signature_base_prefix
       val = Stellar::EnvelopeType.envelope_type_tx
-      Stellar::EnvelopeType.to_xdr(val)
+
+      Stellar.current_network_id + Stellar::EnvelopeType.to_xdr(val)
     end
 
     def to_envelope(*key_pairs)

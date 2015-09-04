@@ -27,8 +27,13 @@ module Stellar
       new(public_key, secret_key)
     end
 
+    def self.from_network_passphrase(passphrase)
+      network_id = Digest::SHA256.digest(passphrase)
+      from_raw_seed network_id
+    end
+
     def self.master
-      from_raw_seed("allmylifemyhearthasbeensearching")
+      from_raw_seed(Stellar.current_network_id)
     end
 
     def initialize(public_key, secret_key=nil)
