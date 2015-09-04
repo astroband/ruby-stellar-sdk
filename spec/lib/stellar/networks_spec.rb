@@ -35,6 +35,11 @@ describe Stellar, ".current_network" do
   end
 end
 
+describe Stellar, ".current_network_id" do
+  it "returns the sha256 of the current_network" do
+    expect(Stellar.current_network_id).to eql(Digest::SHA256.digest(Stellar.current_network))
+  end
+end
 
 describe Stellar, ".on_network" do
 

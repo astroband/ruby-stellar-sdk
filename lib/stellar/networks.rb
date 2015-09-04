@@ -28,6 +28,12 @@ module Stellar
     Stellar::Networks::PUBLIC
   end
 
+  # Returns the id for the currently configured network, suitable for use in generating
+  # a signature base string or making the root account's keypair.
+  def self.current_network_id
+    Digest::SHA256.digest(self.current_network) 
+  end
+
   # Executes the provided block in the context of the provided network.
   def self.on_network(passphrase, &block)
     old = Thread.current["stellar_network_passphrase"]
