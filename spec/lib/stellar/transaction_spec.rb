@@ -39,4 +39,16 @@ describe Stellar::Transaction do
       expect(result.signatures.first.signature).to eq(subject.sign(key_pair))
     end
   end
+
+  describe "#signature_base" do
+
+    it "is prefixed with the current network id" do
+      expect(subject.signature_base).to start_with(Stellar.current_network_id)
+    end
+
+    it "includes the envelope type" do
+      expect(subject.signature_base[32...36]).to eql("\x00\x00\x00\x02")
+    end
+
+  end
 end
