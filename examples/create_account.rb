@@ -17,10 +17,10 @@ tx = Stellar::Transaction.create_account({
   account:     master,
   destination: destination,
   sequence:    1,
-  starting_balance:  50 * Stellar::ONE
+  starting_balance:  50
 })
 
 b64    = tx.to_envelope(master).to_xdr(:base64)
-
+p b64
 result = $server.get('tx', blob: b64)
 p result.body
