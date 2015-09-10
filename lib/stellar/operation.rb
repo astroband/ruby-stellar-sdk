@@ -95,7 +95,7 @@ module Stellar
 
     def self.create_account(attributes={})
       destination      = attributes[:destination]
-      starting_balance = attributes[:starting_balance]
+      starting_balance = interpret_amount(attributes[:starting_balance])
 
       raise ArgumentError unless destination.is_a?(KeyPair)
 
@@ -121,7 +121,7 @@ module Stellar
     #                              Stellar::ChangeTrustOp body
     def self.change_trust(attributes={})
       line  = Asset.send(*attributes[:line])
-      limit = attributes[:limit]
+      limit =interpret_amount(attributes[:limit]) 
 
       raise ArgumentError, "Bad :limit #{limit}" unless limit.is_a?(Integer)
 
@@ -135,7 +135,7 @@ module Stellar
     def self.manage_offer(attributes={})
       buying     = Asset.send(*attributes[:buying])
       selling    = Asset.send(*attributes[:selling])
-      amount     = attributes[:amount]
+      amount     = interpret_amount(attributes[:amount])
       offer_id   = attributes[:offer_id] || 0
       price      = interpret_price(attributes[:price])
 
@@ -155,7 +155,7 @@ module Stellar
     def self.create_passive_offer(attributes={})
       buying     = Asset.send(*attributes[:buying])
       selling    = Asset.send(*attributes[:selling])
-      amount     = attributes[:amount]
+      amount     = interpret_amount(attributes[:amount])
       price      = interpret_price(attributes[:price])
 
       op = CreatePassiveOfferOp.new({
@@ -280,10 +280,23 @@ module Stellar
 
     private
     def self.extract_amount(a)
-      amount   = a.last
+      amount   = interpret_amount(a.last)
       asset    = Stellar::Asset.send(*a[0...-1])
 
       return asset, amount
+    end
+
+    def self.interpret_amount(amount)
+      case amount
+      when String
+        (BigDecimal.new(amount) * Stellar::ONE).floor
+      when Integer
+        amount * Stellar::ONE
+      when Numeric
+        (amount * Stellar::ONE).floor
+      else
+        raise ArgumentError, "Invalid amount type: #{amount.class}. Must be String or Numeric"
+      end
     end
 
 
