@@ -24,7 +24,7 @@ tx = Stellar::Transaction.payment({
   account:     master,
   destination: destination,
   sequence:    1,
-  amount:      [:native, 20 * Stellar::ONE]
+  amount:      [:native, 20]
 })
 
 b64    = tx.to_envelope(master).to_xdr(:base64)

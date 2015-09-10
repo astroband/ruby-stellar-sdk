@@ -28,14 +28,14 @@ def submit(key, tx)
   p response.body
 end
 
-master      = Stellar::KeyPair.from_raw_seed("allmylifemyhearthasbeensearching")
-destination = Stellar::KeyPair.from_raw_seed("allmylifemyhearthasbeensearching")
+master      = Stellar::KeyPair.master
+destination = Stellar::KeyPair.master
 
 submit master, Stellar::Transaction.payment({
   account:     master,
   destination: destination,
   sequence:    1,
-  amount:      [:native, 2000 * Stellar::ONE]
+  amount:      [:native, 2000]
 })
 
 # NOTE: after this step, you need to get the sequence number for destination
