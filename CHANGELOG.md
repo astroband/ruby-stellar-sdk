@@ -1,4 +1,6 @@
-# Changelog All notable changes to this project will be documented in this
+# Changelog 
+
+All notable changes to this project will be documented in this
 file.  This project adheres to [Semantic Versioning](http://semver.org/).
 
 As this project is pre 1.0, breaking changes may happen for minor version
