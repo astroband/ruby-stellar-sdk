@@ -7,7 +7,7 @@ require 'xdr'
 #
 #   struct
 #       {
-#           opaque assetCode[4];
+#           opaque assetCode[4]; // 1 to 4 characters
 #           AccountID issuer;
 #       }
 #

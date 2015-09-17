@@ -17,7 +17,8 @@ require 'xdr'
 #       SET_OPTIONS_CANT_CHANGE = -5,            // can no longer change this option
 #       SET_OPTIONS_UNKNOWN_FLAG = -6,           // can't set an unknown flag
 #       SET_OPTIONS_THRESHOLD_OUT_OF_RANGE = -7, // bad value for weight/threshold
-#       SET_OPTIONS_BAD_SIGNER = -8              // signer cannot be masterkey
+#       SET_OPTIONS_BAD_SIGNER = -8,             // signer cannot be masterkey
+#       SET_OPTIONS_INVALID_HOME_DOMAIN = -9     // malformed home domain
 #   };
 #
 # ===========================================================================
@@ -32,6 +33,7 @@ module Stellar
     member :set_options_unknown_flag,           -6
     member :set_options_threshold_out_of_range, -7
     member :set_options_bad_signer,             -8
+    member :set_options_invalid_home_domain,    -9
 
     seal
   end

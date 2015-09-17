@@ -11,6 +11,8 @@ require 'xdr'
 #       Error error;
 #   case HELLO:
 #       Hello hello;
+#   case AUTH:
+#       Auth auth;
 #   case DONT_HAVE:
 #       DontHave dontHave;
 #   case GET_PEERS:
@@ -42,6 +44,7 @@ module Stellar
 
     switch :error_msg,         :error
     switch :hello,             :hello
+    switch :auth,              :auth
     switch :dont_have,         :dont_have
     switch :get_peers
     switch :peers,             :peers
@@ -54,6 +57,7 @@ module Stellar
 
     attribute :error,       Error
     attribute :hello,       Hello
+    attribute :auth,        Auth
     attribute :dont_have,   DontHave
     attribute :peers,       XDR::VarArray[PeerAddress]
     attribute :tx_set_hash, Uint256

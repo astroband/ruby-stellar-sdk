@@ -5,18 +5,14 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct
-#       {
-#           LedgerEntryChanges changes;
-#           OperationMeta operations<>;
-#       }
+#   struct Auth
+#   {
+#       Signature signature;
+#   };
 #
 # ===========================================================================
 module Stellar
-  class TransactionMeta
-    class V0 < XDR::Struct
-      attribute :changes,    LedgerEntryChanges
-      attribute :operations, XDR::VarArray[OperationMeta]
-    end
+  class Auth < XDR::Struct
+    attribute :signature, Signature
   end
 end

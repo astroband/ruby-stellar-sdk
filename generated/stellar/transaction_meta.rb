@@ -8,24 +8,16 @@ require 'xdr'
 #   union TransactionMeta switch (int v)
 #   {
 #   case 0:
-#       struct
-#       {
-#           LedgerEntryChanges changes;
-#           OperationMeta operations<>;
-#       } v0;
+#       OperationMeta operations<>;
 #   };
 #
 # ===========================================================================
 module Stellar
   class TransactionMeta < XDR::Union
-    include XDR::Namespace
-
-    autoload :V0
-
     switch_on XDR::Int, :v
 
-    switch 0, :v0
+    switch 0, :operations
 
-    attribute :v0, V0
+    attribute :operations, XDR::VarArray[OperationMeta]
   end
 end

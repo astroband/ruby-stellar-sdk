@@ -116,6 +116,7 @@ module Stellar
 
   autoload :Error
   autoload :Hello
+  autoload :Auth
   autoload :PeerAddress
   autoload :MessageType
   autoload :DontHave

@@ -22,9 +22,8 @@ require 'xdr'
 #   
 #       // update errors
 #       MANAGE_OFFER_NOT_FOUND = -9, // offerID does not match an existing offer
-#       MANAGE_OFFER_MISMATCH = -10, // currencies don't match offer
 #   
-#       MANAGE_OFFER_LOW_RESERVE = -11 // not enough funds to create a new Offer
+#       MANAGE_OFFER_LOW_RESERVE = -10 // not enough funds to create a new Offer
 #   };
 #
 # ===========================================================================
@@ -40,8 +39,7 @@ module Stellar
     member :manage_offer_underfunded,         -7
     member :manage_offer_cross_self,          -8
     member :manage_offer_not_found,           -9
-    member :manage_offer_mismatch,            -10
-    member :manage_offer_low_reserve,         -11
+    member :manage_offer_low_reserve,         -10
 
     seal
   end
