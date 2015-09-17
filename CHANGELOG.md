@@ -6,6 +6,12 @@ file.  This project adheres to [Semantic Versioning](http://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
+## [0.5.0](https://github.com/stellar/ruby-stellar-base/compare/v0.4.0...v0.5.0)
+
+### Changed
+
+- Update to latest xdr
+
 ## [0.4.0](https://github.com/stellar/ruby-stellar-base/compare/v0.3.0...v0.4.0)
 
 ### Changed
