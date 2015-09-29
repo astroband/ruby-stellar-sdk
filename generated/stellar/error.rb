@@ -7,14 +7,14 @@ require 'xdr'
 #
 #   struct Error
 #   {
-#       int code;
+#       ErrorCode code;
 #       string msg<100>;
 #   };
 #
 # ===========================================================================
 module Stellar
   class Error < XDR::Struct
-    attribute :code, XDR::Int
+    attribute :code, ErrorCode
     attribute :msg,  XDR::String[100]
   end
 end

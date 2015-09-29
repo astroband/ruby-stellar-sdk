@@ -7,12 +7,14 @@ require 'xdr'
 #
 #   struct Auth
 #   {
-#       Signature signature;
+#       // Empty message, just to confirm
+#       // establishment of MAC keys.
+#       int unused;
 #   };
 #
 # ===========================================================================
 module Stellar
   class Auth < XDR::Struct
-    attribute :signature, Signature
+    attribute :unused, XDR::Int
   end
 end

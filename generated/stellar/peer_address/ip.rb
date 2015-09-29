@@ -5,28 +5,25 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct PeerAddress
-#   {
-#       union switch (IPAddrType type)
+#   union switch (IPAddrType type)
 #       {
 #       case IPv4:
 #           opaque ipv4[4];
 #       case IPv6:
 #           opaque ipv6[16];
-#       } ip;
-#       uint32 port;
-#       uint32 numFailures;
-#   };
+#       }
 #
 # ===========================================================================
 module Stellar
-  class PeerAddress < XDR::Struct
-    include XDR::Namespace
+  class PeerAddress
+    class Ip < XDR::Union
+      switch_on IPAddrType, :type
 
-    autoload :Ip
+      switch :i_pv4, :ipv4
+      switch :i_pv6, :ipv6
 
-    attribute :ip,           Ip
-    attribute :port,         Uint32
-    attribute :num_failures, Uint32
+      attribute :ipv4, XDR::Opaque[4]
+      attribute :ipv6, XDR::Opaque[16]
+    end
   end
 end

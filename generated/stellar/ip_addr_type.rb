@@ -5,19 +5,17 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   enum EnvelopeType
+#   enum IPAddrType
 #   {
-#       ENVELOPE_TYPE_SCP = 1,
-#       ENVELOPE_TYPE_TX = 2,
-#       ENVELOPE_TYPE_AUTH = 3
+#       IPv4 = 0,
+#       IPv6 = 1
 #   };
 #
 # ===========================================================================
 module Stellar
-  class EnvelopeType < XDR::Enum
-    member :envelope_type_scp,  1
-    member :envelope_type_tx,   2
-    member :envelope_type_auth, 3
+  class IPAddrType < XDR::Enum
+    member :i_pv4, 0
+    member :i_pv6, 1
 
     seal
   end

@@ -18,7 +18,8 @@ require 'xdr'
 #       PAYMENT_NO_DESTINATION = -5,     // destination account does not exist
 #       PAYMENT_NO_TRUST = -6,       // destination missing a trust line for asset
 #       PAYMENT_NOT_AUTHORIZED = -7, // destination not authorized to hold asset
-#       PAYMENT_LINE_FULL = -8       // destination would go above their limit
+#       PAYMENT_LINE_FULL = -8,      // destination would go above their limit
+#       PAYMENT_NO_ISSUER = -9       // missing issuer on asset
 #   };
 #
 # ===========================================================================
@@ -33,6 +34,7 @@ module Stellar
     member :payment_no_trust,           -6
     member :payment_not_authorized,     -7
     member :payment_line_full,          -8
+    member :payment_no_issuer,          -9
 
     seal
   end

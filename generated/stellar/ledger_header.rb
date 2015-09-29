@@ -15,7 +15,8 @@ require 'xdr'
 #   
 #       uint32 ledgerSeq; // sequence number of this ledger
 #   
-#       int64 totalCoins; // total number of stroops in existence
+#       int64 totalCoins; // total number of stroops in existence.
+#                         // 10,000,000 stroops in 1 XLM
 #   
 #       int64 feePool;       // fees burned since last inflation run
 #       uint32 inflationSeq; // inflation sequence number
@@ -24,6 +25,8 @@ require 'xdr'
 #   
 #       uint32 baseFee;     // base fee per operation in stroops
 #       uint32 baseReserve; // account base reserve in stroops
+#   
+#       uint32 maxTxSetSize; // maximum size a transaction set can be
 #   
 #       Hash skipList[4]; // hashes of ledgers in the past. allows you to jump back
 #                         // in time without walking the chain back ledger by ledger
@@ -59,6 +62,7 @@ module Stellar
     attribute :id_pool,              Uint64
     attribute :base_fee,             Uint32
     attribute :base_reserve,         Uint32
+    attribute :max_tx_set_size,      Uint32
     attribute :skip_list,            XDR::Array[Hash, 4]
     attribute :ext,                  Ext
   end

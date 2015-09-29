@@ -5,20 +5,14 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   enum EnvelopeType
+#   struct Curve25519Public
 #   {
-#       ENVELOPE_TYPE_SCP = 1,
-#       ENVELOPE_TYPE_TX = 2,
-#       ENVELOPE_TYPE_AUTH = 3
+#           opaque key[32];
 #   };
 #
 # ===========================================================================
 module Stellar
-  class EnvelopeType < XDR::Enum
-    member :envelope_type_scp,  1
-    member :envelope_type_tx,   2
-    member :envelope_type_auth, 3
-
-    seal
+  class Curve25519Public < XDR::Struct
+    attribute :key, XDR::Opaque[32]
   end
 end

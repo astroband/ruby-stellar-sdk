@@ -17,6 +17,10 @@ module Stellar
   Signature = XDR::VarOpaque[64]
   SignatureHint = XDR::Opaque[4]
   NodeID = PublicKey
+  autoload :Curve25519Secret
+  autoload :Curve25519Public
+  autoload :HmacSha256Key
+  autoload :HmacSha256Mac
 end
 module Stellar
   include XDR::Namespace
@@ -114,13 +118,17 @@ end
 module Stellar
   include XDR::Namespace
 
+  autoload :ErrorCode
   autoload :Error
+  autoload :AuthCert
   autoload :Hello
   autoload :Auth
+  autoload :IPAddrType
   autoload :PeerAddress
   autoload :MessageType
   autoload :DontHave
   autoload :StellarMessage
+  autoload :AuthenticatedMessage
 end
 module Stellar
   include XDR::Namespace

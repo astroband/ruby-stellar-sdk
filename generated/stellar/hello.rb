@@ -13,6 +13,7 @@ require 'xdr'
 #       string versionStr<100>;
 #       int listeningPort;
 #       NodeID peerID;
+#       AuthCert cert;
 #       uint256 nonce;
 #   };
 #
@@ -25,6 +26,7 @@ module Stellar
     attribute :version_str,     XDR::String[100]
     attribute :listening_port,  XDR::Int
     attribute :peer_id,         NodeID
+    attribute :cert,            AuthCert
     attribute :nonce,           Uint256
   end
 end

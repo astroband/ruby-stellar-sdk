@@ -14,7 +14,8 @@ require 'xdr'
 #       // this is a vector of encoded 'LedgerUpgrade' so that nodes can drop
 #       // unknown steps during consensus if needed.
 #       // see notes below on 'LedgerUpgrade' for more detail
-#       UpgradeType upgrades<4>;
+#       // max size is dictated by number of upgrade types (+ room for future)
+#       UpgradeType upgrades<6>;
 #   
 #       // reserved for future use
 #       union switch (int v)
@@ -34,7 +35,7 @@ module Stellar
 
     attribute :tx_set_hash, Hash
     attribute :close_time,  Uint64
-    attribute :upgrades,    XDR::VarArray[UpgradeType, 4]
+    attribute :upgrades,    XDR::VarArray[UpgradeType, 6]
     attribute :ext,         Ext
   end
 end

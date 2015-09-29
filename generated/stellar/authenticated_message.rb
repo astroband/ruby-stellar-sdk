@@ -5,20 +5,18 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   enum EnvelopeType
+#   struct AuthenticatedMessage
 #   {
-#       ENVELOPE_TYPE_SCP = 1,
-#       ENVELOPE_TYPE_TX = 2,
-#       ENVELOPE_TYPE_AUTH = 3
+#      uint64 sequence;
+#      StellarMessage message;
+#      HmacSha256Mac mac;
 #   };
 #
 # ===========================================================================
 module Stellar
-  class EnvelopeType < XDR::Enum
-    member :envelope_type_scp,  1
-    member :envelope_type_tx,   2
-    member :envelope_type_auth, 3
-
-    seal
+  class AuthenticatedMessage < XDR::Struct
+    attribute :sequence, Uint64
+    attribute :message,  StellarMessage
+    attribute :mac,      HmacSha256Mac
   end
 end
