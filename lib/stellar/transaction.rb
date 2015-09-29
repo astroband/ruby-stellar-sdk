@@ -162,7 +162,7 @@ module Stellar
 
     def apply_defaults
       self.operations ||= []
-      self.fee        ||= 10
+      self.fee        ||= 100
       self.memo       ||= Memo.new(:memo_none)
       self.ext        ||= Stellar::Transaction::Ext.new 0
     end
