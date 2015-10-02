@@ -25,7 +25,7 @@ module Stellar
   def self.current_network
     Thread.current["stellar_network_passphrase"] || 
     @default_network || 
-    Stellar::Networks::PUBLIC
+    Stellar::Networks::TESTNET
   end
 
   # Returns the id for the currently configured network, suitable for use in generating
