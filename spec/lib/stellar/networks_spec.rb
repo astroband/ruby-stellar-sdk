@@ -16,7 +16,7 @@ describe Stellar, ".current_network" do
   after(:each){ Stellar.default_network = nil }
 
   it "returns the public network absent any other configuration" do
-    expect(Stellar.current_network).to eql(Stellar::Networks::PUBLIC)
+    expect(Stellar.current_network).to eql(Stellar::Networks::TESTNET)
   end
 
   it "returns the default network if configured and not within a call to on_network" do
