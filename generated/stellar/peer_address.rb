@@ -13,7 +13,8 @@ require 'xdr'
 #           opaque ipv4[4];
 #       case IPv6:
 #           opaque ipv6[16];
-#       } ip;
+#       }
+#       ip;
 #       uint32 port;
 #       uint32 numFailures;
 #   };

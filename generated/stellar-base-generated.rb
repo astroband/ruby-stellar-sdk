@@ -109,6 +109,9 @@ module Stellar
   autoload :TransactionHistoryEntry
   autoload :TransactionHistoryResultEntry
   autoload :LedgerHeaderHistoryEntry
+  autoload :LedgerSCPMessages
+  autoload :SCPHistoryEntryV0
+  autoload :SCPHistoryEntry
   autoload :LedgerEntryChangeType
   autoload :LedgerEntryChange
   LedgerEntryChanges = XDR::VarArray[LedgerEntryChange]

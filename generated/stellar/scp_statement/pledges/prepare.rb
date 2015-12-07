@@ -11,8 +11,8 @@ require 'xdr'
 #               SCPBallot ballot;         // b
 #               SCPBallot* prepared;      // p
 #               SCPBallot* preparedPrime; // p'
-#               uint32 nC;                // n_c
-#               uint32 nP;                // n_P
+#               uint32 nC;                // c.n
+#               uint32 nH;                // h.n
 #           }
 #
 # ===========================================================================
@@ -25,7 +25,7 @@ module Stellar
         attribute :prepared,        XDR::Option[SCPBallot]
         attribute :prepared_prime,  XDR::Option[SCPBallot]
         attribute :n_c,             Uint32
-        attribute :n_p,             Uint32
+        attribute :n_h,             Uint32
       end
     end
   end

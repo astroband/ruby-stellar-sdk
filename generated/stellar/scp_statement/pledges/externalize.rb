@@ -7,10 +7,8 @@ require 'xdr'
 #
 #   struct
 #           {
-#               SCPBallot commit; // c
-#               uint32 nP;        // n_P
-#               // not from the paper, but useful to build tooling to
-#               // traverse the graph based off only the latest statement
+#               SCPBallot commit;         // c
+#               uint32 nH;                // h.n
 #               Hash commitQuorumSetHash; // D used before EXTERNALIZE
 #           }
 #
@@ -20,7 +18,7 @@ module Stellar
     class Pledges
       class Externalize < XDR::Struct
         attribute :commit,                 SCPBallot
-        attribute :n_p,                    Uint32
+        attribute :n_h,                    Uint32
         attribute :commit_quorum_set_hash, Hash
       end
     end
