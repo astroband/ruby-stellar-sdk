@@ -1,4 +1,4 @@
-# Changelog 
+# Changelog
 
 All notable changes to this project will be documented in this
 file.  This project adheres to [Semantic Versioning](http://semver.org/).
@@ -6,11 +6,13 @@ file.  This project adheres to [Semantic Versioning](http://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
-## [unreleased](https://github.com/stellar/ruby-stellar-base/compare/v0.7.0...master)
+## [unreleased](https://github.com/stellar/ruby-stellar-base/compare/v0.8.0...master)
+
+## [0.8.0](https://github.com/stellar/ruby-stellar-base/compare/v0.7.0...v0.8.0)
 
 ### Changed
 - BREAKING CHANGE:  The default network for this library is now the stellar test network.  
-  To enable this library for the production network use `Stellar.default_network = Stellar::Networks::PUBLIC` 
+  To enable this library for the production network use `Stellar.default_network = Stellar::Networks::PUBLIC`
   at the head of your script or in your configuration function.
 
 ## [0.7.0](https://github.com/stellar/ruby-stellar-base/compare/v0.6.1...v0.7.0)
