@@ -8,6 +8,9 @@ bumps.  A breaking change will get clearly notified in this log.
 
 ## [unreleased](https://github.com/stellar/ruby-stellar-base/compare/v0.8.0...master)
 
+### Changed
+- XDR Definitions have been updated to stellar-core commit eed89649c2060b8e9dacffe2cec4e8b258b32416
+
 ## [0.8.0](https://github.com/stellar/ruby-stellar-base/compare/v0.7.0...v0.8.0)
 
 ### Changed
