@@ -13,6 +13,8 @@ require 'xdr'
 #       LedgerEntry updated;
 #   case LEDGER_ENTRY_REMOVED:
 #       LedgerKey removed;
+#   case LEDGER_ENTRY_STATE:
+#       LedgerEntry state;
 #   };
 #
 # ===========================================================================
@@ -23,9 +25,11 @@ module Stellar
     switch :ledger_entry_created, :created
     switch :ledger_entry_updated, :updated
     switch :ledger_entry_removed, :removed
+    switch :ledger_entry_state,   :state
 
     attribute :created, LedgerEntry
     attribute :updated, LedgerEntry
     attribute :removed, LedgerKey
+    attribute :state,   LedgerEntry
   end
 end

@@ -7,7 +7,7 @@ require 'xdr'
 #
 #   struct ClaimOfferAtom
 #   {
-#       // emited to identify the offer
+#       // emitted to identify the offer
 #       AccountID sellerID; // Account that owns the offer
 #       uint64 offerID;
 #   

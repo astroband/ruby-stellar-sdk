@@ -8,7 +8,6 @@ require 'xdr'
 #   enum MessageType
 #   {
 #       ERROR_MSG = 0,
-#       HELLO = 1,
 #       AUTH = 2,
 #       DONT_HAVE = 3,
 #   
@@ -23,14 +22,17 @@ require 'xdr'
 #       // SCP
 #       GET_SCP_QUORUMSET = 9,
 #       SCP_QUORUMSET = 10,
-#       SCP_MESSAGE = 11
+#       SCP_MESSAGE = 11,
+#       GET_SCP_STATE = 12,
+#   
+#       // new messages
+#       HELLO = 13
 #   };
 #
 # ===========================================================================
 module Stellar
   class MessageType < XDR::Enum
     member :error_msg,         0
-    member :hello,             1
     member :auth,              2
     member :dont_have,         3
     member :get_peers,         4
@@ -41,6 +43,8 @@ module Stellar
     member :get_scp_quorumset, 9
     member :scp_quorumset,     10
     member :scp_message,       11
+    member :get_scp_state,     12
+    member :hello,             13
 
     seal
   end

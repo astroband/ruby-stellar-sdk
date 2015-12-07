@@ -7,10 +7,11 @@ require 'xdr'
 #
 #   struct
 #           {
+#               SCPBallot ballot;   // b
+#               uint32 nPrepared;   // p.n
+#               uint32 nCommit;     // c.n
+#               uint32 nH;          // h.n
 #               Hash quorumSetHash; // D
-#               uint32 nPrepared;   // n_p
-#               SCPBallot commit;   // c
-#               uint32 nP;          // n_P
 #           }
 #
 # ===========================================================================
@@ -18,10 +19,11 @@ module Stellar
   class SCPStatement
     class Pledges
       class Confirm < XDR::Struct
-        attribute :quorum_set_hash, Hash
+        attribute :ballot,          SCPBallot
         attribute :n_prepared,      Uint32
-        attribute :commit,          SCPBallot
-        attribute :n_p,             Uint32
+        attribute :n_commit,        Uint32
+        attribute :n_h,             Uint32
+        attribute :quorum_set_hash, Hash
       end
     end
   end

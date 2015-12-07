@@ -5,28 +5,20 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   union AuthenticatedMessage switch (uint32 v)
-#   {
-#   case 0:
-#       struct
+#   struct
 #   {
 #      uint64 sequence;
 #      StellarMessage message;
 #      HmacSha256Mac mac;
-#       } v0;
-#   };
+#       }
 #
 # ===========================================================================
 module Stellar
-  class AuthenticatedMessage < XDR::Union
-    include XDR::Namespace
-
-    autoload :V0
-
-    switch_on Uint32, :v
-
-    switch 0, :v0
-
-    attribute :v0, V0
+  class AuthenticatedMessage
+    class V0 < XDR::Struct
+      attribute :sequence, Uint64
+      attribute :message,  StellarMessage
+      attribute :mac,      HmacSha256Mac
+    end
   end
 end
