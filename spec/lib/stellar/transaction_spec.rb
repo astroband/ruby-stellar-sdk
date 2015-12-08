@@ -51,4 +51,33 @@ describe Stellar::Transaction do
     end
 
   end
+
+  describe ".for_account's memo assignment" do
+    let(:attrs){{account: Stellar::KeyPair.random, sequence: 1}}
+
+    def make(memo)
+      tx = Stellar::Transaction.for_account(attrs.merge(memo: memo))
+      tx.memo
+    end
+
+    it "sets to an ID memo when a number is provided" do
+      expect(make(3)).to eql(Stellar::Memo.new(:memo_id, 3))
+    end
+
+    it "sets to an text memo when a number is provided" do
+      expect(make("hello")).to eql(Stellar::Memo.new(:memo_text, "hello"))
+    end
+
+    it "uses the provided value directly if already a memo" do
+      expect(make(Stellar::Memo.new(:memo_text, "hello"))).to eql(Stellar::Memo.new(:memo_text, "hello"))
+    end
+
+
+    it "allows a 2-element array as shorthand" do
+      expect(make([:id, 3])).to eql(Stellar::Memo.new(:memo_id, 3))
+      expect(make([:text, "h"])).to eql(Stellar::Memo.new(:memo_text, "h"))
+      expect(make([:hash, "h"])).to eql(Stellar::Memo.new(:memo_hash, "h"))
+      expect(make([:return, "h"])).to eql(Stellar::Memo.new(:memo_return, "h"))
+    end
+  end
 end

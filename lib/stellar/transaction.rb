@@ -101,6 +101,7 @@ module Stellar
       new.tap do |result|
         result.seq_num        = sequence
         result.fee            = fee
+        result.memo           = make_memo(attributes[:memo])
         result.source_account = account.account_id
         result.apply_defaults
       end
@@ -165,6 +166,25 @@ module Stellar
       self.fee        ||= 100
       self.memo       ||= Memo.new(:memo_none)
       self.ext        ||= Stellar::Transaction::Ext.new 0
+    end
+
+    private
+    def self.make_memo(memo)
+      case memo
+      when Stellar::Memo ;
+        memo
+      when nil ;
+        nil
+      when Integer ;
+        Memo.new(:memo_id, memo)
+      when String ;
+        Memo.new(:memo_text, memo)
+      when Array ;
+        t, val = *memo
+        Memo.new(:"memo_#{t}", val)
+      else
+        raise ArgumentError, "Bad :memo"
+      end
     end
   end
 end

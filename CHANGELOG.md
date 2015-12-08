@@ -8,6 +8,8 @@ bumps.  A breaking change will get clearly notified in this log.
 
 ## [unreleased](https://github.com/stellar/ruby-stellar-base/compare/v0.9.0...master)
 
+- Added memo helpers to `Stellar::Transaction.for_account`, allowing any operation builder (such as `Stellar::Transaction.payment) to provide a custom memo using the `:memo` attribute.  
+
 ## [0.9.0](https://github.com/stellar/ruby-stellar-base/compare/v0.8.0...v0.9.0)
 
 ### Changed
