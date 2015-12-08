@@ -6,7 +6,8 @@ file.  This project adheres to [Semantic Versioning](http://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
-## [unreleased](https://github.com/stellar/ruby-stellar-base/compare/v0.9.0...master)
+## [unreleased](https://github.com/stellar/ruby-stellar-base/compare/v0.10.0...master)
+## [0.10.0](https://github.com/stellar/ruby-stellar-base/compare/v0.0.0...v0.10.0)
 
 - Added memo helpers to `Stellar::Transaction.for_account`, allowing any operation builder (such as `Stellar::Transaction.payment) to provide a custom memo using the `:memo` attribute.  
 
