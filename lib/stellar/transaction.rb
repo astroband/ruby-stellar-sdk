@@ -94,7 +94,7 @@ module Stellar
       sequence = attributes[:sequence]
       fee      = attributes[:fee]
 
-      raise ArgumentError, "Bad :account" unless account.is_a?(KeyPair) && account.sign?
+      raise ArgumentError, "Bad :account" unless account.is_a?(KeyPair)
       raise ArgumentError, "Bad :sequence #{sequence}" unless sequence.is_a?(Integer)
       raise ArgumentError, "Bad :fee #{sequence}" if fee.present? && !fee.is_a?(Integer)
 
