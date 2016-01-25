@@ -132,7 +132,7 @@ module Stellar
     end
 
     def to_envelope(*key_pairs)
-      signatures = key_pairs.map(&method(:sign_decorated))
+      signatures = (key_pairs || []).map(&method(:sign_decorated))
 
       TransactionEnvelope.new({
         :signatures => signatures,
