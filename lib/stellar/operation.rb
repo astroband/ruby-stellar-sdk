@@ -121,7 +121,7 @@ module Stellar
     #                              Stellar::ChangeTrustOp body
     def self.change_trust(attributes={})
       line  = Asset.send(*attributes[:line])
-      limit =interpret_amount(attributes[:limit]) 
+      limit =interpret_amount(attributes[:limit])
 
       raise ArgumentError, "Bad :limit #{limit}" unless limit.is_a?(Integer)
 
@@ -275,6 +275,34 @@ module Stellar
       # TODO: add source_account support
       return make(attributes.merge({
         body:[:inflation]
+      }))
+    end
+
+    #
+    # Helper method to create an manage data operation
+    #
+    # @param [Hash] attributes the attributes to create the operation with
+    # @option attributes [Integer]  :sequence
+    #
+    # @return [Stellar::Operation] the built operation
+    def self.manage_data(attributes={})
+      op = ManageDataOp.new()
+
+      name  = attributes[:name]
+      value = attributes[:value]
+
+      raise ArgumentError, "Invalid :name" unless name.is_a?(String)
+      raise ArgumentError, ":name too long" unless name.bytesize <= 64
+
+      if value.present?
+        raise ArgumentError, ":value too long" unless value.bytesize <= 64
+      end
+
+      op.data_name  = name
+      op.data_value = value
+
+      return make(attributes.merge({
+        body:[:manage_data, op]
       }))
     end
 

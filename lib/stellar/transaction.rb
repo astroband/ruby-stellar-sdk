@@ -62,6 +62,12 @@ module Stellar
     end
 
     #
+    # @see  Stellar::Operation.manage_data
+    def self.manage_data(attributes={})
+      make :manage_data, attributes
+    end
+
+    #
     # Helper method to create a transaction with a single
     # operation of the provided type.  See class methods
     # on Stellar::Operation for available values for
