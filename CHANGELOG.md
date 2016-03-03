@@ -7,6 +7,9 @@ As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
 ## [unreleased](https://github.com/stellar/ruby-stellar-base/compare/v0.10.0...master)
+
+- `Stellar::Transaction#to_envelope` can now be used without arguments, returning a `Stellar::TransactionEnvelope` with zero signatures.
+
 ## [0.10.0](https://github.com/stellar/ruby-stellar-base/compare/v0.0.0...v0.10.0)
 
 - Added memo helpers to `Stellar::Transaction.for_account`, allowing any operation builder (such as `Stellar::Transaction.payment) to provide a custom memo using the `:memo` attribute.  

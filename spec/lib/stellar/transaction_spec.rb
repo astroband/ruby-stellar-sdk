@@ -26,17 +26,34 @@ describe Stellar::Transaction do
   end
 
   describe  "#to_envelope" do
-    let(:result){ subject.to_envelope(key_pair) }
+    let(:result){ subject.to_envelope(*key_pairs) }
 
-    it "return a Stellar::TransactionEnvelope" do
-      expect(result).to be_a(Stellar::TransactionEnvelope)
+
+    context "with a single key pair as a parameter" do
+      let(:key_pairs){ [key_pair] }
+
+      it "return a Stellar::TransactionEnvelope" do
+        expect(result).to be_a(Stellar::TransactionEnvelope)
+      end
+
+      it "correctly signs the transaction" do
+        expect(result.signatures.length).to eq(1)
+        expect(result.signatures.first).to be_a(Stellar::DecoratedSignature)
+        expect(result.signatures.first.hint).to eq(key_pair.signature_hint)
+        expect(result.signatures.first.signature).to eq(subject.sign(key_pair))
+      end
     end
 
-    it "correctly signs the transaction" do
-      expect(result.signatures.length).to eq(1)
-      expect(result.signatures.first).to be_a(Stellar::DecoratedSignature)
-      expect(result.signatures.first.hint).to eq(key_pair.signature_hint)
-      expect(result.signatures.first.signature).to eq(subject.sign(key_pair))
+    context "with no keypairs provided as parameters" do
+      let(:key_pairs){ [] }
+
+      it "return a Stellar::TransactionEnvelope" do
+        expect(result).to be_a(Stellar::TransactionEnvelope)
+      end
+
+      it "adds no signatures" do
+        expect(result.signatures.length).to eq(0)
+      end
     end
   end
 
