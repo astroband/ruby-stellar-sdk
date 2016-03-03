@@ -5,22 +5,16 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   enum LedgerEntryType
+#   struct ManageDataOp
 #   {
-#       ACCOUNT = 0,
-#       TRUSTLINE = 1,
-#       OFFER = 2,
-#       DATA = 3
+#       string64 dataName; 
+#       DataValue* dataValue;   // set to null to clear
 #   };
 #
 # ===========================================================================
 module Stellar
-  class LedgerEntryType < XDR::Enum
-    member :account,   0
-    member :trustline, 1
-    member :offer,     2
-    member :data,      3
-
-    seal
+  class ManageDataOp < XDR::Struct
+    attribute :data_name,  String64
+    attribute :data_value, XDR::Option[DataValue]
   end
 end

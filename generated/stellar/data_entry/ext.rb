@@ -5,22 +5,20 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   enum LedgerEntryType
-#   {
-#       ACCOUNT = 0,
-#       TRUSTLINE = 1,
-#       OFFER = 2,
-#       DATA = 3
-#   };
+#   union switch (int v)
+#       {
+#       case 0:
+#           void;
+#       }
 #
 # ===========================================================================
 module Stellar
-  class LedgerEntryType < XDR::Enum
-    member :account,   0
-    member :trustline, 1
-    member :offer,     2
-    member :data,      3
+  class DataEntry
+    class Ext < XDR::Union
+      switch_on XDR::Int, :v
 
-    seal
+      switch 0
+
+    end
   end
 end

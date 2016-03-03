@@ -27,6 +27,8 @@ require 'xdr'
 #           AccountMergeResult accountMergeResult;
 #       case INFLATION:
 #           InflationResult inflationResult;
+#       case MANAGE_DATA:
+#           ManageDataResult manageDataResult;
 #       }
 #
 # ===========================================================================
@@ -45,6 +47,7 @@ module Stellar
       switch :allow_trust,          :allow_trust_result
       switch :account_merge,        :account_merge_result
       switch :inflation,            :inflation_result
+      switch :manage_data,          :manage_data_result
 
       attribute :create_account_result,       CreateAccountResult
       attribute :payment_result,              PaymentResult
@@ -56,6 +59,7 @@ module Stellar
       attribute :allow_trust_result,          AllowTrustResult
       attribute :account_merge_result,        AccountMergeResult
       attribute :inflation_result,            InflationResult
+      attribute :manage_data_result,          ManageDataResult
     end
   end
 end

@@ -28,7 +28,9 @@ module Stellar
   AccountID = PublicKey
   Thresholds = XDR::Opaque[4]
   String32 = XDR::String[32]
+  String64 = XDR::String[64]
   SequenceNumber = Uint64
+  DataValue = XDR::VarOpaque[64]
   autoload :AssetType
   autoload :Asset
   autoload :Price
@@ -41,6 +43,7 @@ module Stellar
   autoload :TrustLineEntry
   autoload :OfferEntryFlags
   autoload :OfferEntry
+  autoload :DataEntry
   autoload :LedgerEntry
   autoload :EnvelopeType
 end
@@ -57,6 +60,7 @@ module Stellar
   autoload :SetOptionsOp
   autoload :ChangeTrustOp
   autoload :AllowTrustOp
+  autoload :ManageDataOp
   autoload :Operation
   autoload :MemoType
   autoload :Memo
@@ -86,6 +90,8 @@ module Stellar
   autoload :InflationResultCode
   autoload :InflationPayout
   autoload :InflationResult
+  autoload :ManageDataResultCode
+  autoload :ManageDataResult
   autoload :OperationResultCode
   autoload :OperationResult
   autoload :TransactionResultCode

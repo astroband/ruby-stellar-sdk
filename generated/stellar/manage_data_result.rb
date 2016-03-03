@@ -5,22 +5,21 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   enum LedgerEntryType
+#   union ManageDataResult switch (ManageDataResultCode code)
 #   {
-#       ACCOUNT = 0,
-#       TRUSTLINE = 1,
-#       OFFER = 2,
-#       DATA = 3
+#   case MANAGE_DATA_SUCCESS:
+#       void;
+#   default:
+#       void;
 #   };
 #
 # ===========================================================================
 module Stellar
-  class LedgerEntryType < XDR::Enum
-    member :account,   0
-    member :trustline, 1
-    member :offer,     2
-    member :data,      3
+  class ManageDataResult < XDR::Union
+    switch_on ManageDataResultCode, :code
 
-    seal
+    switch :manage_data_success
+    switch :default
+
   end
 end

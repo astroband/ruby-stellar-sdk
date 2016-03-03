@@ -34,6 +34,8 @@ require 'xdr'
 #           AccountID destination;
 #       case INFLATION:
 #           void;
+#       case MANAGE_DATA:
+#           ManageDataOp manageDataOp;
 #       }
 #       body;
 #   };

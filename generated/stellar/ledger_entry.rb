@@ -17,6 +17,8 @@ require 'xdr'
 #           TrustLineEntry trustLine;
 #       case OFFER:
 #           OfferEntry offer;
+#       case DATA:
+#           DataEntry data;
 #       }
 #       data;
 #   
