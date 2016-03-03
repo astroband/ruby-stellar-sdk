@@ -13,6 +13,8 @@ require 'xdr'
 #           TrustLineEntry trustLine;
 #       case OFFER:
 #           OfferEntry offer;
+#       case DATA:
+#           DataEntry data;
 #       }
 #
 # ===========================================================================
@@ -24,10 +26,12 @@ module Stellar
       switch :account,   :account
       switch :trustline, :trust_line
       switch :offer,     :offer
+      switch :data,      :data
 
       attribute :account,    AccountEntry
       attribute :trust_line, TrustLineEntry
       attribute :offer,      OfferEntry
+      attribute :data,       DataEntry
     end
   end
 end

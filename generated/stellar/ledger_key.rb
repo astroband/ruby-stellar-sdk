@@ -26,6 +26,13 @@ require 'xdr'
 #           AccountID sellerID;
 #           uint64 offerID;
 #       } offer;
+#   
+#   case DATA:
+#       struct
+#       {
+#           AccountID accountID;
+#           string64 dataName;
+#       } data;
 #   };
 #
 # ===========================================================================
@@ -36,15 +43,18 @@ module Stellar
     autoload :Account
     autoload :TrustLine
     autoload :Offer
+    autoload :Data
 
     switch_on LedgerEntryType, :type
 
     switch :account,   :account
     switch :trustline, :trust_line
     switch :offer,     :offer
+    switch :data,      :data
 
     attribute :account,    Account
     attribute :trust_line, TrustLine
     attribute :offer,      Offer
+    attribute :data,       Data
   end
 end

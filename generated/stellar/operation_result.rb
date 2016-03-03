@@ -30,6 +30,8 @@ require 'xdr'
 #           AccountMergeResult accountMergeResult;
 #       case INFLATION:
 #           InflationResult inflationResult;
+#       case MANAGE_DATA:
+#           ManageDataResult manageDataResult;
 #       }
 #       tr;
 #   default:
