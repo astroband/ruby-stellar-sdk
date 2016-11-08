@@ -3,35 +3,38 @@ module Stellar
     include Contracts
 
     attr_reader :amount
-    attr_reader :currency
+    attr_reader :asset
 
-    Contract Pos, Currency => Any
-    def initialize(amount, currency=Stellar::Currency.native())
+    Contract Pos, Asset => Any
+    def initialize(amount, asset=Stellar::Asset.native())
       # TODO: how are we going to handle decimal considerations?
       
-      @amount   = amount
-      @currency = currency
+      @amount = amount
+      @asset  = asset
     end
 
 
     Contract None => Or[
-      [:iso4217, String, KeyPair, Pos],
+      [Or[:credit_alphanum4, :credit_alphanum12], String, KeyPair, Pos],
       [:native, Pos],
     ]
     def to_payment
-      case currency.type 
-      when CurrencyType.currency_type_native
+      case asset.type 
+      when AssetType.asset_type_native
         [:native, amount]
-      when CurrencyType.currency_type_alphanum
-        keypair = KeyPair.from_public_key(currency.issuer)
-        [:iso4217, currency, keypair, amount]
+      when AssetType.asset_type_credit_alphanum4
+        keypair = KeyPair.from_public_key(asset.issuer)
+        [:credit_alphanum4, asset, keypair, amount]
+      when AssetType.asset_type_credit_alphanum12
+        keypair = KeyPair.from_public_key(asset.issuer)
+        [:credit_alphanum12, asset, keypair, amount]
       else
-        raise "Unknown currency type: #{currency.type}"
+        raise "Unknown asset type: #{asset.type}"
       end
     end
 
     def inspect
-      "#<Stellar::Amount #{currency}(#{amount})>" 
+      "#<Stellar::Amount #{asset}(#{amount})>" 
     end
   end
 end
