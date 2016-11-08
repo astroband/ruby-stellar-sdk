@@ -1,7 +1,7 @@
 # Ruby Stellar
 
-[![Build Status](https://travis-ci.org/stellar/ruby-stellar-lib.svg)](https://travis-ci.org/stellar/ruby-stellar-lib)
-[![Code Climate](https://codeclimate.com/github/stellar/ruby-stellar-lib/badges/gpa.svg)](https://codeclimate.com/github/stellar/ruby-stellar-lib)
+[![Build Status](https://travis-ci.org/stellar/ruby-stellar-sdk.svg)](https://travis-ci.org/stellar/ruby-stellar-lib)
+[![Code Climate](https://codeclimate.com/github/stellar/ruby-stellar-sdk/badges/gpa.svg)](https://codeclimate.com/github/stellar/ruby-stellar-sdk)
 
 *STATUS:  this library is very early and incomplete.  The examples provided do not work, yet*
 
@@ -12,7 +12,7 @@ This library helps you to integrate your application into the [Stellar network](
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'stellar'
+gem 'stellar-sdk'
 ```
 
 And then execute:
@@ -21,7 +21,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install stellar
+    $ gem install stellar-sdk
 
 Also requires libsodium. Installable via `brew install libsodium` on OS X.
 
@@ -32,7 +32,7 @@ See [examples](examples).
 A simple payment from the root account to some random accounts
 
 ```ruby
-require 'stellar'
+require 'stellar-sdk'
 
 account   = Stellar::Account.master
 client    = Stellar::Client.default_testnet()
