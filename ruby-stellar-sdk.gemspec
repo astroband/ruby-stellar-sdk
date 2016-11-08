@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'stellar/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "stellar"
+  spec.name          = "stellar-sdk"
   spec.version       = Stellar::VERSION
   spec.authors       = ["Scott Fleckenstein"]
   spec.email         = ["scott@stellar.org"]
