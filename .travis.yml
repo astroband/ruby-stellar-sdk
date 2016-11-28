@@ -2,8 +2,8 @@ language: ruby
 rvm:
 - 2.3.1
 - 2.2.5
-- 2.1.10
-- jruby
+- jruby-9.0.5.0
+- jruby-9.1.6.0
 script: LD_LIBRARY_PATH=lib bundle exec rake travis
 notifications:
   slack:
