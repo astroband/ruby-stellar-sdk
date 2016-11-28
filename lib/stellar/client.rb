@@ -49,8 +49,8 @@ module Stellar
     # Contract Stellar::Account => Stellar::AccountInfo
     Contract Stellar::Account => Any
     def account_info(account)
-      address  = account.address
-      @horizon.account(address:address)
+      account_id  = account.address
+      @horizon.account(account_id:account_id)
     end
 
     Contract ({
