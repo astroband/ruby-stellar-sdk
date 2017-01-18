@@ -5,16 +5,20 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct Signer
+#   struct
 #   {
-#       SignerKey key;
-#       uint32 weight; // really only need 1byte
-#   };
+#      uint64 sequence;
+#      StellarMessage message;
+#      HmacSha256Mac mac;
+#       }
 #
 # ===========================================================================
 module Stellar
-  class Signer < XDR::Struct
-    attribute :key,    SignerKey
-    attribute :weight, Uint32
+  class AuthenticatedMessage
+    class V0 < XDR::Struct
+      attribute :sequence, Uint64
+      attribute :message,  StellarMessage
+      attribute :mac,      HmacSha256Mac
+    end
   end
 end

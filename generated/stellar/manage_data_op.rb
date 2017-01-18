@@ -5,16 +5,16 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct Signer
+#   struct ManageDataOp
 #   {
-#       SignerKey key;
-#       uint32 weight; // really only need 1byte
+#       string64 dataName; 
+#       DataValue* dataValue;   // set to null to clear
 #   };
 #
 # ===========================================================================
 module Stellar
-  class Signer < XDR::Struct
-    attribute :key,    SignerKey
-    attribute :weight, Uint32
+  class ManageDataOp < XDR::Struct
+    attribute :data_name,  String64
+    attribute :data_value, XDR::Option[DataValue]
   end
 end

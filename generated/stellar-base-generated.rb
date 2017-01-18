@@ -13,7 +13,10 @@ module Stellar
   Uint64 = XDR::UnsignedHyper
   Int64 = XDR::Hyper
   autoload :CryptoKeyType
+  autoload :PublicKeyType
+  autoload :SignerKeyType
   autoload :PublicKey
+  autoload :SignerKey
   Signature = XDR::VarOpaque[64]
   SignatureHint = XDR::Opaque[4]
   NodeID = PublicKey
@@ -28,7 +31,9 @@ module Stellar
   AccountID = PublicKey
   Thresholds = XDR::Opaque[4]
   String32 = XDR::String[32]
+  String64 = XDR::String[64]
   SequenceNumber = Uint64
+  DataValue = XDR::VarOpaque[64]
   autoload :AssetType
   autoload :Asset
   autoload :Price
@@ -41,6 +46,7 @@ module Stellar
   autoload :TrustLineEntry
   autoload :OfferEntryFlags
   autoload :OfferEntry
+  autoload :DataEntry
   autoload :LedgerEntry
   autoload :EnvelopeType
 end
@@ -57,11 +63,13 @@ module Stellar
   autoload :SetOptionsOp
   autoload :ChangeTrustOp
   autoload :AllowTrustOp
+  autoload :ManageDataOp
   autoload :Operation
   autoload :MemoType
   autoload :Memo
   autoload :TimeBounds
   autoload :Transaction
+  autoload :TransactionSignaturePayload
   autoload :TransactionEnvelope
   autoload :ClaimOfferAtom
   autoload :CreateAccountResultCode
@@ -86,6 +94,8 @@ module Stellar
   autoload :InflationResultCode
   autoload :InflationPayout
   autoload :InflationResult
+  autoload :ManageDataResultCode
+  autoload :ManageDataResult
   autoload :OperationResultCode
   autoload :OperationResult
   autoload :TransactionResultCode
@@ -102,13 +112,15 @@ module Stellar
   autoload :LedgerKey
   autoload :BucketEntryType
   autoload :BucketEntry
-  MAX_TX_PER_LEDGER = 5000
   autoload :TransactionSet
   autoload :TransactionResultPair
   autoload :TransactionResultSet
   autoload :TransactionHistoryEntry
   autoload :TransactionHistoryResultEntry
   autoload :LedgerHeaderHistoryEntry
+  autoload :LedgerSCPMessages
+  autoload :SCPHistoryEntryV0
+  autoload :SCPHistoryEntry
   autoload :LedgerEntryChangeType
   autoload :LedgerEntryChange
   LedgerEntryChanges = XDR::VarArray[LedgerEntryChange]

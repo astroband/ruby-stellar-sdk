@@ -24,7 +24,8 @@ enum OperationType
     CHANGE_TRUST = 6,
     ALLOW_TRUST = 7,
     ACCOUNT_MERGE = 8,
-    INFLATION = 9
+    INFLATION = 9,
+    MANAGE_DATA = 10
 };
 
 /* CreateAccount
@@ -205,6 +206,21 @@ Result: InflationResult
     Result : AccountMergeResult
 */
 
+/* ManageData
+    Adds, Updates, or Deletes a key value pair associated with a particular 
+	account.
+
+    Threshold: med
+
+    Result: ManageDataResult
+*/
+
+struct ManageDataOp
+{
+    string64 dataName; 
+    DataValue* dataValue;   // set to null to clear
+};
+
 /* An operation is the lowest unit of work that a transaction does */
 struct Operation
 {
@@ -235,6 +251,8 @@ struct Operation
         AccountID destination;
     case INFLATION:
         void;
+    case MANAGE_DATA:
+        ManageDataOp manageDataOp;
     }
     body;
 };
@@ -265,7 +283,7 @@ case MEMO_RETURN:
 struct TimeBounds
 {
     uint64 minTime;
-    uint64 maxTime;
+    uint64 maxTime; // 0 here means no maxTime
 };
 
 /* a transaction is a container for a set of operations
@@ -303,11 +321,24 @@ struct Transaction
     ext;
 };
 
+struct TransactionSignaturePayload {
+    Hash networkId;
+    union switch (EnvelopeType type)
+    {
+    case ENVELOPE_TYPE_TX:
+          Transaction tx;
+    /* All other values of type are invalid */
+    } taggedTransaction;
+};
+
 /* A TransactionEnvelope wraps a transaction with signatures. */
 struct TransactionEnvelope
 {
     Transaction tx;
-    DecoratedSignature signatures<20>;
+    /* Each decorated signature is a signature over the SHA256 hash of
+     * a TransactionSignaturePayload */
+    DecoratedSignature
+    signatures<20>;
 };
 
 /* Operation Results section */
@@ -315,7 +346,7 @@ struct TransactionEnvelope
 /* This result is used when offers are taken during an operation */
 struct ClaimOfferAtom
 {
-    // emited to identify the offer
+    // emitted to identify the offer
     AccountID sellerID; // Account that owns the offer
     uint64 offerID;
 
@@ -514,7 +545,8 @@ enum ChangeTrustResultCode
     CHANGE_TRUST_NO_ISSUER = -2,     // could not find issuer
     CHANGE_TRUST_INVALID_LIMIT = -3, // cannot drop limit below balance
                                      // cannot create with a limit of 0
-    CHANGE_TRUST_LOW_RESERVE = -4 // not enough funds to create a new trust line
+    CHANGE_TRUST_LOW_RESERVE = -4, // not enough funds to create a new trust line,
+    CHANGE_TRUST_SELF_NOT_ALLOWED = -5 // trusting self is not allowed
 };
 
 union ChangeTrustResult switch (ChangeTrustResultCode code)
@@ -536,7 +568,8 @@ enum AllowTrustResultCode
     ALLOW_TRUST_NO_TRUST_LINE = -2, // trustor does not have a trustline
                                     // source account does not require trust
     ALLOW_TRUST_TRUST_NOT_REQUIRED = -3,
-    ALLOW_TRUST_CANT_REVOKE = -4 // source account can't revoke trust
+    ALLOW_TRUST_CANT_REVOKE = -4, // source account can't revoke trust,
+    ALLOW_TRUST_SELF_NOT_ALLOWED = -5 // trusting self is not allowed
 };
 
 union AllowTrustResult switch (AllowTrustResultCode code)
@@ -592,6 +625,27 @@ default:
     void;
 };
 
+/******* ManageData Result ********/
+
+enum ManageDataResultCode
+{
+    // codes considered as "success" for the operation
+    MANAGE_DATA_SUCCESS = 0,
+    // codes considered as "failure" for the operation
+    MANAGE_DATA_NOT_SUPPORTED_YET = -1, // The network hasn't moved to this protocol change yet
+    MANAGE_DATA_NAME_NOT_FOUND = -2,    // Trying to remove a Data Entry that isn't there
+    MANAGE_DATA_LOW_RESERVE = -3,       // not enough funds to create a new Data Entry
+    MANAGE_DATA_INVALID_NAME = -4       // Name not a valid string
+};
+
+union ManageDataResult switch (ManageDataResultCode code)
+{
+case MANAGE_DATA_SUCCESS:
+    void;
+default:
+    void;
+};
+
 /* High level Operation Result */
 
 enum OperationResultCode
@@ -627,6 +681,8 @@ case opINNER:
         AccountMergeResult accountMergeResult;
     case INFLATION:
         InflationResult inflationResult;
+    case MANAGE_DATA:
+        ManageDataResult manageDataResult;
     }
     tr;
 default:

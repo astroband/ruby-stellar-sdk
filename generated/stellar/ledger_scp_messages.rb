@@ -5,16 +5,16 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct Signer
+#   struct LedgerSCPMessages
 #   {
-#       SignerKey key;
-#       uint32 weight; // really only need 1byte
+#       uint32 ledgerSeq;
+#       SCPEnvelope messages<>;
 #   };
 #
 # ===========================================================================
 module Stellar
-  class Signer < XDR::Struct
-    attribute :key,    SignerKey
-    attribute :weight, Uint32
+  class LedgerSCPMessages < XDR::Struct
+    attribute :ledger_seq, Uint32
+    attribute :messages,   XDR::VarArray[SCPEnvelope]
   end
 end

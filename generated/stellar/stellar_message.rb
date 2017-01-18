@@ -35,6 +35,8 @@ require 'xdr'
 #       SCPQuorumSet qSet;
 #   case SCP_MESSAGE:
 #       SCPEnvelope envelope;
+#   case GET_SCP_STATE:
+#       uint32 getSCPLedgerSeq; // ledger seq requested ; if 0, requests the latest
 #   };
 #
 # ===========================================================================
@@ -54,17 +56,19 @@ module Stellar
     switch :get_scp_quorumset, :q_set_hash
     switch :scp_quorumset,     :q_set
     switch :scp_message,       :envelope
+    switch :get_scp_state,     :get_scp_ledger_seq
 
-    attribute :error,       Error
-    attribute :hello,       Hello
-    attribute :auth,        Auth
-    attribute :dont_have,   DontHave
-    attribute :peers,       XDR::VarArray[PeerAddress]
-    attribute :tx_set_hash, Uint256
-    attribute :tx_set,      TransactionSet
-    attribute :transaction, TransactionEnvelope
-    attribute :q_set_hash,  Uint256
-    attribute :q_set,       SCPQuorumSet
-    attribute :envelope,    SCPEnvelope
+    attribute :error,              Error
+    attribute :hello,              Hello
+    attribute :auth,               Auth
+    attribute :dont_have,          DontHave
+    attribute :peers,              XDR::VarArray[PeerAddress]
+    attribute :tx_set_hash,        Uint256
+    attribute :tx_set,             TransactionSet
+    attribute :transaction,        TransactionEnvelope
+    attribute :q_set_hash,         Uint256
+    attribute :q_set,              SCPQuorumSet
+    attribute :envelope,           SCPEnvelope
+    attribute :get_scp_ledger_seq, Uint32
   end
 end

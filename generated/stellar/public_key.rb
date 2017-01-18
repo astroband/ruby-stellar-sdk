@@ -5,18 +5,18 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   union PublicKey switch (CryptoKeyType type)
+#   union PublicKey switch (PublicKeyType type)
 #   {
-#   case KEY_TYPE_ED25519:
+#   case PUBLIC_KEY_TYPE_ED25519:
 #       uint256 ed25519;
 #   };
 #
 # ===========================================================================
 module Stellar
   class PublicKey < XDR::Union
-    switch_on CryptoKeyType, :type
+    switch_on PublicKeyType, :type
 
-    switch :key_type_ed25519, :ed25519
+    switch :public_key_type_ed25519, :ed25519
 
     attribute :ed25519, Uint256
   end

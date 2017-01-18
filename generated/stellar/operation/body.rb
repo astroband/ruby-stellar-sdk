@@ -27,6 +27,8 @@ require 'xdr'
 #           AccountID destination;
 #       case INFLATION:
 #           void;
+#       case MANAGE_DATA:
+#           ManageDataOp manageDataOp;
 #       }
 #
 # ===========================================================================
@@ -45,6 +47,7 @@ module Stellar
       switch :allow_trust,          :allow_trust_op
       switch :account_merge,        :destination
       switch :inflation
+      switch :manage_data,          :manage_data_op
 
       attribute :create_account_op,       CreateAccountOp
       attribute :payment_op,              PaymentOp
@@ -55,6 +58,7 @@ module Stellar
       attribute :change_trust_op,         ChangeTrustOp
       attribute :allow_trust_op,          AllowTrustOp
       attribute :destination,             AccountID
+      attribute :manage_data_op,          ManageDataOp
     end
   end
 end

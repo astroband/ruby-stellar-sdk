@@ -9,7 +9,8 @@ require 'xdr'
 #   {
 #       ACCOUNT = 0,
 #       TRUSTLINE = 1,
-#       OFFER = 2
+#       OFFER = 2,
+#       DATA = 3
 #   };
 #
 # ===========================================================================
@@ -18,6 +19,7 @@ module Stellar
     member :account,   0
     member :trustline, 1
     member :offer,     2
+    member :data,      3
 
     seal
   end

@@ -5,16 +5,16 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct Signer
+#   struct SCPHistoryEntryV0
 #   {
-#       SignerKey key;
-#       uint32 weight; // really only need 1byte
+#       SCPQuorumSet quorumSets<>; // additional quorum sets used by ledgerMessages
+#       LedgerSCPMessages ledgerMessages;
 #   };
 #
 # ===========================================================================
 module Stellar
-  class Signer < XDR::Struct
-    attribute :key,    SignerKey
-    attribute :weight, Uint32
+  class SCPHistoryEntryV0 < XDR::Struct
+    attribute :quorum_sets,     XDR::VarArray[SCPQuorumSet]
+    attribute :ledger_messages, LedgerSCPMessages
   end
 end

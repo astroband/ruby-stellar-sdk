@@ -5,16 +5,21 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct Signer
+#   union ManageDataResult switch (ManageDataResultCode code)
 #   {
-#       SignerKey key;
-#       uint32 weight; // really only need 1byte
+#   case MANAGE_DATA_SUCCESS:
+#       void;
+#   default:
+#       void;
 #   };
 #
 # ===========================================================================
 module Stellar
-  class Signer < XDR::Struct
-    attribute :key,    SignerKey
-    attribute :weight, Uint32
+  class ManageDataResult < XDR::Union
+    switch_on ManageDataResultCode, :code
+
+    switch :manage_data_success
+    switch :default
+
   end
 end

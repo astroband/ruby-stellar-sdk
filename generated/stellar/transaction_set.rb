@@ -8,13 +8,13 @@ require 'xdr'
 #   struct TransactionSet
 #   {
 #       Hash previousLedgerHash;
-#       TransactionEnvelope txs<MAX_TX_PER_LEDGER>;
+#       TransactionEnvelope txs<>;
 #   };
 #
 # ===========================================================================
 module Stellar
   class TransactionSet < XDR::Struct
     attribute :previous_ledger_hash, Hash
-    attribute :txs,                  XDR::VarArray[TransactionEnvelope, MAX_TX_PER_LEDGER]
+    attribute :txs,                  XDR::VarArray[TransactionEnvelope]
   end
 end
