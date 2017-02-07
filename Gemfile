@@ -6,8 +6,8 @@ gemspec
 # gem "xdr", path: "../ruby-xdr"
 
 group :development do
-  # gem "xdrgen", git: "https://github.com/stellar/xdrgen.git"
-  gem "xdrgen", path: "../xdrgen"
+  gem "xdrgen", git: "https://github.com/stellar/xdrgen.git"
+  # gem "xdrgen", path: "../xdrgen"
   gem "pry"
   gem "faraday"
   gem "faraday_middleware"
