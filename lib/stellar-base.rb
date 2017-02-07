@@ -6,7 +6,6 @@ require 'active_support/core_ext/enumerable'
 require 'active_support/core_ext/kernel/reporting'
 
 # See ../generated for code-gen'ed files
-
 silence_warnings do
   require 'stellar-base-generated'
 end

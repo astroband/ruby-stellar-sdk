@@ -1,15 +1,10 @@
 language: ruby
 rvm:
-- 2.2.0
-- 2.1.5
-- 2.0.0
-- 1.9.3
-- jruby-1.7.20
-- jruby-head
+- 2.2.6
+- 2.3.3
+- 2.4.0
+- jruby
 script: bundle exec rake travis
 notifications:
   slack:
     secure: V/6a8KFe067uukrbCJA2R1HPO4xy0YSQ1pwmHVRi5StX+yl+lYsWWJdjdBdT0j3iJBYyPRqU4bQYck+OloxtELnrHCX+OkodxcxW8W/ACc914iIf0FyY9pnusK7ck2awmt4Iuf94YPgi0XTm1aCcm+f0yU7wiIVFpftoXSk1EDY=
-matrix:
-  allow_failures:
-  - rvm: jruby-head
