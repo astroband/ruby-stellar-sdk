@@ -51,7 +51,7 @@ describe Stellar::Convert do
 
   describe "#pk_to_address" do
     let(:pk_raw){ "\x00" * 32 }
-    let(:pk_account_id){ Stellar::AccountID.new(:key_type_ed25519, pk_raw)}
+    let(:pk_account_id){ Stellar::AccountID.new(:public_key_type_ed25519, pk_raw)}
 
     it "converts a Stellar::AccountID into an address using StrKey.check_encode(:account_id)" do
       address = Stellar::Util::StrKey.check_encode(:account_id, pk_raw)

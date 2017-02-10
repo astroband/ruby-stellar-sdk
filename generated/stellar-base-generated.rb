@@ -13,7 +13,10 @@ module Stellar
   Uint64 = XDR::UnsignedHyper
   Int64 = XDR::Hyper
   autoload :CryptoKeyType
+  autoload :PublicKeyType
+  autoload :SignerKeyType
   autoload :PublicKey
+  autoload :SignerKey
   Signature = XDR::VarOpaque[64]
   SignatureHint = XDR::Opaque[4]
   NodeID = PublicKey
@@ -66,6 +69,7 @@ module Stellar
   autoload :Memo
   autoload :TimeBounds
   autoload :Transaction
+  autoload :TransactionSignaturePayload
   autoload :TransactionEnvelope
   autoload :ClaimOfferAtom
   autoload :CreateAccountResultCode
@@ -108,7 +112,6 @@ module Stellar
   autoload :LedgerKey
   autoload :BucketEntryType
   autoload :BucketEntry
-  MAX_TX_PER_LEDGER = 5000
   autoload :TransactionSet
   autoload :TransactionResultPair
   autoload :TransactionResultSet

@@ -14,7 +14,7 @@ module Stellar
       COMPONENTS.each do |c|
         good = true
 
-        good &&= thresholds[c].is_a?(Fixnum)
+        good &&= thresholds[c].is_a?(Integer)
         good &&= VALID_RANGE.include? thresholds[c]
 
         unless good

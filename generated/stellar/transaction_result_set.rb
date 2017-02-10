@@ -7,12 +7,12 @@ require 'xdr'
 #
 #   struct TransactionResultSet
 #   {
-#       TransactionResultPair results<MAX_TX_PER_LEDGER>;
+#       TransactionResultPair results<>;
 #   };
 #
 # ===========================================================================
 module Stellar
   class TransactionResultSet < XDR::Struct
-    attribute :results, XDR::VarArray[TransactionResultPair, MAX_TX_PER_LEDGER]
+    attribute :results, XDR::VarArray[TransactionResultPair]
   end
 end

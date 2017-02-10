@@ -3,7 +3,7 @@ require "spec_helper"
 describe Stellar::Transaction do
   subject do
     Stellar::Transaction.new({
-      source_account: Stellar::AccountID.new(:key_type_ed25519, "\x00" * 32),
+      source_account: Stellar::AccountID.new(:public_key_type_ed25519, "\x00" * 32),
       fee:            10,
       seq_num:        1,
       memo:           Stellar::Memo.new(:memo_none),
