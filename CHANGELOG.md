@@ -6,7 +6,17 @@ file.  This project adheres to [Semantic Versioning](http://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
-## [unreleased](https://github.com/stellar/ruby-stellar-base/compare/v0.11.0...master)
+## [unreleased](https://github.com/stellar/ruby-stellar-base/compare/v0.12.0...master)
+
+## [0.12.0](https://github.com/stellar/ruby-stellar-base/compare/v0.11.0...v0.12.0)
+
+### Changed
+- Avoid modifying $LOAD_PATH to fix load order issues
+- Update XDR definitions for stellar-core 0.6 support
+
+### Removed
+
+- BREAKING CHANGE: Removed support for JRuby.
 
 ## [0.11.0](https://github.com/stellar/ruby-stellar-base/compare/v0.10.0...v0.11.0)
 
