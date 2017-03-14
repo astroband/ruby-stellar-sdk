@@ -7,3 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Changed
 - Update stellar-base to `~> 0.12.0`
+
+### Fixed
+- `#create_account`, along with `#send_payment`
