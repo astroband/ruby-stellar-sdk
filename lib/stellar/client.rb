@@ -69,8 +69,8 @@ module Stellar
         amount:      options[:amount].to_payment,
       })
 
-      envelope_hex = payment.to_envelope(from.keypair).to_xdr(:hex)
-      @horizon.transactions._post(tx: envelope_hex)
+      envelope_base64 = payment.to_envelope(from.keypair).to_xdr(:base64)
+      @horizon.transactions._post(tx: envelope_base64)
     end
 
     Contract ({
@@ -80,17 +80,19 @@ module Stellar
     }) => Any
     def create_account(options={})
       funder   = options[:funder]
-      sequence = options[:sequence] || (account_info(funder).sequence + 1)
+      sequence = options[:sequence] || (account_info(funder).sequence.to_i + 1)
+      fee = options[:fee] || 100 * Stellar::ONE
 
       payment = Stellar::Transaction.create_account({
         account:          funder.keypair,
         destination:      options[:account].keypair,
         sequence:         sequence,
         starting_balance: options[:starting_balance],
+        fee: fee,
       })
 
-      envelope_hex = payment.to_envelope(funder.keypair).to_xdr(:hex)
-      @horizon.transactions._post(tx: envelope_hex)
+      envelope_base64 = payment.to_envelope(funder.keypair).to_xdr(:base64)
+      @horizon.transactions._post(tx: envelope_base64)
     end
 
     Contract ({
