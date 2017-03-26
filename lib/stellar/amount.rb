@@ -15,7 +15,7 @@ module Stellar
 
 
     Contract None => Or[
-      [Or[:credit_alphanum4, :credit_alphanum12], String, KeyPair, Pos],
+      [Or[:alphanum4, :alphanum12], String, KeyPair, Pos],
       [:native, Pos],
     ]
     def to_payment
@@ -23,11 +23,11 @@ module Stellar
       when AssetType.asset_type_native
         [:native, amount]
       when AssetType.asset_type_credit_alphanum4
-        keypair = KeyPair.from_public_key(asset.issuer)
-        [:credit_alphanum4, asset, keypair, amount]
+        keypair = KeyPair.from_public_key(asset.issuer.value)
+        [:alphanum4, asset.code, keypair, amount]
       when AssetType.asset_type_credit_alphanum12
-        keypair = KeyPair.from_public_key(asset.issuer)
-        [:credit_alphanum12, asset, keypair, amount]
+        keypair = KeyPair.from_public_key(asset.issuer.value)
+        [:alphanum12, asset.code, keypair, amount]
       else
         raise "Unknown asset type: #{asset.type}"
       end

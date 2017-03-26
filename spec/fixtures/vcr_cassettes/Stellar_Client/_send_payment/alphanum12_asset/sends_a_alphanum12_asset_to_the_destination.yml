@@ -19,13 +19,13 @@ http_interactions:
       Content-Type:
       - application/hal+json; charset=utf-8
       Date:
-      - Sun, 26 Mar 2017 02:37:23 GMT
+      - Sun, 26 Mar 2017 07:29:42 GMT
       X-Ratelimit-Limit:
       - '72000'
       X-Ratelimit-Remaining:
-      - '71954'
+      - '71932'
       X-Ratelimit-Reset:
-      - '2154'
+      - '2103'
       Content-Length:
       - '1366'
       Connection:
@@ -68,18 +68,18 @@ http_interactions:
           },
           "horizon_version": "v0.10.0-3-g50eda21",
           "core_version": "v0.6.1-2-g12a1603",
-          "history_latest_ledger": 120260,
+          "history_latest_ledger": 124871,
           "history_elder_ledger": 1,
-          "core_latest_ledger": 120260,
+          "core_latest_ledger": 124872,
           "core_elder_ledger": 1,
           "network_passphrase": "Test SDF Network ; September 2015",
           "protocol_version": 4
         }
     http_version: 
-  recorded_at: Sun, 26 Mar 2017 02:37:22 GMT
+  recorded_at: Sun, 26 Mar 2017 07:29:41 GMT
 - request:
     method: get
-    uri: https://horizon-testnet.stellar.org/accounts/[funded_address]
+    uri: https://horizon-testnet.stellar.org/accounts/[destination_address]
     body:
       encoding: US-ASCII
       string: ''
@@ -96,13 +96,13 @@ http_interactions:
       Content-Type:
       - application/hal+json; charset=utf-8
       Date:
-      - Sun, 26 Mar 2017 02:37:25 GMT
+      - Sun, 26 Mar 2017 07:29:43 GMT
       X-Ratelimit-Limit:
       - '72000'
       X-Ratelimit-Remaining:
-      - '71953'
+      - '71931'
       X-Ratelimit-Reset:
-      - '2153'
+      - '2102'
       Connection:
       - keep-alive
     body:
@@ -111,42 +111,42 @@ http_interactions:
         {
           "_links": {
             "self": {
-              "href": "https://horizon-testnet.stellar.org/accounts/[funded_address]"
+              "href": "https://horizon-testnet.stellar.org/accounts/[destination_address]"
             },
             "transactions": {
-              "href": "https://horizon-testnet.stellar.org/accounts/[funded_address]/transactions{?cursor,limit,order}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[destination_address]/transactions{?cursor,limit,order}",
               "templated": true
             },
             "operations": {
-              "href": "https://horizon-testnet.stellar.org/accounts/[funded_address]/operations{?cursor,limit,order}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[destination_address]/operations{?cursor,limit,order}",
               "templated": true
             },
             "payments": {
-              "href": "https://horizon-testnet.stellar.org/accounts/[funded_address]/payments{?cursor,limit,order}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[destination_address]/payments{?cursor,limit,order}",
               "templated": true
             },
             "effects": {
-              "href": "https://horizon-testnet.stellar.org/accounts/[funded_address]/effects{?cursor,limit,order}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[destination_address]/effects{?cursor,limit,order}",
               "templated": true
             },
             "offers": {
-              "href": "https://horizon-testnet.stellar.org/accounts/[funded_address]/offers{?cursor,limit,order}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[destination_address]/offers{?cursor,limit,order}",
               "templated": true
             },
             "trades": {
-              "href": "https://horizon-testnet.stellar.org/accounts/[funded_address]/trades{?cursor,limit,order}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[destination_address]/trades{?cursor,limit,order}",
               "templated": true
             },
             "data": {
-              "href": "https://horizon-testnet.stellar.org/accounts/[funded_address]/data/{key}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[destination_address]/data/{key}",
               "templated": true
             }
           },
-          "id": "[funded_address]",
+          "id": "[destination_address]",
           "paging_token": "",
-          "account_id": "[funded_address]",
-          "sequence": "346973227974663",
-          "subentry_count": 0,
+          "account_id": "[destination_address]",
+          "sequence": "534727723319299",
+          "subentry_count": 2,
           "thresholds": {
             "low_threshold": 0,
             "med_threshold": 0,
@@ -158,74 +158,39 @@ http_interactions:
           },
           "balances": [
             {
-              "balance": "8600.0000000",
+              "balance": "0.0000000",
+              "limit": "922337203685.4775807",
+              "asset_type": "credit_alphanum12",
+              "asset_code": "LONGNAME",
+              "asset_issuer": "[source_address]"
+            },
+            {
+              "balance": "450.0000000",
+              "limit": "922337203685.4775807",
+              "asset_type": "credit_alphanum4",
+              "asset_code": "BTC",
+              "asset_issuer": "[source_address]"
+            },
+            {
+              "balance": "9999.9999700",
               "asset_type": "native"
             }
           ],
           "signers": [
             {
-              "public_key": "[funded_address]",
+              "public_key": "[destination_address]",
               "weight": 1,
-              "key": "[funded_address]",
+              "key": "[destination_address]",
               "type": "ed25519_public_key"
             }
           ],
           "data": {}
         }
     http_version: 
-  recorded_at: Sun, 26 Mar 2017 02:37:24 GMT
-- request:
-    method: post
-    uri: https://horizon-testnet.stellar.org/transactions
-    body:
-      encoding: UTF-8
-      string: tx=AAAAAKEiSt7wL8zHIfwsJF5PvoI%2FqW7Epb2ihhiW7lxPpHJCO5rKAAABO5IAAAAIAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAFYEF4UyWm5HHkM4b5ka%2BP9rVebI%2B0ZuJGLlUCwdIm9IAAAAAO5rKAAAAAAAAAAABT6RyQgAAAEAw357sGECpugPoEhhmFuR6TVkwYeZNVo4tTzvu3osVFOs2pSlgjyIWQV4YiQzvxr55Ux%2Fp%2F0sKlk00FFi%2BvicI
-    headers:
-      User-Agent:
-      - Faraday v0.9.2
-      Accept:
-      - application/hal+json,application/problem+json,application/json
-      Content-Type:
-      - application/x-www-form-urlencoded
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Content-Type:
-      - application/hal+json; charset=utf-8
-      Date:
-      - Sun, 26 Mar 2017 02:37:29 GMT
-      X-Ratelimit-Limit:
-      - '72000'
-      X-Ratelimit-Remaining:
-      - '71952'
-      X-Ratelimit-Reset:
-      - '2152'
-      Content-Length:
-      - '915'
-      Connection:
-      - keep-alive
-    body:
-      encoding: UTF-8
-      string: |-
-        {
-          "_links": {
-            "transaction": {
-              "href": "https://horizon-testnet.stellar.org/transactions/6d03fc6e609ee085019317a029a3d874de50adc7d77131fa68acc18a0690460c"
-            }
-          },
-          "hash": "6d03fc6e609ee085019317a029a3d874de50adc7d77131fa68acc18a0690460c",
-          "ledger": 120262,
-          "envelope_xdr": "AAAAAKEiSt7wL8zHIfwsJF5PvoI/qW7Epb2ihhiW7lxPpHJCO5rKAAABO5IAAAAIAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAFYEF4UyWm5HHkM4b5ka+P9rVebI+0ZuJGLlUCwdIm9IAAAAAO5rKAAAAAAAAAAABT6RyQgAAAEAw357sGECpugPoEhhmFuR6TVkwYeZNVo4tTzvu3osVFOs2pSlgjyIWQV4YiQzvxr55Ux/p/0sKlk00FFi+vicI",
-          "result_xdr": "AAAAADuaygAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAA=",
-          "result_meta_xdr": "AAAAAAAAAAEAAAACAAAAAAAB1cYAAAAAAAAAABWBBeFMlpuRx5DOG+ZGvj/a1XmyPtGbiRi5VAsHSJvSAAAAADuaygAAAdXGAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAQAB1cYAAAAAAAAAAKEiSt7wL8zHIfwsJF5PvoI/qW7Epb2ihhiW7lxPpHJCAAAAE47KSAAAATuSAAAACAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA"
-        }
-    http_version: 
-  recorded_at: Sun, 26 Mar 2017 02:37:29 GMT
+  recorded_at: Sun, 26 Mar 2017 07:29:42 GMT
 - request:
     method: get
-    uri: https://horizon-testnet.stellar.org/accounts/[funded_address]
+    uri: https://horizon-testnet.stellar.org/accounts/[source_address]
     body:
       encoding: US-ASCII
       string: ''
@@ -242,13 +207,13 @@ http_interactions:
       Content-Type:
       - application/hal+json; charset=utf-8
       Date:
-      - Sun, 26 Mar 2017 02:37:31 GMT
+      - Sun, 26 Mar 2017 07:29:45 GMT
       X-Ratelimit-Limit:
       - '72000'
       X-Ratelimit-Remaining:
-      - '71951'
+      - '71930'
       X-Ratelimit-Reset:
-      - '2147'
+      - '2100'
       Connection:
       - keep-alive
     body:
@@ -257,41 +222,41 @@ http_interactions:
         {
           "_links": {
             "self": {
-              "href": "https://horizon-testnet.stellar.org/accounts/[funded_address]"
+              "href": "https://horizon-testnet.stellar.org/accounts/[source_address]"
             },
             "transactions": {
-              "href": "https://horizon-testnet.stellar.org/accounts/[funded_address]/transactions{?cursor,limit,order}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[source_address]/transactions{?cursor,limit,order}",
               "templated": true
             },
             "operations": {
-              "href": "https://horizon-testnet.stellar.org/accounts/[funded_address]/operations{?cursor,limit,order}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[source_address]/operations{?cursor,limit,order}",
               "templated": true
             },
             "payments": {
-              "href": "https://horizon-testnet.stellar.org/accounts/[funded_address]/payments{?cursor,limit,order}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[source_address]/payments{?cursor,limit,order}",
               "templated": true
             },
             "effects": {
-              "href": "https://horizon-testnet.stellar.org/accounts/[funded_address]/effects{?cursor,limit,order}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[source_address]/effects{?cursor,limit,order}",
               "templated": true
             },
             "offers": {
-              "href": "https://horizon-testnet.stellar.org/accounts/[funded_address]/offers{?cursor,limit,order}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[source_address]/offers{?cursor,limit,order}",
               "templated": true
             },
             "trades": {
-              "href": "https://horizon-testnet.stellar.org/accounts/[funded_address]/trades{?cursor,limit,order}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[source_address]/trades{?cursor,limit,order}",
               "templated": true
             },
             "data": {
-              "href": "https://horizon-testnet.stellar.org/accounts/[funded_address]/data/{key}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[source_address]/data/{key}",
               "templated": true
             }
           },
-          "id": "[funded_address]",
+          "id": "[source_address]",
           "paging_token": "",
-          "account_id": "[funded_address]",
-          "sequence": "346973227974664",
+          "account_id": "[source_address]",
+          "sequence": "346973227974697",
           "subentry_count": 0,
           "thresholds": {
             "low_threshold": 0,
@@ -304,28 +269,28 @@ http_interactions:
           },
           "balances": [
             {
-              "balance": "8400.0000000",
+              "balance": "4399.9998400",
               "asset_type": "native"
             }
           ],
           "signers": [
             {
-              "public_key": "[funded_address]",
+              "public_key": "[source_address]",
               "weight": 1,
-              "key": "[funded_address]",
+              "key": "[source_address]",
               "type": "ed25519_public_key"
             }
           ],
           "data": {}
         }
     http_version: 
-  recorded_at: Sun, 26 Mar 2017 02:37:30 GMT
+  recorded_at: Sun, 26 Mar 2017 07:29:44 GMT
 - request:
     method: post
     uri: https://horizon-testnet.stellar.org/transactions
     body:
       encoding: UTF-8
-      string: tx=AAAAAKEiSt7wL8zHIfwsJF5PvoI%2FqW7Epb2ihhiW7lxPpHJCAAAAZAABO5IAAAAJAAAAAAAAAAAAAAABAAAAAAAAAAEAAAAAFYEF4UyWm5HHkM4b5ka%2BP9rVebI%2B0ZuJGLlUCwdIm9IAAAAAAAAAAFloLwAAAAAAAAAAAU%2BkckIAAABA28Ug2alQTPiNb7nGN7CbaliRnI36ILT9HgDrzQiaApN5Xh1M0f9YR0vKKSSptTjPbx2X5GZ4X17mKq4OK%2FWDDA%3D%3D
+      string: tx=AAAAAKEiSt7wL8zHIfwsJF5PvoI%2FqW7Epb2ihhiW7lxPpHJCAAAAZAABO5IAAAAqAAAAAAAAAAAAAAABAAAAAAAAAAEAAAAA8RA%2BPteVWFSF0ebzR9MQD1xUygu9t%2BQcKZWQYBZAumAAAAACTE9OR05BTUUAAAAAAAAAAKEiSt7wL8zHIfwsJF5PvoI%2FqW7Epb2ihhiW7lxPpHJCAAAAAFloLwAAAAAAAAAAAU%2BkckIAAABAQx5DHEnThKdnt7he%2Fp%2B8TihB8dzmC95FCP73AyRugyf6OG5M5fRm%2BklDF5kAc786sTG1CwTyNN8Yv8qY9E3HDw%3D%3D
     headers:
       User-Agent:
       - Faraday v0.9.2
@@ -341,15 +306,15 @@ http_interactions:
       Content-Type:
       - application/hal+json; charset=utf-8
       Date:
-      - Sun, 26 Mar 2017 02:37:37 GMT
+      - Sun, 26 Mar 2017 07:29:51 GMT
       X-Ratelimit-Limit:
       - '72000'
       X-Ratelimit-Remaining:
-      - '71950'
+      - '71929'
       X-Ratelimit-Reset:
-      - '2145'
+      - '2099'
       Content-Length:
-      - '1051'
+      - '1075'
       Connection:
       - keep-alive
     body:
@@ -358,20 +323,20 @@ http_interactions:
         {
           "_links": {
             "transaction": {
-              "href": "https://horizon-testnet.stellar.org/transactions/6ae3310fe64e2dda53e20fcf286f049f3af0054f420154168bd6f5504504341a"
+              "href": "https://horizon-testnet.stellar.org/transactions/39a1bf57589f1cc37e3303238b5d3ad7aade9d5996a6a0370ccdb336cb3fca0f"
             }
           },
-          "hash": "6ae3310fe64e2dda53e20fcf286f049f3af0054f420154168bd6f5504504341a",
-          "ledger": 120264,
-          "envelope_xdr": "AAAAAKEiSt7wL8zHIfwsJF5PvoI/qW7Epb2ihhiW7lxPpHJCAAAAZAABO5IAAAAJAAAAAAAAAAAAAAABAAAAAAAAAAEAAAAAFYEF4UyWm5HHkM4b5ka+P9rVebI+0ZuJGLlUCwdIm9IAAAAAAAAAAFloLwAAAAAAAAAAAU+kckIAAABA28Ug2alQTPiNb7nGN7CbaliRnI36ILT9HgDrzQiaApN5Xh1M0f9YR0vKKSSptTjPbx2X5GZ4X17mKq4OK/WDDA==",
+          "hash": "39a1bf57589f1cc37e3303238b5d3ad7aade9d5996a6a0370ccdb336cb3fca0f",
+          "ledger": 124875,
+          "envelope_xdr": "AAAAAKEiSt7wL8zHIfwsJF5PvoI/qW7Epb2ihhiW7lxPpHJCAAAAZAABO5IAAAAqAAAAAAAAAAAAAAABAAAAAAAAAAEAAAAA8RA+PteVWFSF0ebzR9MQD1xUygu9t+QcKZWQYBZAumAAAAACTE9OR05BTUUAAAAAAAAAAKEiSt7wL8zHIfwsJF5PvoI/qW7Epb2ihhiW7lxPpHJCAAAAAFloLwAAAAAAAAAAAU+kckIAAABAQx5DHEnThKdnt7he/p+8TihB8dzmC95FCP73AyRugyf6OG5M5fRm+klDF5kAc786sTG1CwTyNN8Yv8qY9E3HDw==",
           "result_xdr": "AAAAAAAAAGQAAAAAAAAAAQAAAAAAAAABAAAAAAAAAAA=",
-          "result_meta_xdr": "AAAAAAAAAAEAAAADAAAAAwAB1cYAAAAAAAAAABWBBeFMlpuRx5DOG+ZGvj/a1XmyPtGbiRi5VAsHSJvSAAAAADuaygAAAdXGAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAQAB1cgAAAAAAAAAABWBBeFMlpuRx5DOG+ZGvj/a1XmyPtGbiRi5VAsHSJvSAAAAAJUC+QAAAdXGAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAQAB1cgAAAAAAAAAAKEiSt7wL8zHIfwsJF5PvoI/qW7Epb2ihhiW7lxPpHJCAAAAEzViGJwAATuSAAAACQAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA"
+          "result_meta_xdr": "AAAAAAAAAAEAAAACAAAAAwAB52oAAAABAAAAAPEQPj7XlVhUhdHm80fTEA9cVMoLvbfkHCmVkGAWQLpgAAAAAkxPTkdOQU1FAAAAAAAAAAChIkre8C/MxyH8LCReT76CP6luxKW9ooYYlu5cT6RyQgAAAAAAAAAAf/////////8AAAABAAAAAAAAAAAAAAABAAHnywAAAAEAAAAA8RA+PteVWFSF0ebzR9MQD1xUygu9t+QcKZWQYBZAumAAAAACTE9OR05BTUUAAAAAAAAAAKEiSt7wL8zHIfwsJF5PvoI/qW7Epb2ihhiW7lxPpHJCAAAAAFloLwB//////////wAAAAEAAAAAAAAAAA=="
         }
     http_version: 
-  recorded_at: Sun, 26 Mar 2017 02:37:37 GMT
+  recorded_at: Sun, 26 Mar 2017 07:29:50 GMT
 - request:
     method: get
-    uri: https://horizon-testnet.stellar.org/accounts/GAKYCBPBJSLJXEOHSDHBXZSGXY75VVLZWI7NDG4JDC4VICYHJCN5FYNW
+    uri: https://horizon-testnet.stellar.org/accounts/[destination_address]
     body:
       encoding: US-ASCII
       string: ''
@@ -388,13 +353,13 @@ http_interactions:
       Content-Type:
       - application/hal+json; charset=utf-8
       Date:
-      - Sun, 26 Mar 2017 02:37:38 GMT
+      - Sun, 26 Mar 2017 07:29:52 GMT
       X-Ratelimit-Limit:
       - '72000'
       X-Ratelimit-Remaining:
-      - '71949'
+      - '71928'
       X-Ratelimit-Reset:
-      - '2139'
+      - '2093'
       Connection:
       - keep-alive
     body:
@@ -403,42 +368,42 @@ http_interactions:
         {
           "_links": {
             "self": {
-              "href": "https://horizon-testnet.stellar.org/accounts/GAKYCBPBJSLJXEOHSDHBXZSGXY75VVLZWI7NDG4JDC4VICYHJCN5FYNW"
+              "href": "https://horizon-testnet.stellar.org/accounts/[destination_address]"
             },
             "transactions": {
-              "href": "https://horizon-testnet.stellar.org/accounts/GAKYCBPBJSLJXEOHSDHBXZSGXY75VVLZWI7NDG4JDC4VICYHJCN5FYNW/transactions{?cursor,limit,order}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[destination_address]/transactions{?cursor,limit,order}",
               "templated": true
             },
             "operations": {
-              "href": "https://horizon-testnet.stellar.org/accounts/GAKYCBPBJSLJXEOHSDHBXZSGXY75VVLZWI7NDG4JDC4VICYHJCN5FYNW/operations{?cursor,limit,order}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[destination_address]/operations{?cursor,limit,order}",
               "templated": true
             },
             "payments": {
-              "href": "https://horizon-testnet.stellar.org/accounts/GAKYCBPBJSLJXEOHSDHBXZSGXY75VVLZWI7NDG4JDC4VICYHJCN5FYNW/payments{?cursor,limit,order}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[destination_address]/payments{?cursor,limit,order}",
               "templated": true
             },
             "effects": {
-              "href": "https://horizon-testnet.stellar.org/accounts/GAKYCBPBJSLJXEOHSDHBXZSGXY75VVLZWI7NDG4JDC4VICYHJCN5FYNW/effects{?cursor,limit,order}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[destination_address]/effects{?cursor,limit,order}",
               "templated": true
             },
             "offers": {
-              "href": "https://horizon-testnet.stellar.org/accounts/GAKYCBPBJSLJXEOHSDHBXZSGXY75VVLZWI7NDG4JDC4VICYHJCN5FYNW/offers{?cursor,limit,order}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[destination_address]/offers{?cursor,limit,order}",
               "templated": true
             },
             "trades": {
-              "href": "https://horizon-testnet.stellar.org/accounts/GAKYCBPBJSLJXEOHSDHBXZSGXY75VVLZWI7NDG4JDC4VICYHJCN5FYNW/trades{?cursor,limit,order}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[destination_address]/trades{?cursor,limit,order}",
               "templated": true
             },
             "data": {
-              "href": "https://horizon-testnet.stellar.org/accounts/GAKYCBPBJSLJXEOHSDHBXZSGXY75VVLZWI7NDG4JDC4VICYHJCN5FYNW/data/{key}",
+              "href": "https://horizon-testnet.stellar.org/accounts/[destination_address]/data/{key}",
               "templated": true
             }
           },
-          "id": "GAKYCBPBJSLJXEOHSDHBXZSGXY75VVLZWI7NDG4JDC4VICYHJCN5FYNW",
+          "id": "[destination_address]",
           "paging_token": "",
-          "account_id": "GAKYCBPBJSLJXEOHSDHBXZSGXY75VVLZWI7NDG4JDC4VICYHJCN5FYNW",
-          "sequence": "516521356951552",
-          "subentry_count": 0,
+          "account_id": "[destination_address]",
+          "sequence": "534727723319299",
+          "subentry_count": 2,
           "thresholds": {
             "low_threshold": 0,
             "med_threshold": 0,
@@ -450,20 +415,34 @@ http_interactions:
           },
           "balances": [
             {
-              "balance": "250.0000000",
+              "balance": "450.0000000",
+              "limit": "922337203685.4775807",
+              "asset_type": "credit_alphanum4",
+              "asset_code": "BTC",
+              "asset_issuer": "[source_address]"
+            },
+            {
+              "balance": "150.0000000",
+              "limit": "922337203685.4775807",
+              "asset_type": "credit_alphanum12",
+              "asset_code": "LONGNAME",
+              "asset_issuer": "[source_address]"
+            },
+            {
+              "balance": "9999.9999700",
               "asset_type": "native"
             }
           ],
           "signers": [
             {
-              "public_key": "GAKYCBPBJSLJXEOHSDHBXZSGXY75VVLZWI7NDG4JDC4VICYHJCN5FYNW",
+              "public_key": "[destination_address]",
               "weight": 1,
-              "key": "GAKYCBPBJSLJXEOHSDHBXZSGXY75VVLZWI7NDG4JDC4VICYHJCN5FYNW",
+              "key": "[destination_address]",
               "type": "ed25519_public_key"
             }
           ],
           "data": {}
         }
     http_version: 
-  recorded_at: Sun, 26 Mar 2017 02:37:38 GMT
+  recorded_at: Sun, 26 Mar 2017 07:29:51 GMT
 recorded_with: VCR 3.0.3
