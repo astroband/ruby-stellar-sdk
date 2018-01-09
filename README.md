@@ -45,6 +45,12 @@ client.send_payment({
 }) 
 ```
 
+## Development
+
+- Copy `spec/config.yml.sample` to `spec/config.yml`
+- Replace anything in `spec/config.yml` especially if you will re-record specs
+- `rspec spec`
+
 ## Contributing
 
 1. Sign the [Contributor License Agreement](https://docs.google.com/forms/d/1g7EF6PERciwn7zfmfke5Sir2n10yddGGSXyZsq98tVY/viewform?usp=send_form)
