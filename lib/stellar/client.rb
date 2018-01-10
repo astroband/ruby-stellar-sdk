@@ -60,7 +60,7 @@ module Stellar
     }) => Any
     def send_payment(options={})
       from     = options[:from]
-      sequence = options[:sequence] || (account_info(from).sequence + 1)
+      sequence = options[:sequence] || (account_info(from).sequence.to_i + 1)
 
       payment = Stellar::Transaction.payment({
         account:     from.keypair,
