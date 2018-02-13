@@ -46,5 +46,25 @@ module Stellar
       end
     end
 
+    describe "#inspect" do
+      context "when asset is not explicitly supplied" do
+        it "uses the native asset type" do
+          amount = described_class.new(200)
+          expect(amount.inspect).to eq "#<Stellar::Amount native(200)>"
+        end
+      end
+
+      context "when asset is supplied" do
+        let(:issuer_account) { Stellar::Account.random }
+
+        it "uses the supplied asset type" do
+          asset = Stellar::Asset.alphanum4("BTC", issuer_account.keypair)
+          address = issuer_account.address
+          amount = described_class.new(1_000000, asset)
+          expect(amount.inspect).to eq "#<Stellar::Amount #{asset}(1000000)>"
+        end
+      end
+    end
+
   end
 end
