@@ -41,10 +41,13 @@ module Stellar
   autoload :LedgerEntryType
   autoload :Signer
   autoload :AccountFlags
+  MASK_ACCOUNT_FLAGS = 0x7
   autoload :AccountEntry
   autoload :TrustLineFlags
+  MASK_TRUSTLINE_FLAGS = 1
   autoload :TrustLineEntry
   autoload :OfferEntryFlags
+  MASK_OFFERENTRY_FLAGS = 1
   autoload :OfferEntry
   autoload :DataEntry
   autoload :LedgerEntry
