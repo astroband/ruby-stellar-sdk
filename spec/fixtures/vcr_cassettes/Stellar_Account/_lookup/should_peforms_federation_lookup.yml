@@ -1,0 +1,85 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://stellarfed.org/.well-known/stellar.toml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.14.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx/1.13.8
+      Date:
+      - Tue, 20 Feb 2018 18:58:57 GMT
+      Content-Type:
+      - text/plain; charset=utf-8
+      Last-Modified:
+      - Thu, 08 Feb 2018 03:32:08 GMT
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Etag:
+      - W/"5a7bc4b8-63"
+      Access-Control-Allow-Origin:
+      - "*"
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        # Federation service provided by stellarfed.org
+        FEDERATION_SERVER="https://stellarfed.org/federation/"
+    http_version: 
+  recorded_at: Tue, 20 Feb 2018 18:58:57 GMT
+- request:
+    method: get
+    uri: https://stellarfed.org/federation/?q=john@email.com*stellarfed.org&type=name
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.14.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx/1.13.8
+      Date:
+      - Tue, 20 Feb 2018 18:58:58 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '114'
+      Connection:
+      - keep-alive
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Xss-Protection:
+      - 1; mode=block
+      Strict-Transport-Security:
+      - max-age=7776000; includeSubdomains
+    body:
+      encoding: UTF-8
+      string: '{"stellar_address": "john@email.com*stellarfed.org", "account_id": "GDSRO6H2YM6MC6ZO7KORPJXSTUMBMT3E7MZ66CFVNMUAULFG6G2OP32I"}'
+    http_version: 
+  recorded_at: Tue, 20 Feb 2018 18:58:58 GMT
+recorded_with: VCR 3.0.3

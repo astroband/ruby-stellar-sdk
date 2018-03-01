@@ -1,0 +1,133 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://stellarfed.org/.well-known/stellar.toml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.14.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 20 Feb 2018 18:58:58 GMT
+      Content-Type:
+      - text/plain; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - __cfduid=de30e4abf7a551661d3deb92e6e3716011519153138; expires=Wed, 20-Feb-19
+        18:58:58 GMT; path=/; domain=.stellarfed.org; HttpOnly; Secure
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Access-Control-Allow-Origin:
+      - "*"
+      Etag:
+      - W/"e00cc6ea5aab41de546253c69965d937"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - 6a387582-adbe-4bfd-836b-eabf658fce22
+      X-Runtime:
+      - '0.002500'
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Via:
+      - 1.1 vegur
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 3f03b34b0e799266-EWR
+    body:
+      encoding: ASCII-8BIT
+      string: FEDERATION_SERVER = "https://stellarfed.org/federation"
+    http_version: 
+  recorded_at: Tue, 20 Feb 2018 18:58:58 GMT
+- request:
+    method: get
+    uri: https://stellarfed.org/federation?q=jane@email.com*stellarfed.org&type=name
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.14.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Date:
+      - Tue, 20 Feb 2018 18:58:58 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - __cfduid=d164f4eba862038aaf9e96d9ac755d9471519153138; expires=Wed, 20-Feb-19
+        18:58:58 GMT; path=/; domain=.stellarfed.org; HttpOnly; Secure
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache
+      X-Request-Id:
+      - 2b9424e9-6cb3-4cdc-915e-469f8e2123e3
+      X-Runtime:
+      - '0.004981'
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Via:
+      - 1.1 vegur
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 3f03b34bbd5c91d0-EWR
+    body:
+      encoding: ASCII-8BIT
+      string: '{"detail":"no record found"}'
+    http_version: 
+  recorded_at: Tue, 20 Feb 2018 18:58:58 GMT
+recorded_with: VCR 3.0.3

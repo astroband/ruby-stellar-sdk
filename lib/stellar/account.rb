@@ -1,3 +1,6 @@
+require 'toml-rb'
+require 'uri'
+
 module Stellar
   class Account
     include Contracts
@@ -20,7 +23,36 @@ module Stellar
     end
 
     def self.lookup(federated_name)
-      raise NotImplementedError
+      _, domain = federated_name.split('*')
+      if domain.nil?
+        raise InvalidFederationAddress.new
+      end
+
+      domain_req = Faraday.new("https://#{domain}/.well-known/stellar.toml").get
+
+      unless domain_req.status == 200
+        raise InvalidStellarDomain.new('Domain does not contain stellar.toml file')
+      end
+      
+      fed_server_url = TomlRB.parse(domain_req.body)["FEDERATION_SERVER"]
+      if fed_server_url.nil?
+        raise InvalidStellarTOML.new('Invalid Stellar TOML file')
+      end
+
+      unless fed_server_url =~ URI::regexp
+        raise InvalidFederationURL.new('Invalid Federation Server URL')
+      end
+
+      lookup_req = Faraday.new(fed_server_url).get do |req|
+        req.params[:q] = federated_name
+        req.params[:type] = 'name'
+      end
+
+      unless lookup_req.status == 200
+        raise AccountNotFound.new('Account not found')
+      end
+
+      JSON.parse(lookup_req.body)["account_id"]
     end
 
     def self.master
@@ -34,5 +66,20 @@ module Stellar
     def initialize(keypair)
       @keypair = keypair
     end
+  end
+
+  class AccountNotFound < StandardError
+  end
+
+  class InvalidStellarTOML < StandardError
+  end
+
+  class InvalidFederationAddress < StandardError
+  end
+
+  class InvalidStellarDomain < StandardError
+  end
+
+  class InvalidFederationURL < StandardError
   end
 end
