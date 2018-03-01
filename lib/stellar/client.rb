@@ -103,7 +103,7 @@ module Stellar
       args = options.slice(:limit)
 
       resource = if options[:account]
-        args = args.merge(address: options[:account].address)
+        args = args.merge(account_id: options[:account].address)
         @horizon.account_transactions(args)
       else
         @horizon.transactions(args)
