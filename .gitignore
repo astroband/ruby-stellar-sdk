@@ -11,5 +11,6 @@
 *.so
 *.o
 *.a
+/.vscode
 mkmf.log
 .DS_Store
