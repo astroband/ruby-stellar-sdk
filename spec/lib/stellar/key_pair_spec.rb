@@ -135,6 +135,17 @@ describe Stellar::KeyPair do
     end
   end
 
+  describe "#signer_key" do
+    let(:key_pair){ Stellar::KeyPair.random }
+    subject{ key_pair.signer_key }
+
+    it { should be_a(Stellar::SignerKey) }
+
+    it "contains the public key" do
+        expect(subject.ed25519!).to eql(key_pair.raw_public_key)
+    end
+  end
+
   describe "#raw_seed" do
     let(:key_pair){ Stellar::KeyPair.random }
     subject{ key_pair.raw_seed }
@@ -167,6 +178,8 @@ describe Stellar::KeyPair do
     subject{ key_pair.seed }
     it{ should be_strkey(:seed)}
   end
+
+
 
   describe "#sign" do
     let(:message) { "hello" }

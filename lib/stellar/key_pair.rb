@@ -49,6 +49,10 @@ module Stellar
       Stellar::PublicKey.new :public_key_type_ed25519, raw_public_key
     end
 
+    def signer_key
+      Stellar::SignerKey.new :signer_key_type_ed25519, raw_public_key
+    end
+
     def raw_public_key
       @public_key.to_bytes
     end
