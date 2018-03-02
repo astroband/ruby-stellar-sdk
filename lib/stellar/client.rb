@@ -76,7 +76,7 @@ module Stellar
     Contract ({
       account:          Stellar::Account,
       funder:           Stellar::Account,
-      starting_balance: Fixnum
+      starting_balance: Integer
     }) => Any
     def create_account(options={})
       funder   = options[:funder]
