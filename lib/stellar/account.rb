@@ -1,5 +1,7 @@
 require 'toml-rb'
 require 'uri'
+require 'faraday'
+require 'json'
 
 module Stellar
   class Account
