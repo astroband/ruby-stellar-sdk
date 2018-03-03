@@ -41,7 +41,7 @@ recipient = Stellar::Account.random
 client.send_payment({
   from:   account,
   to:     recipient,
-  amount: Stellar::Amount.new(100_000000)
+  amount: Stellar::Amount.new(100_000_000)
 }) 
 ```
 
