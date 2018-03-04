@@ -46,11 +46,10 @@ module Stellar
       raise NotImplementedError
     end
 
-    # Contract Stellar::Account => Stellar::AccountInfo
     Contract Stellar::Account => Any
     def account_info(account)
       account_id  = account.address
-      @horizon.account(account_id:account_id)
+      @horizon.account(account_id:account_id)._get
     end
 
     Contract ({
