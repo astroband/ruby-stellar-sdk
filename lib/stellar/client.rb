@@ -81,7 +81,7 @@ module Stellar
     def create_account(options={})
       funder   = options[:funder]
       sequence = options[:sequence] || (account_info(funder).sequence.to_i + 1)
-      fee = options[:fee] || 100 * Stellar::ONE
+      fee = options[:fee] || 100
 
       payment = Stellar::Transaction.create_account({
         account:          funder.keypair,
