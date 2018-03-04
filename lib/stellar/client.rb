@@ -81,6 +81,8 @@ module Stellar
     def create_account(options={})
       funder   = options[:funder]
       sequence = options[:sequence] || (account_info(funder).sequence.to_i + 1)
+      # In the future, the fee should be grabbed from the network's last transactions,
+      # instead of using a hard-coded default value.
       fee = options[:fee] || 100
 
       payment = Stellar::Transaction.create_account({
