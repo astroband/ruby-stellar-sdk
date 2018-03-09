@@ -1,7 +1,7 @@
-require 'stellar'
+require 'stellar-sdk'
 
 # Reference an account from a secret seed
-account = Stellar::Account.from_seed("s3fu5vCMrfYouKuk2uB1gCD7EsuuBKY9M4qmnniQMBFMWR6Gaqm") 
+account = Stellar::Account.from_seed("SBXH4SEH32PENMMB66P4TY6LXUIFMRVFUMX2LJC3P2STHICBJLNQJOH5") 
  
 # Further options
 # 
