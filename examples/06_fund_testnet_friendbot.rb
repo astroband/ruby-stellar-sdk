@@ -1,14 +1,14 @@
-require 'stellar'
+require 'stellar-sdk'
 
 client  = Stellar::Client.default_testnet
 
-friendbot = Stellar::Account.from_seed("s3fu5vCMrfYouKuk2uB1gCD7EsuuBKY9M4qmnniQMBFMWR6Gaqm")
+friendbot = Stellar::Account.from_seed("SBXH4SEH32PENMMB66P4TY6LXUIFMRVFUMX2LJC3P2STHICBJLNQJOH5")
 
 # Give 10 million lumens
 client.create_account({
   funder:           Stellar::Account.master,
   account:          friendbot,
-  starting_balance: 10_000000 * Stellar::ONE,
+  starting_balance: 10_000_000 * Stellar::ONE,
   sequence: 1,
 })
 

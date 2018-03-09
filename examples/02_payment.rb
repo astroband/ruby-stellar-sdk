@@ -1,6 +1,6 @@
-require 'stellar'
+require 'stellar-sdk'
 
-account = Stellar::Account.from_seed("s3fu5vCMrfYouKuk2uB1gCD7EsuuBKY9M4qmnniQMBFMWR6Gaqm") 
+account = Stellar::Account.from_seed("SBXH4SEH32PENMMB66P4TY6LXUIFMRVFUMX2LJC3P2STHICBJLNQJOH5") 
 client  = Stellar::Client.default_testnet()
 
 # create a random recipients
@@ -10,6 +10,6 @@ recipient = Stellar::Account.random
 client.send_payment({
   from:   account,
   to:     recipient,
-  amount: Stellar::Amount.new(100_000000)
+  amount: Stellar::Amount.new(100_000_000)
 }) # => #<OK>
 

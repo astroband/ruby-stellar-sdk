@@ -1,12 +1,12 @@
-require 'stellar'
+require 'stellar-sdk'
 
-account = Stellar::Account.from_seed("s3fu5vCMrfYouKuk2uB1gCD7EsuuBKY9M4qmnniQMBFMWR6Gaqm") 
+account = Stellar::Account.from_seed("SBXH4SEH32PENMMB66P4TY6LXUIFMRVFUMX2LJC3P2STHICBJLNQJOH5") 
 client  = Stellar::Client.default_testnet()
 
-issuer = Stellar::Account.lookup("issuer@haste.co.nz"))
-asset = Stellar::Asset.credit_alphanum4("USD", issuer)
+issuer = Stellar::Account.lookup("tips*stellarid.io")
+asset = Stellar::Asset.alphanum4("USD", issuer)
 
 client.trust({
-  account:  account
+  account: account,
   asset: asset
 })
