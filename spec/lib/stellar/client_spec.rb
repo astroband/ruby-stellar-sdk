@@ -25,6 +25,30 @@ describe Stellar::Client do
     end
   end
 
+  describe "#account_info" do
+    let(:account) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
+    let(:client) { Stellar::Client.default_testnet }
+
+    it "returns the current details for the account", vcr: { record: :once, match_requests_on: [:method]} do
+      response = client.account_info(account)
+
+      expect(response.id).to eq "GCQSESW66AX4ZRZB7QWCIXSPX2BD7KLOYSS33IUGDCLO4XCPURZEEC6R"
+      expect(response.paging_token).to be_empty
+      expect(response.sequence).to eq "346973227974715"
+      expect(response.subentry_count).to eq 0
+      expect(response.thresholds).to include("low_threshold" => 0, "med_threshold" => 0, "high_threshold" => 0)
+      expect(response.flags).to include("auth_required" => false, "auth_revocable" => false)
+      expect(response.balances).to include("balance" => "3494.9997500", "asset_type" => "native")
+      expect(response.signers).to include(
+        "public_key" => "GCQSESW66AX4ZRZB7QWCIXSPX2BD7KLOYSS33IUGDCLO4XCPURZEEC6R",
+        "weight" => 1,
+        "type" => "ed25519_public_key",
+        "key"=>"GCQSESW66AX4ZRZB7QWCIXSPX2BD7KLOYSS33IUGDCLO4XCPURZEEC6R"
+      )
+      expect(response.data).to be_empty
+    end
+  end
+
   describe "#send_payment" do
     let(:source) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
 
