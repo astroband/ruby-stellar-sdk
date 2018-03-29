@@ -28,3 +28,30 @@ describe Stellar::Operation, ".manage_data" do
   end
 
 end
+
+describe Stellar::Operation, ".change_trust" do
+
+  let(:issuer) { Stellar::KeyPair.from_address("GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7") }
+  let(:asset) { Stellar::Asset.alphanum4("USD", issuer) }
+
+  it "creates a ChangeTrustOp" do
+    op = Stellar::Operation.change_trust(line: [:alphanum4, "USD", issuer])
+    expect(op.body.value).to be_an_instance_of(Stellar::ChangeTrustOp)
+    expect(op.body.value.line).to eq(Stellar::Asset.alphanum4("USD", issuer))
+    expect(op.body.value.limit).to eq(9223372036854775807)
+  end
+
+  it "creates a ChangeTrustOp with limit" do
+    op = Stellar::Operation.change_trust(line: [:alphanum4, "USD", issuer], limit: 1234.75)
+    expect(op.body.value).to be_an_instance_of(Stellar::ChangeTrustOp)
+    expect(op.body.value.line).to eq(Stellar::Asset.alphanum4("USD", issuer))
+    expect(op.body.value.limit).to eq(12347500000)
+  end
+
+  it "throws ArgumentError for incorrect limit argument" do
+    expect {
+      Stellar::Operation.change_trust(line: [:alphanum4, "USD", issuer], limit: true)
+    }.to raise_error(ArgumentError)
+  end
+
+end
