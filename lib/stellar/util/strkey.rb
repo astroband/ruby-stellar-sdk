@@ -7,8 +7,10 @@ module Stellar
     class StrKey
 
       VERSION_BYTES = {
-        account_id: [ 6 << 3].pack("C"), # Base32-encodes to 'G...'
-        seed:       [18 << 3].pack("C"), # Base32-encodes to 'S...'
+        account_id:  [ 6 << 3].pack("C"), # Base32-encodes to 'G...'
+        seed:        [18 << 3].pack("C"), # Base32-encodes to 'S...'
+        pre_auth_tx: [19 << 3].pack("C"), # Base32-encodes to 'T...'
+        hash_x:      [23 << 3].pack("C")  # Base32-encodes to 'X...'
       }
 
       def self.check_encode(version, byte_str)
