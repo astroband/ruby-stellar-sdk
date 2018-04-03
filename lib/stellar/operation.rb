@@ -3,6 +3,7 @@ require 'bigdecimal'
 module Stellar
   class Operation
 
+    MAX_INT64 = 2**63 - 1
 
     #
     # Construct a new Stellar::Operation from the provided
@@ -115,13 +116,14 @@ module Stellar
     #
     # @param [Hash] attributes the attributes to create the operation with
     # @option attributes [Stellar::Currrency] :line the asset to trust
-    # @option attributes [Fixnum] :limit the maximum amount to trust
+    # @option attributes [Fixnum] :limit the maximum amount to trust, defaults to max int64,
+    #                                    if the limit is set to 0 it deletes the trustline.
     #
     # @return [Stellar::Operation] the built operation, containing a
     #                              Stellar::ChangeTrustOp body
     def self.change_trust(attributes={})
       line  = Asset.send(*attributes[:line])
-      limit =interpret_amount(attributes[:limit])
+      limit = attributes.key?(:limit) ? interpret_amount(attributes[:limit]) : MAX_INT64
 
       raise ArgumentError, "Bad :limit #{limit}" unless limit.is_a?(Integer)
 
