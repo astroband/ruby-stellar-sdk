@@ -9,6 +9,8 @@ require 'xdr'
 #   {
 #   case 0:
 #       OperationMeta operations<>;
+#   case 1:
+#       TransactionMetaV1 v1;
 #   };
 #
 # ===========================================================================
@@ -17,7 +19,9 @@ module Stellar
     switch_on XDR::Int, :v
 
     switch 0, :operations
+    switch 1, :v1
 
     attribute :operations, XDR::VarArray[OperationMeta]
+    attribute :v1,         TransactionMetaV1
   end
 end

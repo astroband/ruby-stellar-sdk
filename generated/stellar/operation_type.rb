@@ -17,7 +17,8 @@ require 'xdr'
 #       ALLOW_TRUST = 7,
 #       ACCOUNT_MERGE = 8,
 #       INFLATION = 9,
-#       MANAGE_DATA = 10
+#       MANAGE_DATA = 10,
+#       BUMP_SEQUENCE = 11
 #   };
 #
 # ===========================================================================
@@ -34,6 +35,7 @@ module Stellar
     member :account_merge,        8
     member :inflation,            9
     member :manage_data,          10
+    member :bump_sequence,        11
 
     seal
   end

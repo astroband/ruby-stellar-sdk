@@ -8,8 +8,8 @@ require 'xdr'
 #   union switch (EnvelopeType type)
 #       {
 #       case ENVELOPE_TYPE_TX:
-#             Transaction tx;
-#       /* All other values of type are invalid */
+#           Transaction tx;
+#           /* All other values of type are invalid */
 #       }
 #
 # ===========================================================================

@@ -36,6 +36,8 @@ require 'xdr'
 #           void;
 #       case MANAGE_DATA:
 #           ManageDataOp manageDataOp;
+#       case BUMP_SEQUENCE:
+#           BumpSequenceOp bumpSequenceOp;
 #       }
 #       body;
 #   };

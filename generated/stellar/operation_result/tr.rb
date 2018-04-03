@@ -29,6 +29,8 @@ require 'xdr'
 #           InflationResult inflationResult;
 #       case MANAGE_DATA:
 #           ManageDataResult manageDataResult;
+#       case BUMP_SEQUENCE:
+#           BumpSequenceResult bumpSeqResult;
 #       }
 #
 # ===========================================================================
@@ -48,6 +50,7 @@ module Stellar
       switch :account_merge,        :account_merge_result
       switch :inflation,            :inflation_result
       switch :manage_data,          :manage_data_result
+      switch :bump_sequence,        :bump_seq_result
 
       attribute :create_account_result,       CreateAccountResult
       attribute :payment_result,              PaymentResult
@@ -60,6 +63,7 @@ module Stellar
       attribute :account_merge_result,        AccountMergeResult
       attribute :inflation_result,            InflationResult
       attribute :manage_data_result,          ManageDataResult
+      attribute :bump_seq_result,             BumpSequenceResult
     end
   end
 end

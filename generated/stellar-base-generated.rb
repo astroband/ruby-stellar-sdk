@@ -32,7 +32,7 @@ module Stellar
   Thresholds = XDR::Opaque[4]
   String32 = XDR::String[32]
   String64 = XDR::String[64]
-  SequenceNumber = Uint64
+  SequenceNumber = Int64
   DataValue = XDR::VarOpaque[64]
   autoload :AssetType
   autoload :Asset
@@ -67,6 +67,7 @@ module Stellar
   autoload :ChangeTrustOp
   autoload :AllowTrustOp
   autoload :ManageDataOp
+  autoload :BumpSequenceOp
   autoload :Operation
   autoload :MemoType
   autoload :Memo
@@ -99,6 +100,8 @@ module Stellar
   autoload :InflationResult
   autoload :ManageDataResultCode
   autoload :ManageDataResult
+  autoload :BumpSequenceResultCode
+  autoload :BumpSequenceResult
   autoload :OperationResultCode
   autoload :OperationResult
   autoload :TransactionResultCode
@@ -128,6 +131,7 @@ module Stellar
   autoload :LedgerEntryChange
   LedgerEntryChanges = XDR::VarArray[LedgerEntryChange]
   autoload :OperationMeta
+  autoload :TransactionMetaV1
   autoload :TransactionMeta
 end
 module Stellar

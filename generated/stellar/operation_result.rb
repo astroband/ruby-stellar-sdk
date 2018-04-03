@@ -32,6 +32,8 @@ require 'xdr'
 #           InflationResult inflationResult;
 #       case MANAGE_DATA:
 #           ManageDataResult manageDataResult;
+#       case BUMP_SEQUENCE:
+#           BumpSequenceResult bumpSeqResult;
 #       }
 #       tr;
 #   default:
