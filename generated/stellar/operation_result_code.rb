@@ -9,16 +9,18 @@ require 'xdr'
 #   {
 #       opINNER = 0, // inner object result is valid
 #   
-#       opBAD_AUTH = -1,  // too few valid signatures / wrong network
-#       opNO_ACCOUNT = -2 // source account was not found
+#       opBAD_AUTH = -1,     // too few valid signatures / wrong network
+#       opNO_ACCOUNT = -2,   // source account was not found
+#       opNOT_SUPPORTED = -3 // operation not supported at this time
 #   };
 #
 # ===========================================================================
 module Stellar
   class OperationResultCode < XDR::Enum
-    member :op_inner,      0
-    member :op_bad_auth,   -1
-    member :op_no_account, -2
+    member :op_inner,         0
+    member :op_bad_auth,      -1
+    member :op_no_account,    -2
+    member :op_not_supported, -3
 
     seal
   end

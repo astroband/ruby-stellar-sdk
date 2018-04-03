@@ -18,7 +18,7 @@ require 'xdr'
 #   case GET_PEERS:
 #       void;
 #   case PEERS:
-#       PeerAddress peers<>;
+#       PeerAddress peers<100>;
 #   
 #   case GET_TX_SET:
 #       uint256 txSetHash;
@@ -62,7 +62,7 @@ module Stellar
     attribute :hello,              Hello
     attribute :auth,               Auth
     attribute :dont_have,          DontHave
-    attribute :peers,              XDR::VarArray[PeerAddress]
+    attribute :peers,              XDR::VarArray[PeerAddress, 100]
     attribute :tx_set_hash,        Uint256
     attribute :tx_set,             TransactionSet
     attribute :transaction,        TransactionEnvelope

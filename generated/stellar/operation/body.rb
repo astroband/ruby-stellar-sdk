@@ -29,6 +29,8 @@ require 'xdr'
 #           void;
 #       case MANAGE_DATA:
 #           ManageDataOp manageDataOp;
+#       case BUMP_SEQUENCE:
+#           BumpSequenceOp bumpSequenceOp;
 #       }
 #
 # ===========================================================================
@@ -48,6 +50,7 @@ module Stellar
       switch :account_merge,        :destination
       switch :inflation
       switch :manage_data,          :manage_data_op
+      switch :bump_sequence,        :bump_sequence_op
 
       attribute :create_account_op,       CreateAccountOp
       attribute :payment_op,              PaymentOp
@@ -59,6 +62,7 @@ module Stellar
       attribute :allow_trust_op,          AllowTrustOp
       attribute :destination,             AccountID
       attribute :manage_data_op,          ManageDataOp
+      attribute :bump_sequence_op,        BumpSequenceOp
     end
   end
 end
