@@ -68,6 +68,12 @@ module Stellar
     end
 
     #
+    # @see  Stellar::Operation.manage_data
+    def self.bump_sequence(attributes={})
+      make :bump_sequence, attributes
+    end
+
+    #
     # Helper method to create a transaction with a single
     # operation of the provided type.  See class methods
     # on Stellar::Operation for available values for
