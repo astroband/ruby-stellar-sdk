@@ -308,6 +308,20 @@ module Stellar
       }))
     end
 
+    def self.bump_sequence(attributes={})
+      op = BumpSequenceOp.new()
+
+      bump_to = attributes[:bump_to]
+
+      raise ArgumentError, ":bump_to too big" unless bump_to <= MAX_INT64
+
+      op.bump_to  = bump_to
+
+      return make(attributes.merge({
+        body:[:bump_sequence, op]
+      }))
+    end
+
     private
     def self.extract_amount(a)
       amount   = interpret_amount(a.last)
