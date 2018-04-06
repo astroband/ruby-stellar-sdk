@@ -6,7 +6,17 @@ file.  This project adheres to [Semantic Versioning](http://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
-## [unreleased](https://github.com/stellar/ruby-stellar-base/compare/v0.13.0...master)
+## [unreleased](https://github.com/stellar/ruby-stellar-base/compare/v0.14.0...master)
+
+## [0.14.0](https://github.com/stellar/ruby-stellar-base/compare/v0.13.0...v0.14.0)
+
+### Added
+- We now support the bump sequence operation with `Operation.bump_sequence`.
+
+### Changed
+- Update XDR definitions for stellar-core 0.10.0 support
+- `Operation.change_trust` learned how to use a default for the `:limit` parameter
+- `StrKey` learned about new version bytes `pre_auth_tx` and `hash_x`
 
 ## [0.13.0](https://github.com/stellar/ruby-stellar-base/compare/v0.12.0...v0.13.0)
 
