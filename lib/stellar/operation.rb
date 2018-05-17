@@ -123,10 +123,12 @@ module Stellar
     #                              Stellar::ChangeTrustOp body
     def self.change_trust(attributes={})
       line = attributes[:line]
-      if !Asset::TYPES.include?(line[0])
-        fail ArgumentError, "must be one of #{Asset::TYPES}"
+      if !line.is_a?(Asset)
+        if !Asset::TYPES.include?(line[0])
+          fail ArgumentError, "must be one of #{Asset::TYPES}"
+        end
+        line = Asset.send(*line)
       end
-      line = Asset.send(*line)
 
       limit = attributes.key?(:limit) ? interpret_amount(attributes[:limit]) : MAX_INT64
 
