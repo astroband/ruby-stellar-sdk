@@ -39,7 +39,7 @@ module Stellar
       end
     end
 
-    describe "#lookup" do
+    describe ".lookup" do
       it "should peforms federation lookup", vcr: {record: :once, match_requests_on: [:method]} do
         account_id = described_class.lookup('john@email.com*stellarfed.org')
         expect(account_id).to eq 'GDSRO6H2YM6MC6ZO7KORPJXSTUMBMT3E7MZ66CFVNMUAULFG6G2OP32I'
