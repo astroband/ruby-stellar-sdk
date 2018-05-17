@@ -32,7 +32,7 @@ describe Stellar::Client do
     it "returns the current details for the account", vcr: { record: :once, match_requests_on: [:method]} do
       response = client.account_info(account)
 
-      expect(response.id).to eq "GCQSESW66AX4ZRZB7QWCIXSPX2BD7KLOYSS33IUGDCLO4XCPURZEEC6R"
+      expect(response.id).to eq CONFIG[:source_address]
       expect(response.paging_token).to be_empty
       expect(response.sequence).to eq "346973227974715"
       expect(response.subentry_count).to eq 0
@@ -40,10 +40,10 @@ describe Stellar::Client do
       expect(response.flags).to include("auth_required" => false, "auth_revocable" => false)
       expect(response.balances).to include("balance" => "3494.9997500", "asset_type" => "native")
       expect(response.signers).to include(
-        "public_key" => "GCQSESW66AX4ZRZB7QWCIXSPX2BD7KLOYSS33IUGDCLO4XCPURZEEC6R",
+        "public_key" => CONFIG[:source_address],
         "weight" => 1,
         "type" => "ed25519_public_key",
-        "key"=>"GCQSESW66AX4ZRZB7QWCIXSPX2BD7KLOYSS33IUGDCLO4XCPURZEEC6R"
+        "key" => CONFIG[:source_address]
       )
       expect(response.data).to be_empty
     end
