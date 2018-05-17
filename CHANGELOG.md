@@ -7,6 +7,8 @@ As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
 ## [unreleased](https://github.com/stellar/ruby-stellar-base/compare/v0.14.0...master)
+### Fixed
+- Protect `Stellar::Operation.change_trust` against malicious arguments, in the event that developers pass this argument directly from user input
 
 ## [0.14.0](https://github.com/stellar/ruby-stellar-base/compare/v0.13.0...v0.14.0)
 

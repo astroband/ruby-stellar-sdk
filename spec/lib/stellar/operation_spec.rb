@@ -41,6 +41,12 @@ describe Stellar::Operation, ".change_trust" do
     expect(op.body.value.limit).to eq(9223372036854775807)
   end
 
+  it "only allow sound `line` arguments" do
+    expect {
+      Stellar::Operation.change_trust(line: [:harmful_call, "USD", issuer])
+    }.to raise_error(ArgumentError, "must be one of #{Stellar::Asset::TYPES}")
+  end
+
   it "creates a ChangeTrustOp with limit" do
     op = Stellar::Operation.change_trust(line: [:alphanum4, "USD", issuer], limit: 1234.75)
     expect(op.body.value).to be_an_instance_of(Stellar::ChangeTrustOp)
