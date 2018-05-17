@@ -170,4 +170,62 @@ describe Stellar::Client do
     end
   end
 
+  describe "#change_trust" do
+    context "given an asset described as an array" do
+      let(:issuer) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
+      let(:truster) { Stellar::Account.random }
+
+      it("creates, updates, or deletes a trustline", {
+        vcr: {record: :once, match_requests_on: [:method]},
+      }) do
+        client.create_account(
+          funder: issuer,
+          account: truster,
+          starting_balance: 2,
+        )
+
+        # Create trustline
+        client.change_trust(
+          asset: [:alphanum4, "BTC", issuer.keypair],
+          source: truster,
+        )
+
+        truster_info = client.account_info(truster)
+        btc_balance = truster_info.balances.find do |b|
+          b["asset_code"] == "BTC" && b["asset_issuer"] == issuer.address
+        end
+
+        expect(btc_balance).to_not be_nil
+
+        # Update trustline
+        client.change_trust(
+          asset: [:alphanum4, "BTC", issuer.keypair],
+          source: truster,
+          limit: 100,
+        )
+
+        truster_info = client.account_info(truster)
+        btc_balance = truster_info.balances.find do |b|
+          b["asset_code"] == "BTC" && b["asset_issuer"] == issuer.address
+        end
+
+        expect(btc_balance["limit"].to_f).to eq 100
+
+        # Delete trustline
+        client.change_trust(
+          asset: [:alphanum4, "BTC", issuer.keypair],
+          source: truster,
+          limit: 0,
+        )
+
+        truster_info = client.account_info(truster)
+        btc_balance = truster_info.balances.find do |b|
+          b["asset_code"] == "BTC" && b["asset_issuer"] == issuer.address
+        end
+
+        expect(btc_balance).to be_nil
+      end
+    end
+  end
+
 end
