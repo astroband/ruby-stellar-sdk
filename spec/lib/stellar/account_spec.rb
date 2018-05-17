@@ -10,6 +10,17 @@ module Stellar
       end
     end
 
+    describe ".from_seed" do
+      let(:random_account) { described_class.random }
+      subject(:account) do
+        described_class.from_seed(random_account.keypair.seed)
+      end
+
+      it "generates an account from a seed" do
+        expect(account.keypair.seed).to eq random_account.keypair.seed
+      end
+    end
+
     describe "#lookup" do
       it "should peforms federation lookup", vcr: {record: :once, match_requests_on: [:method]} do
         account_id = described_class.lookup('john@email.com*stellarfed.org')
