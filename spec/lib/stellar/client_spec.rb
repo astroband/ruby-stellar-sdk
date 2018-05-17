@@ -81,18 +81,25 @@ describe Stellar::Client do
     end
 
     context "alphanum4 asset" do
-      let(:destination) { Stellar::Account.from_seed(CONFIG[:destination_seed]) }
+      let(:issuer) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
+      let(:destination) { Stellar::Account.random }
 
-      it "sends a alphanum4 asset to the destination", vcr: {record: :once, match_requests_on: [:method]} do
-        destination_info = client.account_info(destination)
-        old_balances = destination_info.balances
-        old_btc_balance = old_balances.find do |b|
-          b["asset_code"] == "BTC"
-        end["balance"].to_f
+      it("sends a alphanum4 asset to the destination", {
+        vcr: {record: :once, match_requests_on: [:method]},
+      }) do
+        client.create_account(
+          funder: issuer,
+          account: destination,
+          starting_balance: 2,
+        )
+
+        client.change_trust(
+          asset: [:alphanum4, "BTC", issuer.keypair],
+          source: destination,
+        )
 
         asset = Stellar::Asset.alphanum4("BTC", source.keypair)
         amount = Stellar::Amount.new(150, asset)
-
         client.send_payment(
           from: source,
           to: destination,
@@ -100,24 +107,31 @@ describe Stellar::Client do
         )
 
         destination_info = client.account_info(destination)
-        new_balances = destination_info.balances
-        new_btc_balance = new_balances.find do |b|
+        btc_balance = destination_info.balances.find do |b|
           b["asset_code"] == "BTC"
         end["balance"].to_f
 
-        expect(new_btc_balance - old_btc_balance).to eq 150.0
+        expect(btc_balance).to eq 150.0
       end
     end
 
     context "alphanum12 asset" do
-      let(:destination) { Stellar::Account.from_seed(CONFIG[:destination_seed]) }
+      let(:issuer) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
+      let(:destination) { Stellar::Account.random }
 
-      it "sends a alphanum12 asset to the destination", vcr: {record: :once, match_requests_on: [:method]} do
-        destination_info = client.account_info(destination)
-        old_balances = destination_info.balances
-        old_btc_balance = old_balances.find do |b|
-          b["asset_code"] == "LONGNAME"
-        end["balance"].to_f
+      it("sends a alphanum12 asset to the destination", {
+        vcr: {record: :once, match_requests_on: [:method]},
+      }) do
+        client.create_account(
+          funder: issuer,
+          account: destination,
+          starting_balance: 2,
+        )
+
+        client.change_trust(
+          asset: [:alphanum12, "LONGNAME", issuer.keypair],
+          source: destination,
+        )
 
         asset = Stellar::Asset.alphanum12("LONGNAME", source.keypair)
         amount = Stellar::Amount.new(150, asset)
@@ -129,12 +143,11 @@ describe Stellar::Client do
         )
 
         destination_info = client.account_info(destination)
-        new_balances = destination_info.balances
-        new_btc_balance = new_balances.find do |b|
+        btc_balance = destination_info.balances.find do |b|
           b["asset_code"] == "LONGNAME"
         end["balance"].to_f
 
-        expect(new_btc_balance - old_btc_balance).to eq 150.0
+        expect(btc_balance).to eq 150.0
       end
     end
   end
