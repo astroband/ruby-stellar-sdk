@@ -3,6 +3,13 @@ require 'spec_helper'
 module Stellar
   RSpec.describe Account do
 
+    describe ".random" do
+      it "generates a Stellar account with a random keypair" do
+        account = described_class.random
+        expect(account.address).to match account.keypair.address
+      end
+    end
+
     describe "#lookup" do
       it "should peforms federation lookup", vcr: {record: :once, match_requests_on: [:method]} do
         account_id = described_class.lookup('john@email.com*stellarfed.org')
