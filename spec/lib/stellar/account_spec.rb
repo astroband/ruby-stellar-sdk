@@ -32,13 +32,6 @@ module Stellar
       end
     end
 
-    describe "#keypair" do
-      it "generates a Stellar account with a random keypair" do
-        account = described_class.random
-        expect(account.keypair).to be_a KeyPair
-      end
-    end
-
     describe ".lookup" do
       it "should peforms federation lookup", vcr: {record: :once, match_requests_on: [:method]} do
         account_id = described_class.lookup('john@email.com*stellarfed.org')
@@ -51,6 +44,14 @@ module Stellar
 
       it "should handle domains that are not federation servers", vcr: {record: :once, match_requests_on: [:method]} do
         expect { described_class.lookup('john*stellar.org') }.to raise_error(InvalidStellarDomain)
+      end
+    end
+
+
+    describe "#keypair" do
+      it "generates a Stellar account with a random keypair" do
+        account = described_class.random
+        expect(account.keypair).to be_a KeyPair
       end
     end
 
