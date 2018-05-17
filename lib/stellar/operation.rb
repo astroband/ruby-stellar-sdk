@@ -115,7 +115,7 @@ module Stellar
     # transactions `operations` array.
     #
     # @param [Hash] attributes the attributes to create the operation with
-    # @option attributes [Stellar::Currrency] :line the asset to trust
+    # @option attributes [Stellar::Asset] :line the asset to trust
     # @option attributes [Fixnum] :limit the maximum amount to trust, defaults to max int64,
     #                                    if the limit is set to 0 it deletes the trustline.
     #
