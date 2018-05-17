@@ -21,6 +21,17 @@ module Stellar
       end
     end
 
+    describe ".from_address" do
+      let(:random_account) { described_class.random }
+      subject(:account) do
+        described_class.from_address(random_account.address)
+      end
+
+      it "generates an account from an address" do
+        expect(account.address).to eq random_account.address
+      end
+    end
+
     describe "#lookup" do
       it "should peforms federation lookup", vcr: {record: :once, match_requests_on: [:method]} do
         account_id = described_class.lookup('john@email.com*stellarfed.org')
