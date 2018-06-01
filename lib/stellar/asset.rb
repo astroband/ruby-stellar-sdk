@@ -1,5 +1,7 @@
 module Stellar
   class Asset
+    TYPES = %i(native alphanum4 alphanum12)
+
     def self.native
       new(:asset_type_native)
     end
