@@ -139,4 +139,35 @@ describe Stellar::Client do
     end
   end
 
+  describe "#transactions" do
+    let(:cursor) { '348403452088320' }
+
+    context "account transactions" do
+      let(:account) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
+
+      it "returns a list of transaction for an account", vcr: {record: :once, match_requests_on: [:method]} do
+        response = client.transactions(account: account)
+        expect(response).to be_a(Stellar::TransactionPage)
+      end
+
+      it "accepts a cursor to return less data", vcr: {record: :once, match_requests_on: [:method]} do
+        response = client.transactions(account: account,
+                                       cursor: cursor)
+        expect(response).to be_a(Stellar::TransactionPage)
+      end
+    end
+
+    context "all transactions" do
+      it "returns a list of transactions", vcr: {record: :once, match_requests_on: [:method]} do
+        response = client.transactions
+        expect(response).to be_a(Stellar::TransactionPage)
+      end
+
+      it "accepts a cursor to return less data", vcr: {record: :once, match_requests_on: [:method]} do
+        response = client.transactions(cursor: cursor)
+        expect(response).to be_a(Stellar::TransactionPage)
+      end
+    end
+  end
+
 end

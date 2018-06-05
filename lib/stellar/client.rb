@@ -98,10 +98,11 @@ module Stellar
 
     Contract ({
       account:  Maybe[Stellar::Account],
-      limit:    Maybe[Pos]
+      limit:    Maybe[Pos],
+      cursor:   Maybe[String]
     }) => TransactionPage
     def transactions(options={})
-      args = options.slice(:limit)
+      args = options.slice(:limit, :cursor)
 
       resource = if options[:account]
         args = args.merge(account_id: options[:account].address)
