@@ -42,34 +42,14 @@ module Stellar
       end
     end
 
-    def friendbot(account)
-      raise NotImplementedError
-    end
-
     Contract Stellar::Account => Any
     def account_info(account)
       account_id  = account.address
       @horizon.account(account_id:account_id)._get
     end
 
-    Contract ({
-      from:     Stellar::Account,
-      to:       Stellar::Account,
-      amount:   Stellar::Amount
-    }) => Any
-    def send_payment(options={})
-      from     = options[:from]
-      sequence = options[:sequence] || (account_info(from).sequence.to_i + 1)
-
-      payment = Stellar::Transaction.payment({
-        account:     from.keypair,
-        destination: options[:to].keypair,
-        sequence:    sequence,
-        amount:      options[:amount].to_payment,
-      })
-
-      envelope_base64 = payment.to_envelope(from.keypair).to_xdr(:base64)
-      @horizon.transactions._post(tx: envelope_base64)
+    def friendbot(account)
+      raise NotImplementedError
     end
 
     Contract ({
@@ -93,6 +73,26 @@ module Stellar
       })
 
       envelope_base64 = payment.to_envelope(funder.keypair).to_xdr(:base64)
+      @horizon.transactions._post(tx: envelope_base64)
+    end
+
+    Contract ({
+      from:     Stellar::Account,
+      to:       Stellar::Account,
+      amount:   Stellar::Amount
+    }) => Any
+    def send_payment(options={})
+      from     = options[:from]
+      sequence = options[:sequence] || (account_info(from).sequence.to_i + 1)
+
+      payment = Stellar::Transaction.payment({
+        account:     from.keypair,
+        destination: options[:to].keypair,
+        sequence:    sequence,
+        amount:      options[:amount].to_payment,
+      })
+
+      envelope_base64 = payment.to_envelope(from.keypair).to_xdr(:base64)
       @horizon.transactions._post(tx: envelope_base64)
     end
 
