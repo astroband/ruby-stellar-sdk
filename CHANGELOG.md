@@ -6,7 +6,9 @@ file.  This project adheres to [Semantic Versioning](http://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
-## [unreleased](https://github.com/stellar/ruby-stellar-base/compare/v0.14.0...master)
+## [unreleased](https://github.com/stellar/ruby-stellar-base/compare/v0.15.0...master)
+
+## [0.15.0](https://github.com/stellar/ruby-stellar-base/compare/v0.14.0...v0.15.0)
 ### Added
 - `Stellar::Operation.change_trust` can accept `Stellar::Asset` instance for `line`
 
