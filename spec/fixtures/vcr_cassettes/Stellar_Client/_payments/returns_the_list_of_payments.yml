@@ -1,0 +1,368 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://horizon-testnet.stellar.org/payments
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/hal+json
+      Accept:
+      - application/hal+json,application/json
+      User-Agent:
+      - Faraday v0.15.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 06 Jun 2018 14:16:26 GMT
+      Content-Type:
+      - application/hal+json; charset=utf-8
+      Content-Length:
+      - '1411'
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - __cfduid=d1c5824deea425dbd1310ae51406c2c161528294586; expires=Thu, 06-Jun-19
+        14:16:26 GMT; path=/; domain=.stellar.org; HttpOnly
+      Content-Disposition:
+      - inline
+      Vary:
+      - Origin
+      X-Ratelimit-Limit:
+      - '17200'
+      X-Ratelimit-Remaining:
+      - '17197'
+      X-Ratelimit-Reset:
+      - '3531'
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 426b7f2bce7bb8d7-MIA
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+          "_links": {
+            "self": {
+              "href": "https://horizon-testnet.stellar.org/payments?cursor=\u0026limit=10\u0026order=asc"
+            },
+            "next": {
+              "href": "https://horizon-testnet.stellar.org/payments?cursor=10398115827713\u0026limit=10\u0026order=asc"
+            },
+            "prev": {
+              "href": "https://horizon-testnet.stellar.org/payments?cursor=10157597659137\u0026limit=10\u0026order=desc"
+            }
+          },
+          "_embedded": {
+            "records": [
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10157597659137"
+                  },
+                  "transaction": {
+                    "href": "https://horizon-testnet.stellar.org/transactions/17a670bc424ff5ce3b386dbfaae9990b66a2a37b4fbe51547e8794962a3f9e6a"
+                  },
+                  "effects": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10157597659137/effects"
+                  },
+                  "succeeds": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=desc\u0026cursor=10157597659137"
+                  },
+                  "precedes": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=asc\u0026cursor=10157597659137"
+                  }
+                },
+                "id": "10157597659137",
+                "paging_token": "10157597659137",
+                "source_account": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+                "type": "create_account",
+                "type_i": 0,
+                "created_at": "2017-03-20T19:50:52Z",
+                "transaction_hash": "17a670bc424ff5ce3b386dbfaae9990b66a2a37b4fbe51547e8794962a3f9e6a",
+                "starting_balance": "50000000.0000000",
+                "funder": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+                "account": "GBS43BF24ENNS3KPACUZVKK2VYPOZVBQO2CISGZ777RYGOPYC2FT6S3K"
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10157597659138"
+                  },
+                  "transaction": {
+                    "href": "https://horizon-testnet.stellar.org/transactions/17a670bc424ff5ce3b386dbfaae9990b66a2a37b4fbe51547e8794962a3f9e6a"
+                  },
+                  "effects": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10157597659138/effects"
+                  },
+                  "succeeds": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=desc\u0026cursor=10157597659138"
+                  },
+                  "precedes": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=asc\u0026cursor=10157597659138"
+                  }
+                },
+                "id": "10157597659138",
+                "paging_token": "10157597659138",
+                "source_account": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+                "type": "create_account",
+                "type_i": 0,
+                "created_at": "2017-03-20T19:50:52Z",
+                "transaction_hash": "17a670bc424ff5ce3b386dbfaae9990b66a2a37b4fbe51547e8794962a3f9e6a",
+                "starting_balance": "10000.0000000",
+                "funder": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+                "account": "GDO34SQXVOSNODK7JCTAXLZUPSAF3JIH4ADQELVIKOQJUWQ3U4BMSCSH"
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10157597659139"
+                  },
+                  "transaction": {
+                    "href": "https://horizon-testnet.stellar.org/transactions/17a670bc424ff5ce3b386dbfaae9990b66a2a37b4fbe51547e8794962a3f9e6a"
+                  },
+                  "effects": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10157597659139/effects"
+                  },
+                  "succeeds": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=desc\u0026cursor=10157597659139"
+                  },
+                  "precedes": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=asc\u0026cursor=10157597659139"
+                  }
+                },
+                "id": "10157597659139",
+                "paging_token": "10157597659139",
+                "source_account": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+                "type": "create_account",
+                "type_i": 0,
+                "created_at": "2017-03-20T19:50:52Z",
+                "transaction_hash": "17a670bc424ff5ce3b386dbfaae9990b66a2a37b4fbe51547e8794962a3f9e6a",
+                "starting_balance": "10000.0000000",
+                "funder": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+                "account": "GAAJKG3WQKHWZJ5RGVVZMVV6X3XYU7QUH2YVATQ2KBVR2ZJYLG35Z65A"
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10157597659140"
+                  },
+                  "transaction": {
+                    "href": "https://horizon-testnet.stellar.org/transactions/17a670bc424ff5ce3b386dbfaae9990b66a2a37b4fbe51547e8794962a3f9e6a"
+                  },
+                  "effects": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10157597659140/effects"
+                  },
+                  "succeeds": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=desc\u0026cursor=10157597659140"
+                  },
+                  "precedes": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=asc\u0026cursor=10157597659140"
+                  }
+                },
+                "id": "10157597659140",
+                "paging_token": "10157597659140",
+                "source_account": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+                "type": "create_account",
+                "type_i": 0,
+                "created_at": "2017-03-20T19:50:52Z",
+                "transaction_hash": "17a670bc424ff5ce3b386dbfaae9990b66a2a37b4fbe51547e8794962a3f9e6a",
+                "starting_balance": "10000.0000000",
+                "funder": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+                "account": "GCNP7JE6KR5CKHMVVFTZJUSP7ALAXWP62SK6IMIY4IF3JCHEZKBJKDZF"
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10157597659141"
+                  },
+                  "transaction": {
+                    "href": "https://horizon-testnet.stellar.org/transactions/17a670bc424ff5ce3b386dbfaae9990b66a2a37b4fbe51547e8794962a3f9e6a"
+                  },
+                  "effects": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10157597659141/effects"
+                  },
+                  "succeeds": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=desc\u0026cursor=10157597659141"
+                  },
+                  "precedes": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=asc\u0026cursor=10157597659141"
+                  }
+                },
+                "id": "10157597659141",
+                "paging_token": "10157597659141",
+                "source_account": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+                "type": "create_account",
+                "type_i": 0,
+                "created_at": "2017-03-20T19:50:52Z",
+                "transaction_hash": "17a670bc424ff5ce3b386dbfaae9990b66a2a37b4fbe51547e8794962a3f9e6a",
+                "starting_balance": "10000.0000000",
+                "funder": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+                "account": "GDNFUWF2EO4OWXYLI4TDEH4DXUCN6PB24R6XQW4VATORK6WGMHGRXJVB"
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10157597659144"
+                  },
+                  "transaction": {
+                    "href": "https://horizon-testnet.stellar.org/transactions/17a670bc424ff5ce3b386dbfaae9990b66a2a37b4fbe51547e8794962a3f9e6a"
+                  },
+                  "effects": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10157597659144/effects"
+                  },
+                  "succeeds": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=desc\u0026cursor=10157597659144"
+                  },
+                  "precedes": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=asc\u0026cursor=10157597659144"
+                  }
+                },
+                "id": "10157597659144",
+                "paging_token": "10157597659144",
+                "source_account": "GDNFUWF2EO4OWXYLI4TDEH4DXUCN6PB24R6XQW4VATORK6WGMHGRXJVB",
+                "type": "payment",
+                "type_i": 1,
+                "created_at": "2017-03-20T19:50:52Z",
+                "transaction_hash": "17a670bc424ff5ce3b386dbfaae9990b66a2a37b4fbe51547e8794962a3f9e6a",
+                "asset_type": "credit_alphanum4",
+                "asset_code": "TEST",
+                "asset_issuer": "GDNFUWF2EO4OWXYLI4TDEH4DXUCN6PB24R6XQW4VATORK6WGMHGRXJVB",
+                "from": "GDNFUWF2EO4OWXYLI4TDEH4DXUCN6PB24R6XQW4VATORK6WGMHGRXJVB",
+                "to": "GAAJKG3WQKHWZJ5RGVVZMVV6X3XYU7QUH2YVATQ2KBVR2ZJYLG35Z65A",
+                "amount": "1000000.0000000"
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10157597659145"
+                  },
+                  "transaction": {
+                    "href": "https://horizon-testnet.stellar.org/transactions/17a670bc424ff5ce3b386dbfaae9990b66a2a37b4fbe51547e8794962a3f9e6a"
+                  },
+                  "effects": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10157597659145/effects"
+                  },
+                  "succeeds": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=desc\u0026cursor=10157597659145"
+                  },
+                  "precedes": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=asc\u0026cursor=10157597659145"
+                  }
+                },
+                "id": "10157597659145",
+                "paging_token": "10157597659145",
+                "source_account": "GDNFUWF2EO4OWXYLI4TDEH4DXUCN6PB24R6XQW4VATORK6WGMHGRXJVB",
+                "type": "payment",
+                "type_i": 1,
+                "created_at": "2017-03-20T19:50:52Z",
+                "transaction_hash": "17a670bc424ff5ce3b386dbfaae9990b66a2a37b4fbe51547e8794962a3f9e6a",
+                "asset_type": "credit_alphanum4",
+                "asset_code": "TEST",
+                "asset_issuer": "GDNFUWF2EO4OWXYLI4TDEH4DXUCN6PB24R6XQW4VATORK6WGMHGRXJVB",
+                "from": "GDNFUWF2EO4OWXYLI4TDEH4DXUCN6PB24R6XQW4VATORK6WGMHGRXJVB",
+                "to": "GCNP7JE6KR5CKHMVVFTZJUSP7ALAXWP62SK6IMIY4IF3JCHEZKBJKDZF",
+                "amount": "1000000.0000000"
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10157597659146"
+                  },
+                  "transaction": {
+                    "href": "https://horizon-testnet.stellar.org/transactions/17a670bc424ff5ce3b386dbfaae9990b66a2a37b4fbe51547e8794962a3f9e6a"
+                  },
+                  "effects": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10157597659146/effects"
+                  },
+                  "succeeds": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=desc\u0026cursor=10157597659146"
+                  },
+                  "precedes": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=asc\u0026cursor=10157597659146"
+                  }
+                },
+                "id": "10157597659146",
+                "paging_token": "10157597659146",
+                "source_account": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+                "type": "create_account",
+                "type_i": 0,
+                "created_at": "2017-03-20T19:50:52Z",
+                "transaction_hash": "17a670bc424ff5ce3b386dbfaae9990b66a2a37b4fbe51547e8794962a3f9e6a",
+                "starting_balance": "99949959900.0000000",
+                "funder": "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
+                "account": "GBFAIH5WKAJQ77NG6BZG7TGVGXHPX4SQLIJ7BENJMCVCZSUZPSISCLU5"
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10247791972353"
+                  },
+                  "transaction": {
+                    "href": "https://horizon-testnet.stellar.org/transactions/db8d0da33ff3b40d24ba80318e49cc256e64f4e79e3780100730f4f1695c3ff9"
+                  },
+                  "effects": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10247791972353/effects"
+                  },
+                  "succeeds": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=desc\u0026cursor=10247791972353"
+                  },
+                  "precedes": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=asc\u0026cursor=10247791972353"
+                  }
+                },
+                "id": "10247791972353",
+                "paging_token": "10247791972353",
+                "source_account": "GBS43BF24ENNS3KPACUZVKK2VYPOZVBQO2CISGZ777RYGOPYC2FT6S3K",
+                "type": "create_account",
+                "type_i": 0,
+                "created_at": "2017-03-20T19:52:10Z",
+                "transaction_hash": "db8d0da33ff3b40d24ba80318e49cc256e64f4e79e3780100730f4f1695c3ff9",
+                "starting_balance": "10000.0000000",
+                "funder": "GBS43BF24ENNS3KPACUZVKK2VYPOZVBQO2CISGZ777RYGOPYC2FT6S3K",
+                "account": "GD2XJPSTO5KR2OCYKNY5TWZSLVGLDFOCEG7567TYPQOTEOVGPTA5VZ7T"
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10398115827713"
+                  },
+                  "transaction": {
+                    "href": "https://horizon-testnet.stellar.org/transactions/717c9672505f480b8b87314c8ac8fb83f873fd1ed58f71678ccc1f3fa802ac41"
+                  },
+                  "effects": {
+                    "href": "https://horizon-testnet.stellar.org/operations/10398115827713/effects"
+                  },
+                  "succeeds": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=desc\u0026cursor=10398115827713"
+                  },
+                  "precedes": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=asc\u0026cursor=10398115827713"
+                  }
+                },
+                "id": "10398115827713",
+                "paging_token": "10398115827713",
+                "source_account": "GBS43BF24ENNS3KPACUZVKK2VYPOZVBQO2CISGZ777RYGOPYC2FT6S3K",
+                "type": "create_account",
+                "type_i": 0,
+                "created_at": "2017-03-20T19:54:23Z",
+                "transaction_hash": "717c9672505f480b8b87314c8ac8fb83f873fd1ed58f71678ccc1f3fa802ac41",
+                "starting_balance": "10000.0000000",
+                "funder": "GBS43BF24ENNS3KPACUZVKK2VYPOZVBQO2CISGZ777RYGOPYC2FT6S3K",
+                "account": "GBR3NJF6EGRU6QATQRKZLZ4KKN54URF2NQYXZQ7KO775QHQPMYZPCF2O"
+              }
+            ]
+          }
+        }
+    http_version: 
+  recorded_at: Wed, 06 Jun 2018 14:16:26 GMT
+recorded_with: VCR 3.0.3
