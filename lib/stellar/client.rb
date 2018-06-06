@@ -71,7 +71,8 @@ module Stellar
 
     Contract ({
       account:     Stellar::Account,
-      destination: Stellar::Account
+      destination: Stellar::Account,
+      amount:      Stellar::Amount
     }) => Any
     def account_merge(options={})
       account     = options[:account]
