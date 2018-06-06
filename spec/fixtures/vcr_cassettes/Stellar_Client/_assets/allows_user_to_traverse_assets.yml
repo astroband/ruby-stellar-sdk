@@ -1,0 +1,191 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://horizon-testnet.stellar.org/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.15.2
+      Accept:
+      - application/hal+json,application/problem+json,application/json
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 05 Jun 2018 22:08:25 GMT
+      Content-Type:
+      - application/hal+json; charset=utf-8
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - __cfduid=d572476275862082dd33228e4e141044f1528236505; expires=Wed, 05-Jun-19
+        22:08:25 GMT; path=/; domain=.stellar.org; HttpOnly
+      Content-Disposition:
+      - inline
+      Vary:
+      - Origin
+      X-Ratelimit-Limit:
+      - '17200'
+      X-Ratelimit-Remaining:
+      - '17173'
+      X-Ratelimit-Reset:
+      - '307'
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 4265f52c9d3a2e87-MIA
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+          "_links": {
+            "account": {
+              "href": "https://horizon-testnet.stellar.org/accounts/{account_id}",
+              "templated": true
+            },
+            "account_transactions": {
+              "href": "https://horizon-testnet.stellar.org/accounts/{account_id}/transactions{?cursor,limit,order}",
+              "templated": true
+            },
+            "assets": {
+              "href": "https://horizon-testnet.stellar.org/assets{?asset_code,asset_issuer,cursor,limit,order}",
+              "templated": true
+            },
+            "friendbot": {
+              "href": "https://horizon-testnet.stellar.org/friendbot{?addr}",
+              "templated": true
+            },
+            "metrics": {
+              "href": "https://horizon-testnet.stellar.org/metrics"
+            },
+            "order_book": {
+              "href": "https://horizon-testnet.stellar.org/order_book{?selling_asset_type,selling_asset_code,selling_issuer,buying_asset_type,buying_asset_code,buying_issuer,limit}",
+              "templated": true
+            },
+            "self": {
+              "href": "https://horizon-testnet.stellar.org/"
+            },
+            "transaction": {
+              "href": "https://horizon-testnet.stellar.org/transactions/{hash}",
+              "templated": true
+            },
+            "transactions": {
+              "href": "https://horizon-testnet.stellar.org/transactions{?cursor,limit,order}",
+              "templated": true
+            }
+          },
+          "horizon_version": "snapshot-1bf713b",
+          "core_version": "stellar-core 9.2.0rc6 (b0923f153b86d394a83b2a619db6b23f07ed0700)",
+          "history_latest_ledger": 9346653,
+          "history_elder_ledger": 1,
+          "core_latest_ledger": 9346653,
+          "network_passphrase": "Test SDF Network ; September 2015",
+          "protocol_version": 9
+        }
+    http_version: 
+  recorded_at: Tue, 05 Jun 2018 22:08:23 GMT
+- request:
+    method: get
+    uri: https://horizon-testnet.stellar.org/assets?limit=2
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.15.2
+      Accept:
+      - application/hal+json,application/problem+json,application/json
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 05 Jun 2018 22:08:25 GMT
+      Content-Type:
+      - application/hal+json; charset=utf-8
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - __cfduid=d5f31c86b688ad97892fa29043fff2c391528236505; expires=Wed, 05-Jun-19
+        22:08:25 GMT; path=/; domain=.stellar.org; HttpOnly
+      Content-Disposition:
+      - inline
+      Vary:
+      - Origin
+      X-Ratelimit-Limit:
+      - '17200'
+      X-Ratelimit-Remaining:
+      - '17179'
+      X-Ratelimit-Reset:
+      - '163'
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 4265f52e1a045314-MIA
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+          "_links": {
+            "self": {
+              "href": "https://horizon-testnet.stellar.org/assets?cursor=\u0026limit=2\u0026order=asc"
+            },
+            "next": {
+              "href": "https://horizon-testnet.stellar.org/assets?cursor=000001_GBI6WTCYBBXS7Z4NS5Q44EHARKE3FVURMQQJ2IB3H4WSD2JUIPO3JT7H_credit_alphanum12\u0026limit=2\u0026order=asc"
+            },
+            "prev": {
+              "href": "https://horizon-testnet.stellar.org/assets?cursor=000001_GAO2EDDWQS3FYUQAC3XWPUSKQZ5UVPWJPGOWSX3YTQXPOVFK4COTKSTE_credit_alphanum12\u0026limit=2\u0026order=desc"
+            }
+          },
+          "_embedded": {
+            "records": [
+              {
+                "_links": {
+                  "toml": {
+                    "href": ""
+                  }
+                },
+                "asset_type": "credit_alphanum12",
+                "asset_code": "000001",
+                "asset_issuer": "GAO2EDDWQS3FYUQAC3XWPUSKQZ5UVPWJPGOWSX3YTQXPOVFK4COTKSTE",
+                "paging_token": "000001_GAO2EDDWQS3FYUQAC3XWPUSKQZ5UVPWJPGOWSX3YTQXPOVFK4COTKSTE_credit_alphanum12",
+                "amount": "0.0000000",
+                "num_accounts": 4,
+                "flags": {
+                  "auth_required": false,
+                  "auth_revocable": false
+                }
+              },
+              {
+                "_links": {
+                  "toml": {
+                    "href": ""
+                  }
+                },
+                "asset_type": "credit_alphanum12",
+                "asset_code": "000001",
+                "asset_issuer": "GBI6WTCYBBXS7Z4NS5Q44EHARKE3FVURMQQJ2IB3H4WSD2JUIPO3JT7H",
+                "paging_token": "000001_GBI6WTCYBBXS7Z4NS5Q44EHARKE3FVURMQQJ2IB3H4WSD2JUIPO3JT7H_credit_alphanum12",
+                "amount": "0.0000000",
+                "num_accounts": 2,
+                "flags": {
+                  "auth_required": false,
+                  "auth_revocable": false
+                }
+              }
+            ]
+          }
+        }
+    http_version: 
+  recorded_at: Tue, 05 Jun 2018 22:08:23 GMT
+recorded_with: VCR 3.0.3
