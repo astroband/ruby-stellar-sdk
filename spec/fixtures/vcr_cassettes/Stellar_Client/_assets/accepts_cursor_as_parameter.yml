@@ -1,0 +1,94 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://horizon-testnet.stellar.org/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.15.2
+      Accept:
+      - application/hal+json,application/problem+json,application/json
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 05 Jun 2018 22:20:31 GMT
+      Content-Type:
+      - application/hal+json; charset=utf-8
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - __cfduid=d8628bcac92d2df9c57f09aafe3ae709a1528237231; expires=Wed, 05-Jun-19
+        22:20:31 GMT; path=/; domain=.stellar.org; HttpOnly
+      Content-Disposition:
+      - inline
+      Vary:
+      - Origin
+      X-Ratelimit-Limit:
+      - '17200'
+      X-Ratelimit-Remaining:
+      - '17196'
+      X-Ratelimit-Reset:
+      - '3192'
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 426606e7d8e55326-MIA
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+          "_links": {
+            "account": {
+              "href": "https://horizon-testnet.stellar.org/accounts/{account_id}",
+              "templated": true
+            },
+            "account_transactions": {
+              "href": "https://horizon-testnet.stellar.org/accounts/{account_id}/transactions{?cursor,limit,order}",
+              "templated": true
+            },
+            "assets": {
+              "href": "https://horizon-testnet.stellar.org/assets{?asset_code,asset_issuer,cursor,limit,order}",
+              "templated": true
+            },
+            "friendbot": {
+              "href": "https://horizon-testnet.stellar.org/friendbot{?addr}",
+              "templated": true
+            },
+            "metrics": {
+              "href": "https://horizon-testnet.stellar.org/metrics"
+            },
+            "order_book": {
+              "href": "https://horizon-testnet.stellar.org/order_book{?selling_asset_type,selling_asset_code,selling_issuer,buying_asset_type,buying_asset_code,buying_issuer,limit}",
+              "templated": true
+            },
+            "self": {
+              "href": "https://horizon-testnet.stellar.org/"
+            },
+            "transaction": {
+              "href": "https://horizon-testnet.stellar.org/transactions/{hash}",
+              "templated": true
+            },
+            "transactions": {
+              "href": "https://horizon-testnet.stellar.org/transactions{?cursor,limit,order}",
+              "templated": true
+            }
+          },
+          "horizon_version": "snapshot-1bf713b",
+          "core_version": "stellar-core 9.2.0rc6 (b0923f153b86d394a83b2a619db6b23f07ed0700)",
+          "history_latest_ledger": 9346798,
+          "history_elder_ledger": 1,
+          "core_latest_ledger": 9346799,
+          "network_passphrase": "Test SDF Network ; September 2015",
+          "protocol_version": 9
+        }
+    http_version: 
+  recorded_at: Tue, 05 Jun 2018 22:20:29 GMT
+recorded_with: VCR 3.0.3

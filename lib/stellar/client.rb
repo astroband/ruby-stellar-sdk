@@ -56,6 +56,20 @@ module Stellar
     end
 
     Contract ({
+      asset_code:   Maybe[String],
+      asset_issuer: Maybe[Stellar::Account],
+      limit:        Maybe[Pos],
+      cursor:       Maybe[String]
+    }) => AssetPage
+    def assets(options={})
+      args = options.slice(:limit, :cursor, :asset_code)
+      args.merge(asset_issuer: options[:asset_issuer].address) if options[:asset_issuer]
+
+      resource = @horizon.assets(args)
+      AssetPage.new(resource)
+    end
+
+    Contract ({
       account:     Stellar::Account,
       destination: Stellar::Account
     }) => Any

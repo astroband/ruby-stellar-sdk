@@ -15,5 +15,6 @@ module Stellar
     autoload :Result
   end
 
+  autoload :AssetPage
   autoload :TransactionPage
 end
