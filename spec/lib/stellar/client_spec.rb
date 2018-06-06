@@ -49,6 +49,35 @@ describe Stellar::Client do
     end
   end
 
+  describe "#account_merge" do
+    let(:funder) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
+    let(:client) { Stellar::Client.default_testnet }
+    let(:source) { Stellar::Account.random }
+    let(:destination) { Stellar::Account.random }
+
+    it "merges source account into destination", vcr: { record: :once, match_requests_on: [:method]} do
+      [source, destination].each do |account|
+        account = client.create_account(
+          funder: funder,
+          account: account,
+          starting_balance: 100,
+        )
+      end
+
+      client.account_merge(
+        account: source,
+        destination: destination
+      )
+
+      destination_info = client.account_info(destination)
+      native_asset_balance_info = destination_info.balances.find do |b|
+        b["asset_type"] == "native"
+      end
+      # balance of merged account is the balance of both accounts minus transaction fee for merge
+      expect(native_asset_balance_info["balance"].to_f).to eq 199.99999
+    end
+  end
+
   describe "#send_payment" do
     let(:source) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
 

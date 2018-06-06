@@ -48,6 +48,25 @@ module Stellar
       @horizon.account(account_id:account_id)._get
     end
 
+    Contract ({
+      account:     Stellar::Account,
+      destination: Stellar::Account
+    }) => Any
+    def account_merge(options={})
+      account     = options[:account]
+      destination = options[:destination]
+      sequence    = options[:sequence] || (account_info(account).sequence.to_i + 1)
+
+      transaction = Stellar::Transaction.account_merge({
+        account:     account.keypair,
+        destination: destination.keypair,
+        sequence:    sequence
+      })
+
+      envelope_base64 = transaction.to_envelope(account.keypair).to_xdr(:base64)
+      @horizon.transactions._post(tx: envelope_base64)
+    end
+
     def friendbot(account)
       raise NotImplementedError
     end
