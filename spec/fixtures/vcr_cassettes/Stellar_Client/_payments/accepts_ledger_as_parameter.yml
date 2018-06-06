@@ -1,0 +1,360 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://horizon-testnet.stellar.org/ledgers/9356704/payments
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/hal+json
+      Accept:
+      - application/hal+json,application/json
+      User-Agent:
+      - Faraday v0.15.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 06 Jun 2018 14:16:27 GMT
+      Content-Type:
+      - application/hal+json; charset=utf-8
+      Content-Length:
+      - '1394'
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - __cfduid=d94b5656de6590b8f5d4edec03b1297f51528294586; expires=Thu, 06-Jun-19
+        14:16:26 GMT; path=/; domain=.stellar.org; HttpOnly
+      Content-Disposition:
+      - inline
+      Vary:
+      - Origin
+      X-Ratelimit-Limit:
+      - '17200'
+      X-Ratelimit-Remaining:
+      - '17194'
+      X-Ratelimit-Reset:
+      - '3531'
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 426b7f2f8870b8c5-MIA
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+          "_links": {
+            "self": {
+              "href": "https://horizon-testnet.stellar.org/ledgers/9356704/payments?cursor=\u0026limit=10\u0026order=asc"
+            },
+            "next": {
+              "href": "https://horizon-testnet.stellar.org/ledgers/9356704/payments?cursor=40186737678360584\u0026limit=10\u0026order=asc"
+            },
+            "prev": {
+              "href": "https://horizon-testnet.stellar.org/ledgers/9356704/payments?cursor=40186737678356481\u0026limit=10\u0026order=desc"
+            }
+          },
+          "_embedded": {
+            "records": [
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40186737678356481"
+                  },
+                  "transaction": {
+                    "href": "https://horizon-testnet.stellar.org/transactions/08dd55a8a64d373f13680b09951362f7494481f1d634c270b8e5b558d8d5f09d"
+                  },
+                  "effects": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40186737678356481/effects"
+                  },
+                  "succeeds": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=desc\u0026cursor=40186737678356481"
+                  },
+                  "precedes": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=asc\u0026cursor=40186737678356481"
+                  }
+                },
+                "id": "40186737678356481",
+                "paging_token": "40186737678356481",
+                "source_account": "GCANEDZUIL7MBBWWCTQ25534UMCOIQLEH3IPOCU7W7H6LK7I35WAE7BI",
+                "type": "payment",
+                "type_i": 1,
+                "created_at": "2018-06-06T12:05:57Z",
+                "transaction_hash": "08dd55a8a64d373f13680b09951362f7494481f1d634c270b8e5b558d8d5f09d",
+                "asset_type": "credit_alphanum12",
+                "asset_code": "nCntGameCoin",
+                "asset_issuer": "GDLMDXI6EVVUIXWRU4S2YVZRMELHUEX3WKOX6XFW77QQC6KZJ4CZ7NRB",
+                "from": "GCANEDZUIL7MBBWWCTQ25534UMCOIQLEH3IPOCU7W7H6LK7I35WAE7BI",
+                "to": "GC25MF2YFV2KTBVVVL7HT3PHAMGV7N46DVL75MJU4IVXSXVTAOIIHKCM",
+                "amount": "1.0000000"
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40186737678360577"
+                  },
+                  "transaction": {
+                    "href": "https://horizon-testnet.stellar.org/transactions/5bf841305e0b549b81629253ab2cbfa76229af5f8e02faa74fe059f6fcf88a76"
+                  },
+                  "effects": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40186737678360577/effects"
+                  },
+                  "succeeds": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=desc\u0026cursor=40186737678360577"
+                  },
+                  "precedes": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=asc\u0026cursor=40186737678360577"
+                  }
+                },
+                "id": "40186737678360577",
+                "paging_token": "40186737678360577",
+                "source_account": "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH",
+                "type": "payment",
+                "type_i": 1,
+                "created_at": "2018-06-06T12:05:57Z",
+                "transaction_hash": "5bf841305e0b549b81629253ab2cbfa76229af5f8e02faa74fe059f6fcf88a76",
+                "asset_type": "credit_alphanum12",
+                "asset_code": "nCntGameCoin",
+                "asset_issuer": "GDLMDXI6EVVUIXWRU4S2YVZRMELHUEX3WKOX6XFW77QQC6KZJ4CZ7NRB",
+                "from": "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH",
+                "to": "GAWHFIIG2LTBO4Q5ZCTMPGYVV3FSQE4TCXPFTL44V5BN5FLR3GRGJB5G",
+                "amount": "1.0000000"
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40186737678360578"
+                  },
+                  "transaction": {
+                    "href": "https://horizon-testnet.stellar.org/transactions/5bf841305e0b549b81629253ab2cbfa76229af5f8e02faa74fe059f6fcf88a76"
+                  },
+                  "effects": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40186737678360578/effects"
+                  },
+                  "succeeds": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=desc\u0026cursor=40186737678360578"
+                  },
+                  "precedes": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=asc\u0026cursor=40186737678360578"
+                  }
+                },
+                "id": "40186737678360578",
+                "paging_token": "40186737678360578",
+                "source_account": "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH",
+                "type": "payment",
+                "type_i": 1,
+                "created_at": "2018-06-06T12:05:57Z",
+                "transaction_hash": "5bf841305e0b549b81629253ab2cbfa76229af5f8e02faa74fe059f6fcf88a76",
+                "asset_type": "credit_alphanum12",
+                "asset_code": "nCntGameCoin",
+                "asset_issuer": "GDLMDXI6EVVUIXWRU4S2YVZRMELHUEX3WKOX6XFW77QQC6KZJ4CZ7NRB",
+                "from": "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH",
+                "to": "GADV3PAO46SCOCYACAXMBJ3OXBW2MY76BC2OET3PS5KHX5VB6XUI7C7M",
+                "amount": "1.0000000"
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40186737678360579"
+                  },
+                  "transaction": {
+                    "href": "https://horizon-testnet.stellar.org/transactions/5bf841305e0b549b81629253ab2cbfa76229af5f8e02faa74fe059f6fcf88a76"
+                  },
+                  "effects": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40186737678360579/effects"
+                  },
+                  "succeeds": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=desc\u0026cursor=40186737678360579"
+                  },
+                  "precedes": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=asc\u0026cursor=40186737678360579"
+                  }
+                },
+                "id": "40186737678360579",
+                "paging_token": "40186737678360579",
+                "source_account": "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH",
+                "type": "payment",
+                "type_i": 1,
+                "created_at": "2018-06-06T12:05:57Z",
+                "transaction_hash": "5bf841305e0b549b81629253ab2cbfa76229af5f8e02faa74fe059f6fcf88a76",
+                "asset_type": "credit_alphanum12",
+                "asset_code": "nCntGameCoin",
+                "asset_issuer": "GDLMDXI6EVVUIXWRU4S2YVZRMELHUEX3WKOX6XFW77QQC6KZJ4CZ7NRB",
+                "from": "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH",
+                "to": "GA5NPIF5KLSR3D4JOFPC6VET3JDF5NIDZCODOOUX3NLCACLPAT5XAF5J",
+                "amount": "1.0000000"
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40186737678360580"
+                  },
+                  "transaction": {
+                    "href": "https://horizon-testnet.stellar.org/transactions/5bf841305e0b549b81629253ab2cbfa76229af5f8e02faa74fe059f6fcf88a76"
+                  },
+                  "effects": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40186737678360580/effects"
+                  },
+                  "succeeds": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=desc\u0026cursor=40186737678360580"
+                  },
+                  "precedes": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=asc\u0026cursor=40186737678360580"
+                  }
+                },
+                "id": "40186737678360580",
+                "paging_token": "40186737678360580",
+                "source_account": "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH",
+                "type": "payment",
+                "type_i": 1,
+                "created_at": "2018-06-06T12:05:57Z",
+                "transaction_hash": "5bf841305e0b549b81629253ab2cbfa76229af5f8e02faa74fe059f6fcf88a76",
+                "asset_type": "credit_alphanum12",
+                "asset_code": "nCntGameCoin",
+                "asset_issuer": "GDLMDXI6EVVUIXWRU4S2YVZRMELHUEX3WKOX6XFW77QQC6KZJ4CZ7NRB",
+                "from": "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH",
+                "to": "GB4OMVGHXSZRVT6KTXV22LPWIVYZES7B43RQ3P54BKIH3U36GOPS645Y",
+                "amount": "1.0000000"
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40186737678360581"
+                  },
+                  "transaction": {
+                    "href": "https://horizon-testnet.stellar.org/transactions/5bf841305e0b549b81629253ab2cbfa76229af5f8e02faa74fe059f6fcf88a76"
+                  },
+                  "effects": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40186737678360581/effects"
+                  },
+                  "succeeds": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=desc\u0026cursor=40186737678360581"
+                  },
+                  "precedes": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=asc\u0026cursor=40186737678360581"
+                  }
+                },
+                "id": "40186737678360581",
+                "paging_token": "40186737678360581",
+                "source_account": "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH",
+                "type": "payment",
+                "type_i": 1,
+                "created_at": "2018-06-06T12:05:57Z",
+                "transaction_hash": "5bf841305e0b549b81629253ab2cbfa76229af5f8e02faa74fe059f6fcf88a76",
+                "asset_type": "credit_alphanum12",
+                "asset_code": "nCntGameCoin",
+                "asset_issuer": "GDLMDXI6EVVUIXWRU4S2YVZRMELHUEX3WKOX6XFW77QQC6KZJ4CZ7NRB",
+                "from": "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH",
+                "to": "GAK6ZB35A2AEADFZBR7L4ATJ4XWGX7WRHEC67VKIUYSF6FBXOZ6UZ3SA",
+                "amount": "2.0000000"
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40186737678360582"
+                  },
+                  "transaction": {
+                    "href": "https://horizon-testnet.stellar.org/transactions/5bf841305e0b549b81629253ab2cbfa76229af5f8e02faa74fe059f6fcf88a76"
+                  },
+                  "effects": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40186737678360582/effects"
+                  },
+                  "succeeds": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=desc\u0026cursor=40186737678360582"
+                  },
+                  "precedes": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=asc\u0026cursor=40186737678360582"
+                  }
+                },
+                "id": "40186737678360582",
+                "paging_token": "40186737678360582",
+                "source_account": "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH",
+                "type": "payment",
+                "type_i": 1,
+                "created_at": "2018-06-06T12:05:57Z",
+                "transaction_hash": "5bf841305e0b549b81629253ab2cbfa76229af5f8e02faa74fe059f6fcf88a76",
+                "asset_type": "credit_alphanum12",
+                "asset_code": "nCntGameCoin",
+                "asset_issuer": "GDLMDXI6EVVUIXWRU4S2YVZRMELHUEX3WKOX6XFW77QQC6KZJ4CZ7NRB",
+                "from": "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH",
+                "to": "GBYLPSBGNBG2RNGOQ66RSSYLWOGD6MNYRFNEB4UH3QY6CBH5IPMPXIBH",
+                "amount": "2.0000000"
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40186737678360583"
+                  },
+                  "transaction": {
+                    "href": "https://horizon-testnet.stellar.org/transactions/5bf841305e0b549b81629253ab2cbfa76229af5f8e02faa74fe059f6fcf88a76"
+                  },
+                  "effects": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40186737678360583/effects"
+                  },
+                  "succeeds": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=desc\u0026cursor=40186737678360583"
+                  },
+                  "precedes": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=asc\u0026cursor=40186737678360583"
+                  }
+                },
+                "id": "40186737678360583",
+                "paging_token": "40186737678360583",
+                "source_account": "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH",
+                "type": "payment",
+                "type_i": 1,
+                "created_at": "2018-06-06T12:05:57Z",
+                "transaction_hash": "5bf841305e0b549b81629253ab2cbfa76229af5f8e02faa74fe059f6fcf88a76",
+                "asset_type": "credit_alphanum12",
+                "asset_code": "nCntGameCoin",
+                "asset_issuer": "GDLMDXI6EVVUIXWRU4S2YVZRMELHUEX3WKOX6XFW77QQC6KZJ4CZ7NRB",
+                "from": "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH",
+                "to": "GARZGYAFNAX3CQLQSOHB3JEG5FVWATWIGKCPBO2RUDFZB4AGOUUK2COF",
+                "amount": "2.0000000"
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40186737678360584"
+                  },
+                  "transaction": {
+                    "href": "https://horizon-testnet.stellar.org/transactions/5bf841305e0b549b81629253ab2cbfa76229af5f8e02faa74fe059f6fcf88a76"
+                  },
+                  "effects": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40186737678360584/effects"
+                  },
+                  "succeeds": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=desc\u0026cursor=40186737678360584"
+                  },
+                  "precedes": {
+                    "href": "https://horizon-testnet.stellar.org/effects?order=asc\u0026cursor=40186737678360584"
+                  }
+                },
+                "id": "40186737678360584",
+                "paging_token": "40186737678360584",
+                "source_account": "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH",
+                "type": "payment",
+                "type_i": 1,
+                "created_at": "2018-06-06T12:05:57Z",
+                "transaction_hash": "5bf841305e0b549b81629253ab2cbfa76229af5f8e02faa74fe059f6fcf88a76",
+                "asset_type": "credit_alphanum12",
+                "asset_code": "nCntGameCoin",
+                "asset_issuer": "GDLMDXI6EVVUIXWRU4S2YVZRMELHUEX3WKOX6XFW77QQC6KZJ4CZ7NRB",
+                "from": "GAK3NSB43EVCZKDH4PYGJPCVPOYZ7X7KIR3ZTWSYRKRMJWGG5TABM6TH",
+                "to": "GA6XXNLKDR55S3Z4VJSSWGHSW2QFWDOH7Z3J2Y2THDSLBHTZ72IAJIGK",
+                "amount": "1.0000000"
+              }
+            ]
+          }
+        }
+    http_version: 
+  recorded_at: Wed, 06 Jun 2018 14:16:27 GMT
+recorded_with: VCR 3.0.3

@@ -1,4 +1,5 @@
 require 'hyperclient'
+require 'uri'
 
 module Stellar
   class Client
@@ -52,7 +53,7 @@ module Stellar
     Contract Stellar::Account => Any
     def account_info(account)
       account_id  = account.address
-      @horizon.account(account_id:account_id)._get
+      @horizon.account(account_id: account_id)._get
     end
 
     Contract ({
@@ -71,8 +72,7 @@ module Stellar
 
     Contract ({
       account:     Stellar::Account,
-      destination: Stellar::Account,
-      amount:      Stellar::Amount
+      destination: Stellar::Account
     }) => Any
     def account_merge(options={})
       account     = options[:account]
@@ -138,6 +138,20 @@ module Stellar
     end
 
     Contract ({
+      account:     Maybe[Stellar::Account],
+      cursor:      Maybe[String],
+      ledger:      Maybe[String],
+      limit:       Maybe[Pos],
+      transaction: Maybe[String]
+    }) => PaymentPage
+    def payments(options={})
+      entry_point = Hyperclient::EntryPoint.new(payments_url(options))
+      resource = entry_point._get._links["self"]
+
+      PaymentPage.new(resource)
+    end
+
+    Contract ({
       account:  Maybe[Stellar::Account],
       limit:    Maybe[Pos],
       cursor:   Maybe[String]
@@ -184,5 +198,21 @@ module Stellar
       horizon.transactions._post(tx: envelope_base64)
     end
 
+    private
+
+    def payments_url(options)
+      query = options.slice(:limit, :cursor)
+      path = if options[:account]
+        "/accounts/#{options[:account].address}/payments"
+      elsif options[:ledger]
+        "/ledgers/#{options[:ledger]}/payments"
+      elsif options[:transaction]
+        "/transactions/#{options[:transaction]}/payments"
+      else
+        '/payments'
+      end
+      uri = URI::HTTP.build(path: path, query: query.to_query)
+      [@options[:horizon], uri.request_uri].join
+    end
   end
 end
