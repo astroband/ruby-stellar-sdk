@@ -4,6 +4,35 @@ describe Stellar::Client do
 
   subject(:client) { Stellar::Client.default_testnet }
 
+  describe "#default_testnet" do
+    it 'instantiates a client pointing to horizon testnet' do
+      client = described_class.default_testnet
+      expect(client.horizon._url).to eq(described_class::HORIZON_TESTNET_URL)
+    end
+  end
+
+  describe "#default" do
+    it 'instantiates a client pointing to horizon mainnet' do
+      client = described_class.default
+      expect(client.horizon._url).to eq(described_class::HORIZON_MAINNET_URL)
+    end
+  end
+
+  describe "#localhost" do
+    it 'instantiates a client pointing to localhost horizon' do
+      client = described_class.localhost
+      expect(client.horizon._url).to eq(described_class::HORIZON_LOCALHOST_URL)
+    end
+  end
+
+  describe "#initialize" do
+    let(:custom_horizon_url) { 'https://horizon.domain.com' }
+    it 'instantiates a client accepting custom options' do
+      client = described_class.new(horizon: custom_horizon_url)
+      expect(client.horizon._url).to eq(custom_horizon_url)
+    end
+  end
+
   describe "#create_account" do
     let(:source) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
     let(:destination) { Stellar::Account.random }
