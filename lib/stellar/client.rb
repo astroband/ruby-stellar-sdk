@@ -57,20 +57,6 @@ module Stellar
     end
 
     Contract ({
-      asset_code:   Maybe[String],
-      asset_issuer: Maybe[Stellar::Account],
-      limit:        Maybe[Pos],
-      cursor:       Maybe[String]
-    }) => AssetPage
-    def assets(options={})
-      args = options.slice(:limit, :cursor, :asset_code)
-      args.merge(asset_issuer: options[:asset_issuer].address) if options[:asset_issuer]
-
-      resource = @horizon.assets(args)
-      AssetPage.new(resource)
-    end
-
-    Contract ({
       account:     Stellar::Account,
       destination: Stellar::Account
     }) => Any
@@ -87,6 +73,20 @@ module Stellar
 
       envelope_base64 = transaction.to_envelope(account.keypair).to_xdr(:base64)
       @horizon.transactions._post(tx: envelope_base64)
+    end
+
+    Contract ({
+      asset_code:   Maybe[String],
+      asset_issuer: Maybe[Stellar::Account],
+      limit:        Maybe[Pos],
+      cursor:       Maybe[String]
+    }) => AssetPage
+    def assets(options={})
+      args = options.slice(:limit, :cursor, :asset_code)
+      args.merge(asset_issuer: options[:asset_issuer].address) if options[:asset_issuer]
+
+      resource = @horizon.assets(args)
+      AssetPage.new(resource)
     end
 
     def friendbot(account)
@@ -146,9 +146,28 @@ module Stellar
     }) => PaymentPage
     def payments(options={})
       entry_point = Hyperclient::EntryPoint.new(payments_url(options))
-      resource = entry_point._get._links["self"]
+      resource = entry_point._get._links['self']
 
       PaymentPage.new(resource)
+    end
+
+    Contract ({
+      base_asset_code:      Maybe[String],
+      base_asset_issuer:    Maybe[String],
+      base_asset_type:      Maybe[String],
+      counter_asset_code:   Maybe[String],
+      counter_asset_issuer: Maybe[String],
+      counter_asset_type:   Maybe[String],
+      cursor:               Maybe[String],
+      limit:                Maybe[Pos],
+      offer_id:             Maybe[Pos],
+      order:                Maybe[String]
+    }) => TradePage
+    def trades(options={})
+      entry_point = Hyperclient::EntryPoint.new(trades_url(options))
+      resource = entry_point._get._links['self']
+
+      TradePage.new(resource)
     end
 
     Contract ({
@@ -212,6 +231,13 @@ module Stellar
         '/payments'
       end
       uri = URI::HTTP.build(path: path, query: query.to_query)
+      [@options[:horizon], uri.request_uri].join
+    end
+
+    def trades_url(options)
+      query = options.slice(:base_asset_code, :base_asset_issuer, :base_asset_type, :counter_asset_code,
+                            :counter_asset_issuer, :counter_asset_type, :cursor, :limit, :offer_id, :order)
+      uri = URI::HTTP.build(path: '/trades', query: query.to_query)
       [@options[:horizon], uri.request_uri].join
     end
   end

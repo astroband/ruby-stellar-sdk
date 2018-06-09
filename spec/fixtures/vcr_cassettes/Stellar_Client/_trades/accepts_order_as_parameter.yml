@@ -1,0 +1,412 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://horizon-testnet.stellar.org/trades?order=desc
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/hal+json
+      Accept:
+      - application/hal+json,application/json
+      User-Agent:
+      - Faraday v0.15.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 08 Jun 2018 20:03:22 GMT
+      Content-Type:
+      - application/hal+json; charset=utf-8
+      Content-Length:
+      - '1477'
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - __cfduid=d2441e7530718aa5b602ab768f894daa11528488202; expires=Sat, 08-Jun-19
+        20:03:22 GMT; path=/; domain=.stellar.org; HttpOnly
+      Content-Disposition:
+      - inline
+      Vary:
+      - Origin
+      X-Ratelimit-Limit:
+      - '17200'
+      X-Ratelimit-Remaining:
+      - '17195'
+      X-Ratelimit-Reset:
+      - '2379'
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 427df6207dcbb931-MIA
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+          "_links": {
+            "self": {
+              "href": "https://horizon-testnet.stellar.org/trades?cursor=\u0026limit=10\u0026order=desc"
+            },
+            "next": {
+              "href": "https://horizon-testnet.stellar.org/trades?cursor=40356672354390017-0\u0026limit=10\u0026order=desc"
+            },
+            "prev": {
+              "href": "https://horizon-testnet.stellar.org/trades?cursor=40358394636275713-0\u0026limit=10\u0026order=asc"
+            }
+          },
+          "_embedded": {
+            "records": [
+              {
+                "_links": {
+                  "self": {
+                    "href": ""
+                  },
+                  "base": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GDRLTGH75F7Q2KNZZCLU2NACAAIWYJLH3B7YFFCD7NAU63SSOAE3CVJS"
+                  },
+                  "counter": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GBMTGMQXBXZS5XJROQQOZB7TU4ACBIXTJJEG7WTXP4ZEARPGQGDWHWIS"
+                  },
+                  "operation": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40358394636275713"
+                  }
+                },
+                "id": "40358394636275713-0",
+                "paging_token": "40358394636275713-0",
+                "ledger_close_time": "2018-06-08T20:02:50Z",
+                "offer_id": "430709",
+                "base_account": "GDRLTGH75F7Q2KNZZCLU2NACAAIWYJLH3B7YFFCD7NAU63SSOAE3CVJS",
+                "base_amount": "96.9999900",
+                "base_asset_type": "native",
+                "counter_account": "GBMTGMQXBXZS5XJROQQOZB7TU4ACBIXTJJEG7WTXP4ZEARPGQGDWHWIS",
+                "counter_amount": "3879.9996000",
+                "counter_asset_type": "credit_alphanum4",
+                "counter_asset_code": "OG",
+                "counter_asset_issuer": "GB6ASOXVGN7TJ4XHQX7JRJHWRXLS52R44ZIS77HUCUGVQBTUZRSMIDIW",
+                "base_is_seller": false,
+                "price": {
+                  "n": 40,
+                  "d": 1
+                }
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": ""
+                  },
+                  "base": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GCR6TSGRME5EA6D6LNUJ4PHXMYHFNRH4JSC7M6WFMJVHFDZDSLT6QULP"
+                  },
+                  "counter": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GCVHU53NNG3GCCZP5W5EFFDRM2SGT4UXS3UABJ6M6TMJL6S74EOKBHXJ"
+                  },
+                  "operation": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40358373161439233"
+                  }
+                },
+                "id": "40358373161439233-0",
+                "paging_token": "40358373161439233-0",
+                "ledger_close_time": "2018-06-08T20:02:27Z",
+                "offer_id": "430708",
+                "base_account": "GCR6TSGRME5EA6D6LNUJ4PHXMYHFNRH4JSC7M6WFMJVHFDZDSLT6QULP",
+                "base_amount": "0.0000001",
+                "base_asset_type": "credit_alphanum4",
+                "base_asset_code": "BTC",
+                "base_asset_issuer": "GA77B6GK5K3FH2YJ6I5VJ7VPFZKPBQUX2IIC2MJYAERQTGJI4VOPKRYJ",
+                "counter_account": "GCVHU53NNG3GCCZP5W5EFFDRM2SGT4UXS3UABJ6M6TMJL6S74EOKBHXJ",
+                "counter_amount": "0.0000063",
+                "counter_asset_type": "credit_alphanum4",
+                "counter_asset_code": "LTC",
+                "counter_asset_issuer": "GA77B6GK5K3FH2YJ6I5VJ7VPFZKPBQUX2IIC2MJYAERQTGJI4VOPKRYJ",
+                "base_is_seller": false,
+                "price": {
+                  "n": 20000000,
+                  "d": 308699
+                }
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": ""
+                  },
+                  "base": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GB32SZ322FWKHTOGISDK5KSQLJNQBMVEOZA4UELV7VKG4G4BZCAPAP24"
+                  },
+                  "counter": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GBMTGMQXBXZS5XJROQQOZB7TU4ACBIXTJJEG7WTXP4ZEARPGQGDWHWIS"
+                  },
+                  "operation": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40358351686602753"
+                  }
+                },
+                "id": "40358351686602753-0",
+                "paging_token": "40358351686602753-0",
+                "ledger_close_time": "2018-06-08T20:02:02Z",
+                "offer_id": "430704",
+                "base_account": "GB32SZ322FWKHTOGISDK5KSQLJNQBMVEOZA4UELV7VKG4G4BZCAPAP24",
+                "base_amount": "96.9999900",
+                "base_asset_type": "native",
+                "counter_account": "GBMTGMQXBXZS5XJROQQOZB7TU4ACBIXTJJEG7WTXP4ZEARPGQGDWHWIS",
+                "counter_amount": "3879.9996000",
+                "counter_asset_type": "credit_alphanum4",
+                "counter_asset_code": "OG",
+                "counter_asset_issuer": "GB6ASOXVGN7TJ4XHQX7JRJHWRXLS52R44ZIS77HUCUGVQBTUZRSMIDIW",
+                "base_is_seller": false,
+                "price": {
+                  "n": 40,
+                  "d": 1
+                }
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": ""
+                  },
+                  "base": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GBAQ7QD5SHHJCIRULEU7HJDFZZJMM7MJZ34EKKSFQF5LAZHGGKJPZGCP"
+                  },
+                  "counter": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GBMTGMQXBXZS5XJROQQOZB7TU4ACBIXTJJEG7WTXP4ZEARPGQGDWHWIS"
+                  },
+                  "operation": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40358308736933889"
+                  }
+                },
+                "id": "40358308736933889-0",
+                "paging_token": "40358308736933889-0",
+                "ledger_close_time": "2018-06-08T20:01:10Z",
+                "offer_id": "430704",
+                "base_account": "GBAQ7QD5SHHJCIRULEU7HJDFZZJMM7MJZ34EKKSFQF5LAZHGGKJPZGCP",
+                "base_amount": "0.9999900",
+                "base_asset_type": "native",
+                "counter_account": "GBMTGMQXBXZS5XJROQQOZB7TU4ACBIXTJJEG7WTXP4ZEARPGQGDWHWIS",
+                "counter_amount": "39.9996000",
+                "counter_asset_type": "credit_alphanum4",
+                "counter_asset_code": "OG",
+                "counter_asset_issuer": "GB6ASOXVGN7TJ4XHQX7JRJHWRXLS52R44ZIS77HUCUGVQBTUZRSMIDIW",
+                "base_is_seller": false,
+                "price": {
+                  "n": 40,
+                  "d": 1
+                }
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": ""
+                  },
+                  "base": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GCVHU53NNG3GCCZP5W5EFFDRM2SGT4UXS3UABJ6M6TMJL6S74EOKBHXJ"
+                  },
+                  "counter": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GBH25RYXAEDKPZUIMC5VJBKNYRUULY5B2LH5NVG6Q3RZPHK5KPFBZX7T"
+                  },
+                  "operation": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40358231427526657"
+                  }
+                },
+                "id": "40358231427526657-0",
+                "paging_token": "40358231427526657-0",
+                "ledger_close_time": "2018-06-08T19:59:42Z",
+                "offer_id": "145229",
+                "base_account": "GCVHU53NNG3GCCZP5W5EFFDRM2SGT4UXS3UABJ6M6TMJL6S74EOKBHXJ",
+                "base_amount": "0.0000001",
+                "base_asset_type": "credit_alphanum4",
+                "base_asset_code": "BTC",
+                "base_asset_issuer": "GA77B6GK5K3FH2YJ6I5VJ7VPFZKPBQUX2IIC2MJYAERQTGJI4VOPKRYJ",
+                "counter_account": "GBH25RYXAEDKPZUIMC5VJBKNYRUULY5B2LH5NVG6Q3RZPHK5KPFBZX7T",
+                "counter_amount": "0.0000063",
+                "counter_asset_type": "credit_alphanum4",
+                "counter_asset_code": "LTC",
+                "counter_asset_issuer": "GA77B6GK5K3FH2YJ6I5VJ7VPFZKPBQUX2IIC2MJYAERQTGJI4VOPKRYJ",
+                "base_is_seller": false,
+                "price": {
+                  "n": 2500000,
+                  "d": 39371
+                }
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": ""
+                  },
+                  "base": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GCR6TSGRME5EA6D6LNUJ4PHXMYHFNRH4JSC7M6WFMJVHFDZDSLT6QULP"
+                  },
+                  "counter": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GCVHU53NNG3GCCZP5W5EFFDRM2SGT4UXS3UABJ6M6TMJL6S74EOKBHXJ"
+                  },
+                  "operation": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40357578592489473"
+                  }
+                },
+                "id": "40357578592489473-0",
+                "paging_token": "40357578592489473-0",
+                "ledger_close_time": "2018-06-08T19:46:20Z",
+                "offer_id": "430706",
+                "base_account": "GCR6TSGRME5EA6D6LNUJ4PHXMYHFNRH4JSC7M6WFMJVHFDZDSLT6QULP",
+                "base_amount": "0.0000001",
+                "base_asset_type": "credit_alphanum4",
+                "base_asset_code": "BTC",
+                "base_asset_issuer": "GA77B6GK5K3FH2YJ6I5VJ7VPFZKPBQUX2IIC2MJYAERQTGJI4VOPKRYJ",
+                "counter_account": "GCVHU53NNG3GCCZP5W5EFFDRM2SGT4UXS3UABJ6M6TMJL6S74EOKBHXJ",
+                "counter_amount": "0.0000063",
+                "counter_asset_type": "credit_alphanum4",
+                "counter_asset_code": "LTC",
+                "counter_asset_issuer": "GA77B6GK5K3FH2YJ6I5VJ7VPFZKPBQUX2IIC2MJYAERQTGJI4VOPKRYJ",
+                "base_is_seller": false,
+                "price": {
+                  "n": 20000000,
+                  "d": 308699
+                }
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": ""
+                  },
+                  "base": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GCVHU53NNG3GCCZP5W5EFFDRM2SGT4UXS3UABJ6M6TMJL6S74EOKBHXJ"
+                  },
+                  "counter": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GBH25RYXAEDKPZUIMC5VJBKNYRUULY5B2LH5NVG6Q3RZPHK5KPFBZX7T"
+                  },
+                  "operation": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40357428268638209"
+                  }
+                },
+                "id": "40357428268638209-0",
+                "paging_token": "40357428268638209-0",
+                "ledger_close_time": "2018-06-08T19:43:25Z",
+                "offer_id": "145229",
+                "base_account": "GCVHU53NNG3GCCZP5W5EFFDRM2SGT4UXS3UABJ6M6TMJL6S74EOKBHXJ",
+                "base_amount": "0.0000001",
+                "base_asset_type": "credit_alphanum4",
+                "base_asset_code": "BTC",
+                "base_asset_issuer": "GA77B6GK5K3FH2YJ6I5VJ7VPFZKPBQUX2IIC2MJYAERQTGJI4VOPKRYJ",
+                "counter_account": "GBH25RYXAEDKPZUIMC5VJBKNYRUULY5B2LH5NVG6Q3RZPHK5KPFBZX7T",
+                "counter_amount": "0.0000063",
+                "counter_asset_type": "credit_alphanum4",
+                "counter_asset_code": "LTC",
+                "counter_asset_issuer": "GA77B6GK5K3FH2YJ6I5VJ7VPFZKPBQUX2IIC2MJYAERQTGJI4VOPKRYJ",
+                "base_is_seller": false,
+                "price": {
+                  "n": 2500000,
+                  "d": 39371
+                }
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": ""
+                  },
+                  "base": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GCR6TSGRME5EA6D6LNUJ4PHXMYHFNRH4JSC7M6WFMJVHFDZDSLT6QULP"
+                  },
+                  "counter": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GCVHU53NNG3GCCZP5W5EFFDRM2SGT4UXS3UABJ6M6TMJL6S74EOKBHXJ"
+                  },
+                  "operation": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40356775433605121"
+                  }
+                },
+                "id": "40356775433605121-0",
+                "paging_token": "40356775433605121-0",
+                "ledger_close_time": "2018-06-08T19:30:45Z",
+                "offer_id": "430705",
+                "base_account": "GCR6TSGRME5EA6D6LNUJ4PHXMYHFNRH4JSC7M6WFMJVHFDZDSLT6QULP",
+                "base_amount": "0.0000001",
+                "base_asset_type": "credit_alphanum4",
+                "base_asset_code": "BTC",
+                "base_asset_issuer": "GA77B6GK5K3FH2YJ6I5VJ7VPFZKPBQUX2IIC2MJYAERQTGJI4VOPKRYJ",
+                "counter_account": "GCVHU53NNG3GCCZP5W5EFFDRM2SGT4UXS3UABJ6M6TMJL6S74EOKBHXJ",
+                "counter_amount": "0.0000063",
+                "counter_asset_type": "credit_alphanum4",
+                "counter_asset_code": "LTC",
+                "counter_asset_issuer": "GA77B6GK5K3FH2YJ6I5VJ7VPFZKPBQUX2IIC2MJYAERQTGJI4VOPKRYJ",
+                "base_is_seller": false,
+                "price": {
+                  "n": 20000000,
+                  "d": 308699
+                }
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": ""
+                  },
+                  "base": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GDFDIBKMEPHDKRY23QA65UFLMP4MR34WIPXANXN4KUEKNG63HO6PDWCS"
+                  },
+                  "counter": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GBTQR4SCQC6TKEH524A3INALZNXDFUSBMRCNTOY5XR4JZ7BRH7NAWCST"
+                  },
+                  "operation": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40356672354390017"
+                  }
+                },
+                "id": "40356672354390017-1",
+                "paging_token": "40356672354390017-1",
+                "ledger_close_time": "2018-06-08T19:28:45Z",
+                "offer_id": "430385",
+                "base_account": "GDFDIBKMEPHDKRY23QA65UFLMP4MR34WIPXANXN4KUEKNG63HO6PDWCS",
+                "base_amount": "69.0000000",
+                "base_asset_type": "native",
+                "counter_account": "GBTQR4SCQC6TKEH524A3INALZNXDFUSBMRCNTOY5XR4JZ7BRH7NAWCST",
+                "counter_amount": "1.7250000",
+                "counter_asset_type": "credit_alphanum4",
+                "counter_asset_code": "OG",
+                "counter_asset_issuer": "GB6ASOXVGN7TJ4XHQX7JRJHWRXLS52R44ZIS77HUCUGVQBTUZRSMIDIW",
+                "base_is_seller": false,
+                "price": {
+                  "n": 25000,
+                  "d": 1000000
+                }
+              },
+              {
+                "_links": {
+                  "self": {
+                    "href": ""
+                  },
+                  "base": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GDFDIBKMEPHDKRY23QA65UFLMP4MR34WIPXANXN4KUEKNG63HO6PDWCS"
+                  },
+                  "counter": {
+                    "href": "https://horizon-testnet.stellar.org/accounts/GBMTGMQXBXZS5XJROQQOZB7TU4ACBIXTJJEG7WTXP4ZEARPGQGDWHWIS"
+                  },
+                  "operation": {
+                    "href": "https://horizon-testnet.stellar.org/operations/40356672354390017"
+                  }
+                },
+                "id": "40356672354390017-0",
+                "paging_token": "40356672354390017-0",
+                "ledger_close_time": "2018-06-08T19:28:45Z",
+                "offer_id": "430694",
+                "base_account": "GDFDIBKMEPHDKRY23QA65UFLMP4MR34WIPXANXN4KUEKNG63HO6PDWCS",
+                "base_amount": "30.0000000",
+                "base_asset_type": "native",
+                "counter_account": "GBMTGMQXBXZS5XJROQQOZB7TU4ACBIXTJJEG7WTXP4ZEARPGQGDWHWIS",
+                "counter_amount": "1200.0000000",
+                "counter_asset_type": "credit_alphanum4",
+                "counter_asset_code": "OG",
+                "counter_asset_issuer": "GB6ASOXVGN7TJ4XHQX7JRJHWRXLS52R44ZIS77HUCUGVQBTUZRSMIDIW",
+                "base_is_seller": false,
+                "price": {
+                  "n": 40,
+                  "d": 1
+                }
+              }
+            ]
+          }
+        }
+    http_version: 
+  recorded_at: Fri, 08 Jun 2018 20:03:22 GMT
+recorded_with: VCR 3.0.3

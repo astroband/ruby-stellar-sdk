@@ -1,0 +1,59 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://horizon-testnet.stellar.org/trades?base_asset_type=native
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/hal+json
+      Accept:
+      - application/hal+json,application/json
+      User-Agent:
+      - Faraday v0.15.2
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 500
+      message: Internal Server Error
+    headers:
+      Date:
+      - Fri, 08 Jun 2018 19:44:53 GMT
+      Content-Type:
+      - application/problem+json; charset=utf-8
+      Content-Length:
+      - '470'
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - __cfduid=ddba2387bc8d38fac4f8a96717a6edfd41528487093; expires=Sat, 08-Jun-19
+        19:44:53 GMT; path=/; domain=.stellar.org; HttpOnly
+      Vary:
+      - Origin
+      X-Ratelimit-Limit:
+      - '17200'
+      X-Ratelimit-Remaining:
+      - '17198'
+      X-Ratelimit-Reset:
+      - '3488'
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 427ddb0caf5fb8f5-MIA
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "type": "https://stellar.org/horizon-errors/server_error",
+          "title": "Internal Server Error",
+          "status": 500,
+          "detail": "An error occurred while processing this request.  This is usually due to a bug within the server software.  Trying this request again may succeed if the bug is transient, otherwise please report this issue to the issue tracker at: https://github.com/stellar/go/services/horizon/internal/issues. Please include this response in your issue."
+        }
+    http_version: 
+  recorded_at: Fri, 08 Jun 2018 19:44:53 GMT
+recorded_with: VCR 3.0.3
