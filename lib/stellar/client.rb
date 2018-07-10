@@ -49,10 +49,6 @@ module Stellar
       end
     end
 
-    def friendbot(account)
-      raise NotImplementedError
-    end
-
     Contract Stellar::Account => Any
     def account_info(account)
       account_id  = account.address
@@ -60,23 +56,26 @@ module Stellar
     end
 
     Contract ({
-      from:     Stellar::Account,
-      to:       Stellar::Account,
-      amount:   Stellar::Amount
+      account:     Stellar::Account,
+      destination: Stellar::Account
     }) => Any
-    def send_payment(options={})
-      from     = options[:from]
-      sequence = options[:sequence] || (account_info(from).sequence.to_i + 1)
+    def account_merge(options={})
+      account     = options[:account]
+      destination = options[:destination]
+      sequence    = options[:sequence] || (account_info(account).sequence.to_i + 1)
 
-      payment = Stellar::Transaction.payment({
-        account:     from.keypair,
-        destination: options[:to].keypair,
-        sequence:    sequence,
-        amount:      options[:amount].to_payment,
+      transaction = Stellar::Transaction.account_merge({
+        account:     account.keypair,
+        destination: destination.keypair,
+        sequence:    sequence
       })
 
-      envelope_base64 = payment.to_envelope(from.keypair).to_xdr(:base64)
+      envelope_base64 = transaction.to_envelope(account.keypair).to_xdr(:base64)
       @horizon.transactions._post(tx: envelope_base64)
+    end
+
+    def friendbot(account)
+      raise NotImplementedError
     end
 
     Contract ({
@@ -100,6 +99,26 @@ module Stellar
       })
 
       envelope_base64 = payment.to_envelope(funder.keypair).to_xdr(:base64)
+      @horizon.transactions._post(tx: envelope_base64)
+    end
+
+    Contract ({
+      from:     Stellar::Account,
+      to:       Stellar::Account,
+      amount:   Stellar::Amount
+    }) => Any
+    def send_payment(options={})
+      from     = options[:from]
+      sequence = options[:sequence] || (account_info(from).sequence.to_i + 1)
+
+      payment = Stellar::Transaction.payment({
+        account:     from.keypair,
+        destination: options[:to].keypair,
+        sequence:    sequence,
+        amount:      options[:amount].to_payment,
+      })
+
+      envelope_base64 = payment.to_envelope(from.keypair).to_xdr(:base64)
       @horizon.transactions._post(tx: envelope_base64)
     end
 
