@@ -7,23 +7,27 @@ module Stellar
 
     DEFAULT_FEE = 100
 
+    HORIZON_LOCALHOST_URL = 'http://127.0.0.1:8000'
+    HORIZON_MAINNET_URL = 'https://horizon.stellar.org'
+    HORIZON_TESTNET_URL = 'https://horizon-testnet.stellar.org'
+
     def self.default(options={})
-      new options.merge({
-        horizon:   "https://horizon.stellar.org"
-      })
+      new options.merge(
+        horizon: HORIZON_MAINNET_URL
+      )
     end
 
     def self.default_testnet(options={})
-      new options.merge({
-        horizon:   "https://horizon-testnet.stellar.org",
-        friendbot: "https://horizon-testnet.stellar.org",
-      })
+      new options.merge(
+        horizon:   HORIZON_TESTNET_URL,
+        friendbot: HORIZON_TESTNET_URL,
+      )
     end
 
     def self.localhost(options={})
-      new options.merge({
-        horizon: "http://127.0.0.1:8000"
-      })
+      new options.merge(
+        horizon: HORIZON_LOCALHOST_URL
+      )
     end
 
     attr_reader :horizon
