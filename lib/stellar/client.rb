@@ -3,6 +3,9 @@ require 'hyperclient'
 module Stellar
   class Client
     include Contracts
+    C = Contracts
+
+    DEFAULT_FEE = 100
 
     def self.default(options={})
       new options.merge({
@@ -82,7 +85,7 @@ module Stellar
       sequence = options[:sequence] || (account_info(funder).sequence.to_i + 1)
       # In the future, the fee should be grabbed from the network's last transactions,
       # instead of using a hard-coded default value.
-      fee = options[:fee] || 100
+      fee = options[:fee] || DEFAULT_FEE
 
       payment = Stellar::Transaction.create_account({
         account:          funder.keypair,
@@ -112,6 +115,35 @@ module Stellar
       end
 
       TransactionPage.new(resource)
+    end
+
+    Contract(C::KeywordArgs[
+      asset: [Symbol, String, Xor[Stellar::KeyPair, Stellar::Account]],
+      source: Stellar::Account,
+      sequence: Maybe[Integer],
+      fee: Maybe[Integer],
+      limit: Maybe[Integer],
+    ] => Any)
+    def change_trust(
+      asset:,
+      source:,
+      sequence: nil,
+      fee: DEFAULT_FEE,
+      limit: nil
+    )
+      sequence ||= (account_info(source).sequence.to_i + 1)
+
+      args = {
+        account: source.keypair,
+        sequence: sequence,
+        line: asset,
+      }
+      args[:limit] = limit if !limit.nil?
+
+      tx = Stellar::Transaction.change_trust(args)
+
+      envelope_base64 = tx.to_envelope(source.keypair).to_xdr(:base64)
+      horizon.transactions._post(tx: envelope_base64)
     end
 
   end

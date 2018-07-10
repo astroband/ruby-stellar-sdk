@@ -1,10 +1,7 @@
 ---
-# Source must be funded already. It is also used as an issuer of BTC
-source_seed: "SABJWDUVR2AHZEJ6FSVTHAPDHMR3K7A6VP3APHFHRJTUXEHMDS6AL3VY"
-source_address: "GCQSESW66AX4ZRZB7QWCIXSPX2BD7KLOYSS33IUGDCLO4XCPURZEEC6R"
-
-# Destination is used to test sending of assets. Until this gem supports
-# creating trustlines, we have to do this. The following account must trust the
-# source's BTC asset
-destination_seed: "SCPIADRAFSPKE5KEUZ6BKXSMRFFSO7UCSTRKALT23U3DVQ3WWNTPA44Z"
-destination_address: "GCQSESW66AX4ZRZB7QWCIXSPX2BD7KLOYSS33IUGDCLO4XCPURZEEC6R"
+# Source must be funded already
+# Use https://www.stellar.org/laboratory/#account-creator?network=test
+# These ones in the sample are just randomly generated ones; enough for tests
+# to pass (as long as we're not re-recording)
+source_seed: "SALQBNNRCXWD32E4QKIXKXCMXCPJKWUP34EAK53SP6PNGAUVWSAM5IUQ"
+source_address: "GCIDYJRG5HV4WEESRA4LEKIMXLCU46XIKXGZK4PWX5K23PJIATMWR3UE"

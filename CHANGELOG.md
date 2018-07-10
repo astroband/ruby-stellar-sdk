@@ -11,3 +11,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - `#create_account`, along with `#send_payment`
 
+### Added
+- `Stellar::Client#change_trust` to create, update, delete a trustline
