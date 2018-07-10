@@ -169,7 +169,7 @@ module Stellar
     def to_operations
       cloned = Marshal.load Marshal.dump(operations)
       operations.each do |op|
-        op.source_account = self.source_account
+        op.source_account ||= self.source_account
       end
     end
 

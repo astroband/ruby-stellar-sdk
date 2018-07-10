@@ -28,5 +28,12 @@ module Stellar
     def hash
       Digest::SHA256.digest(to_xdr)
     end
+
+    def merge(other)
+      merged_tx = tx.merge(other.tx)
+      merged_tx.signatures = [signatures, other.signatures]
+      merged_tx
+    end
+
   end
 end
