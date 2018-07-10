@@ -58,15 +58,15 @@ This library also provides an impementation of Stellar's "StrKey" encoding (RFC-
 
 ```ruby
 
-Stellar::Util::StrCheck.check_encode(:account_id, "\xFF\xFF\xFF\xFF\xFF\xFF\xFF") # => "GD777777777764TU"
-Stellar::Util::StrCheck.check_encode(:seed, "\x00\x00\x00\x00\x00\x00\x39") # => "SAAAAAAAAAADST3H"
+Stellar::Util::StrKey.check_encode(:account_id, "\xFF\xFF\xFF\xFF\xFF\xFF\xFF") # => "GD777777777764TU"
+Stellar::Util::StrKey.check_encode(:seed, "\x00\x00\x00\x00\x00\x00\x39") # => "SAAAAAAAAAADST3H"
 
 # To prevent interpretation mistakes, you must pass the expected version byte
 # when decoding a check_encoded value
 
 encoded = Stellar::Util::StrCheck.check_encode(:account_id, "\x61\x6b\x04\xab\x8b\xf6\x1b")
-Stellar::Util::StrCheck.check_decode(:account_id, encoded) # => "\x61\x6b\x04\xab\x8b\xf6\x1b"
-Stellar::Util::StrCheck.check_decode(:seed, encoded) # => throws ArgumentError: Unexpected version: :account_id
+Stellar::Util::StrKey.check_decode(:account_id, encoded) # => "\x61\x6b\x04\xab\x8b\xf6\x1b"
+Stellar::Util::StrKey.check_decode(:seed, encoded) # => throws ArgumentError: Unexpected version: :account_id
 
 ```
 
