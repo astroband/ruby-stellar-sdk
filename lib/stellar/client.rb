@@ -116,6 +116,7 @@ module Stellar
         destination: options[:to].keypair,
         sequence:    sequence,
         amount:      options[:amount].to_payment,
+        memo:        options[:memo],
       })
 
       envelope_base64 = payment.to_envelope(from.keypair).to_xdr(:base64)
