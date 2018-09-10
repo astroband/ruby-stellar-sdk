@@ -112,6 +112,7 @@ describe Stellar::Client do
 
     context "native asset" do
       let(:destination) { Stellar::Account.random }
+      let(:channel_account) { Stellar::Account.random }
 
       it "sends a native payment to the account", vcr: {record: :once, match_requests_on: [:method]} do
         client.create_account(
@@ -126,6 +127,37 @@ describe Stellar::Client do
           from: source,
           to: destination,
           amount: amount,
+        )
+
+        destination_info = client.account_info(destination)
+        balances = destination_info.balances
+        expect(balances).to_not be_empty
+        native_asset_balance_info = balances.find do |b|
+          b["asset_type"] == "native"
+        end
+        expect(native_asset_balance_info["balance"].to_f).to eq 250.0
+      end
+
+      it "sends a native payment to the account through a channel account", vcr: {record: :once, match_requests_on: [:method]} do
+        client.create_account(
+          funder: source,
+          account: destination,
+          starting_balance: 100,
+        )
+
+        client.create_account(
+          funder: source,
+          account: channel_account,
+          starting_balance: 100,
+        )
+
+        amount = Stellar::Amount.new(150)
+
+        client.send_payment(
+          from: channel_account,
+          to: destination,
+          amount: amount,
+          source_account: source
         )
 
         destination_info = client.account_info(destination)

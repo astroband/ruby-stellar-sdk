@@ -111,14 +111,25 @@ module Stellar
       from     = options[:from]
       sequence = options[:sequence] || (account_info(from).sequence.to_i + 1)
 
-      payment = Stellar::Transaction.payment({
+      payment_details = {
         account:     from.keypair,
         destination: options[:to].keypair,
         sequence:    sequence,
         amount:      options[:amount].to_payment,
-      })
+      }
 
-      envelope_base64 = payment.to_envelope(from.keypair).to_xdr(:base64)
+      if options[:source_account]
+        source_account = options[:source_account]
+        payment_details[:source_account] = source_account.keypair
+      end
+
+      payment = Stellar::Transaction.payment(payment_details)
+
+      if source_account
+        envelope_base64 = payment.to_envelope(from.keypair, source_account.keypair).to_xdr(:base64)
+      else
+        envelope_base64 = payment.to_envelope(from.keypair).to_xdr(:base64)
+      end
       @horizon.transactions._post(tx: envelope_base64)
     end
 
