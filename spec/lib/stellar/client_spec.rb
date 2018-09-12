@@ -153,12 +153,27 @@ describe Stellar::Client do
 
         amount = Stellar::Amount.new(150)
 
-        client.send_payment(
+        tx = client.send_payment(
           from: channel_account,
           to: destination,
           amount: amount,
           source_account: source
         )
+        tx_hash = tx._attributes
+                    .instance_variable_get(:@collection)[:hash]
+
+        operation = client.horizon
+                          .transaction(hash: tx_hash)
+                          .operations
+                          ._get
+
+        operation_from_address = operation.records
+                                          .first
+                                          ._attributes
+                                          .instance_variable_get(:@collection)["from"]
+
+        source_account_info = client.account_info(source)
+        expect(operation_from_address).to eq source_account_info["id"]
 
         destination_info = client.account_info(destination)
         balances = destination_info.balances
