@@ -118,8 +118,7 @@ module Stellar
         amount:      options[:amount].to_payment,
       }
 
-      if options[:source_account]
-        source_account = options[:source_account]
+      if source_account = options[:source_account]
         payment_details[:source_account] = source_account.keypair
       end
 
