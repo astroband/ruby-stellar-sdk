@@ -255,6 +255,33 @@ describe Stellar::Client do
         expect(btc_balance).to eq 150.0
       end
     end
+
+    context "memo" do
+      let(:destination) { Stellar::Account.random }
+
+      it("accepts the memo attribute", {
+        vcr: {record: :once, match_requests_on: [:method]}
+      }) do
+        client.create_account(
+          funder: source,
+          account: destination,
+          starting_balance: 100,
+        )
+
+        amount = Stellar::Amount.new(150)
+
+        client.send_payment(
+          from: source,
+          to: destination,
+          amount: amount,
+          memo: "DESUKA",
+        )
+
+        last_tx = client.account_info(destination).
+          transactions(order: "desc")._get._embedded.records.first
+        expect(last_tx.memo).to eq "DESUKA"
+      end
+    end
   end
 
   describe "#transactions" do

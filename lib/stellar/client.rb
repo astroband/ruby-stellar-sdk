@@ -116,6 +116,7 @@ module Stellar
         destination: options[:to].keypair,
         sequence:    sequence,
         amount:      options[:amount].to_payment,
+        memo:        options[:memo],
       }
 
       if source_account = options[:source_account]
