@@ -37,6 +37,7 @@ module Stellar
   autoload :AssetType
   autoload :Asset
   autoload :Price
+  autoload :Liabilities
   autoload :ThresholdIndexes
   autoload :LedgerEntryType
   autoload :Signer

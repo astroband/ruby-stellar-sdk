@@ -20,6 +20,18 @@ require 'xdr'
 #       {
 #       case 0:
 #           void;
+#       case 1:
+#           struct
+#           {
+#               Liabilities liabilities;
+#   
+#               union switch (int v)
+#               {
+#               case 0:
+#                   void;
+#               }
+#               ext;
+#           } v1;
 #       }
 #       ext;
 #   };

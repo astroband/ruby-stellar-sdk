@@ -6,37 +6,23 @@ require 'xdr'
 # === xdr source ============================================================
 #
 #   union switch (int v)
-#       {
-#       case 0:
-#           void;
-#       case 1:
-#           struct
-#           {
-#               Liabilities liabilities;
-#   
-#               union switch (int v)
 #               {
 #               case 0:
 #                   void;
 #               }
-#               ext;
-#           } v1;
-#       }
 #
 # ===========================================================================
 module Stellar
-  class AccountEntry
-    class Ext < XDR::Union
-      include XDR::Namespace
+  class TrustLineEntry
+    class Ext
+      class V1
+        class Ext < XDR::Union
+          switch_on XDR::Int, :v
 
-      autoload :V1
+          switch 0
 
-      switch_on XDR::Int, :v
-
-      switch 0
-      switch 1, :v1
-
-      attribute :v1, V1
+        end
+      end
     end
   end
 end
