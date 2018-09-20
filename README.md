@@ -45,6 +45,12 @@ client.send_payment({
 }) 
 ```
 
+Be sure to set the network when submitting to the public network (more information in [stellar-base](https://www.github.com/stellar/ruby-stellar-base)):
+
+```ruby
+Stellar.default_network = Stellar::Networks::PUBLIC
+```
+
 ## Development
 
 - Copy `spec/config.yml.sample` to `spec/config.yml`
