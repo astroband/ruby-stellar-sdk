@@ -112,6 +112,7 @@ describe Stellar::Client do
 
     context "native asset" do
       let(:destination) { Stellar::Account.random }
+      let(:channel_account) { Stellar::Account.random }
 
       it "sends a native payment to the account", vcr: {record: :once, match_requests_on: [:method]} do
         client.create_account(
@@ -127,6 +128,52 @@ describe Stellar::Client do
           to: destination,
           amount: amount,
         )
+
+        destination_info = client.account_info(destination)
+        balances = destination_info.balances
+        expect(balances).to_not be_empty
+        native_asset_balance_info = balances.find do |b|
+          b["asset_type"] == "native"
+        end
+        expect(native_asset_balance_info["balance"].to_f).to eq 250.0
+      end
+
+      it "sends a native payment to the account through a channel account", vcr: {record: :once, match_requests_on: [:method]} do
+        client.create_account(
+          funder: source,
+          account: destination,
+          starting_balance: 100,
+        )
+
+        client.create_account(
+          funder: source,
+          account: channel_account,
+          starting_balance: 1000,
+        )
+
+        amount = Stellar::Amount.new(150)
+
+        tx = client.send_payment(
+          from: channel_account,
+          to: destination,
+          amount: amount,
+          source_account: source
+        )
+
+        tx_hash = tx._attributes
+                    .instance_variable_get(:@collection)["hash"]
+
+        operation = client.horizon
+                          .transaction(hash: tx_hash)
+                          .operations
+                          ._get
+
+        operation_from_address = operation.records
+                                          .first
+                                          ._attributes
+                                          .instance_variable_get(:@collection)["from"]
+
+        expect(operation_from_address).to eq source.address
 
         destination_info = client.account_info(destination)
         balances = destination_info.balances
