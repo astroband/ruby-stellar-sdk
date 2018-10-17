@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - Allow setting of memo in `Stellar::Client#send_payment`
+- Optionally send payments through a payment channel with `Stellar::Client#send_payment`
 
 ## [0.5.0] - 2018-07-10
 ### Changed
