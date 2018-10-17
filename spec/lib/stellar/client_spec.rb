@@ -160,20 +160,10 @@ describe Stellar::Client do
           source_account: source
         )
 
-        tx_hash = tx._attributes
-                    .instance_variable_get(:@collection)["hash"]
-
-        operation = client.horizon
-                          .transaction(hash: tx_hash)
-                          .operations
-                          ._get
-
-        operation_from_address = operation.records
-                                          .first
-                                          ._attributes
-                                          .instance_variable_get(:@collection)["from"]
-
-        expect(operation_from_address).to eq source.address
+        tx_hash = tx._attributes["hash"]
+        operation = client.horizon.transaction(hash: tx_hash).
+          operations.records.first
+        expect(operation.from).to eq source.address
 
         destination_info = client.account_info(destination)
         balances = destination_info.balances
