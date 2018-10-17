@@ -5,3 +5,8 @@
 # to pass (as long as we're not re-recording)
 source_seed: "SALQBNNRCXWD32E4QKIXKXCMXCPJKWUP34EAK53SP6PNGAUVWSAM5IUQ"
 source_address: "GCIDYJRG5HV4WEESRA4LEKIMXLCU46XIKXGZK4PWX5K23PJIATMWR3UE"
+
+# Channel must be funded as well, but put a real address (not funded is fine)
+# so that Travis will still pass
+channel_address: "GBLVRKRL4NCY6MBDPRYMH4CQZMYME2CJGCVAD5YSRPDUS74AREQE7QOK"
+channel_seed: "SAOS5HRNKGRGFVQQPEZOJN33MHUGHMS6GR3LB7GWFJFKSVSWIFYMQYFM"
