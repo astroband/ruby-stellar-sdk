@@ -240,7 +240,9 @@ describe Stellar::Client do
       let(:channel_account) { Stellar::Account.from_seed(CONFIG[:channel_seed]) }
       let(:destination) { Stellar::Account.random }
 
-      it "sends a payment account through a channel account", vcr: {record: :once, match_requests_on: [:method]} do
+      it("sends a payment account through a channel account", {
+        vcr: {record: :once, match_requests_on: [:method]},
+      }) do
         client.create_account(
           funder: source,
           account: destination,
