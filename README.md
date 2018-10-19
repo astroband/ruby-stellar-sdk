@@ -70,6 +70,14 @@ Stellar::Util::StrKey.check_decode(:seed, encoded) # => throws ArgumentError: Un
 
 ```
 
+During development of your app, you may include the [FactoryBot](https://github.com/thoughtbot/factory_bot) definitions in your specs:
+
+```ruby
+require "stellar-base/factories"
+```
+
+See the factories file for information on what factories are available.
+
 ## Updating Generated Code
 
 The generated code of this library must be refreshed each time the Stellar network's protocol is updated.  To perform this task, run `rake xdr:update`, which will download the latest `.x` files into the `xdr` folder and will run `xdrgen` to regenerate the built ruby code.
