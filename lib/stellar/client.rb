@@ -110,9 +110,8 @@ module Stellar
     }) => Any
     def send_payment(options={})
       from_account     = options[:from]
-      channel_account = options[:channel_account]
-      tx_source_account = channel_account || from_account
-      op_source_account = from_account if channel_account.present?
+      tx_source_account = options[:transaction_source] || from_account
+      op_source_account = from_account if tx_source_account.present?
 
       sequence = options[:sequence] ||
         (account_info(tx_source_account).sequence.to_i + 1)

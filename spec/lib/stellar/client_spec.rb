@@ -237,7 +237,7 @@ describe Stellar::Client do
     end
 
     context "using a payment channel" do
-      let(:channel_account) { Stellar::Account.from_seed(CONFIG[:channel_seed]) }
+      let(:transaction_source) { Stellar::Account.from_seed(CONFIG[:channel_seed]) }
       let(:destination) { Stellar::Account.random }
 
       it("sends a payment account through a channel account", {
@@ -253,13 +253,13 @@ describe Stellar::Client do
           from: source,
           to: destination,
           amount: Stellar::Amount.new(0.55),
-          channel_account: channel_account,
+          transaction_source: transaction_source,
         )
 
         tx_hash = tx._attributes["hash"]
 
         tx = client.horizon.transaction(hash: tx_hash)
-        expect(tx.source_account).to eq channel_account.address
+        expect(tx.source_account).to eq transaction_source.address
 
         operation = tx.operations.records.first
         expect(operation.from).to eq source.address
@@ -286,7 +286,7 @@ describe Stellar::Client do
           from: source,
           to: destination,
           amount: Stellar::Amount.new(0.55),
-          channel_account: source,
+          transaction_source: source,
         )
 
         tx_hash = tx._attributes["hash"]
