@@ -133,7 +133,8 @@ module Stellar
 
       to_envelope_args = [tx_source_account.keypair]
 
-      if op_source_account.present?
+      if op_source_account.present? &&
+          op_source_account.address != tx_source_account.address
         to_envelope_args << op_source_account.keypair
       end
 

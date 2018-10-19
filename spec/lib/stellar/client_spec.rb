@@ -272,6 +272,31 @@ describe Stellar::Client do
         end
         expect(native_asset_balance_info["balance"].to_f).to eq 1.55
       end
+
+      it("sends a payment when the channel is the same as `from`", {
+        vcr: {record: :once, match_requests_on: [:method]},
+      }) do
+        client.create_account(
+          funder: source,
+          account: destination,
+          starting_balance: 1,
+        )
+
+        tx = client.send_payment(
+          from: source,
+          to: destination,
+          amount: Stellar::Amount.new(0.55),
+          channel_account: source,
+        )
+
+        tx_hash = tx._attributes["hash"]
+
+        tx = client.horizon.transaction(hash: tx_hash)
+        expect(tx.source_account).to eq source.address
+
+        operation = tx.operations.records.first
+        expect(operation.from).to eq source.address
+      end
     end
   end
 
