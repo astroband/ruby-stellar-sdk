@@ -130,12 +130,8 @@ module Stellar
 
       payment = Stellar::Transaction.payment(payment_details)
 
-      to_envelope_args = [tx_source_account.keypair]
-
-      if op_source_account.present? &&
-          op_source_account.address != tx_source_account.address
-        to_envelope_args << op_source_account.keypair
-      end
+      signers = [tx_source_account, op_source_account].uniq(&:address)
+      to_envelope_args = signers.map(&:keypair)
 
       envelope_base64 = payment.to_envelope(*to_envelope_args).to_xdr(:base64)
       @horizon.transactions._post(tx: envelope_base64)
