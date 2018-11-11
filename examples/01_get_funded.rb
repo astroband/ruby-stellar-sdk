@@ -1,7 +1,7 @@
 require './lib/stellar-sdk'
 
 # Reference an account from a secret seed
-account = Stellar::Account.from_seed("SBXH4SEH32PENMMB66P4TY6LXUIFMRVFUMX2LJC3P2STHICBJLNQJOH5") 
+# account = Stellar::Account.from_seed("SBXH4SEH32PENMMB66P4TY6LXUIFMRVFUMX2LJC3P2STHICBJLNQJOH5") 
  
 # Further options
 # 
