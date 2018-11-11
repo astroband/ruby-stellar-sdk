@@ -78,6 +78,16 @@ describe Stellar::Client do
     end
   end
 
+  describe "#friendbot" do
+    let(:account) { Stellar::Account.from_seed('SDKEKMV7AWHCC5637P6AD2TY5LVQO3DUIZMHIVKNZLC3JKSRGVGDFWI3') }
+    let(:client) { Stellar::Client.default_testnet }
+
+    it "funds the account with success", vcr: { record: :once, match_requests_on: [:method]} do
+      response = client.friendbot(account)
+      expect(response._status).to eq 200
+    end
+  end
+
   describe "#account_merge" do
     let(:funder) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
     let(:client) { Stellar::Client.default_testnet }

@@ -7,7 +7,7 @@ module Stellar
 
     DEFAULT_FEE = 100
 
-    HORIZON_LOCALHOST_URL = 'http://127.0.0.1:8000'
+    HORIZON_LOCALHOST_URL = 'http://127.0.0.1:8006'
     HORIZON_MAINNET_URL = 'https://horizon.stellar.org'
     HORIZON_TESTNET_URL = 'https://horizon-testnet.stellar.org'
 
@@ -19,8 +19,7 @@ module Stellar
 
     def self.default_testnet(options={})
       new options.merge(
-        horizon:   HORIZON_TESTNET_URL,
-        friendbot: HORIZON_TESTNET_URL,
+        horizon:   HORIZON_TESTNET_URL
       )
     end
 
@@ -74,8 +73,10 @@ module Stellar
       @horizon.transactions._post(tx: envelope_base64)
     end
 
+    Contract (Stellar::Account) => Any
     def friendbot(account)
-      raise NotImplementedError
+      account_id = account.address
+      @horizon.friendbot(addr:account_id)._get
     end
 
     Contract ({

@@ -1,4 +1,4 @@
-require 'stellar-sdk'
+require './lib/stellar-sdk'
 
 # Reference an account from a secret seed
 account = Stellar::Account.from_seed("SBXH4SEH32PENMMB66P4TY6LXUIFMRVFUMX2LJC3P2STHICBJLNQJOH5") 
@@ -7,7 +7,7 @@ account = Stellar::Account.from_seed("SBXH4SEH32PENMMB66P4TY6LXUIFMRVFUMX2LJC3P2
 # 
 # Make a random account
 # 
-#   account = Stellar::Account.random()
+account = Stellar::Account.random
 #
 # Reference an account (unauthenticated) from an address
 # 
@@ -34,4 +34,7 @@ client = Stellar::Client.default_testnet()
 
 # Get our friendly friendbot to
 # fund your new account
-response = client.friendbot(account)  # => #<OK>
+client.friendbot(account)
+
+# Display the new balance
+puts client.account_info(account).balances
