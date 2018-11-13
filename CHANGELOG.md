@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - Allow setting of memo in `Stellar::Client#send_payment`
+- Implement `Stellar::Client#friendbot`
 
 ## [0.5.0] - 2018-07-10
 ### Changed
