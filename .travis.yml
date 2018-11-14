@@ -5,9 +5,22 @@ rvm:
 - 2.5.1
 - jruby-9.1.6.0
 cache: bundler
-script: LD_LIBRARY_PATH=lib bundle exec rake travis
+script:
+  - LD_LIBRARY_PATH=lib bundle exec rake travis
+  - ./configure --with-sodium
+  - make clean
+  - make
 before_script:
   - cp spec/config.yml.sample spec/config.yml
+  - git clone git://github.com/jedisct1/libsodium.git
+  - cd libsodium
+  - ./autogen.sh
+  - ./configure --disable-dependency-tracking
+  - make
+  - sudo make install
+  - sudo /sbin/ldconfig
+  - cd ..
+  - rm -fr libsodium
 notifications:
   slack:
     secure: D1gWWsjE9i9XLRM6Bfw2pu3tTPW025iqjhgwE3KNw1QwP2TrehbCwRpjVR4rrnaju9FhYqM0+eT4rFc9g6itBPf2pfN1WziVf/CVJORYTzR9HbLL1rMOaWhEv4x/+Uwu0kxQon9ThnM9w6XjjD1+NoBfGn4Lcgc/OgmUGw1jAvQ=
