@@ -1,4 +1,5 @@
 require 'hyperclient'
+require "active_support/core_ext/object/blank"
 
 module Stellar
   class Client
@@ -108,25 +109,29 @@ module Stellar
       amount:   Stellar::Amount
     }) => Any
     def send_payment(options={})
-      from     = options[:from]
-      sequence = options[:sequence] || (account_info(from).sequence.to_i + 1)
+      from_account     = options[:from]
+      tx_source_account = options[:transaction_source] || from_account
+      op_source_account = from_account if tx_source_account.present?
+
+      sequence = options[:sequence] ||
+        (account_info(tx_source_account).sequence.to_i + 1)
 
       payment_details = {
-        account:     from.keypair,
         destination: options[:to].keypair,
         sequence:    sequence,
         amount:      options[:amount].to_payment,
         memo:        options[:memo],
       }
 
-      if source_account = options[:source_account]
-        payment_details[:source_account] = source_account.keypair
+      payment_details[:account] = tx_source_account.keypair
+      if op_source_account.present?
+        payment_details[:source_account] = op_source_account.keypair
       end
 
       payment = Stellar::Transaction.payment(payment_details)
 
-      to_envelope_args = [from.keypair]
-      to_envelope_args << source_account.keypair if !source_account.nil?
+      signers = [tx_source_account, op_source_account].uniq(&:address)
+      to_envelope_args = signers.map(&:keypair)
 
       envelope_base64 = payment.to_envelope(*to_envelope_args).to_xdr(:base64)
       @horizon.transactions._post(tx: envelope_base64)
