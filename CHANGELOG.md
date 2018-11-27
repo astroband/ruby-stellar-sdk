@@ -6,9 +6,10 @@ file.  This project adheres to [Semantic Versioning](http://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
-## [unreleased](https://github.com/stellar/ruby-stellar-base/compare/v0.17.0...master)
+## [0.18.0](https://github.com/stellar/ruby-stellar-base/compare/v0.17.0...v0.18.0)
 ### Added
 - Update XDR definitions for stellar-core v10.0.0 (introduces Liabilities and other changes to support asset-backed offers as per [CAP-0003 Specification](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0003.md#specification))
+- Add factories for ledger, transaction, operation.
 
 ### Changed
 - Use rbnacl instead of rbnacl-libsodium (the latter has been [deprecated](https://github.com/crypto-rb/rbnacl-libsodium/issues/29))
