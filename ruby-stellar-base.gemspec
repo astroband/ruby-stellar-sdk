@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "xdr", "~> 3.0.0"
   spec.add_dependency "digest-crc"
   spec.add_dependency "base32"
-  spec.add_dependency "rbnacl-libsodium", "~> 1.0.16"
+  spec.add_dependency "rbnacl", ">= 6.0"
   spec.add_dependency "activesupport", ">= 5.2.0"
 
   spec.add_development_dependency "bundler", "~> 1.7"

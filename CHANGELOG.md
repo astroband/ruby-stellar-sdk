@@ -10,6 +10,9 @@ bumps.  A breaking change will get clearly notified in this log.
 ### Added
 - Update XDR definitions for stellar-core v10.0.0 (introduces Liabilities and other changes to support asset-backed offers as per [CAP-0003 Specification](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0003.md#specification))
 
+### Changed
+- Use rbnacl instead of rbnacl-libsodium (the latter has been [deprecated](https://github.com/crypto-rb/rbnacl-libsodium/issues/29))
+
 ## [0.17.0](https://github.com/stellar/ruby-stellar-base/compare/v0.16.0...v0.17.0)
 ### Fixed
 - Rename `Stellar::SignerKey#onetime_signer` helper to `Stellar::SignerKey#hash_x`, add preimage validations
