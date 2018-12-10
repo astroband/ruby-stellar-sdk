@@ -5,11 +5,11 @@ rvm:
 - 2.5.1
 - jruby-9.1.6.0
 cache: bundler
-script:
-  - LD_LIBRARY_PATH=lib bundle exec rake travis
-  - ./configure --with-sodium
-  - make clean
-  - make
+before_install:
+  - sudo add-apt-repository -y ppa:chris-lea/libsodium
+  - sudo apt-get -y update
+  - sudo apt-get install -y libsodium-dev
+script: LD_LIBRARY_PATH=lib bundle exec rake travis
 before_script:
   - cp spec/config.yml.sample spec/config.yml
   - git clone git://github.com/jedisct1/libsodium.git
