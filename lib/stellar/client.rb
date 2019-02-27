@@ -11,6 +11,7 @@ module Stellar
     HORIZON_LOCALHOST_URL = 'http://127.0.0.1:8000'
     HORIZON_MAINNET_URL = 'https://horizon.stellar.org'
     HORIZON_TESTNET_URL = 'https://horizon-testnet.stellar.org'
+    FRIENDBOT_URL = 'https://friendbot.stellar.org'.freeze
 
     def self.default(options={})
       new options.merge(
@@ -76,7 +77,9 @@ module Stellar
     end
 
     def friendbot(account)
-      raise NotImplementedError
+      uri = URI.parse(FRIENDBOT_URL)
+      uri.query = "addr=#{account.address}"
+      Faraday.post(uri.to_s)
     end
 
     Contract ({
