@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "hyperclient", "~> 0.7"
   spec.add_dependency "excon", "~> 0.44", ">= 0.44.4"
   spec.add_dependency "contracts", "~> 0.16"
-  spec.add_dependency "activesupport", ">= 5.2.0"
+  spec.add_dependency "activesupport", ">= 5.0"
   spec.add_dependency "toml-rb", "~> 1.1", ">= 1.1.1"
 
   spec.add_development_dependency "bundler", "~> 1.16"
