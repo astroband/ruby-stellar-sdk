@@ -13,6 +13,7 @@ bumps.  A breaking change will get clearly notified in this log.
 
 ### Changed
 - Use rbnacl instead of rbnacl-libsodium (the latter has been [deprecated](https://github.com/crypto-rb/rbnacl-libsodium/issues/29))
+- Loosen ActiveSupport to >= 5.0.0
 
 ## [0.17.0](https://github.com/stellar/ruby-stellar-base/compare/v0.16.0...v0.17.0)
 ### Fixed
