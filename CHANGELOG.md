@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Changed
+- Clarify variable names for payment channels in `#send_payment`
+
 ## [0.7.0] - 2019-04-26
 ### Added
 - Friendbot support
@@ -12,7 +16,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Allow setting of memo in `Stellar::Client#send_payment`
 - Optionally send payments through a payment channel with `Stellar::Client#send_payment`
-- Clarify variable names for payment channels in `#send_payment`
 
 ## [0.5.0] - 2018-07-10
 ### Changed
