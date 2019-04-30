@@ -22,11 +22,11 @@ describe Stellar::Price, "#from_f" do
       whole      = random.rand(1_000_000)
       fractional = random.rand(10_000_000) # seven significant digits available for fractional
       
-      expected = BigDecimal.new("#{whole}.#{fractional}")
+      expected = BigDecimal("#{whole}.#{fractional}")
       actual_p = subject.from_f(expected)
-      actual = BigDecimal.new(actual_p.n) / BigDecimal.new(actual_p.d) 
+      actual = BigDecimal(actual_p.n) / BigDecimal(actual_p.d)
 
-      expect(actual).to be_within(BigDecimal.new("0.000000001")).of(actual)
+      expect(actual).to be_within(BigDecimal("0.000000001")).of(actual)
       expect(actual_p.n).to be <= Stellar::Price::MAX_PRECISION
       expect(actual_p.d).to be <= Stellar::Price::MAX_PRECISION
   end

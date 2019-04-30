@@ -340,7 +340,7 @@ module Stellar
     def self.interpret_amount(amount)
       case amount
       when String
-        (BigDecimal.new(amount) * Stellar::ONE).floor
+        (BigDecimal(amount) * Stellar::ONE).floor
       when Integer
         amount * Stellar::ONE
       when Numeric
