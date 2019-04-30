@@ -159,50 +159,6 @@ describe Stellar::Client do
       end
     end
 
-    context "through a channel account" do
-      let(:destination) { Stellar::Account.random }
-      let(:channel_account) { Stellar::Account.from_seed(CONFIG[:channel_seed]) }
-
-      it("sends a payment", {
-        vcr: {record: :once, match_requests_on: [:method]},
-      }) do
-        client.create_account(
-          funder: source,
-          account: destination,
-          starting_balance: 10,
-        )
-
-        client.create_account(
-          funder: source,
-          account: channel_account,
-          starting_balance: 10,
-        ) rescue # if account already exists, do not blow up
-
-        amount = Stellar::Amount.new(15)
-
-        tx = client.send_payment(
-          from: source,
-          to: destination,
-          amount: amount,
-          transaction_source: channel_account,
-        )
-
-        tx_hash = tx.to_hash["hash"]
-        puts "Tx hash: #{tx_hash}"
-        operation = client.horizon.transaction(hash: tx_hash).
-          operations.records.first
-        expect(operation.from).to eq source.address
-
-        destination_info = client.account_info(destination)
-        balances = destination_info.balances
-        expect(balances).to_not be_empty
-        native_asset_balance_info = balances.find do |b|
-          b["asset_type"] == "native"
-        end
-        expect(native_asset_balance_info["balance"].to_f).to eq 25.0
-      end
-    end
-
     context "alphanum4 asset" do
       let(:issuer) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
       let(:destination) { Stellar::Account.random }
