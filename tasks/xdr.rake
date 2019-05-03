@@ -1,50 +1,45 @@
 namespace :xdr do
+  xdr_defs = FileList[
+    'xdr/Stellar-types.x',
+    'xdr/Stellar-ledger-entries.x',
+    'xdr/Stellar-transaction.x',
+    'xdr/Stellar-ledger.x',
+    'xdr/Stellar-overlay.x',
+    'xdr/Stellar-SCP.x',
+  ]
 
-  # As Hayashi adds more .x files, we'll need to update this array
-  # Prior to launch, we should be separating our .x files into a separate
-  # repo, and should be able to improve this integration.
-  HAYASHI_XDR = [
-                 "src/xdr/Stellar-types.x",
-                 "src/xdr/Stellar-ledger-entries.x",
-                 "src/xdr/Stellar-transaction.x",
-                 "src/xdr/Stellar-ledger.x",
-                 "src/xdr/Stellar-overlay.x",
-                 "src/xdr/Stellar-SCP.x",
-                ]
+  task :update, [:ref] => [:clean, :generate]
+  task :generate => 'generated/stellar-base-generated.rb'
 
-  LOCAL_XDR_PATHS = HAYASHI_XDR.map{ |src| "xdr/" + File.basename(src) }
+  directory 'xdr'
+  directory 'generated'
 
-  task :update => [:download, :generate]
-
-  task :download do
-    require 'octokit'
-    require 'base64'
-    FileUtils.rm_rf "xdr/"
-    FileUtils.mkdir_p "xdr"
-
-    client = Octokit::Client.new(:netrc => true)
-
-    HAYASHI_XDR.each do |src|
-      local_path = "xdr/" + File.basename(src)
-      encoded    = client.contents("stellar/stellar-core", path: src).content
-      decoded    = Base64.decode64 encoded
-
-      IO.write(local_path, decoded)
-    end
-  end
-
-  task :generate do
-    require "pathname"
+  file 'generated/stellar-base-generated.rb' => xdr_defs do |t|
     require "xdrgen"
-    require 'fileutils'
-    FileUtils.rm_rf "generated"
 
     compilation = Xdrgen::Compilation.new(
-      LOCAL_XDR_PATHS,
+      t.sources,
       output_dir: "generated",
       namespace:  "stellar-base-generated",
       language:   :ruby
     )
     compilation.compile
+  end
+
+  rule '.x', [:ref] => ['xdr'] do |t, args|
+    args.with_defaults(ref: :master)
+    core_file = github_client.contents("stellar/stellar-core", path: "src/#{t.name}", ref: args.ref)
+    IO.write(t.name, core_file.rels[:download].get.data)
+  end
+  
+  task :clean do
+    rm_rf 'xdr'
+    rm_rf 'generated'
+  end
+
+  def github_client
+    return @github_client if defined?(@github_client)
+    require 'octokit'
+    @github_client = Octokit::Client.new(netrc: true)
   end
 end
