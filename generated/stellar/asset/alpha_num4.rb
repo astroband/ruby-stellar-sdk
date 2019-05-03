@@ -7,7 +7,7 @@ require 'xdr'
 #
 #   struct
 #       {
-#           opaque assetCode[4]; // 1 to 4 characters
+#           AssetCode4 assetCode;
 #           AccountID issuer;
 #       }
 #
@@ -15,7 +15,7 @@ require 'xdr'
 module Stellar
   class Asset
     class AlphaNum4 < XDR::Struct
-      attribute :asset_code, XDR::Opaque[4]
+      attribute :asset_code, AssetCode4
       attribute :issuer,     AccountID
     end
   end

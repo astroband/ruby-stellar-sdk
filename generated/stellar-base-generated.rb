@@ -33,7 +33,10 @@ module Stellar
   String32 = XDR::String[32]
   String64 = XDR::String[64]
   SequenceNumber = Int64
+  TimePoint = Uint64
   DataValue = XDR::VarOpaque[64]
+  AssetCode4 = XDR::Opaque[4]
+  AssetCode12 = XDR::Opaque[12]
   autoload :AssetType
   autoload :Asset
   autoload :Price
@@ -62,8 +65,9 @@ module Stellar
   autoload :CreateAccountOp
   autoload :PaymentOp
   autoload :PathPaymentOp
-  autoload :ManageOfferOp
-  autoload :CreatePassiveOfferOp
+  autoload :ManageSellOfferOp
+  autoload :ManageBuyOfferOp
+  autoload :CreatePassiveSellOfferOp
   autoload :SetOptionsOp
   autoload :ChangeTrustOp
   autoload :AllowTrustOp
@@ -73,6 +77,7 @@ module Stellar
   autoload :MemoType
   autoload :Memo
   autoload :TimeBounds
+  MAX_OPS_PER_TX = 100
   autoload :Transaction
   autoload :TransactionSignaturePayload
   autoload :TransactionEnvelope
@@ -84,10 +89,12 @@ module Stellar
   autoload :PathPaymentResultCode
   autoload :SimplePaymentResult
   autoload :PathPaymentResult
-  autoload :ManageOfferResultCode
+  autoload :ManageSellOfferResultCode
   autoload :ManageOfferEffect
   autoload :ManageOfferSuccessResult
-  autoload :ManageOfferResult
+  autoload :ManageSellOfferResult
+  autoload :ManageBuyOfferResultCode
+  autoload :ManageBuyOfferResult
   autoload :SetOptionsResultCode
   autoload :SetOptionsResult
   autoload :ChangeTrustResultCode
@@ -112,12 +119,15 @@ module Stellar
   include XDR::Namespace
 
   UpgradeType = XDR::VarOpaque[128]
+  autoload :StellarValueType
+  autoload :LedgerCloseValueSignature
   autoload :StellarValue
   autoload :LedgerHeader
   autoload :LedgerUpgradeType
   autoload :LedgerUpgrade
   autoload :LedgerKey
   autoload :BucketEntryType
+  autoload :BucketMetadata
   autoload :BucketEntry
   autoload :TransactionSet
   autoload :TransactionResultPair
