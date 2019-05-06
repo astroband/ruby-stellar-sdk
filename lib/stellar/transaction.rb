@@ -26,15 +26,21 @@ module Stellar
     end
 
     #
-    # @see  Stellar::Operation.create_offer
-    def self.manage_offer(attributes={})
-      make :manage_offer, attributes
+    # @see  Stellar::Operation.manage_sell_offer
+    def self.manage_sell_offer(attributes={})
+      make :manage_sell_offer, attributes
     end
 
     #
-    # @see  Stellar::Operation.create_passive_offer
-    def self.create_passive_offer(attributes={})
-      make :create_passive_offer, attributes
+    # @see  Stellar::Operation.manage_buy_offer
+    def self.manage_buy_offer(attributes={})
+      make :manage_buy_offer, attributes
+    end
+
+    #
+    # @see  Stellar::Operation.create_passive_sell_offer
+    def self.create_passive_sell_offer(attributes={})
+      make :create_passive_sell_offer, attributes
     end
 
     #

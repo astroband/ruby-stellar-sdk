@@ -141,14 +141,14 @@ module Stellar
       }))
     end
 
-    def self.manage_offer(attributes={})
+    def self.manage_sell_offer(attributes={})
       buying     = Asset.send(*attributes[:buying])
       selling    = Asset.send(*attributes[:selling])
       amount     = interpret_amount(attributes[:amount])
       offer_id   = attributes[:offer_id] || 0
       price      = interpret_price(attributes[:price])
 
-      op = ManageOfferOp.new({
+      op = ManageSellOfferOp.new({
         buying:     buying,
         selling:    selling,
         amount:     amount,
@@ -157,17 +157,37 @@ module Stellar
       })
 
       return make(attributes.merge({
-        body:[:manage_offer, op]
+        body:[:manage_sell_offer, op]
       }))
     end
 
-    def self.create_passive_offer(attributes={})
+    def self.manage_buy_offer(attributes={})
+      buying     = Asset.send(*attributes[:buying])
+      selling    = Asset.send(*attributes[:selling])
+      amount     = interpret_amount(attributes[:amount])
+      offer_id   = attributes[:offer_id] || 0
+      price      = interpret_price(attributes[:price])
+
+      op = ManageBuyOfferOp.new({
+        buying:     buying,
+        selling:    selling,
+        amount:     amount,
+        price:      price,
+        offer_id:   offer_id
+      })
+
+      return make(attributes.merge({
+        body:[:manage_buy_offer, op]
+      }))
+    end
+
+    def self.create_passive_sell_offer(attributes={})
       buying     = Asset.send(*attributes[:buying])
       selling    = Asset.send(*attributes[:selling])
       amount     = interpret_amount(attributes[:amount])
       price      = interpret_price(attributes[:price])
 
-      op = CreatePassiveOfferOp.new({
+      op = CreatePassiveSellOfferOp.new({
         buying:     buying,
         selling:    selling,
         amount:     amount,
@@ -175,7 +195,7 @@ module Stellar
       })
 
       return make(attributes.merge({
-        body:[:create_passive_offer, op]
+        body:[:create_passive_sell_offer, op]
       }))
     end
 
