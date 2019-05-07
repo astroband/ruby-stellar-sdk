@@ -33,6 +33,27 @@ describe Stellar::Client do
     end
   end
 
+  describe "#friendbot" do
+    let(:client) { Stellar::Client.default_testnet }
+    let(:account) { Stellar::Account.random }
+
+    it("requests for XLM from a friendbot", {
+      vcr: {record: :once, match_requests_on: [:method]}
+    }) do
+      response = client.friendbot(account)
+
+      expect(response).to be_success
+
+      destination_info = client.account_info(account)
+      balances = destination_info.balances
+      expect(balances).to_not be_empty
+      native_asset_balance_info = balances.find do |b|
+        b["asset_type"] == "native"
+      end
+      expect(native_asset_balance_info["balance"].to_f).to be > 0
+    end
+  end
+
   describe "#create_account" do
     let(:source) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
     let(:destination) { Stellar::Account.random }
