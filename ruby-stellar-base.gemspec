@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Scott Fleckenstein"]
   spec.email         = ["scott@stellar.org"]
   spec.summary       = %q{Stellar client library: XDR}
-  spec.homepage      = "https://github.com/stellar/ruby-stellar-base"
+  spec.homepage      = "https://github.com/bloom-solutions/ruby-stellar-base"
   spec.license       = "Apache 2.0"
 
   spec.files         = `git ls-files -z`.split("\x0")
@@ -19,9 +19,9 @@ Gem::Specification.new do |spec|
   spec.add_dependency "digest-crc"
   spec.add_dependency "base32"
   spec.add_dependency "rbnacl", ">= 6.0"
-  spec.add_dependency "activesupport", ">= 5.2.0"
+  spec.add_dependency "activesupport", ">= 5.0.0"
 
-  spec.add_development_dependency "bundler", "~> 1.7"
+  spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "rake", "~> 12.0"
   spec.add_development_dependency "xdrgen"
   spec.add_development_dependency "rspec", "~> 3.1"
