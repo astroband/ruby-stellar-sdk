@@ -3,7 +3,9 @@
 [![Build Status](https://travis-ci.org/bloom-solutions/ruby-stellar-sdk.svg)](https://travis-ci.org/bloom-solutions/ruby-stellar-sdk)
 [![Code Climate](https://codeclimate.com/github/bloom-solutions/ruby-stellar-sdk/badges/gpa.svg)](https://codeclimate.com/github/bloom-solutions/ruby-stellar-sdk)
 
-*STATUS:  this library is very early and incomplete.  The examples provided do not work, yet*
+## This library has moved
+
+The Stellar Ruby SDK is now maintained by the community: https://github.com/bloom-solutions/ruby-stellar-sdk
 
 This library helps you to integrate your application into the [Stellar network](http://stellar.org).
 
