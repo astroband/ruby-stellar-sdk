@@ -5,7 +5,7 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct ManageOfferOp
+#   struct ManageSellOfferOp
 #   {
 #       Asset selling;
 #       Asset buying;
@@ -13,16 +13,16 @@ require 'xdr'
 #       Price price;  // price of thing being sold in terms of what you are buying
 #   
 #       // 0=create a new offer, otherwise edit an existing offer
-#       uint64 offerID;
+#       int64 offerID;
 #   };
 #
 # ===========================================================================
 module Stellar
-  class ManageOfferOp < XDR::Struct
+  class ManageSellOfferOp < XDR::Struct
     attribute :selling,  Asset
     attribute :buying,   Asset
     attribute :amount,   Int64
     attribute :price,    Price
-    attribute :offer_id, Uint64
+    attribute :offer_id, Int64
   end
 end

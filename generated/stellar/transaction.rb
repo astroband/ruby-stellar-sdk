@@ -21,7 +21,7 @@ require 'xdr'
 #   
 #       Memo memo;
 #   
-#       Operation operations<100>;
+#       Operation operations<MAX_OPS_PER_TX>;
 #   
 #       // reserved for future use
 #       union switch (int v)
@@ -44,7 +44,7 @@ module Stellar
     attribute :seq_num,        SequenceNumber
     attribute :time_bounds,    XDR::Option[TimeBounds]
     attribute :memo,           Memo
-    attribute :operations,     XDR::VarArray[Operation, 100]
+    attribute :operations,     XDR::VarArray[Operation, MAX_OPS_PER_TX]
     attribute :ext,            Ext
   end
 end

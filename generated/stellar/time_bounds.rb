@@ -7,14 +7,14 @@ require 'xdr'
 #
 #   struct TimeBounds
 #   {
-#       uint64 minTime;
-#       uint64 maxTime; // 0 here means no maxTime
+#       TimePoint minTime;
+#       TimePoint maxTime; // 0 here means no maxTime
 #   };
 #
 # ===========================================================================
 module Stellar
   class TimeBounds < XDR::Struct
-    attribute :min_time, Uint64
-    attribute :max_time, Uint64
+    attribute :min_time, TimePoint
+    attribute :max_time, TimePoint
   end
 end

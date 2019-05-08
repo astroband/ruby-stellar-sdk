@@ -9,7 +9,7 @@ require 'xdr'
 #   {
 #       // emitted to identify the offer
 #       AccountID sellerID; // Account that owns the offer
-#       uint64 offerID;
+#       int64 offerID;
 #   
 #       // amount and asset taken from the owner
 #       Asset assetSold;
@@ -24,7 +24,7 @@ require 'xdr'
 module Stellar
   class ClaimOfferAtom < XDR::Struct
     attribute :seller_id,     AccountID
-    attribute :offer_id,      Uint64
+    attribute :offer_id,      Int64
     attribute :asset_sold,    Asset
     attribute :amount_sold,   Int64
     attribute :asset_bought,  Asset

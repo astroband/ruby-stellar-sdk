@@ -20,10 +20,10 @@ require 'xdr'
 #           PaymentOp paymentOp;
 #       case PATH_PAYMENT:
 #           PathPaymentOp pathPaymentOp;
-#       case MANAGE_OFFER:
-#           ManageOfferOp manageOfferOp;
-#       case CREATE_PASSIVE_OFFER:
-#           CreatePassiveOfferOp createPassiveOfferOp;
+#       case MANAGE_SELL_OFFER:
+#           ManageSellOfferOp manageSellOfferOp;
+#       case CREATE_PASSIVE_SELL_OFFER:
+#           CreatePassiveSellOfferOp createPassiveSellOfferOp;
 #       case SET_OPTIONS:
 #           SetOptionsOp setOptionsOp;
 #       case CHANGE_TRUST:
@@ -38,6 +38,8 @@ require 'xdr'
 #           ManageDataOp manageDataOp;
 #       case BUMP_SEQUENCE:
 #           BumpSequenceOp bumpSequenceOp;
+#       case MANAGE_BUY_OFFER:
+#           ManageBuyOfferOp manageBuyOfferOp;
 #       }
 #       body;
 #   };

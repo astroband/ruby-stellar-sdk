@@ -16,10 +16,10 @@ require 'xdr'
 #           PaymentResult paymentResult;
 #       case PATH_PAYMENT:
 #           PathPaymentResult pathPaymentResult;
-#       case MANAGE_OFFER:
-#           ManageOfferResult manageOfferResult;
-#       case CREATE_PASSIVE_OFFER:
-#           ManageOfferResult createPassiveOfferResult;
+#       case MANAGE_SELL_OFFER:
+#           ManageSellOfferResult manageSellOfferResult;
+#       case CREATE_PASSIVE_SELL_OFFER:
+#           ManageSellOfferResult createPassiveSellOfferResult;
 #       case SET_OPTIONS:
 #           SetOptionsResult setOptionsResult;
 #       case CHANGE_TRUST:
@@ -34,6 +34,8 @@ require 'xdr'
 #           ManageDataResult manageDataResult;
 #       case BUMP_SEQUENCE:
 #           BumpSequenceResult bumpSeqResult;
+#       case MANAGE_BUY_OFFER:
+#   	ManageBuyOfferResult manageBuyOfferResult;
 #       }
 #       tr;
 #   default:

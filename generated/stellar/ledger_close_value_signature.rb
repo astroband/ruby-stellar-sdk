@@ -5,16 +5,16 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct Signer
+#   struct LedgerCloseValueSignature
 #   {
-#       SignerKey key;
-#       uint32 weight; // really only need 1 byte
+#       NodeID nodeID;       // which node introduced the value
+#       Signature signature; // nodeID's signature
 #   };
 #
 # ===========================================================================
 module Stellar
-  class Signer < XDR::Struct
-    attribute :key,    SignerKey
-    attribute :weight, Uint32
+  class LedgerCloseValueSignature < XDR::Struct
+    attribute :node_id,   NodeID
+    attribute :signature, Signature
   end
 end

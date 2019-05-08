@@ -5,16 +5,20 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct Signer
-#   {
-#       SignerKey key;
-#       uint32 weight; // really only need 1 byte
-#   };
+#   union switch (int v)
+#       {
+#       case 0:
+#           void;
+#       }
 #
 # ===========================================================================
 module Stellar
-  class Signer < XDR::Struct
-    attribute :key,    SignerKey
-    attribute :weight, Uint32
+  class BucketMetadata
+    class Ext < XDR::Union
+      switch_on XDR::Int, :v
+
+      switch 0
+
+    end
   end
 end

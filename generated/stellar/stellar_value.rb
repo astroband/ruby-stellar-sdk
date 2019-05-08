@@ -7,8 +7,8 @@ require 'xdr'
 #
 #   struct StellarValue
 #   {
-#       Hash txSetHash;   // transaction set to apply to previous ledger
-#       uint64 closeTime; // network close time
+#       Hash txSetHash;      // transaction set to apply to previous ledger
+#       TimePoint closeTime; // network close time
 #   
 #       // upgrades to apply to the previous ledger (usually empty)
 #       // this is a vector of encoded 'LedgerUpgrade' so that nodes can drop
@@ -18,10 +18,12 @@ require 'xdr'
 #       UpgradeType upgrades<6>;
 #   
 #       // reserved for future use
-#       union switch (int v)
+#       union switch (StellarValueType v)
 #       {
-#       case 0:
+#       case STELLAR_VALUE_BASIC:
 #           void;
+#       case STELLAR_VALUE_SIGNED:
+#           LedgerCloseValueSignature lcValueSignature;
 #       }
 #       ext;
 #   };
@@ -34,7 +36,7 @@ module Stellar
     autoload :Ext
 
     attribute :tx_set_hash, Hash
-    attribute :close_time,  Uint64
+    attribute :close_time,  TimePoint
     attribute :upgrades,    XDR::VarArray[UpgradeType, 6]
     attribute :ext,         Ext
   end

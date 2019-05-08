@@ -6,15 +6,28 @@ file.  This project adheres to [Semantic Versioning](http://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
+## [unreleased](https://github.com/stellar/ruby-stellar-base/compare/v0.19.0...master)
+### Added
+- Stellar Protocol 11 compatibility (#48)
+  - XDR changes for [CAP-0006 Buy Offers](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0006.md)
+  - XDR changes for [CAP-0020 Bucket Initial Entries](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0020.md)
+  - Add `manage_buy_offer`, `manage_sell_offer` and `create_passive_sell_offer` factory methods to `Stellar::Transaction` and `Stellar::Operation`
+
+### Changed
+- Deprecate `manage_offer` and `create_passive_offer` factory methods in `Stellar::Transaction` and `Stellar::Operation`
+- Add an option to pass the exact stellar-core revision into `xdr:update` Rake task 
+
 ## [0.19.0](https://github.com/stellar/ruby-stellar-base/compare/v0.18.0...v0.19.0)
 ### Changed
-- Use rbnacl instead of rbnacl-libsodium (the latter has been [deprecated](https://github.com/crypto-rb/rbnacl-libsodium/issues/29))
 - Loosen ActiveSupport to >= 5.0.0
 
 ## [0.18.0](https://github.com/stellar/ruby-stellar-base/compare/v0.17.0...v0.18.0)
 ### Added
 - Update XDR definitions for stellar-core v10.0.0 (introduces Liabilities and other changes to support asset-backed offers as per [CAP-0003 Specification](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0003.md#specification))
 - Add factories for ledger, transaction, operation.
+
+### Changed
+- Use rbnacl instead of rbnacl-libsodium (the latter has been [deprecated](https://github.com/crypto-rb/rbnacl-libsodium/issues/29))
 
 ## [0.17.0](https://github.com/stellar/ruby-stellar-base/compare/v0.16.0...v0.17.0)
 ### Fixed

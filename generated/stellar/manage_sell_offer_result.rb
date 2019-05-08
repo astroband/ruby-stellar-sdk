@@ -5,9 +5,9 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   union ManageOfferResult switch (ManageOfferResultCode code)
+#   union ManageSellOfferResult switch (ManageSellOfferResultCode code)
 #   {
-#   case MANAGE_OFFER_SUCCESS:
+#   case MANAGE_SELL_OFFER_SUCCESS:
 #       ManageOfferSuccessResult success;
 #   default:
 #       void;
@@ -15,10 +15,10 @@ require 'xdr'
 #
 # ===========================================================================
 module Stellar
-  class ManageOfferResult < XDR::Union
-    switch_on ManageOfferResultCode, :code
+  class ManageSellOfferResult < XDR::Union
+    switch_on ManageSellOfferResultCode, :code
 
-    switch :manage_offer_success, :success
+    switch :manage_sell_offer_success, :success
     switch :default
 
     attribute :success, ManageOfferSuccessResult

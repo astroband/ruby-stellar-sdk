@@ -5,20 +5,24 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   union switch (int v)
+#   union switch (StellarValueType v)
 #       {
-#       case 0:
+#       case STELLAR_VALUE_BASIC:
 #           void;
+#       case STELLAR_VALUE_SIGNED:
+#           LedgerCloseValueSignature lcValueSignature;
 #       }
 #
 # ===========================================================================
 module Stellar
   class StellarValue
     class Ext < XDR::Union
-      switch_on XDR::Int, :v
+      switch_on StellarValueType, :v
 
-      switch 0
+      switch :stellar_value_basic
+      switch :stellar_value_signed, :lc_value_signature
 
+      attribute :lc_value_signature, LedgerCloseValueSignature
     end
   end
 end

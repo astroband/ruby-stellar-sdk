@@ -5,7 +5,7 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct CreatePassiveOfferOp
+#   struct CreatePassiveSellOfferOp
 #   {
 #       Asset selling; // A
 #       Asset buying;  // B
@@ -15,7 +15,7 @@ require 'xdr'
 #
 # ===========================================================================
 module Stellar
-  class CreatePassiveOfferOp < XDR::Struct
+  class CreatePassiveSellOfferOp < XDR::Struct
     attribute :selling, Asset
     attribute :buying,  Asset
     attribute :amount,  Int64

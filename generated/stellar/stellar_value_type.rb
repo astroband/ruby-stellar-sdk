@@ -5,16 +5,18 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct Signer
+#   enum StellarValueType
 #   {
-#       SignerKey key;
-#       uint32 weight; // really only need 1 byte
+#       STELLAR_VALUE_BASIC = 0,
+#       STELLAR_VALUE_SIGNED = 1
 #   };
 #
 # ===========================================================================
 module Stellar
-  class Signer < XDR::Struct
-    attribute :key,    SignerKey
-    attribute :weight, Uint32
+  class StellarValueType < XDR::Enum
+    member :stellar_value_basic,  0
+    member :stellar_value_signed, 1
+
+    seal
   end
 end
