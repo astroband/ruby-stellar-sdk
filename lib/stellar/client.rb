@@ -46,7 +46,9 @@ module Stellar
           conn.adapter :excon
         end
         client.headers = {
-          'Accept' => 'application/hal+json,application/problem+json,application/json'
+          'Accept' => 'application/hal+json,application/problem+json,application/json',
+          "X-Client-Name" => "ruby-stellar-sdk",
+          "X-Client-Version" => VERSION,
         }
       end
     end
