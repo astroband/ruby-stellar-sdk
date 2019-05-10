@@ -4,6 +4,15 @@ describe Stellar::Client do
 
   subject(:client) { Stellar::Client.default_testnet }
 
+  describe "headers" do
+    let(:headers) { client.horizon.headers }
+
+    it "has 'Accept'" do
+      expect(headers["Accept"]).
+        to eq "application/hal+json,application/problem+json,application/json"
+    end
+  end
+
   describe "#default_testnet" do
     it 'instantiates a client pointing to horizon testnet' do
       client = described_class.default_testnet
