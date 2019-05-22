@@ -6,7 +6,7 @@ file.  This project adheres to [Semantic Versioning](http://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
-## [unreleased](https://github.com/stellar/ruby-stellar-base/compare/v0.19.0...master)
+## [0.20.0](https://github.com/stellar/ruby-stellar-base/compare/v0.19.0...master) - 2019-05-22
 ### Added
 - Stellar Protocol 11 compatibility (#48)
   - XDR changes for [CAP-0006 Buy Offers](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0006.md)
