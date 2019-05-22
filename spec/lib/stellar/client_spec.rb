@@ -4,6 +4,23 @@ describe Stellar::Client do
 
   subject(:client) { Stellar::Client.default_testnet }
 
+  describe "headers" do
+    let(:headers) { client.horizon.headers }
+
+    it "has 'Accept'" do
+      expect(headers["Accept"]).
+        to eq "application/hal+json,application/problem+json,application/json"
+    end
+
+    it "has 'X-Client-Name'" do
+      expect(headers["X-Client-Name"]).to eq "ruby-stellar-sdk"
+    end
+
+    it "has 'X-Client-Version'" do
+      expect(headers["X-Client-Version"]).to eq Stellar::VERSION
+    end
+  end
+
   describe "#default_testnet" do
     it 'instantiates a client pointing to horizon testnet' do
       client = described_class.default_testnet
