@@ -12,6 +12,22 @@ describe Stellar::Operation, ".payment" do
 
 end
 
+describe Stellar::Operation, ".path_payment" do
+  it "works" do
+    destination = Stellar::KeyPair.random
+    amount = [:alphanum4, "USD", Stellar::KeyPair.master, 10]    
+    with = [:alphanum4, "EUR", Stellar::KeyPair.master, 9.2]
+
+    op = Stellar::Operation.path_payment(
+      destination: destination,
+      amount: amount,
+      with: with
+    )
+
+    expect(op.body.arm).to eql(:path_payment_strict_receive_op)
+  end
+end
+
 
 describe Stellar::Operation, ".manage_data" do
 
