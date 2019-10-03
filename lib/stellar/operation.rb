@@ -59,9 +59,11 @@ module Stellar
     end
 
     #
-    # Helper method to create a valid PathPaymentOp, wrapped
+    # Helper method to create a valid PathPaymentStrictReceiveOp, wrapped
     # in the necessary XDR structs to be included within a
     # transactions `operations` array.
+    # 
+    # @deprecated Please use Operation.path_payment_strict_receive
     #
     # @see Stellar::Asset
     #
@@ -71,9 +73,28 @@ module Stellar
     # @option attributes [Array] :with the source asset and maximum allowed source amount to pay with
     # @option attributes [Array<Stellar::Asset>] :path the payment path to use
     #
-    # @return [Stellar::Operation] the built operation, containing a
-    #                              Stellar::PaymentOp body
+    # @return [Stellar::Operation] the built operation, containing a Stellar::PaymentOp body
+    #                              
     def self.path_payment(attributes={})
+      path_payment_strict_receive(attributes)
+    end
+
+    #
+    # Helper method to create a valid PathPaymentStrictReceiveOp, wrapped
+    # in the necessary XDR structs to be included within a
+    # transactions `operations` array.
+    # 
+    # @see Stellar::Asset
+    #
+    # @param [Hash] attributes the attributes to create the operation with
+    # @option attributes [Stellar::KeyPair] :destination the receiver of the payment
+    # @option attributes [Array] :amount the amount to pay
+    # @option attributes [Array] :with the source asset and maximum allowed source amount to pay with
+    # @option attributes [Array<Stellar::Asset>] :path the payment path to use
+    #
+    # @return [Stellar::Operation] the built operation, containing a Stellar::PaymentOp body
+    #                              
+    def self.path_payment_strict_receive(attributes={})
       destination             = attributes[:destination]
       asset, amount           = extract_amount(attributes[:amount])
       send_asset, send_max    = extract_amount(attributes[:with])
