@@ -81,7 +81,7 @@ module Stellar
 
       raise ArgumentError unless destination.is_a?(KeyPair)
 
-      op               = PathPaymentOp.new
+      op               = PathPaymentStrictReceiveOp.new
       op.send_asset    = send_asset
       op.send_max      = send_max
       op.destination   = destination.account_id
@@ -90,7 +90,7 @@ module Stellar
       op.path          = path
 
       return make(attributes.merge({
-        body:[:path_payment, op]
+        body:[:path_payment_strict_receive, op]
       }))
     end
 
