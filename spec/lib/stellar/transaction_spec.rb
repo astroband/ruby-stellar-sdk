@@ -15,6 +15,22 @@ describe Stellar::Transaction do
   end
   let(:key_pair){ Stellar::KeyPair.random }
 
+  describe ".path_payment_strict_receive" do
+    it 'works' do
+      tx = Stellar::Transaction.path_payment_strict_receive({
+        account: Stellar::KeyPair.random,
+        sequence: 1,
+        fee: 100,
+        destination: Stellar::KeyPair.random,
+        amount: [:alphanum4, "USD", Stellar::KeyPair.master, 10],
+        with: [:alphanum4, "EUR", Stellar::KeyPair.master, 9.2],
+      })
+
+      expect(tx.operations.size).to eq(1)
+      expect(tx.operations.first.body.arm).to eql(:path_payment_strict_receive_op)
+    end
+  end
+
   describe "#sign" do
     let(:result){ subject.sign(key_pair) }
 

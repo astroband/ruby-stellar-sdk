@@ -14,6 +14,12 @@ module Stellar
     end
 
     #
+    # @see  Stellar::Operation.path_payment_strict_receive
+    def self.path_payment_strict_receive(attributes={})
+      make :path_payment_strict_receive, attributes
+    end
+
+    #
     # @see  Stellar::Operation.create_account
     def self.create_account(attributes={})
       make :create_account, attributes
