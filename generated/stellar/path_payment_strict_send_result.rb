@@ -5,15 +5,15 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   union PathPaymentResult switch (PathPaymentResultCode code)
+#   union PathPaymentStrictSendResult switch (PathPaymentStrictSendResultCode code)
 #   {
-#   case PATH_PAYMENT_SUCCESS:
+#   case PATH_PAYMENT_STRICT_SEND_SUCCESS:
 #       struct
 #       {
 #           ClaimOfferAtom offers<>;
 #           SimplePaymentResult last;
 #       } success;
-#   case PATH_PAYMENT_NO_ISSUER:
+#   case PATH_PAYMENT_STRICT_SEND_NO_ISSUER:
 #       Asset noIssuer; // the asset that caused the error
 #   default:
 #       void;
@@ -21,15 +21,15 @@ require 'xdr'
 #
 # ===========================================================================
 module Stellar
-  class PathPaymentResult < XDR::Union
+  class PathPaymentStrictSendResult < XDR::Union
     include XDR::Namespace
 
     autoload :Success
 
-    switch_on PathPaymentResultCode, :code
+    switch_on PathPaymentStrictSendResultCode, :code
 
-    switch :path_payment_success,   :success
-    switch :path_payment_no_issuer, :no_issuer
+    switch :path_payment_strict_send_success,   :success
+    switch :path_payment_strict_send_no_issuer, :no_issuer
     switch :default
 
     attribute :success,   Success

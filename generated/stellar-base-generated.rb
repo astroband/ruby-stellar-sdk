@@ -64,7 +64,8 @@ module Stellar
   autoload :OperationType
   autoload :CreateAccountOp
   autoload :PaymentOp
-  autoload :PathPaymentOp
+  autoload :PathPaymentStrictReceiveOp
+  autoload :PathPaymentStrictSendOp
   autoload :ManageSellOfferOp
   autoload :ManageBuyOfferOp
   autoload :CreatePassiveSellOfferOp
@@ -86,9 +87,11 @@ module Stellar
   autoload :CreateAccountResult
   autoload :PaymentResultCode
   autoload :PaymentResult
-  autoload :PathPaymentResultCode
+  autoload :PathPaymentStrictReceiveResultCode
   autoload :SimplePaymentResult
-  autoload :PathPaymentResult
+  autoload :PathPaymentStrictReceiveResult
+  autoload :PathPaymentStrictSendResultCode
+  autoload :PathPaymentStrictSendResult
   autoload :ManageSellOfferResultCode
   autoload :ManageOfferEffect
   autoload :ManageOfferSuccessResult
