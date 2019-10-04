@@ -12,51 +12,67 @@ describe Stellar::Operation, ".payment" do
 
 end
 
-describe Stellar::Operation, ".path_payment" do
-  it "works" do
-    destination = Stellar::KeyPair.random
-    amount = [:alphanum4, "USD", Stellar::KeyPair.master, 10]    
-    with = [:alphanum4, "EUR", Stellar::KeyPair.master, 9.2]
-
-    op = Stellar::Operation.path_payment(
-      destination: destination,
-      amount: amount,
-      with: with
-    )
-
-    expect(op.body.arm).to eql(:path_payment_strict_receive_op)
-  end
+def pk_to_address(pk)
+  Stellar::Convert.pk_to_address(pk)
 end
 
-describe Stellar::Operation, ".path_payment_strict_receive" do
-  it "works" do
-    destination = Stellar::KeyPair.random
-    with = [:alphanum4, "USD", Stellar::KeyPair.master, 10]    
-    amount = [:alphanum4, "EUR", Stellar::KeyPair.master, 9.2]
+describe "path payment operations" do
+  let(:destination){ Stellar::KeyPair.random }
+  let(:send_asset_issuer){ Stellar::KeyPair.master }
+  let(:send_asset){ Stellar::Asset.alphanum4("USD", send_asset_issuer) }
+  let(:dest_asset_issuer){ Stellar::KeyPair.master }
+  let(:dest_asset){ Stellar::Asset.alphanum4("EUR", dest_asset_issuer) }
+  let(:amount){ [:alphanum4, dest_asset.code, dest_asset_issuer, 9.2] }
+  let(:with){ [:alphanum4, send_asset.code, send_asset_issuer, 10] }
+  
+  describe Stellar::Operation, ".path_payment" do
+    it "works" do
+      destination = Stellar::KeyPair.random
+      amount = [:alphanum4, "USD", Stellar::KeyPair.master, 10]    
+      with = [:alphanum4, "EUR", Stellar::KeyPair.master, 9.2]
 
-    op = Stellar::Operation.path_payment_strict_receive(
-      destination: destination,
-      amount: amount,
-      with: with
-    )
+      op = Stellar::Operation.path_payment(
+        destination: destination,
+        amount: amount,
+        with: with
+      )
 
-    expect(op.body.arm).to eql(:path_payment_strict_receive_op)
+      expect(op.body.arm).to eql(:path_payment_strict_receive_op)
+    end
   end
-end
 
-describe Stellar::Operation, ".path_payment_strict_send" do
-  it "works" do
-    destination = Stellar::KeyPair.random
-    with = [:alphanum4, "USD", Stellar::KeyPair.master, 10]    
-    amount = [:alphanum4, "EUR", Stellar::KeyPair.master, 9.2]
+  describe Stellar::Operation, ".path_payment_strict_receive" do
+    it "works" do
+      op = Stellar::Operation.path_payment_strict_receive(
+        destination: destination,
+        amount: amount,
+        with: with
+      )
 
-    op = Stellar::Operation.path_payment_strict_send(
-      destination: destination,
-      amount: amount,
-      with: with
-    )
+      expect(op.body.arm).to eql(:path_payment_strict_receive_op)
+      expect(op.body.value.destination).to eql(destination.public_key)
+      expect(op.body.value.send_asset).to eql(send_asset)
+      expect(op.body.value.dest_asset).to eql(dest_asset)
+      expect(op.body.value.send_max).to eq(100000000)
+      expect(op.body.value.dest_amount).to eq(92000000)
+    end
+  end
 
-    expect(op.body.arm).to eql(:path_payment_strict_send_op)
+  describe Stellar::Operation, ".path_payment_strict_send" do
+    it "works" do
+      op = Stellar::Operation.path_payment_strict_send(
+        destination: destination,
+        amount: amount,
+        with: with
+      )
+
+      expect(op.body.arm).to eql(:path_payment_strict_send_op)
+      expect(op.body.value.destination).to eql(destination.public_key)
+      expect(op.body.value.send_asset).to eql(send_asset)
+      expect(op.body.value.dest_asset).to eql(dest_asset)
+      expect(op.body.value.send_amount).to eq(100000000)
+      expect(op.body.value.dest_min).to eq(92000000)
+    end
   end
 end
 
@@ -114,5 +130,4 @@ describe Stellar::Operation, ".change_trust" do
       Stellar::Operation.change_trust(line: [:alphanum4, "USD", issuer], limit: true)
     }.to raise_error(ArgumentError)
   end
-
 end
