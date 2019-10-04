@@ -12,7 +12,7 @@ bumps.  A breaking change will get clearly notified in this log.
   - XDR changes for path payment
   - constant renames, which may cause breaking changes if referred to directly
 
-## [0.20.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.19.0...master) - 2019-05-22
+## [0.20.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.20.0...v0.19.0) - 2019-05-22
 ### Added
 - Stellar Protocol 11 compatibility (#48)
   - XDR changes for [CAP-0006 Buy Offers](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0006.md)
