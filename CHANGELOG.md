@@ -6,6 +6,12 @@ file.  This project adheres to [Semantic Versioning](http://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
+## [0.21.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.21.0...v0.20.0) - 2019-10-04
+### Changed
+- [Stellar Protocol 12 compatibility](https://github.com/bloom-solutions/ruby-stellar-base/pull/51).
+  - XDR changes for path payment
+  - constant renames, which may cause breaking changes if referred to directly
+
 ## [0.20.0](https://github.com/stellar/ruby-stellar-base/compare/v0.19.0...master) - 2019-05-22
 ### Added
 - Stellar Protocol 11 compatibility (#48)
