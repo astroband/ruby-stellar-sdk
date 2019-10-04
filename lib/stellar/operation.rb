@@ -59,21 +59,42 @@ module Stellar
     end
 
     #
-    # Helper method to create a valid PathPaymentOp, wrapped
+    # Helper method to create a valid PathPaymentStrictReceiveOp, wrapped
     # in the necessary XDR structs to be included within a
     # transactions `operations` array.
+    # 
+    # @deprecated Please use Operation.path_payment_strict_receive
     #
     # @see Stellar::Asset
     #
     # @param [Hash] attributes the attributes to create the operation with
     # @option attributes [Stellar::KeyPair] :destination the receiver of the payment
-    # @option attributes [Array] :amount the amount to pay
+    # @option attributes [Array] :amount the destination asset and the amount to pay
     # @option attributes [Array] :with the source asset and maximum allowed source amount to pay with
     # @option attributes [Array<Stellar::Asset>] :path the payment path to use
     #
-    # @return [Stellar::Operation] the built operation, containing a
-    #                              Stellar::PaymentOp body
+    # @return [Stellar::Operation] the built operation, containing a Stellar::PaymentOp body
+    #                              
     def self.path_payment(attributes={})
+      path_payment_strict_receive(attributes)
+    end
+
+    #
+    # Helper method to create a valid PathPaymentStrictReceiveOp, wrapped
+    # in the necessary XDR structs to be included within a
+    # transactions `operations` array.
+    # 
+    # @see Stellar::Asset
+    #
+    # @param [Hash] attributes the attributes to create the operation with
+    # @option attributes [Stellar::KeyPair] :destination the receiver of the payment
+    # @option attributes [Array] :amount the destination asset and the amount to pay
+    # @option attributes [Array] :with the source asset and maximum allowed source amount to pay with
+    # @option attributes [Array<Stellar::Asset>] :path the payment path to use
+    #
+    # @return [Stellar::Operation] the built operation, containing a Stellar::PaymentOp body
+    #                              
+    def self.path_payment_strict_receive(attributes={})
       destination             = attributes[:destination]
       asset, amount           = extract_amount(attributes[:amount])
       send_asset, send_max    = extract_amount(attributes[:with])
@@ -81,7 +102,7 @@ module Stellar
 
       raise ArgumentError unless destination.is_a?(KeyPair)
 
-      op               = PathPaymentOp.new
+      op               = PathPaymentStrictReceiveOp.new
       op.send_asset    = send_asset
       op.send_max      = send_max
       op.destination   = destination.account_id
@@ -90,7 +111,43 @@ module Stellar
       op.path          = path
 
       return make(attributes.merge({
-        body:[:path_payment, op]
+        body:[:path_payment_strict_receive, op]
+      }))
+    end
+
+    #
+    # Helper method to create a valid PathPaymentStrictSendOp, wrapped
+    # in the necessary XDR structs to be included within a
+    # transactions `operations` array.
+    # 
+    # @see Stellar::Asset
+    #
+    # @param [Hash] attributes the attributes to create the operation with
+    # @option attributes [Stellar::KeyPair] :destination the receiver of the payment
+    # @option attributes [Array] :amount the destination asset and the minimum amount of destination asset to be received
+    # @option attributes [Array] :with the source asset and amount to pay with
+    # @option attributes [Array<Stellar::Asset>] :path the payment path to use
+    #
+    # @return [Stellar::Operation] the built operation, containing a Stellar::PaymentOp body
+    #                              
+    def self.path_payment_strict_send(attributes={})
+      destination             = attributes[:destination]
+      asset, dest_min         = extract_amount(attributes[:amount])
+      send_asset, send_amount = extract_amount(attributes[:with])
+      path                    = (attributes[:path] || []).map{|p| Stellar::Asset.send(*p)}
+
+      raise ArgumentError unless destination.is_a?(KeyPair)
+
+      op               = PathPaymentStrictSendOp.new
+      op.send_asset    = send_asset
+      op.send_amount   = send_amount
+      op.destination   = destination.account_id
+      op.dest_asset    = asset
+      op.dest_min      = dest_min
+      op.path          = path
+
+      return make(attributes.merge({
+        body:[:path_payment_strict_send, op]
       }))
     end
 

@@ -14,8 +14,8 @@ require 'xdr'
 #           CreateAccountResult createAccountResult;
 #       case PAYMENT:
 #           PaymentResult paymentResult;
-#       case PATH_PAYMENT:
-#           PathPaymentResult pathPaymentResult;
+#       case PATH_PAYMENT_STRICT_RECEIVE:
+#           PathPaymentStrictReceiveResult pathPaymentStrictReceiveResult;
 #       case MANAGE_SELL_OFFER:
 #           ManageSellOfferResult manageSellOfferResult;
 #       case CREATE_PASSIVE_SELL_OFFER:
@@ -36,6 +36,8 @@ require 'xdr'
 #           BumpSequenceResult bumpSeqResult;
 #       case MANAGE_BUY_OFFER:
 #   	ManageBuyOfferResult manageBuyOfferResult;
+#       case PATH_PAYMENT_STRICT_SEND:
+#           PathPaymentStrictSendResult pathPaymentStrictSendResult;
 #       }
 #       tr;
 #   default:

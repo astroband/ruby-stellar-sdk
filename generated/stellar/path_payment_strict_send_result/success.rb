@@ -13,7 +13,7 @@ require 'xdr'
 #
 # ===========================================================================
 module Stellar
-  class PathPaymentResult
+  class PathPaymentStrictSendResult
     class Success < XDR::Struct
       attribute :offers, XDR::VarArray[ClaimOfferAtom]
       attribute :last,   SimplePaymentResult

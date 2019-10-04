@@ -1,10 +1,10 @@
 require "spec_helper"
 
-describe Stellar::PathPaymentResult, "#send_amount" do
+describe Stellar::PathPaymentStrictReceiveResult, "#send_amount" do
 
 
   context "when the result is not successful" do
-    subject{ Stellar::PathPaymentResult.new(:path_payment_malformed) }
+    subject{ Stellar::PathPaymentStrictReceiveResult.new(:path_payment_strict_receive_malformed) }
 
     it "raises an exception if the result is not successful" do
       expect{ subject.send_amount }.to raise_error(XDR::ArmNotSetError)
@@ -13,9 +13,9 @@ describe Stellar::PathPaymentResult, "#send_amount" do
 
   context "when the result has no claimed offers" do
     let(:simple_success){ Stellar::SimplePaymentResult.new(amount: 100) }
-    let(:path_success){ Stellar::PathPaymentResult::Success.new(last: simple_success) }
+    let(:path_success){ Stellar::PathPaymentStrictReceiveResult::Success.new(last: simple_success) }
 
-    subject{ Stellar::PathPaymentResult.new(:path_payment_success, path_success) }
+    subject{ Stellar::PathPaymentStrictReceiveResult.new(:path_payment_strict_receive_success, path_success) }
 
     it "returns the amount from the 'last' component" do
       expect(subject.send_amount).to eql(100)
@@ -30,13 +30,13 @@ describe Stellar::PathPaymentResult, "#send_amount" do
     end
 
     let(:path_success) do
-      Stellar::PathPaymentResult::Success.new({
+      Stellar::PathPaymentStrictReceiveResult::Success.new({
         offers: offers,
         last:   simple_success,
       })
     end
 
-    subject{ Stellar::PathPaymentResult.new(:path_payment_success, path_success) }
+    subject{ Stellar::PathPaymentStrictReceiveResult.new(:path_payment_strict_receive_success, path_success) }
 
     it "returns the amount from the ClaimOfferAtom" do
       expect(subject.send_amount).to eql(200)
@@ -53,13 +53,13 @@ describe Stellar::PathPaymentResult, "#send_amount" do
     end
 
     let(:path_success) do
-      Stellar::PathPaymentResult::Success.new({
+      Stellar::PathPaymentStrictReceiveResult::Success.new({
         offers: offers,
         last:   simple_success,
       })
     end
 
-    subject{ Stellar::PathPaymentResult.new(:path_payment_success, path_success) }
+    subject{ Stellar::PathPaymentStrictReceiveResult.new(:path_payment_strict_receive_success, path_success) }
 
     it "returns the summed amount from the ClaimOfferAtoms" do
       expect(subject.send_amount).to eql(400)
@@ -79,13 +79,13 @@ describe Stellar::PathPaymentResult, "#send_amount" do
     end
 
     let(:path_success) do
-      Stellar::PathPaymentResult::Success.new({
+      Stellar::PathPaymentStrictReceiveResult::Success.new({
         offers: offers,
         last:   simple_success,
       })
     end
 
-    subject{ Stellar::PathPaymentResult.new(:path_payment_success, path_success) }
+    subject{ Stellar::PathPaymentStrictReceiveResult.new(:path_payment_strict_receive_success, path_success) }
 
     it "returns the summed amount from the ClaimOfferAtoms" do
       expect(subject.send_amount).to eql(400)

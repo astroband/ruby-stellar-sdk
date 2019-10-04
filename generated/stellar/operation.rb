@@ -18,8 +18,8 @@ require 'xdr'
 #           CreateAccountOp createAccountOp;
 #       case PAYMENT:
 #           PaymentOp paymentOp;
-#       case PATH_PAYMENT:
-#           PathPaymentOp pathPaymentOp;
+#       case PATH_PAYMENT_STRICT_RECEIVE:
+#           PathPaymentStrictReceiveOp pathPaymentStrictReceiveOp;
 #       case MANAGE_SELL_OFFER:
 #           ManageSellOfferOp manageSellOfferOp;
 #       case CREATE_PASSIVE_SELL_OFFER:
@@ -40,6 +40,8 @@ require 'xdr'
 #           BumpSequenceOp bumpSequenceOp;
 #       case MANAGE_BUY_OFFER:
 #           ManageBuyOfferOp manageBuyOfferOp;
+#       case PATH_PAYMENT_STRICT_SEND:
+#           PathPaymentStrictSendOp pathPaymentStrictSendOp;
 #       }
 #       body;
 #   };
