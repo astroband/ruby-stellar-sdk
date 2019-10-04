@@ -21,7 +21,7 @@ bumps.  A breaking change will get clearly notified in this log.
 
 ### Changed
 - Deprecate `manage_offer` and `create_passive_offer` factory methods in `Stellar::Transaction` and `Stellar::Operation`
-- Add an option to pass the exact stellar-core revision into `xdr:update` Rake task 
+- Add an option to pass the exact stellar-core revision into `xdr:update` Rake task
 
 ## [0.19.0](https://github.com/stellar/ruby-stellar-base/compare/v0.18.0...v0.19.0)
 ### Changed
@@ -92,7 +92,7 @@ bumps.  A breaking change will get clearly notified in this log.
 
 ## [0.10.0](https://github.com/stellar/ruby-stellar-base/compare/v0.9.0...v0.10.0)
 
-- Added memo helpers to `Stellar::Transaction.for_account`, allowing any operation builder (such as `Stellar::Transaction.payment) to provide a custom memo using the `:memo` attribute.  
+- Added memo helpers to `Stellar::Transaction.for_account`, allowing any operation builder (such as `Stellar::Transaction.payment) to provide a custom memo using the `:memo` attribute.
 
 ## [0.9.0](https://github.com/stellar/ruby-stellar-base/compare/v0.8.0...v0.9.0)
 
@@ -102,7 +102,7 @@ bumps.  A breaking change will get clearly notified in this log.
 ## [0.8.0](https://github.com/stellar/ruby-stellar-base/compare/v0.7.0...v0.8.0)
 
 ### Changed
-- BREAKING CHANGE:  The default network for this library is now the stellar test network.  
+- BREAKING CHANGE:  The default network for this library is now the stellar test network.
   To enable this library for the production network use `Stellar.default_network = Stellar::Networks::PUBLIC`
   at the head of your script or in your configuration function.
 
