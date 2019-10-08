@@ -2,6 +2,8 @@ require 'hyperclient'
 require "active_support/core_ext/object/blank"
 
 module Stellar
+  class InvalidSep10ChallengeError < StandardError; end
+
   class Client
     include Contracts
     C = Contracts
@@ -233,6 +235,79 @@ module Stellar
       )
 
       tx.to_envelope(server).to_xdr(:base64)
+    end
+
+    def verify_challenge_tx(challenge:, server:)
+      envelope = Stellar::TransactionEnvelope.from_xdr(challenge, "base64") 
+      transaction = envelope.tx
+
+      if transaction.seq_num != 0
+        raise InvalidSep10ChallengeError.new(
+          "The transaction sequence number should be zero"
+        )
+      end  
+
+      if transaction.source_account != server.public_key
+        raise InvalidSep10ChallengeError.new(
+          "The transaction source account is not equal to the server's account"
+        )
+      end
+  
+      if transaction.operations.size != 1
+        raise InvalidSep10ChallengeError.new(
+          "The transaction should contain only one operation"
+        )
+      end
+  
+      operation = transaction.operations.first
+  
+      if operation.source_account.nil?
+        raise InvalidSep10ChallengeError.new(
+          "The transaction's operation should contain a source account"
+        )
+      end
+  
+      if operation.body.arm != :manage_data_op
+        raise InvalidSep10ChallengeError.new(
+          "The transaction's operation should be manageData"
+        )
+      end
+  
+      if operation.body.value.data_value.unpack("m")[0].size !=  48
+        raise InvalidSep10ChallengeError.new(
+          "The transaction's operation value should be a 64 bytes base64 random string"
+        )
+      end
+
+      if !verify_tx_signed_by(transaction_envelope: envelope, keypair: server)
+        raise InvalidSep10ChallengeError.new(
+          "The transaction is not signed by the server"
+        )
+      end
+
+      client_pk = Stellar::KeyPair.from_public_key(operation.source_account.value)
+      if !verify_tx_signed_by(transaction_envelope: envelope, keypair: client_pk)
+        raise InvalidSep10ChallengeError.new(
+          "The transaction is not signed by the client"
+        )
+      end
+  
+      time_bounds = transaction.time_bounds
+      now = Time.now.to_i
+
+      if time_bounds.nil? || !now.between?(time_bounds.min_time, time_bounds.max_time)
+        raise InvalidSep10ChallengeError.new("The transaction has expired")        
+      end
+
+      true
+    end
+
+    def verify_tx_signed_by(transaction_envelope:, keypair:)
+      hashed_signature_base = transaction_envelope.tx.hash
+
+      !!transaction_envelope.signatures.find do |sig| 
+        keypair.verify(sig.signature, hashed_signature_base)
+      end
     end
   end
 end

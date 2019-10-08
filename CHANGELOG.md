@@ -10,9 +10,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Add SEP0010 transaction challenge builder.
     ```
     client = Stellar::Client.default_testnet
-    client.build_challenge_tx(server: server, client: user, anchor_name: anchor, timeout: timeout) 
+    client.build_challenge_tx(
+      server: server,
+      client: user,
+      anchor_name: anchor,
+      timeout: timeout
+    ) 
     ```
+- Add SEP0010 transaction challenge verifier.
+    ```
+    client = Stellar::Client.default_testnet
+    challenge = client.build_challenge_tx(
+      server: server,
+      client: user,
+      anchor_name: anchor,
+      timeout: timeout
+    ) 
 
+    client.verify_challenge_tx(challenge, server)
+    ```
 ## [0.7.0] - 2019-04-26
 ### Added
 - Friendbot support
