@@ -188,13 +188,30 @@ module Stellar
       envelope_base64 = tx.to_envelope(source.keypair).to_xdr(:base64)
       horizon.transactions._post(tx: envelope_base64)
     end
-
+    
     Contract(C::KeywordArgs[
       server: Stellar::KeyPair,
       client: Stellar::KeyPair,
       anchor_name: String,
       timeout: C::Optional[Integer]
     ] => String)
+    #
+    # Helper method to create a valid {SEP0010}[https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0010.md]
+    # challenge transaction which you can use for Stellar Web Authentication.
+    #    
+    # @param server [Stellar::KeyPair] Keypair for server's signing account.
+    # @param client [Stellar::KeyPair] Keypair for the account whishing to authenticate with the server.
+    # @param anchor_name [String] Anchor's name to be used in the manage_data key.
+    # @param timeout [Integer] Challenge duration (default to 5 minutes).
+    #
+    # @return [String] A base64 encoded string of the raw TransactionEnvelope xdr struct for the transaction.
+    #
+    # = Example
+    # 
+    #   client = Stellar::Client.default_testnet
+    #   client.build_challenge_tx(server: server, client: user, anchor_name: anchor, timeout: timeout) 
+    # 
+    # @see {SEP0010: Stellar Web Authentication}[https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0010.md]
     def build_challenge_tx(server:, client:, anchor_name:, timeout: 300)
       # The value must be 64 bytes long. It contains a 48 byte
       # cryptographic-quality random string encoded using base64 (for a total of
