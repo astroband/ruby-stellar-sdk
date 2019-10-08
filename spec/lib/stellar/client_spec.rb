@@ -427,4 +427,45 @@ describe Stellar::Client do
     end
   end
 
+  describe "#build_challenge_tx" do
+    let(:server) { Stellar::KeyPair.random }
+    let(:user) { Stellar::KeyPair.random }
+    let(:anchor) { "SDF" }
+    let(:timeout) { 600 }
+    let(:envelope) { Stellar::TransactionEnvelope.from_xdr(subject, "base64") }
+    let(:transaction) { envelope.tx }
+   
+    subject do
+      client.build_challenge_tx(server: server, client: user, anchor_name: anchor, timeout: timeout) 
+    end
+
+    
+    it "generates a valid SEP10 challenge" do
+      expect(transaction.seq_num).to eql(0)
+      expect(transaction.operations.size).to eql(1);
+      expect(transaction.source_account).to eql(server.public_key);
+
+      time_bounds = transaction.time_bounds
+      expect(time_bounds.max_time - time_bounds.min_time).to eql(600)
+      operation = transaction.operations.first
+
+      expect(operation.body.arm).to eql(:manage_data_op)
+      expect(operation.body.value.data_name).to eql("SDF auth")
+      expect(operation.source_account).to eql(user.public_key)
+      data_value = operation.body.value.data_value
+      expect(data_value.bytes.size).to eql(64)
+      expect(data_value.unpack("m")[0].size).to eql(48)
+    end
+
+    describe "defaults" do
+      subject do
+        client.build_challenge_tx(server: server, client: user, anchor_name: anchor) 
+      end
+      
+      it "has a default timeout of 300 seconds (5 minutes)" do
+        time_bounds = transaction.time_bounds
+        expect(time_bounds.max_time - time_bounds.min_time).to eql(300)
+      end
+    end
+  end
 end

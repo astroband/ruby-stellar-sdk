@@ -189,5 +189,33 @@ module Stellar
       horizon.transactions._post(tx: envelope_base64)
     end
 
+    Contract(C::KeywordArgs[
+      server: Stellar::KeyPair,
+      client: Stellar::KeyPair,
+      anchor_name: String,
+      timeout: C::Optional[Integer]
+    ] => String)
+    def build_challenge_tx(server:, client:, anchor_name:, timeout: 300)
+      # The value must be 64 bytes long. It contains a 48 byte
+      # cryptographic-quality random string encoded using base64 (for a total of
+      # 64 bytes after encoding).
+      value = [Random.bytes(48)].pack("m0")
+            
+      tx = Stellar::Transaction.manage_data({
+        account: server,
+        sequence:  0,
+        name: "#{anchor_name} auth", 
+        value: value,
+        source_account: client
+      })
+
+      now = Time.now.to_i
+      tx.time_bounds = Stellar::TimeBounds.new(
+        min_time: now, 
+        max_time: now + timeout
+      )
+
+      tx.to_envelope(server).to_xdr(:base64)
+    end
   end
 end
