@@ -218,7 +218,7 @@ module Stellar
       # The value must be 64 bytes long. It contains a 48 byte
       # cryptographic-quality random string encoded using base64 (for a total of
       # 64 bytes after encoding).
-      value = [Random.bytes(48)].pack("m0")
+      value = SecureRandom.base64(48)
             
       tx = Stellar::Transaction.manage_data({
         account: server,
@@ -347,7 +347,7 @@ module Stellar
     def verify_tx_signed_by(transaction_envelope:, keypair:)
       hashed_signature_base = transaction_envelope.tx.hash
 
-      !!transaction_envelope.signatures.find do |sig| 
+      transaction_envelope.signatures.any? do |sig| 
         keypair.verify(sig.signature, hashed_signature_base)
       end
     end
