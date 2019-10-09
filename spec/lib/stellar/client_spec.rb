@@ -526,7 +526,7 @@ describe Stellar::Client do
        end
 
       it "throws an error if operation value is not a 64 bytes base64 string" do
-        transaction.operations[0].body.value.data_value = Random.bytes(64)
+        transaction.operations[0].body.value.data_value = SecureRandom.random_bytes(64)
         expect { 
           client.verify_challenge_tx(challenge: envelope.to_xdr(:base64), server: server)          
         }.to raise_error(
