@@ -1,5 +1,6 @@
 require 'hyperclient'
 require "active_support/core_ext/object/blank"
+require 'securerandom'
 
 module Stellar
   class InvalidSep10ChallengeError < StandardError; end
