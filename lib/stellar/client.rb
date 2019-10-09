@@ -237,7 +237,10 @@ module Stellar
       tx.to_envelope(server).to_xdr(:base64)
     end
 
-    
+   Contract(C::KeywordArgs[
+     challenge: String,
+     server: Stellar::KeyPair
+   ] => C::Bool)    
    # Verifies if challenge input is a valid {SEP0010}[https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0010.md]
    # challenge transaction.
    #
@@ -252,7 +255,7 @@ module Stellar
    # @param challenge [String] SEP0010 transaction challenge in base64.
    # @param server [Stellar::KeyPair] Stellar::KeyPair for server where the challenge was generated.
    #
-   # @return [boolean]
+   # @return [Boolean]
    #
    # = Example
    # 
@@ -325,10 +328,14 @@ module Stellar
       true
     end
 
+    Contract(C::KeywordArgs[
+      transaction_envelope: Stellar::TransactionEnvelope,
+      keypair: Stellar::KeyPair
+    ] => C::Bool)    
     # Verifies if a Stellar::TransactionEnvelope was signed by the given Stellar::KeyPair
     #
-    # @param [Stellar::TransactionEnvelope] 
-    # @param [Stellar::KeyPair]
+    # @param transaction_envelope [Stellar::TransactionEnvelope] 
+    # @param keypair [Stellar::KeyPair]
     #
     # @return [Boolean]
     #
