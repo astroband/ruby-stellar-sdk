@@ -27,7 +27,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
       timeout: timeout
     ) 
 
-    client.verify_challenge_tx(challenge, server)
+    client.verify_challenge_tx(challenge, server) 
+    ```
+- Add helper `client#verify_tx_signed_by` to verify that a transaction envelope has been signed by a given keypair.
+    ```
+    client = Stellar::Client.default_testnet
+    challenge = client.verify_tx_signed_by(transaction_envelope: txe, keypair: keypair)
     ```
 ## [0.7.0] - 2019-04-26
 ### Added
