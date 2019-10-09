@@ -237,7 +237,30 @@ module Stellar
       tx.to_envelope(server).to_xdr(:base64)
     end
 
-    def verify_challenge_tx(challenge:, server:)
+    
+   # Verifies if challenge input is a valid {SEP0010}[https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0010.md]
+   # challenge transaction.
+   #
+   # This method performs the following checks:
+   #
+   #   1. Verifies that the transaction's source is the same as the server account id.
+   #   2. Verifies that the number of operations in the transaction is equal to one and of type manageData.
+   #   3. Verifies if timeBounds are still valid.
+   #   4. Verifies if the transaction has been signed by the server and the client.
+   #   5. Verifies that the sequenceNumber is equal to zero.
+   #
+   # @param challenge [String] SEP0010 transaction challenge in base64.
+   # @param server [Stellar::KeyPair] Stellar::KeyPair for server where the challenge was generated.
+   #
+   # @return [boolean]
+   #
+   # = Example
+   # 
+   #   client = Stellar::Client.default_testnet
+   #   challenge = client.build_challenge_tx(server: server, client: user, anchor_name: anchor, timeout: timeout) 
+   #   client.verify_challenge_tx(challenge: challenge, server: server)
+   #
+   def verify_challenge_tx(challenge:, server:)
       envelope = Stellar::TransactionEnvelope.from_xdr(challenge, "base64") 
       transaction = envelope.tx
 
@@ -302,6 +325,18 @@ module Stellar
       true
     end
 
+    # Verifies if a Stellar::TransactionEnvelope was signed by the given Stellar::KeyPair
+    #
+    # @param [Stellar::TransactionEnvelope] 
+    # @param [Stellar::KeyPair]
+    #
+    # @return [Boolean]
+    #
+    # = Example
+    # 
+    #   client = Stellar::Client.default_testnet
+    #   client.verify_tx_signed_by(transaction_envelope: envelope, keypair: keypair)
+    #
     def verify_tx_signed_by(transaction_envelope:, keypair:)
       hashed_signature_base = transaction_envelope.tx.hash
 
