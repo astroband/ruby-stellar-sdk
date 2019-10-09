@@ -593,4 +593,24 @@ describe Stellar::Client do
       end
     end
   end
+
+  describe "#verify_tx_signed_by" do
+    let(:keypair) { Stellar::KeyPair.random }
+    let(:envelope) do
+      Stellar::Transaction.bump_sequence(account: keypair, bump_to: 1000, sequence: 0).to_envelope(keypair)
+    end
+    
+    it "returns true if transaction envelope is signed by keypair" do
+      result = client.verify_tx_signed_by(transaction_envelope: envelope, keypair: keypair)
+      expect(result).to eql(true)
+    end
+    
+    it "returns false if transaction envelope is not signed by keypair" do
+      result = client.verify_tx_signed_by(
+        transaction_envelope: envelope, 
+        keypair: Stellar::KeyPair.random
+      )
+      expect(result).to eql(false)
+    end
+  end
 end
