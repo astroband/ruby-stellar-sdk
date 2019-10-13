@@ -1,7 +1,10 @@
 require 'hyperclient'
 require "active_support/core_ext/object/blank"
+require 'securerandom'
 
 module Stellar
+  class InvalidSep10ChallengeError < StandardError; end
+
   class Client
     include Contracts
     C = Contracts
@@ -188,6 +191,166 @@ module Stellar
       envelope_base64 = tx.to_envelope(source.keypair).to_xdr(:base64)
       horizon.transactions._post(tx: envelope_base64)
     end
+    
+    Contract(C::KeywordArgs[
+      server: Stellar::KeyPair,
+      client: Stellar::KeyPair,
+      anchor_name: String,
+      timeout: C::Optional[Integer]
+    ] => String)
+    #
+    # Helper method to create a valid {SEP0010}[https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0010.md]
+    # challenge transaction which you can use for Stellar Web Authentication.
+    #    
+    # @param server [Stellar::KeyPair] Keypair for server's signing account.
+    # @param client [Stellar::KeyPair] Keypair for the account whishing to authenticate with the server.
+    # @param anchor_name [String] Anchor's name to be used in the manage_data key.
+    # @param timeout [Integer] Challenge duration (default to 5 minutes).
+    #
+    # @return [String] A base64 encoded string of the raw TransactionEnvelope xdr struct for the transaction.
+    #
+    # = Example
+    # 
+    #   client = Stellar::Client.default_testnet
+    #   client.build_challenge_tx(server: server, client: user, anchor_name: anchor, timeout: timeout) 
+    # 
+    # @see {SEP0010: Stellar Web Authentication}[https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0010.md]
+    def build_challenge_tx(server:, client:, anchor_name:, timeout: 300)
+      # The value must be 64 bytes long. It contains a 48 byte
+      # cryptographic-quality random string encoded using base64 (for a total of
+      # 64 bytes after encoding).
+      value = SecureRandom.base64(48)
+            
+      tx = Stellar::Transaction.manage_data({
+        account: server,
+        sequence:  0,
+        name: "#{anchor_name} auth", 
+        value: value,
+        source_account: client
+      })
 
+      now = Time.now.to_i
+      tx.time_bounds = Stellar::TimeBounds.new(
+        min_time: now, 
+        max_time: now + timeout
+      )
+
+      tx.to_envelope(server).to_xdr(:base64)
+    end
+
+   Contract(C::KeywordArgs[
+     challenge: String,
+     server: Stellar::KeyPair
+   ] => C::Bool)    
+   # Verifies if challenge input is a valid {SEP0010}[https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0010.md]
+   # challenge transaction.
+   #
+   # This method performs the following checks:
+   #
+   #   1. Verifies that the transaction's source is the same as the server account id.
+   #   2. Verifies that the number of operations in the transaction is equal to one and of type manageData.
+   #   3. Verifies if timeBounds are still valid.
+   #   4. Verifies if the transaction has been signed by the server and the client.
+   #   5. Verifies that the sequenceNumber is equal to zero.
+   #
+   # @param challenge [String] SEP0010 transaction challenge in base64.
+   # @param server [Stellar::KeyPair] Stellar::KeyPair for server where the challenge was generated.
+   #
+   # @return [Boolean]
+   #
+   # = Example
+   # 
+   #   client = Stellar::Client.default_testnet
+   #   challenge = client.build_challenge_tx(server: server, client: user, anchor_name: anchor, timeout: timeout) 
+   #   client.verify_challenge_tx(challenge: challenge, server: server)
+   #
+   def verify_challenge_tx(challenge:, server:)
+      envelope = Stellar::TransactionEnvelope.from_xdr(challenge, "base64") 
+      transaction = envelope.tx
+
+      if transaction.seq_num != 0
+        raise InvalidSep10ChallengeError.new(
+          "The transaction sequence number should be zero"
+        )
+      end  
+
+      if transaction.source_account != server.public_key
+        raise InvalidSep10ChallengeError.new(
+          "The transaction source account is not equal to the server's account"
+        )
+      end
+  
+      if transaction.operations.size != 1
+        raise InvalidSep10ChallengeError.new(
+          "The transaction should contain only one operation"
+        )
+      end
+  
+      operation = transaction.operations.first
+  
+      if operation.source_account.nil?
+        raise InvalidSep10ChallengeError.new(
+          "The transaction's operation should contain a source account"
+        )
+      end
+  
+      if operation.body.arm != :manage_data_op
+        raise InvalidSep10ChallengeError.new(
+          "The transaction's operation should be manageData"
+        )
+      end
+  
+      if operation.body.value.data_value.unpack("m")[0].size !=  48
+        raise InvalidSep10ChallengeError.new(
+          "The transaction's operation value should be a 64 bytes base64 random string"
+        )
+      end
+
+      if !verify_tx_signed_by(transaction_envelope: envelope, keypair: server)
+        raise InvalidSep10ChallengeError.new(
+          "The transaction is not signed by the server"
+        )
+      end
+
+      client_pk = Stellar::KeyPair.from_public_key(operation.source_account.value)
+      if !verify_tx_signed_by(transaction_envelope: envelope, keypair: client_pk)
+        raise InvalidSep10ChallengeError.new(
+          "The transaction is not signed by the client"
+        )
+      end
+  
+      time_bounds = transaction.time_bounds
+      now = Time.now.to_i
+
+      if time_bounds.nil? || !now.between?(time_bounds.min_time, time_bounds.max_time)
+        raise InvalidSep10ChallengeError.new("The transaction has expired")        
+      end
+
+      true
+    end
+
+    Contract(C::KeywordArgs[
+      transaction_envelope: Stellar::TransactionEnvelope,
+      keypair: Stellar::KeyPair
+    ] => C::Bool)    
+    # Verifies if a Stellar::TransactionEnvelope was signed by the given Stellar::KeyPair
+    #
+    # @param transaction_envelope [Stellar::TransactionEnvelope] 
+    # @param keypair [Stellar::KeyPair]
+    #
+    # @return [Boolean]
+    #
+    # = Example
+    # 
+    #   client = Stellar::Client.default_testnet
+    #   client.verify_tx_signed_by(transaction_envelope: envelope, keypair: keypair)
+    #
+    def verify_tx_signed_by(transaction_envelope:, keypair:)
+      hashed_signature_base = transaction_envelope.tx.hash
+
+      transaction_envelope.signatures.any? do |sig| 
+        keypair.verify(sig.signature, hashed_signature_base)
+      end
+    end
   end
 end

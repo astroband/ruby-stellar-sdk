@@ -7,7 +7,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - `X-Client-Name` and `X-Client-Version` headers
+- Add SEP0010 transaction challenge builder.
+    ```
+    client = Stellar::Client.default_testnet
+    client.build_challenge_tx(
+      server: server,
+      client: user,
+      anchor_name: anchor,
+      timeout: timeout
+    ) 
+    ```
+- Add SEP0010 transaction challenge verifier.
+    ```
+    client = Stellar::Client.default_testnet
+    challenge = client.build_challenge_tx(
+      server: server,
+      client: user,
+      anchor_name: anchor,
+      timeout: timeout
+    ) 
 
+    client.verify_challenge_tx(challenge, server) 
+    ```
+- Add helper `client#verify_tx_signed_by` to verify that a transaction envelope has been signed by a given keypair.
+    ```
+    client = Stellar::Client.default_testnet
+    challenge = client.verify_tx_signed_by(transaction_envelope: txe, keypair: keypair)
+    ```
 ## [0.7.0] - 2019-04-26
 ### Added
 - Friendbot support
