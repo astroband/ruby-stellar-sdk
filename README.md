@@ -51,6 +51,9 @@ Stellar.default_network = Stellar::Networks::PUBLIC
 
 ## Development
 
+- Install and activate [rmv](https://rvm.io/rvm/install)
+- Ensure your `bundler` version is up-to-date: `rvm gem install bundler:<version>`
+- Run `bundle install`
 - Copy `spec/config.yml.sample` to `spec/config.yml`
 - Replace anything in `spec/config.yml` especially if you will re-record specs
 - `rspec spec`
