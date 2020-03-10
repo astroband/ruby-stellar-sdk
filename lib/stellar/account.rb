@@ -63,6 +63,7 @@ module Stellar
     end
 
     attr_reader :keypair
+    attr_accessor :signers
 
     Contract Stellar::KeyPair => Any
     def initialize(keypair)
