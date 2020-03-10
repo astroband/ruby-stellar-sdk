@@ -2,7 +2,7 @@ module Stellar
   class AccountSigner
     include Contracts
 
-    attr_reader :keypair
+    attr_reader :address
     attr_reader :weight
 
     Contract Array[String, Integer] => Any
