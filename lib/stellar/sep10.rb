@@ -22,11 +22,10 @@ module Stellar
     #
     # = Example
     # 
-    #   client = Stellar::Client.default_testnet
-    #   client.build_challenge_tx(server: server, client: user, anchor_name: anchor, timeout: timeout) 
+    #   Stellar::SEP10.build_challenge_tx(server: server, client: user, anchor_name: anchor, timeout: timeout) 
     # 
     # @see {SEP0010: Stellar Web Authentication}[https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0010.md]
-    def build_challenge_tx(server:, client:, anchor_name:, timeout: 300)
+    def self.build_challenge_tx(server:, client:, anchor_name:, timeout: 300)
       # The value must be 64 bytes long. It contains a 48 byte
       # cryptographic-quality random string encoded using base64 (for a total of
       # 64 bytes after encoding).
@@ -61,8 +60,8 @@ module Stellar
     # It does not verify that the transaction has been signed by the client or
     # that any signatures other than the servers on the transaction are valid. Use
     # one of the following functions to completely verify the transaction:
-    #    - Stellar::Client.verify_challenge_transaction_threshold
-    #    - Stellar::Client.verify_challenge_transaction_signers
+    #    - Stellar::SEP10.verify_challenge_transaction_threshold
+    #    - Stellar::SEP10.verify_challenge_transaction_signers
     #
     # @param challenge [String] SEP0010 transaction challenge in base64.
     # @param server [Stellar::KeyPair] Stellar::KeyPair for server where the challenge was generated.
@@ -71,11 +70,11 @@ module Stellar
     #
     # = Example
     # 
-    #   client = Stellar::Client.default_testnet
-    #   challenge = client.build_challenge_tx(server: server, client: user, anchor_name: anchor, timeout: timeout) 
-    #   envelope, client_id = client.read_challenge_tx(challenge: challenge, server: server)
+    #   sep10 = Stellar::SEP10
+    #   challenge = sep10.build_challenge_tx(server: server, client: user, anchor_name: anchor, timeout: timeout) 
+    #   envelope, client_id = sep10.read_challenge_tx(challenge: challenge, server: server)
     #
-    def read_challenge_tx(challenge:, server:)
+    def self.read_challenge_tx(challenge:, server:)
       envelope = Stellar::TransactionEnvelope.from_xdr(challenge, "base64") 
       transaction = envelope.tx
 
@@ -155,10 +154,10 @@ module Stellar
     # @return [ArrayOf[Stellar::AccountSigner]]
     #
     # Raises a InvalidSep10ChallengeError if:
-    #     - The transaction is invalid according to Stellar::Client.read_challenge_transaction.
+    #     - The transaction is invalid according to Stellar::SEP10.read_challenge_transaction.
     #     - One or more signatures in the transaction are not identifiable as the server account or one of the 
     #       signers provided in the arguments.
-    def verify_challenge_transaction_signers(
+    def self.verify_challenge_transaction_signers(
       challenge_transaction:,
       server:,
       signers:
@@ -217,11 +216,11 @@ module Stellar
     # @return [ArrayOf[Stellar::AccountSigner]]
     #
     # Raises a InvalidSep10ChallengeError if:
-    #   - The transaction is invalid according to Stellar::Client.read_challenge_transaction.
+    #   - The transaction is invalid according to Stellar::SEP10.read_challenge_transaction.
     #   - One or more signatures in the transaction are not identifiable as the server 
     #     account or one of the signers provided in the arguments.
     #   - The signatures are all valid but do not meet the threshold.
-    def verify_challenge_transaction_threshold(
+    def self.verify_challenge_transaction_threshold(
       challenge_transaction:,
       server:,
       threshold:,
@@ -266,7 +265,7 @@ module Stellar
     # @param server [Stellar::KeyPair] keypair for server's account.
     #
     # Raises a InvalidSep10ChallengeError if the validation fails, the exception will be thrown.
-    def verify_challenge_transaction(
+    def self.verify_challenge_transaction(
       challenge_transaction: String, server: String
     )
       transaction_envelope, client_account_id = read_challenge_transaction(
@@ -292,7 +291,7 @@ module Stellar
     # @param signers [ArrayOf[Stellar::AccountSigner]] The signers of client account.
     #
     # @return [ArrayOf[Stellar::AccountSigner]]
-    def verify_transaction_signatures(
+    def self.verify_transaction_signatures(
       transaction_envelope:,
       signers:
     )
@@ -325,10 +324,9 @@ module Stellar
     #
     # = Example
     # 
-    #   client = Stellar::Client.default_testnet
-    #   client.verify_tx_signed_by(transaction_envelope: envelope, keypair: keypair)
+    #   Stellar::SEP10.verify_tx_signed_by(transaction_envelope: envelope, keypair: keypair)
     #
-    def verify_tx_signed_by(transaction_envelope:, keypair:)
+    def self.verify_tx_signed_by(transaction_envelope:, keypair:)
       tx_hash = transaction_envelope.tx.hash
       transaction_envelope.signatures.any? do |sig| 
         if sig.hint != keypair.signature_hint

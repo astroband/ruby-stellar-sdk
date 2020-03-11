@@ -8,6 +8,7 @@ module Stellar
   autoload :Amount
   autoload :AccountSigner
   autoload :Client
+  autoload :SEP10
 
   module Horizon
     extend ActiveSupport::Autoload
