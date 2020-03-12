@@ -66,6 +66,7 @@ def example_verify_challenge_tx_threshold
   #    adds to the list.
   envelope = Stellar::TransactionEnvelope.from_xdr(envelope_xdr, "base64")
   envelope.signatures += [
+    envelope.tx.sign_decorated($client_master_kp),
     envelope.tx.sign_decorated($client_signer_kp1),
     envelope.tx.sign_decorated($client_signer_kp2)
   ]
@@ -77,10 +78,49 @@ def example_verify_challenge_tx_threshold
     challenge: envelope_xdr,
     server: $server_kp
   )
-  client_account = Stellar::Account.from_address(client_master_address)
-  client.load_account_signers(account)
-  
-
+  account = Stellar::Account.from_address(client_master_address)
+  begin
+    # Get all signers and thresholds for account
+    $client.load_account_signers(account)
+  rescue Faraday::ResourceNotFound
+    # The account doesn't exist yet.
+    # In this situation, all the server can do is verify that the client master 
+    # keypair has signed the transaction.
+    begin
+      Stellar::SEP10.verify_challenge_transaction(
+        challenge_transaction: envelope_xdr, server: $server_kp
+      )
+    rescue Stellar::InvalidSep10ChallengeError => e
+      puts "You should handle possible exceptions:"
+      puts e
+    else
+      puts "Challenge verified by client master key signature"
+    end
+  else
+    # The account exists, so the server should check if the signatures reach the
+    # medium threshold on the account
+    begin
+      signers_found = Stellar::SEP10.verify_challenge_transaction_threshold(
+        challenge_transaction: envelope_xdr,
+        server: $server_kp,
+        threshold: account.thresholds["med_threshold"],
+        signers: account.signers
+      )
+    rescue Stellar::InvalidSep10ChallengeError => e
+      puts "You should handle possible exceptions:"
+      puts e
+    else
+      puts "Challenge signatures and threshold verified!"
+      total_weight = 0
+      signers_found.each do |signer|
+        total_weight += signer.weight
+        puts "signer: %s, weight: %d" % [signer.address, signer.weight]
+      end
+      puts "Account medium threshold: %d, total signature(s) weight: %d" % [account.thresholds["med_threshold"], total_weight]
+    end
+  end
 end
 
+# Comment out setup_multisig to execute Stellar::Account.verify_challenge_transaction
 setup_multisig
+example_verify_challenge_tx_threshold
