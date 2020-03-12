@@ -58,13 +58,18 @@ module Stellar
 
     Contract Stellar::Account => Any
     def account_info(account)
-      account_id  = account.address
+      account_id = account.address
       @horizon.account(account_id:account_id)._get
     end
 
     Contract Stellar::Account => nil
     def load_account_signers(account)
       info = account_info(account)
+      account.thresholds = {
+        "low_threshold": info.thresholds["low_threshold"],
+        "med_threshold": info.thresholds["med_threshold"],
+        "high_threshold": info.thresholds["high_threshold"],
+      }
       account.signers = Array.new
       info.signers.each do |signer|
         account.signers.push(

@@ -54,7 +54,7 @@ module Stellar
     Contract(C::KeywordArgs[
       challenge: String,
       server: Stellar::KeyPair
-    ] => C::ArrayOf[Or[Stellar::TransactionEnvelope, String]])    
+    ] => [Stellar::TransactionEnvelope, String])    
     # Reads a SEP 10 challenge transaction and returns the decoded transaction envelope and client account ID contained within.
     #
     # It also verifies that transaction is signed by the server.
@@ -68,7 +68,7 @@ module Stellar
     # @param challenge [String] SEP0010 transaction challenge in base64.
     # @param server [Stellar::KeyPair] keypair for server where the challenge was generated.
     #
-    # @return [ArrayOf[Or[Stellar::TransactionEnvelope, String]]]
+    # @return [Stellar::TransactionEnvelope, String]
     #
     # = Example
     # 
