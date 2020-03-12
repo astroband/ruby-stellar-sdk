@@ -116,6 +116,19 @@ describe Stellar::Client do
     end
   end
 
+  describe "#load_account_signers" do
+    let(:client) { Stellar::Client.default_testnet }
+    let(:account) { Stellar::Account.random }
+
+    # client.frientbot(account) is failing... why?
+    xit "correct loads signers", vcr: {record: :once, match_requests_on: [:method]} do
+      response = client.friendbot(account)
+      client.load_account_signers(account)  
+      master_signer = Stellar::AccountSigner.new(account.keypair.address)
+      expect(account.signers).to eql([])
+    end
+  end
+
   describe "#account_merge" do
     let(:funder) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
     let(:client) { Stellar::Client.default_testnet }

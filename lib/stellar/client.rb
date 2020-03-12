@@ -73,7 +73,7 @@ module Stellar
             signer['weight'].to_i
           )
         )
-      end
+      end;nil
     end
 
     Contract ({
