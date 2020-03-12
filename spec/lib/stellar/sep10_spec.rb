@@ -570,6 +570,7 @@ describe Stellar::SEP10 do
 
       signers = [
         Stellar::AccountSigner.new(client_kp_a.address, 1),
+        Stellar::AccountSigner.new(client_kp_a.address, 1),
         Stellar::AccountSigner.new(Stellar::KeyPair.random.address, 4),
       ]
       signers_found = sep10.verify_transaction_signatures(
