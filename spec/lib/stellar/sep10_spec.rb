@@ -547,6 +547,38 @@ describe Stellar::SEP10 do
         /Transaction has no signatures./
       )
     end
+
+    it "removes duplicate signers" do
+      server_kp = Stellar::KeyPair.random
+      client_kp_a = Stellar::KeyPair.random
+      timeout = 600
+      anchor_name = "SDF"
+
+      challenge = sep10.build_challenge_tx(
+        server: server_kp,
+        client: client_kp_a,
+        anchor_name: anchor_name,
+        timeout: timeout
+      )
+
+      challenge_envelope = Stellar::TransactionEnvelope.from_xdr(challenge, "base64")
+
+      # Sign the transaction with the same keypair twice
+      challenge_envelope.signatures += [
+        client_kp_a, client_kp_a
+      ].map { |kp| challenge_envelope.tx.sign_decorated(kp) }
+
+      signers = [
+        Stellar::AccountSigner.new(client_kp_a.address, 1),
+        Stellar::AccountSigner.new(Stellar::KeyPair.random.address, 4),
+      ]
+      signers_found = sep10.verify_transaction_signatures(
+        transaction_envelope: challenge_envelope, signers: signers
+      )
+      expect(signers_found).to eql([
+        Stellar::AccountSigner.new(client_kp_a.address, 1)
+      ])
+    end
   end
 
   describe "#verify_tx_signed_by" do

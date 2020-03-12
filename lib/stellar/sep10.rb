@@ -292,9 +292,8 @@ module Stellar
       transaction_envelope: Stellar::TransactionEnvelope, 
       signers: ArrayOf[Stellar::AccountSigner]
     ] => ArrayOf[Stellar::AccountSigner])
-    # Checks if a transaction has been signed by one or more of
-    # the signers, returning a list of signers that were found to have signed the
-    # transaction.
+    # Checks if a transaction has been signed by one or more of the signers, 
+    # returning a list of unique signers that were found to have signed the transaction.
     #
     # @param transaction_envelope [Stellar::TransactionEnvelope] SEP0010 transaction challenge transaction envelope.
     # @param signers [ArrayOf[Stellar::AccountSigner]] The signers of client account.
@@ -308,9 +307,14 @@ module Stellar
       if signatures.empty?
         raise InvalidSep10ChallengeError.new("Transaction has no signatures.")
       end
-  
+
+      signers_seen = Set.new
       signers_found = Array.new
       signers.each do |signer|
+        if signers_seen.include?(signer.address)
+          next
+        end
+        signers_seen.add(signer.address)
         kp = Stellar::KeyPair.from_address(signer.address)
         if verify_tx_signed_by(transaction_envelope: transaction_envelope, keypair: kp)
           signers_found.push(signer)
