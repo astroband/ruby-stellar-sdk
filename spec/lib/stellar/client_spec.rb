@@ -124,8 +124,8 @@ describe Stellar::Client do
     xit "correct loads signers", vcr: {record: :once, match_requests_on: [:method]} do
       response = client.friendbot(account)
       client.load_account_signers(account)  
-      master_signer = Stellar::AccountSigner.new(account.keypair.address)
-      expect(account.signers).to eql([])
+      master_signer = Stellar::AccountSigner.new(account.keypair.address, 1)
+      expect(account.signers).to eql([master_signer])
     end
   end
 
