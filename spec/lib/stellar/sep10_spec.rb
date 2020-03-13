@@ -70,7 +70,7 @@ describe Stellar::SEP10 do
       }.to raise_error(Stellar::InvalidSep10ChallengeError, /The transaction source account is not equal to the server's account/)
     end
 
-    it "throws an error if transaction doestn\'t contain any operation" do
+    it "throws an error if transaction doestn't contain any operation" do
       envelope.tx.operations = []
 
       expect { 
