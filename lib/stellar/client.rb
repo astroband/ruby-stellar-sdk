@@ -206,6 +206,47 @@ module Stellar
       envelope_base64 = tx.to_envelope(source.keypair).to_xdr(:base64)
       horizon.transactions._post(tx: envelope_base64)
     end
+
+    Contract(C::KeywordArgs[
+      server: Stellar::KeyPair,
+      client: Stellar::KeyPair,
+      anchor_name: String,
+      timeout: C::Optional[Integer]
+    ] => String)
+    # DEPRECATED: this function has been moved Stellar::SEP10.build_challenge_tx and
+    # will be removed in the next major version release.
+    #
+    # A wrapper function for Stellar::SEP10::build_challenge_tx.
+    # 
+    # @param server [Stellar::KeyPair] Keypair for server's signing account.
+    # @param client [Stellar::KeyPair] Keypair for the account whishing to authenticate with the server.
+    # @param anchor_name [String] Anchor's name to be used in the manage_data key.
+    # @param timeout [Integer] Challenge duration (default to 5 minutes).
+    #
+    # @return [String] A base64 encoded string of the raw TransactionEnvelope xdr struct for the transaction.
+    def build_challenge_tx(server:, client:, anchor_name:, timeout: 300)
+      Stellar::SEP10.build_challenge_tx(
+        server: server, client: client, anchor_name: anchor_name, timeout: timeout
+      )
+    end
+
+    Contract(C::KeywordArgs[
+      challenge: String,
+      server: Stellar::KeyPair
+    ] => C::Bool)    
+    # DEPRECATED: this function has been moved to Stellar::SEP10::read_challenge_tx and
+    # will be removed in the next major version release.
+    #
+    # A wrapper function for Stellar::SEP10.verify_challenge_transaction
+    #
+    # @param challenge [String] SEP0010 transaction challenge in base64.
+    # @param server [Stellar::KeyPair] Stellar::KeyPair for server where the challenge was generated.
+    #
+    # @return [Boolean]
+    def verify_challenge_tx(challenge:, server:)
+      Stellar::SEP10.verify_challenge_transaction(challenge_transaction: challenge, server: server)
+      true
+    end
     
   end
 end
