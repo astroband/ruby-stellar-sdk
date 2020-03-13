@@ -17,24 +17,24 @@ module Stellar
     FRIENDBOT_URL = 'https://friendbot.stellar.org'.freeze
 
     def self.default(options={})
-      new {
+      new options.merge(
         network: Stellar::Networks::PUBLIC,
         horizon: HORIZON_MAINNET_URL
-      }.merge(options)
+      )
     end
 
     def self.default_testnet(options={})
-      new {
+      new options.merge(
         network: Stellar::Networks::TESTNET,
         horizon:   HORIZON_TESTNET_URL,
         friendbot: HORIZON_TESTNET_URL,
-      }.merge(options)
+      )
     end
 
     def self.localhost(options={})
-      new {
+      new options.merge(
         horizon: HORIZON_LOCALHOST_URL
-      }.merge(options)
+      )
     end
 
     attr_reader :horizon
