@@ -118,11 +118,9 @@ describe Stellar::Client do
 
   describe "#load_account_signers" do
     let(:client) { Stellar::Client.default_testnet }
-    let(:account) { Stellar::Account.random }
+    let(:account) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
 
-    # client.frientbot(account) is failing... why?
-    xit "correct loads signers", vcr: {record: :once, match_requests_on: [:method]} do
-      response = client.friendbot(account)
+    it "correct loads signers", vcr: {record: :once, match_requests_on: [:method]} do
       client.load_account_signers(account)  
       master_signer = Stellar::AccountSigner.new(account.keypair.address, 1)
       expect(account.signers).to eql([master_signer])
