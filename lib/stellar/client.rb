@@ -247,6 +247,24 @@ module Stellar
       Stellar::SEP10.verify_challenge_transaction(challenge_transaction: challenge, server: server)
       true
     end
+
+    Contract(C::KeywordArgs[
+      transaction_envelope: Stellar::TransactionEnvelope,
+      keypair: Stellar::KeyPair
+    ] => C::Bool)
+    # DEPRECATED: this function has been moved to Stellar::SEP10::verify_tx_signed_by and
+    # will be removed in the next major version release.
+    #
+    # @param transaction_envelope [Stellar::TransactionEnvelope] 
+    # @param keypair [Stellar::KeyPair]
+    #
+    # @return [Boolean]
+    #
+    def verify_tx_signed_by(transaction_envelope:, keypair:)
+      Stellar::SEP10.verify_tx_signed_by(
+        transaction_envelope: transaction_envelope, keypair: keypair
+      )
+    end
     
   end
 end
