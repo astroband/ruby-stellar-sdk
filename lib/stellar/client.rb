@@ -17,22 +17,24 @@ module Stellar
     FRIENDBOT_URL = 'https://friendbot.stellar.org'.freeze
 
     def self.default(options={})
-      new options.merge(
+      new {
+        network: Stellar::Networks::PUBLIC,
         horizon: HORIZON_MAINNET_URL
-      )
+      }.merge(options)
     end
 
     def self.default_testnet(options={})
-      new options.merge(
+      new {
+        network: Stellar::Networks::TESTNET,
         horizon:   HORIZON_TESTNET_URL,
         friendbot: HORIZON_TESTNET_URL,
-      )
+      }.merge(options)
     end
 
     def self.localhost(options={})
-      new options.merge(
+      new {
         horizon: HORIZON_LOCALHOST_URL
-      )
+      }.merge(options)
     end
 
     attr_reader :horizon
@@ -54,6 +56,9 @@ module Stellar
           "X-Client-Version" => VERSION,
         }
       end
+      # TODO: add a network_passphrase parameter per client call like other SDK's 
+      # instead of setting a default for the module.
+      Stellar.default_network = options[:network]
     end
 
     Contract Stellar::Account => Any
