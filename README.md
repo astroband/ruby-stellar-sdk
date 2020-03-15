@@ -56,7 +56,7 @@ Stellar.default_network = Stellar::Networks::PUBLIC
 - Run `bundle install`
 - Copy `spec/config.yml.sample` to `spec/config.yml`
 - Replace anything in `spec/config.yml` especially if you will re-record specs
-- `rspec spec`
+- `bundle exec rspec spec`
 
 ## Contributing
 
