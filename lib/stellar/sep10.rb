@@ -248,7 +248,7 @@ module Stellar
 
       if weight < threshold
         raise InvalidSep10ChallengeError.new(
-          "signers with weight %d do not meet threshold %d." % [weight, threshold]
+          "signers with weight %{w} do not meet threshold %{t}." % {w: weight, t: threshold}
         )
       end
   
