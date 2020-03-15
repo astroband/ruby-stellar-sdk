@@ -66,13 +66,10 @@ module Stellar
     def load_account_signers(account)
       info = account_info(account)
       account.thresholds = info.thresholds
-      account.signers = Array.new
-      info.signers.each do |signer|
-        account.signers.push(
-          Stellar::AccountSigner.new(
-            signer['key'], 
-            signer['weight'].to_i
-          )
+      account.signers = info.signers.map do |signer|
+        Stellar::AccountSigner.new(
+          signer['key'], 
+          signer['weight'].to_i
         )
       end;nil
     end
