@@ -118,11 +118,15 @@ describe Stellar::Client do
 
   describe "#load_account_signers" do
     let(:client) { Stellar::Client.default_testnet }
-    let(:account) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
+    let(:keypair) { Stellar::KeyPair.from_seed(CONFIG[:source_seed]) }
 
-    it "correct loads signers", vcr: {record: :once, match_requests_on: [:method]} do
-      client.load_account_signers(account)  
+    it "loads successfully", vcr: {record: :once, match_requests_on: [:method]} do
+      account = client.load_account(keypair)
       master_signer = Stellar::AccountSigner.new(account.keypair.address, 1)
+      expect(account.keypair).to eql(keypair)
+      expect(account.thresholds).to eql(
+        {'low_threshold' => 0, 'med_threshold' => 0, 'high_threshold' => 0}
+      )
       expect(account.signers).to eql([master_signer])
     end
   end
