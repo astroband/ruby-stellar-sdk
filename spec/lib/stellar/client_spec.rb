@@ -116,7 +116,7 @@ describe Stellar::Client do
     end
   end
 
-  describe "#load_account_signers" do
+  describe "#load_account" do
     let(:client) { Stellar::Client.default_testnet }
     let(:keypair) { Stellar::KeyPair.from_seed(CONFIG[:source_seed]) }
 

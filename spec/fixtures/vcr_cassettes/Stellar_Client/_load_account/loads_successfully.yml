@@ -27,7 +27,7 @@ http_interactions:
       Content-Type:
       - application/hal+json; charset=utf-8
       Date:
-      - Mon, 16 Mar 2020 18:19:50 GMT
+      - Mon, 16 Mar 2020 19:16:40 GMT
       Vary:
       - Origin
       X-Ratelimit-Limit:
@@ -99,16 +99,16 @@ http_interactions:
           },
           "horizon_version": "1.0.0-948d8d1221abd4f15cac2d3a9eb44b31633cd3b9",
           "core_version": "stellar-core 12.4.0 (c0136139802ac1a1ac8899424e7888fa9366414e)",
-          "ingest_latest_ledger": 750812,
-          "history_latest_ledger": 750812,
+          "ingest_latest_ledger": 751444,
+          "history_latest_ledger": 751444,
           "history_elder_ledger": 1,
-          "core_latest_ledger": 750812,
+          "core_latest_ledger": 751444,
           "network_passphrase": "Test SDF Network ; September 2015",
           "current_protocol_version": 12,
           "core_supported_protocol_version": 12
         }
     http_version: 
-  recorded_at: Mon, 16 Mar 2020 18:19:50 GMT
+  recorded_at: Mon, 16 Mar 2020 19:16:40 GMT
 - request:
     method: get
     uri: https://horizon-testnet.stellar.org/accounts/[source_address]
@@ -136,9 +136,9 @@ http_interactions:
       Content-Type:
       - application/hal+json; charset=utf-8
       Date:
-      - Mon, 16 Mar 2020 18:19:50 GMT
+      - Mon, 16 Mar 2020 19:16:41 GMT
       Latest-Ledger:
-      - '750812'
+      - '751444'
       Vary:
       - Origin
       X-Ratelimit-Limit:
@@ -222,5 +222,5 @@ http_interactions:
           "paging_token": "[source_address]"
         }
     http_version: 
-  recorded_at: Mon, 16 Mar 2020 18:19:50 GMT
+  recorded_at: Mon, 16 Mar 2020 19:16:41 GMT
 recorded_with: VCR 3.0.3
