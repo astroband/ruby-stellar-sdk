@@ -179,10 +179,10 @@ module Stellar
       # important when verifying signers of a challenge transaction that we only
       # verify and return client signers. If an account has the server as a
       # signer the server should not play a part in the authentication of the
-      # client.
+      # client. We also ignore non-G addresses.
       client_signers = Set.new
       signers.each do |signer|
-        if signer.address != server.address
+        if signer.address != server.address and signer.address.start_with?('G')
           client_signers.add(signer)
         end
       end
