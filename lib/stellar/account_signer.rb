@@ -20,5 +20,9 @@ module Stellar
 
     alias eql? ==
 
+    def hash
+      [@address, weight].hash
+    end
+
   end
 end

@@ -66,7 +66,7 @@ module Stellar
     attr_accessor :thresholds
     attr_accessor :signers
 
-    Contract Stellar::KeyPair, Maybe[({'low_threshold' => Integer, 'med_threshold' => Integer, 'high_threshold' => Integer})], Maybe[ArrayOf[Stellar::AccountSigner]] => Any
+    Contract Stellar::KeyPair, Maybe[({'low_threshold' => Integer, 'med_threshold' => Integer, 'high_threshold' => Integer})], Maybe[SetOf[Stellar::AccountSigner]] => Any
     def initialize(keypair, thresholds = nil, signers = nil)
       @keypair = keypair
       @thresholds = thresholds

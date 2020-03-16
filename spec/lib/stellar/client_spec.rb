@@ -127,7 +127,7 @@ describe Stellar::Client do
       expect(account.thresholds).to eql(
         {'low_threshold' => 0, 'med_threshold' => 0, 'high_threshold' => 0}
       )
-      expect(account.signers).to eql([master_signer])
+      expect(account.signers).to eql(Set[master_signer])
     end
   end
 
