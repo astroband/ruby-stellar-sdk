@@ -10,7 +10,6 @@ $server_kp = Stellar::KeyPair.random
 def setup_multisig
   account = Stellar::Account.from_seed($client_master_kp.seed)
   $client.friendbot(account)
-  $client.load_account_signers(account)
 
   signer1 = Stellar::Signer.new
   signer1.key = Stellar::SignerKey.ed25519($client_signer_kp1)
@@ -81,7 +80,7 @@ def example_verify_challenge_tx_threshold
   account = Stellar::Account.from_address(client_master_address)
   begin
     # Get all signers and thresholds for account
-    $client.load_account_signers(account)
+    info = $client.account_info(account)
   rescue Faraday::ResourceNotFound
     # The account doesn't exist yet.
     # In this situation, all the server can do is verify that the client master 
@@ -103,8 +102,8 @@ def example_verify_challenge_tx_threshold
       signers_found = Stellar::SEP10.verify_challenge_tx_threshold(
         challenge_xdr: envelope_xdr,
         server: $server_kp,
-        threshold: account.thresholds["med_threshold"],
-        signers: account.signers
+        threshold: info.thresholds["med_threshold"],
+        signers: Set.new(info.signers)
       )
     rescue Stellar::InvalidSep10ChallengeError => e
       puts "You should handle possible exceptions:"
@@ -113,10 +112,10 @@ def example_verify_challenge_tx_threshold
       puts "Challenge signatures and threshold verified!"
       total_weight = 0
       signers_found.each do |signer|
-        total_weight += signer.weight
+        total_weight += signer['weight']
         puts "signer: %s, weight: %d" % [signer['key'], signer['weight']]
       end
-      puts "Account medium threshold: %d, total signature(s) weight: %d" % [account.thresholds["med_threshold"], total_weight]
+      puts "Account medium threshold: %d, total signature(s) weight: %d" % [info.thresholds["med_threshold"], total_weight]
     end
   end
 end
