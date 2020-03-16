@@ -75,7 +75,7 @@ def example_verify_challenge_tx_threshold
   # 4. The wallet makes a POST request to /auth containing the signed challenge
   # 5. The server verifies the challenge transaction
   envelope, client_master_address = Stellar::SEP10.read_challenge_tx(
-    challenge: envelope_xdr,
+    challenge_xdr: envelope_xdr,
     server: $server_kp
   )
   account = Stellar::Account.from_address(client_master_address)
@@ -87,8 +87,8 @@ def example_verify_challenge_tx_threshold
     # In this situation, all the server can do is verify that the client master 
     # keypair has signed the transaction.
     begin
-      Stellar::SEP10.verify_challenge_transaction(
-        challenge_transaction: envelope_xdr, server: $server_kp
+      Stellar::SEP10.verify_challenge_tx(
+        challenge_xdr: envelope_xdr, server: $server_kp
       )
     rescue Stellar::InvalidSep10ChallengeError => e
       puts "You should handle possible exceptions:"
@@ -100,8 +100,8 @@ def example_verify_challenge_tx_threshold
     # The account exists, so the server should check if the signatures reach the
     # medium threshold on the account
     begin
-      signers_found = Stellar::SEP10.verify_challenge_transaction_threshold(
-        challenge_transaction: envelope_xdr,
+      signers_found = Stellar::SEP10.verify_challenge_tx_threshold(
+        challenge_xdr: envelope_xdr,
         server: $server_kp,
         threshold: account.thresholds["med_threshold"],
         signers: account.signers

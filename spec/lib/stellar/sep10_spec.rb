@@ -53,20 +53,20 @@ describe Stellar::SEP10 do
     end
     
     it "returns the envelope and client public key if the transaction is valid" do
-      expect(sep10.read_challenge_tx(challenge: subject, server: server)).to eql([envelope, user.address])
+      expect(sep10.read_challenge_tx(challenge_xdr: subject, server: server)).to eql([envelope, user.address])
     end
 
     it "throws an error if transaction sequence number is different to zero"  do
       envelope.tx.seq_num = 1
 
       expect { 
-        sep10.read_challenge_tx(challenge: envelope.to_xdr(:base64), server: server)
+        sep10.read_challenge_tx(challenge_xdr: envelope.to_xdr(:base64), server: server)
       }.to raise_error(Stellar::InvalidSep10ChallengeError, /The transaction sequence number should be zero/)
     end      
 
     it "throws an error if transaction source account is different to server account id"  do
       expect {
-        sep10.read_challenge_tx(challenge: envelope.to_xdr(:base64), server: Stellar::KeyPair.random)
+        sep10.read_challenge_tx(challenge_xdr: envelope.to_xdr(:base64), server: Stellar::KeyPair.random)
       }.to raise_error(Stellar::InvalidSep10ChallengeError, /The transaction source account is not equal to the server's account/)
     end
 
@@ -74,7 +74,7 @@ describe Stellar::SEP10 do
       envelope.tx.operations = []
 
       expect { 
-        sep10.read_challenge_tx(challenge: envelope.to_xdr(:base64), server: server)
+        sep10.read_challenge_tx(challenge_xdr: envelope.to_xdr(:base64), server: server)
       }.to raise_error(Stellar::InvalidSep10ChallengeError, /The transaction should contain only one operation/)
       end
 
@@ -83,7 +83,7 @@ describe Stellar::SEP10 do
       op.source_account = nil
 
       expect { 
-        sep10.read_challenge_tx(challenge: envelope.to_xdr(:base64), server: server)
+        sep10.read_challenge_tx(challenge_xdr: envelope.to_xdr(:base64), server: server)
       }.to raise_error(Stellar::InvalidSep10ChallengeError, /The transaction's operation should contain a source account/)
       end
       
@@ -97,14 +97,14 @@ describe Stellar::SEP10 do
       ]
 
       expect { 
-        sep10.read_challenge_tx(challenge: envelope.to_xdr(:base64), server: server)
+        sep10.read_challenge_tx(challenge_xdr: envelope.to_xdr(:base64), server: server)
       }.to raise_error(Stellar::InvalidSep10ChallengeError, /The transaction's operation should be manageData/)
       end
 
     it "throws an error if operation value is not a 64 bytes base64 string" do
       transaction.operations[0].body.value.data_value = SecureRandom.random_bytes(64)
       expect { 
-        sep10.read_challenge_tx(challenge: envelope.to_xdr(:base64), server: server)          
+        sep10.read_challenge_tx(challenge_xdr: envelope.to_xdr(:base64), server: server)          
       }.to raise_error(
         Stellar::InvalidSep10ChallengeError,
         /The transaction's operation value should be a 64 bytes base64 random string/
@@ -115,7 +115,7 @@ describe Stellar::SEP10 do
       envelope.signatures = envelope.signatures.slice(1, 2)
       
       expect { 
-        sep10.read_challenge_tx(challenge: envelope.to_xdr(:base64), server: server)          
+        sep10.read_challenge_tx(challenge_xdr: envelope.to_xdr(:base64), server: server)          
       }.to raise_error(
         Stellar::InvalidSep10ChallengeError,
         /The transaction is not signed by the server/
@@ -128,7 +128,7 @@ describe Stellar::SEP10 do
       challenge = envelope.tx.to_envelope(server, user).to_xdr(:base64)
 
       expect { 
-        sep10.read_challenge_tx(challenge: challenge, server: server)          
+        sep10.read_challenge_tx(challenge_xdr: challenge, server: server)          
       }.to raise_error(
         Stellar::InvalidSep10ChallengeError,
         /The transaction has expired/
@@ -138,7 +138,7 @@ describe Stellar::SEP10 do
       challenge = envelope.tx.to_envelope(server, user).to_xdr(:base64)
 
       expect { 
-        sep10.read_challenge_tx(challenge: challenge, server: server)          
+        sep10.read_challenge_tx(challenge_xdr: challenge, server: server)          
       }.to raise_error(
         Stellar::InvalidSep10ChallengeError,
         /The transaction has expired/
@@ -152,7 +152,7 @@ describe Stellar::SEP10 do
       challenge = envelope.tx.to_envelope(server, user).to_xdr(:base64)
 
       expect { 
-        sep10.read_challenge_tx(challenge: challenge, server: server)          
+        sep10.read_challenge_tx(challenge_xdr: challenge, server: server)          
       }.to raise_error(
         Stellar::InvalidSep10ChallengeError,
         /The transaction has expired/
@@ -160,7 +160,7 @@ describe Stellar::SEP10 do
     end
   end
 
-  describe "#verify_challenge_transaction_threshold" do
+  describe "#verify_challenge_tx_threshold" do
     it "verifies proper challenge and threshold" do
       server_kp = Stellar::KeyPair.random
       client_kp_a = Stellar::KeyPair.random
@@ -188,8 +188,8 @@ describe Stellar::SEP10 do
         Stellar::AccountSigner.new(client_kp_c.address, 4),
       ]
 
-      signers_found = sep10.verify_challenge_transaction_threshold(
-        challenge_transaction: challenge_tx,
+      signers_found = sep10.verify_challenge_tx_threshold(
+        challenge_xdr: challenge_tx,
         server: server_kp,
         threshold: 7,
         signers: signers,
@@ -223,8 +223,8 @@ describe Stellar::SEP10 do
       ]
 
       expect {
-        sep10.verify_challenge_transaction_threshold(
-          challenge_transaction: challenge_tx,
+        sep10.verify_challenge_tx_threshold(
+          challenge_xdr: challenge_tx,
           server: server_kp,
           threshold: 7,
           signers: signers,
@@ -254,8 +254,8 @@ describe Stellar::SEP10 do
       envelope.signatures.push(envelope.tx.sign_decorated(client_kp))
       challenge_tx = envelope.to_xdr(:base64)
 
-      sep10.verify_challenge_transaction(
-        challenge_transaction: challenge_tx, 
+      sep10.verify_challenge_tx(
+        challenge_xdr: challenge_tx, 
         server: server_kp
       )
     end
@@ -274,8 +274,8 @@ describe Stellar::SEP10 do
       )
 
       expect {
-        sep10.verify_challenge_transaction(
-          challenge_transaction: challenge, 
+        sep10.verify_challenge_tx(
+          challenge_xdr: challenge, 
           server: server_kp
         )
       }.to raise_error(
@@ -312,8 +312,8 @@ describe Stellar::SEP10 do
         Stellar::AccountSigner.new(client_kp_c.address, 4),
         Stellar::AccountSigner.new(Stellar::KeyPair.random.address, 255),
       ]
-      signers_found = sep10.verify_challenge_transaction_signers(
-        challenge: challenge_envelope.to_xdr(:base64), 
+      signers_found = sep10.verify_challenge_tx_signers(
+        challenge_xdr: challenge_envelope.to_xdr(:base64), 
         server: server_kp, 
         signers: signers
       )
@@ -352,8 +352,8 @@ describe Stellar::SEP10 do
       ]
 
       expect {
-        sep10.verify_challenge_transaction_signers(
-          challenge: challenge_envelope.to_xdr(:base64), 
+        sep10.verify_challenge_tx_signers(
+          challenge_xdr: challenge_envelope.to_xdr(:base64), 
           server: server_kp, 
           signers: []
         )
@@ -390,8 +390,8 @@ describe Stellar::SEP10 do
       ]
 
       expect {
-        sep10.verify_challenge_transaction_signers(
-          challenge: challenge_envelope.to_xdr(:base64), 
+        sep10.verify_challenge_tx_signers(
+          challenge_xdr: challenge_envelope.to_xdr(:base64), 
           server: server_kp, 
           signers: signers
         )
@@ -429,8 +429,8 @@ describe Stellar::SEP10 do
       ]
 
       expect {
-        sep10.verify_challenge_transaction_signers(
-          challenge: challenge_envelope.to_xdr(:base64), 
+        sep10.verify_challenge_tx_signers(
+          challenge_xdr: challenge_envelope.to_xdr(:base64), 
           server: server_kp, 
           signers: signers
         )
@@ -468,8 +468,8 @@ describe Stellar::SEP10 do
       ]
 
       expect {
-        sep10.verify_challenge_transaction_signers(
-          challenge: challenge_envelope.to_xdr(:base64), 
+        sep10.verify_challenge_tx_signers(
+          challenge_xdr: challenge_envelope.to_xdr(:base64), 
           server: server_kp, 
           signers: signers
         )
@@ -508,8 +508,8 @@ describe Stellar::SEP10 do
         Stellar::AccountSigner.new(client_kp_c.address, 3),
         Stellar::AccountSigner.new(Stellar::KeyPair.random.address, 4),
       ]
-      signers_found = sep10.verify_transaction_signatures(
-        transaction_envelope: challenge_envelope, signers: signers
+      signers_found = sep10.verify_tx_signatures(
+        tx_envelope: challenge_envelope, signers: signers
       )
       expect(signers_found).to eql([
         Stellar::AccountSigner.new(client_kp_a.address, 1),
@@ -539,8 +539,8 @@ describe Stellar::SEP10 do
 
       signers = [Stellar::AccountSigner.new(client_kp.address)]
       expect{
-        sep10.verify_transaction_signatures(
-          transaction_envelope: tx.to_envelope(), signers: signers
+        sep10.verify_tx_signatures(
+          tx_envelope: tx.to_envelope(), signers: signers
         )
       }.to raise_error(
         Stellar::InvalidSep10ChallengeError,
@@ -573,8 +573,8 @@ describe Stellar::SEP10 do
         Stellar::AccountSigner.new(client_kp_a.address, 1),
         Stellar::AccountSigner.new(Stellar::KeyPair.random.address, 4),
       ]
-      signers_found = sep10.verify_transaction_signatures(
-        transaction_envelope: challenge_envelope, signers: signers
+      signers_found = sep10.verify_tx_signatures(
+        tx_envelope: challenge_envelope, signers: signers
       )
       expect(signers_found).to eql([
         Stellar::AccountSigner.new(client_kp_a.address, 1)
@@ -589,13 +589,13 @@ describe Stellar::SEP10 do
     end
     
     it "returns true if transaction envelope is signed by keypair" do
-      result = sep10.verify_tx_signed_by(transaction_envelope: envelope, keypair: keypair)
+      result = sep10.verify_tx_signed_by(tx_envelope: envelope, keypair: keypair)
       expect(result).to eql(true)
     end
     
     it "returns false if transaction envelope is not signed by keypair" do
       result = sep10.verify_tx_signed_by(
-        transaction_envelope: envelope, 
+        tx_envelope: envelope, 
         keypair: Stellar::KeyPair.random
       )
       expect(result).to eql(false)

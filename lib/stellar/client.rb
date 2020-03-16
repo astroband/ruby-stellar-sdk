@@ -241,7 +241,7 @@ module Stellar
     #
     # @return [Boolean]
     def verify_challenge_tx(challenge:, server:)
-      Stellar::SEP10.verify_challenge_transaction(challenge_transaction: challenge, server: server)
+      Stellar::SEP10.verify_challenge_tx(challenge_transaction: challenge, server: server)
       true
     end
 
