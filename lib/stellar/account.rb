@@ -63,14 +63,10 @@ module Stellar
     end
 
     attr_reader :keypair
-    attr_reader :thresholds
-    attr_reader :signers
 
-    Contract Stellar::KeyPair, Maybe[({'low_threshold' => Integer, 'med_threshold' => Integer, 'high_threshold' => Integer})], Maybe[SetOf[Stellar::AccountSigner]] => Any
-    def initialize(keypair, thresholds = nil, signers = nil)
+    Contract Stellar::KeyPair => Any
+    def initialize(keypair)
       @keypair = keypair
-      @thresholds = thresholds
-      @signers = signers
     end
   end
 

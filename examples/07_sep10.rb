@@ -114,7 +114,7 @@ def example_verify_challenge_tx_threshold
       total_weight = 0
       signers_found.each do |signer|
         total_weight += signer.weight
-        puts "signer: %s, weight: %d" % [signer.address, signer.weight]
+        puts "signer: %s, weight: %d" % [signer['key'], signer['weight']]
       end
       puts "Account medium threshold: %d, total signature(s) weight: %d" % [account.thresholds["med_threshold"], total_weight]
     end

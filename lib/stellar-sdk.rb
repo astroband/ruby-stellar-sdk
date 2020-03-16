@@ -4,9 +4,7 @@ require 'contracts'
 module Stellar
 
   autoload :Account
-  autoload :AccountInfo
   autoload :Amount
-  autoload :AccountSigner
   autoload :Client
   autoload :SEP10
 

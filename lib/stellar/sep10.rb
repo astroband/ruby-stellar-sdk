@@ -142,8 +142,8 @@ module Stellar
     Contract(C::KeywordArgs[
       challenge_xdr: String,
       server: Stellar::KeyPair,
-      signers: SetOf[Stellar::AccountSigner]
-    ] => C::SetOf[Stellar::AccountSigner])
+      signers: SetOf[::Hash]
+    ] => C::SetOf[::Hash])
     # Verifies that for a SEP 10 challenge transaction all signatures on the transaction are accounted for.
     #
     # A transaction is verified if it is signed by the server account, and all other signatures match a signer 
@@ -154,9 +154,9 @@ module Stellar
     #
     # @param challenge_xdr [String] SEP0010 transaction challenge transaction in base64.
     # @param server [Stellar::Keypair] keypair for server's account.
-    # @param signers [SetOf[Stellar::AccountSigner]] The signers of client account.
+    # @param signers [SetOf[::Hash]] The signers of client account.
     #
-    # @return [SetOf[Stellar::AccountSigner]]
+    # @return [SetOf[::Hash]]
     #
     # Raises a InvalidSep10ChallengeError if:
     #     - The transaction is invalid according to Stellar::SEP10.read_challenge_tx.
@@ -182,7 +182,7 @@ module Stellar
       # client. We also ignore non-G addresses.
       client_signers = Set.new
       signers.each do |signer|
-        if signer.address != server.address and signer.address.start_with?('G')
+        if signer['key'] != server.address and signer['key'].start_with?('G')
           client_signers.add(signer)
         end
       end
@@ -209,8 +209,8 @@ module Stellar
       challenge_xdr: String,
       server: Stellar::KeyPair,
       threshold: Integer,
-      signers: SetOf[Stellar::AccountSigner],
-    ] => C::SetOf[Stellar::AccountSigner])
+      signers: SetOf[::Hash],
+    ] => C::SetOf[::Hash])
     # Verifies that for a SEP 10 challenge transaction all signatures on the transaction 
     # are accounted for and that the signatures meet a threshold on an account. A 
     # transaction is verified if it is signed by the server account, and all other 
@@ -220,9 +220,9 @@ module Stellar
     # @param challenge_xdr [String] SEP0010 transaction challenge transaction in base64.
     # @param server [Stellar::KeyPair] keypair for server's account.
     # @param threshold [Integer] The medThreshold on the client account.
-    # @param signers [SetOf[Stellar::AccountSigner]]The signers of client account.
+    # @param signers [SetOf[::Hash]]The signers of client account.
     #
-    # @return [SetOf[Stellar::AccountSigner]]
+    # @return [SetOf[::Hash]]
     #
     # Raises a InvalidSep10ChallengeError if:
     #   - The transaction is invalid according to Stellar::SEP10.read_challenge_transaction.
@@ -243,7 +243,7 @@ module Stellar
   
       weight = 0
       signers_found.each do |s|
-        weight += s.weight
+        weight += s['weight']
       end
 
       if weight < threshold
@@ -290,15 +290,15 @@ module Stellar
 
     Contract(C::KeywordArgs[
       tx_envelope: Stellar::TransactionEnvelope, 
-      signers: SetOf[Stellar::AccountSigner]
-    ] => SetOf[Stellar::AccountSigner])
+      signers: SetOf[::Hash]
+    ] => SetOf[::Hash])
     # Checks if a transaction has been signed by one or more of the signers, 
     # returning a list of unique signers that were found to have signed the transaction.
     #
     # @param tx_envelope [Stellar::TransactionEnvelope] SEP0010 transaction challenge transaction envelope.
-    # @param signers [SetOf[Stellar::AccountSigner]] The signers of client account.
+    # @param signers [SetOf[::Hash]] The signers of client account.
     #
-    # @return [SetOf[Stellar::AccountSigner]]
+    # @return [SetOf[::Hash]]
     def self.verify_tx_signatures(
       tx_envelope:,
       signers:
@@ -310,7 +310,7 @@ module Stellar
 
       signers_found = Set.new
       signers.each do |signer|
-        kp = Stellar::KeyPair.from_address(signer.address)
+        kp = Stellar::KeyPair.from_address(signer['key'])
         if verify_tx_signed_by(tx_envelope: tx_envelope, keypair: kp)
           signers_found.add(signer)
         end

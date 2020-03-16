@@ -66,18 +66,6 @@ module Stellar
       @horizon.account(account_id:account_id)._get
     end
 
-    Contract Stellar::KeyPair => Stellar::Account
-    def load_account(keypair)
-      info = account_info(keypair.address)
-      signers = Set.new(info.signers.map do |signer|
-        Stellar::AccountSigner.new(
-          signer['key'], 
-          signer['weight'].to_i
-        )
-      end)
-      Stellar::Account.new(keypair, info.thresholds, signers)
-    end
-
     Contract ({
       account:     Stellar::Account,
       destination: Stellar::Account
