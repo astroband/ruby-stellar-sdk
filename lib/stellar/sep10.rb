@@ -259,6 +259,9 @@ module Stellar
       challenge_xdr: String, 
       server: Stellar::KeyPair
     ] => nil)
+    # DEPRECATED: Use verify_challenge_tx_signers instead.
+    # This function does not support multiple account signers.
+    #
     # Verifies if a transaction is a valid per SEP-10 challenge transaction, if the validation 
     # fails, an exception will be thrown.
     #
