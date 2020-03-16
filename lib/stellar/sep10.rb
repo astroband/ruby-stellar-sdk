@@ -175,20 +175,19 @@ module Stellar
         challenge_xdr: challenge_xdr, server: server
       )
 
-      # Remove the server signer from the signers list if it is present. It's
-      # important when verifying signers of a challenge transaction that we only
-      # verify and return client signers. If an account has the server as a
-      # signer the server should not play a part in the authentication of the
-      # client. We also ignore non-G addresses.
-      client_signers = Set.new
+      # ignore non-G addresses
+      #
+      # We're also including the server in the list of signers past to verify_tx_signatures
+      # in order to verify that no signature is consumed more than once.
+      g_signers = Set.new
       signers.each do |signer|
-        if signer['key'] != server.address and signer['key'].start_with?('G')
-          client_signers.add(signer)
+        if signer['key'].start_with?('G')
+          g_signers.add(signer)
         end
       end
 
       signers_found = verify_tx_signatures(
-        tx_envelope: te, signers: client_signers
+        tx_envelope: te, signers: g_signers
       )
 
       # Confirm we matched signatures to the client signers.
@@ -260,7 +259,7 @@ module Stellar
       server: Stellar::KeyPair
     ] => nil)
     # DEPRECATED: Use verify_challenge_tx_signers instead.
-    # This function does not support multiple account signers.
+    # This function does not support multiple client signatures.
     #
     # Verifies if a transaction is a valid per SEP-10 challenge transaction, if the validation 
     # fails, an exception will be thrown.
@@ -295,7 +294,7 @@ module Stellar
       tx_envelope: Stellar::TransactionEnvelope, 
       signers: SetOf[::Hash]
     ] => SetOf[::Hash])
-    # Checks if a transaction has been signed by one or more of the signers, 
+    # Verifies every signer passed matches a signature on the transaction exactly once,
     # returning a list of unique signers that were found to have signed the transaction.
     #
     # @param tx_envelope [Stellar::TransactionEnvelope] SEP0010 transaction challenge transaction envelope.
@@ -311,11 +310,21 @@ module Stellar
         raise InvalidSep10ChallengeError.new("Transaction has no signatures.")
       end
 
+      signatures_used = Set.new
       signers_found = Set.new
       signers.each do |signer|
         kp = Stellar::KeyPair.from_address(signer['key'])
-        if verify_tx_signed_by(tx_envelope: tx_envelope, keypair: kp)
-          signers_found.add(signer)
+        tx_envelope.signatures.each_with_index do |sig, i|
+          if signatures_used.include?(i)
+            next
+          end
+          if sig.hint != kp.signature_hint
+            next
+          end
+          if verify_tx_signed_by(tx_envelope: tx_envelope, keypair: kp)
+            signatures_used.add(i)
+            signers_found.add(signer)
+          end
         end
       end
 
