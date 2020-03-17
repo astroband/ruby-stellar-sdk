@@ -181,7 +181,11 @@ module Stellar
       # in order to verify that no signature is consumed more than once.
       g_signers = Set.new
       signers.each do |signer|
-        if signer['key'].start_with?('G')
+        begin
+          Stellar::Util::StrKey.check_decode(:account_id, signer['key'])
+        rescue
+          next
+        else
           g_signers.add(signer)
         end
       end
