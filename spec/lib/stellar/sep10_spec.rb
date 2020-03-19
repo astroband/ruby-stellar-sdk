@@ -99,7 +99,7 @@ describe Stellar::SEP10 do
       expect { 
         sep10.read_challenge_tx(challenge_xdr: envelope.to_xdr(:base64), server: server)
       }.to raise_error(Stellar::InvalidSep10ChallengeError, /The transaction's operation should be manageData/)
-      end
+    end
 
     it "throws an error if operation value is not a 64 bytes base64 string" do
       transaction.operations[0].body.value.data_value = SecureRandom.random_bytes(64)
