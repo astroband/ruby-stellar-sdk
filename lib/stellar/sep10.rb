@@ -142,8 +142,8 @@ module Stellar
     Contract(C::KeywordArgs[
       challenge_xdr: String,
       server: Stellar::KeyPair,
-      signers: SetOf[::Hash]
-    ] => C::SetOf[::Hash])
+      signers: SetOf[String]
+    ] => C::SetOf[String])
     # Verifies that for a SEP 10 challenge transaction all signatures on the transaction are accounted for.
     #
     # A transaction is verified if it is signed by the server account, and all other signatures match a signer 
@@ -154,9 +154,9 @@ module Stellar
     #
     # @param challenge_xdr [String] SEP0010 transaction challenge transaction in base64.
     # @param server [Stellar::Keypair] keypair for server's account.
-    # @param signers [SetOf[::Hash]] The signers of client account.
+    # @param signers [SetOf[String]] The signers of client account.
     #
-    # @return [SetOf[::Hash]]
+    # @return [SetOf[String]]
     #
     # Raises a InvalidSep10ChallengeError if:
     #     - The transaction is invalid according to Stellar::SEP10.read_challenge_tx.
@@ -175,24 +175,36 @@ module Stellar
         challenge_xdr: challenge_xdr, server: server
       )
 
-      # ignore non-G addresses
-      #
-      # We're also including the server in the list of signers past to verify_tx_signatures
-      # in order to verify that no signature is consumed more than once.
-      g_signers = Set.new
+      # deduplicate signers and ignore non-G addresses
+      client_signers = Set.new
       signers.each do |signer|
+        # ignore server kp if passed
+        if signer == server.address
+          next
+        end
         begin
           Stellar::Util::StrKey.check_decode(:account_id, signer['key'])
         rescue
           next
         else
-          g_signers.add(signer)
+          client_signers.add(signer)
         end
       end
 
+      if client_signers.empty?
+        raise InvalidSep10ChallengeError.new("At least one signer with a G... address must be provied") 
+      end
+
+      # verify all signatures in one pass
+      all_signers = client_signers + Set[server.address]
       signers_found = verify_tx_signatures(
-        tx_envelope: te, signers: g_signers
+        tx_envelope: te, signers: all_signers
       )
+
+      # ensure server signed transaction and remove it
+      if !signers_found.delete?(server.address)
+        raise InvalidSep10ChallengeError.new("Transaction not signed by server: #{server.address}")
+      end
 
       # Confirm we matched signatures to the client signers.
       if signers_found.empty?
