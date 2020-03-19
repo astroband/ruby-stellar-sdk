@@ -258,7 +258,6 @@ module Stellar
       )
   
       weight = 0
-
       signers_found = Set.new
       signers.each do |s|
         if !signer_strs_found.include?(s['key'])

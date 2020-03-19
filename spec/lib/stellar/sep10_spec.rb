@@ -56,6 +56,28 @@ describe Stellar::SEP10 do
       expect(sep10.read_challenge_tx(challenge_xdr: subject, server: server)).to eql([envelope, user.address])
     end
 
+    it "returns the envelope even if transaction signed by server but not client" do
+      envelope = Stellar::TransactionEnvelope.from_xdr(subject, 'base64')
+      expected_envelope = envelope.tx.to_envelope(server)
+      expect(
+        sep10.read_challenge_tx(challenge_xdr: expected_envelope.to_xdr(:base64), server: server)
+      ).to eql(
+        [expected_envelope, user.address]
+      )
+    end
+
+    it "throws an error if there are too many operations on the transaction" do
+      envelope = Stellar::TransactionEnvelope.from_xdr(subject, 'base64')
+      envelope.tx.operations += [Stellar::Operation.bump_sequence({bump_to: 1})]
+      bad_challege = envelope.tx.to_envelope(server, user).to_xdr(:base64)
+      expect {
+        sep10.read_challenge_tx(challenge_xdr: bad_challege, server:server)
+      }.to raise_error(
+        Stellar::InvalidSep10ChallengeError,
+        /The transaction should contain only one operation/
+      )
+    end
+
     it "throws an error if transaction sequence number is different to zero"  do
       envelope.tx.seq_num = 1
 
@@ -70,7 +92,7 @@ describe Stellar::SEP10 do
       }.to raise_error(Stellar::InvalidSep10ChallengeError, /The transaction source account is not equal to the server's account/)
     end
 
-    it "throws an error if transaction doestn't contain any operation" do
+    it "throws an error if transaction doesn't contain any operation" do
       envelope.tx.operations = []
 
       expect { 
@@ -324,7 +346,7 @@ describe Stellar::SEP10 do
       ])
     end
 
-    it "raises no signature error" do
+    it "raises no signers error" do
       server_kp = Stellar::KeyPair.random
       client_kp_a = Stellar::KeyPair.random
       client_kp_b = Stellar::KeyPair.random
@@ -476,6 +498,207 @@ describe Stellar::SEP10 do
       }.to raise_error(
         Stellar::InvalidSep10ChallengeError,
         /Transaction has unrecognized signatures./
+      )
+    end
+
+    it "raises an error when transaction only has server signature" do
+      server_kp = Stellar::KeyPair.random
+      client_kp = Stellar::KeyPair.random
+
+      challenge = sep10.build_challenge_tx(
+        server: server_kp,
+        client: client_kp,
+        anchor_name: "SDF",
+        timeout: 600,
+      ) 
+
+      expect { 
+        sep10.verify_challenge_tx_signers(
+          challenge_xdr: challenge, 
+          server: server_kp,
+          signers: Set[server_kp.address]
+        )
+      }.to raise_error(
+        Stellar::InvalidSep10ChallengeError,
+        /At least one signer with a G... address must be provied/
+      )
+    end
+
+    it "succeeds even when the server is included in the passed signers" do
+      server_kp = Stellar::KeyPair.random
+      client_kp = Stellar::KeyPair.random
+
+      challenge_envelope = Stellar::TransactionEnvelope.from_xdr(
+        sep10.build_challenge_tx(
+          server: server_kp,
+          client: client_kp,
+          anchor_name: "SDF",
+          timeout: 600,
+        ), 
+        "base64"
+      )
+      challenge_envelope.signatures += [challenge_envelope.tx.sign_decorated(client_kp)]
+      challenge = challenge_envelope.to_xdr(:base64)
+
+      expect(
+        sep10.verify_challenge_tx_signers(
+          challenge_xdr: challenge,
+          server: server_kp,
+          signers: Set[server_kp.address, client_kp.address]
+        )
+      ).to eql(
+        Set[client_kp.address]
+      )
+    end
+
+    it "succeeds with extra signers passed" do
+      server_kp = Stellar::KeyPair.random
+      client_kp_a = Stellar::KeyPair.random
+      client_kp_b = Stellar::KeyPair.random
+      client_kp_c = Stellar::KeyPair.random
+
+      challenge_envelope = Stellar::TransactionEnvelope.from_xdr(
+        sep10.build_challenge_tx(
+          server: server_kp,
+          client: client_kp_a,
+          anchor_name: "SDF",
+          timeout: 600,
+        ), 
+        "base64"
+      )
+      challenge_envelope.signatures += [
+        challenge_envelope.tx.sign_decorated(client_kp_a),
+        challenge_envelope.tx.sign_decorated(client_kp_b)
+      ]
+      challenge = challenge_envelope.to_xdr(:base64)
+
+      expect(
+        sep10.verify_challenge_tx_signers(
+          challenge_xdr: challenge,
+          server: server_kp,
+          signers: Set[
+            client_kp_a.address,
+            client_kp_b.address,
+            client_kp_c.address
+          ]
+        )
+      ).to eql(
+        Set[client_kp_a.address, client_kp_b.address]
+      )
+    end
+
+    it "does not pass back duplicate signers" do
+      server_kp = Stellar::KeyPair.random
+      client_kp = Stellar::KeyPair.random
+
+      challenge_envelope = Stellar::TransactionEnvelope.from_xdr(
+        sep10.build_challenge_tx(
+          server: server_kp,
+          client: client_kp,
+          anchor_name: "SDF",
+          timeout: 600,
+        ), 
+        "base64"
+      )
+      challenge_envelope.signatures += [challenge_envelope.tx.sign_decorated(client_kp)]
+      challenge = challenge_envelope.to_xdr(:base64)
+
+      expect(
+        sep10.verify_challenge_tx_signers(
+          challenge_xdr: challenge,
+          server: server_kp,
+          signers: Set[client_kp.address, client_kp.address]
+        )
+      ).to eql(
+        Set[client_kp.address]
+      )
+    end
+
+    it "raises an error for duplicate signatures" do
+      server_kp = Stellar::KeyPair.random
+      client_kp = Stellar::KeyPair.random
+
+      challenge_envelope = Stellar::TransactionEnvelope.from_xdr(
+        sep10.build_challenge_tx(
+          server: server_kp,
+          client: client_kp,
+          anchor_name: "SDF",
+          timeout: 600,
+        ), 
+        "base64"
+      )
+      challenge_envelope.signatures += [
+        challenge_envelope.tx.sign_decorated(client_kp),
+        challenge_envelope.tx.sign_decorated(client_kp)
+      ]
+      challenge = challenge_envelope.to_xdr(:base64)
+
+      expect {
+        sep10.verify_challenge_tx_signers(
+          challenge_xdr: challenge,
+          server: server_kp,
+          signers: Set[server_kp.address, client_kp.address]
+        )
+      }.to raise_error(
+        Stellar::InvalidSep10ChallengeError,
+        /Transaction has unrecognized signatures./
+      )
+    end
+
+    it "ignores non-G address" do
+      preauth_tx_hash = "TAQCSRX2RIDJNHFIFHWD63X7D7D6TRT5Y2S6E3TEMXTG5W3OECHZ2OG4"
+      x_hash = "XDRPF6NZRR7EEVO7ESIWUDXHAOMM2QSKIQQBJK6I2FB7YKDZES5UCLWD"
+      server_kp = Stellar::KeyPair.random
+      client_kp = Stellar::KeyPair.random
+
+      challenge_envelope = Stellar::TransactionEnvelope.from_xdr(
+        sep10.build_challenge_tx(
+          server: server_kp,
+          client: client_kp,
+          anchor_name: "SDF",
+          timeout: 600,
+        ), 
+        "base64"
+      )
+      challenge_envelope.signatures += [challenge_envelope.tx.sign_decorated(client_kp)]
+      challenge = challenge_envelope.to_xdr(:base64)
+
+      expect(
+        sep10.verify_challenge_tx_signers(
+          challenge_xdr: challenge,
+          server: server_kp,
+          signers: Set[client_kp.address, preauth_tx_hash, x_hash]
+        )
+      ).to eql(
+        Set[client_kp.address]
+      )
+    end
+
+    it "raises an error for no signatures" do
+      server_kp = Stellar::KeyPair.random
+      client_kp = Stellar::KeyPair.random
+
+      challenge_envelope = Stellar::TransactionEnvelope.from_xdr(
+        sep10.build_challenge_tx(
+          server: server_kp,
+          client: client_kp,
+          anchor_name: "SDF",
+          timeout: 600,
+        ), 
+        "base64"
+      )
+      challenge_envelope.signatures.clear
+      challenge = challenge_envelope.to_xdr(:base64)
+
+      expect {
+        sep10.verify_challenge_tx_signers(
+          challenge_xdr: challenge,
+          server: server_kp,
+          signers: Set[client_kp.address]
+        )
+      }.to raise_error(
+        Stellar::InvalidSep10ChallengeError,
+        /The transaction is not signed by the server/
       )
     end
   end
