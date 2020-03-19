@@ -183,7 +183,7 @@ module Stellar
           next
         end
         begin
-          Stellar::Util::StrKey.check_decode(:account_id, signer['key'])
+          Stellar::Util::StrKey.check_decode(:account_id, signer)
         rescue
           next
         else
@@ -250,20 +250,27 @@ module Stellar
       threshold:,
       signers:
     )
-      signers_found = verify_challenge_tx_signers(
+      signer_str_set = signers.map { |s| s['key'] }.to_set
+      signer_strs_found = verify_challenge_tx_signers(
         challenge_xdr: challenge_xdr, 
         server: server, 
-        signers: signers
+        signers: signer_str_set
       )
   
       weight = 0
-      signers_found.each do |s|
+
+      signers_found = Set.new
+      signers.each do |s|
+        if !signer_strs_found.include?(s['key'])
+          next
+        end
+        signers_found.add(s)
         weight += s['weight']
       end
 
       if weight < threshold
         raise InvalidSep10ChallengeError.new(
-          "signers with weight %{w} do not meet threshold %{t}." % {w: weight, t: threshold}
+          "signers with weight #{weight} do not meet threshold #{threshold}."
         )
       end
   
@@ -308,15 +315,15 @@ module Stellar
 
     Contract(C::KeywordArgs[
       tx_envelope: Stellar::TransactionEnvelope, 
-      signers: SetOf[::Hash]
-    ] => SetOf[::Hash])
+      signers: SetOf[String]
+    ] => SetOf[String])
     # Verifies every signer passed matches a signature on the transaction exactly once,
     # returning a list of unique signers that were found to have signed the transaction.
     #
     # @param tx_envelope [Stellar::TransactionEnvelope] SEP0010 transaction challenge transaction envelope.
-    # @param signers [SetOf[::Hash]] The signers of client account.
+    # @param signers [SetOf[String]] The signers of client account.
     #
-    # @return [SetOf[::Hash]]
+    # @return [SetOf[String]]
     def self.verify_tx_signatures(
       tx_envelope:,
       signers:
@@ -329,7 +336,7 @@ module Stellar
       signatures_used = Set.new
       signers_found = Set.new
       signers.each do |signer|
-        kp = Stellar::KeyPair.from_address(signer['key'])
+        kp = Stellar::KeyPair.from_address(signer)
         tx_envelope.signatures.each_with_index do |sig, i|
           if signatures_used.include?(i)
             next

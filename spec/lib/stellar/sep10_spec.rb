@@ -307,10 +307,10 @@ describe Stellar::SEP10 do
       ].map { |kp| challenge_envelope.tx.sign_decorated(kp) }
 
       signers = Set[
-        {"key" => client_kp_a.address, "weight" => 1},
-        {"key" => client_kp_b.address, "weight" => 2},
-        {"key" => client_kp_c.address, "weight" => 4},
-        {"key" => Stellar::KeyPair.random.address, "weight" => 255},
+        client_kp_a.address,
+        client_kp_b.address,
+        client_kp_c.address,
+        Stellar::KeyPair.random.address
       ]
       signers_found = sep10.verify_challenge_tx_signers(
         challenge_xdr: challenge_envelope.to_xdr(:base64), 
@@ -318,9 +318,9 @@ describe Stellar::SEP10 do
         signers: signers
       )
       expect(signers_found).to eql(Set[
-        {"key" => client_kp_a.address, "weight" => 1},
-        {"key" => client_kp_b.address, "weight" => 2},
-        {"key" => client_kp_c.address, "weight" => 4},
+        client_kp_a.address,
+        client_kp_b.address,
+        client_kp_c.address,
       ])
     end
 
@@ -345,10 +345,10 @@ describe Stellar::SEP10 do
       ].map { |kp| challenge_envelope.tx.sign_decorated(kp) }
 
       signers = Set[
-        {"key" => client_kp_a.address, "weight" => 1},
-        {"key" => client_kp_b.address, "weight" => 2},
-        {"key" => client_kp_c.address, "weight" => 4},
-        {"key" => Stellar::KeyPair.random.address, "weight" => 1}
+        client_kp_a.address,
+        client_kp_b.address,
+        client_kp_c.address,
+        Stellar::KeyPair.random.address
       ]
 
       expect {
@@ -384,9 +384,9 @@ describe Stellar::SEP10 do
       }
 
       signers = Set[
-        {"key" => client_kp_a.address, "weight" => 1},
-        {"key" => client_kp_b.address, "weight" => 2},
-        {"key" => client_kp_c.address, "weight" => 4},
+        client_kp_a.address,
+        client_kp_b.address,
+        client_kp_c.address
       ]
 
       expect {
@@ -423,9 +423,9 @@ describe Stellar::SEP10 do
 
       # Different signers than those on the transaction envelope
       signers = Set[
-        {"key" => Stellar::KeyPair.random.address, "weight" => 1},
-        {"key" => Stellar::KeyPair.random.address, "weight" => 1},
-        {"key" => Stellar::KeyPair.random.address, "weight" => 1},
+        Stellar::KeyPair.random.address,
+        Stellar::KeyPair.random.address,
+        Stellar::KeyPair.random.address
       ]
 
       expect {
@@ -462,9 +462,9 @@ describe Stellar::SEP10 do
       ].map { |kp| challenge_envelope.tx.sign_decorated(kp) }
 
       signers = Set[
-        {"key" => client_kp_a.address, "weight" => 1},
-        {"key" => client_kp_b.address, "weight" => 2},
-        {"key" => client_kp_c.address, "weight" => 4},
+        client_kp_a.address,
+        client_kp_b.address,
+        client_kp_c.address
       ]
 
       expect {
@@ -503,18 +503,18 @@ describe Stellar::SEP10 do
       ].map { |kp| challenge_envelope.tx.sign_decorated(kp) }
 
       signers = Set[
-        {"key" => client_kp_a.address, "weight" => 1},
-        {"key" => client_kp_b.address, "weight" => 2},
-        {"key" => client_kp_c.address, "weight" => 3},
-        {"key" => Stellar::KeyPair.random.address, "weight" => 4},
+        client_kp_a.address,
+        client_kp_b.address,
+        client_kp_c.address,
+        Stellar::KeyPair.random.address
       ]
       signers_found = sep10.verify_tx_signatures(
         tx_envelope: challenge_envelope, signers: signers
       )
       expect(signers_found).to eql(Set[
-        {"key" => client_kp_a.address, "weight" => 1},
-        {"key" => client_kp_b.address, "weight" => 2},
-        {"key" => client_kp_c.address, "weight" => 3},
+        client_kp_a.address,
+        client_kp_b.address,
+        client_kp_c.address
       ])
     end
 
@@ -537,7 +537,7 @@ describe Stellar::SEP10 do
         max_time: now + timeout
       )
 
-      signers = Set[{"key" => client_kp.address, "weight": 1}]
+      signers = Set[client_kp.address]
       expect{
         sep10.verify_tx_signatures(
           tx_envelope: tx.to_envelope(), signers: signers
@@ -569,16 +569,14 @@ describe Stellar::SEP10 do
       ].map { |kp| challenge_envelope.tx.sign_decorated(kp) }
 
       signers = Set[
-        {"key" => client_kp_a.address, "weight" => 1},
-        {"key" => client_kp_a.address, "weight" => 1},
-        {"key" => Stellar::KeyPair.random.address, "weight" => 4},
+        client_kp_a.address,
+        client_kp_a.address,
+        Stellar::KeyPair.random.address
       ]
       signers_found = sep10.verify_tx_signatures(
         tx_envelope: challenge_envelope, signers: signers
       )
-      expect(signers_found).to eql(Set[
-        {"key" => client_kp_a.address, "weight" => 1}
-      ])
+      expect(signers_found).to eql(Set[client_kp_a.address])
     end
   end
 
