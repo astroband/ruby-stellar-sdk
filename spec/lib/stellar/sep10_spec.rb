@@ -76,7 +76,7 @@ describe Stellar::SEP10 do
       expect { 
         sep10.read_challenge_tx(challenge_xdr: envelope.to_xdr(:base64), server: server)
       }.to raise_error(Stellar::InvalidSep10ChallengeError, /The transaction should contain only one operation/)
-      end
+    end
 
     it "throws an error if operation does not contain the source account" do
       op = envelope.tx.operations[0]
