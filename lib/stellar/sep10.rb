@@ -333,6 +333,7 @@ module Stellar
         raise InvalidSep10ChallengeError.new("Transaction has no signatures.")
       end
 
+      tx_hash = tx_envelope.tx.hash
       signatures_used = Set.new
       signers_found = Set.new
       signers.each do |signer|
@@ -344,7 +345,7 @@ module Stellar
           if sig.hint != kp.signature_hint
             next
           end
-          if verify_tx_signed_by(tx_envelope: tx_envelope, keypair: kp)
+          if kp.verify(sig.signature, tx_hash)
             signatures_used.add(i)
             signers_found.add(signer)
           end
