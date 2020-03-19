@@ -28,6 +28,12 @@ require 'xdr'
 #   case TRANSACTION:
 #       TransactionEnvelope transaction;
 #   
+#   case SURVEY_REQUEST:
+#       SignedSurveyRequestMessage signedSurveyRequestMessage;
+#   
+#   case SURVEY_RESPONSE:
+#       SignedSurveyResponseMessage signedSurveyResponseMessage;
+#   
 #   // SCP
 #   case GET_SCP_QUORUMSET:
 #       uint256 qSetHash;
@@ -53,22 +59,26 @@ module Stellar
     switch :get_tx_set,        :tx_set_hash
     switch :tx_set,            :tx_set
     switch :transaction,       :transaction
+    switch :survey_request,    :signed_survey_request_message
+    switch :survey_response,   :signed_survey_response_message
     switch :get_scp_quorumset, :q_set_hash
     switch :scp_quorumset,     :q_set
     switch :scp_message,       :envelope
     switch :get_scp_state,     :get_scp_ledger_seq
 
-    attribute :error,              Error
-    attribute :hello,              Hello
-    attribute :auth,               Auth
-    attribute :dont_have,          DontHave
-    attribute :peers,              XDR::VarArray[PeerAddress, 100]
-    attribute :tx_set_hash,        Uint256
-    attribute :tx_set,             TransactionSet
-    attribute :transaction,        TransactionEnvelope
-    attribute :q_set_hash,         Uint256
-    attribute :q_set,              SCPQuorumSet
-    attribute :envelope,           SCPEnvelope
-    attribute :get_scp_ledger_seq, Uint32
+    attribute :error,                          Error
+    attribute :hello,                          Hello
+    attribute :auth,                           Auth
+    attribute :dont_have,                      DontHave
+    attribute :peers,                          XDR::VarArray[PeerAddress, 100]
+    attribute :tx_set_hash,                    Uint256
+    attribute :tx_set,                         TransactionSet
+    attribute :transaction,                    TransactionEnvelope
+    attribute :signed_survey_request_message,  SignedSurveyRequestMessage
+    attribute :signed_survey_response_message, SignedSurveyResponseMessage
+    attribute :q_set_hash,                     Uint256
+    attribute :q_set,                          SCPQuorumSet
+    attribute :envelope,                       SCPEnvelope
+    attribute :get_scp_ledger_seq,             Uint32
   end
 end

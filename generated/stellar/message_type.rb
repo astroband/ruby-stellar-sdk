@@ -26,7 +26,10 @@ require 'xdr'
 #       GET_SCP_STATE = 12,
 #   
 #       // new messages
-#       HELLO = 13
+#       HELLO = 13,
+#   
+#       SURVEY_REQUEST = 14,
+#       SURVEY_RESPONSE = 15
 #   };
 #
 # ===========================================================================
@@ -45,6 +48,8 @@ module Stellar
     member :scp_message,       11
     member :get_scp_state,     12
     member :hello,             13
+    member :survey_request,    14
+    member :survey_response,   15
 
     seal
   end

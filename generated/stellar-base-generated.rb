@@ -146,7 +146,12 @@ module Stellar
   LedgerEntryChanges = XDR::VarArray[LedgerEntryChange]
   autoload :OperationMeta
   autoload :TransactionMetaV1
+  autoload :TransactionMetaV2
   autoload :TransactionMeta
+  autoload :TransactionResultMeta
+  autoload :UpgradeEntryMeta
+  autoload :LedgerCloseMetaV0
+  autoload :LedgerCloseMeta
 end
 module Stellar
   include XDR::Namespace
@@ -160,6 +165,16 @@ module Stellar
   autoload :PeerAddress
   autoload :MessageType
   autoload :DontHave
+  autoload :SurveyMessageCommandType
+  autoload :SurveyRequestMessage
+  autoload :SignedSurveyRequestMessage
+  EncryptedBody = XDR::VarOpaque[64000]
+  autoload :SurveyResponseMessage
+  autoload :SignedSurveyResponseMessage
+  autoload :PeerStats
+  PeerStatList = XDR::VarArray[PeerStats, 25]
+  autoload :TopologyResponseBody
+  autoload :SurveyResponseBody
   autoload :StellarMessage
   autoload :AuthenticatedMessage
 end
