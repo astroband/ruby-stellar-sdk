@@ -85,7 +85,7 @@ describe Stellar::SEP10 do
       expect { 
         sep10.read_challenge_tx(challenge_xdr: envelope.to_xdr(:base64), server: server)
       }.to raise_error(Stellar::InvalidSep10ChallengeError, /The transaction's operation should contain a source account/)
-      end
+    end
       
     it "throws an error if operation is not manage data"  do
       envelope.tx.operations = [ 
