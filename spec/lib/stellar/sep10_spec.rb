@@ -183,6 +183,123 @@ describe Stellar::SEP10 do
   end
 
   describe "#verify_challenge_tx_threshold" do
+    it "raises transaction not signed by server" do
+      server_kp = Stellar::KeyPair.random
+      client_kp_a = Stellar::KeyPair.random
+      client_kp_b = Stellar::KeyPair.random
+      client_kp_c = Stellar::KeyPair.random
+      timeout = 600
+      anchor_name = "SDF"
+
+      challenge = sep10.build_challenge_tx(
+        server: server_kp,
+        client: client_kp_a,
+        anchor_name: anchor_name,
+        timeout: timeout,
+      )
+
+      challenge_envelope = Stellar::TransactionEnvelope.from_xdr(challenge, "base64")
+      challenge_envelope.signatures = [client_kp_a, client_kp_b, client_kp_c].map { 
+        |kp| challenge_envelope.tx.sign_decorated(kp) 
+      }
+
+      signers = Set[
+        {'key' => client_kp_a.address, 'weight': 1},
+        {'key' => client_kp_b.address, 'weight': 1},
+        {'key' => client_kp_c.address, 'weight': 1}
+      ]
+
+      expect {
+        sep10.verify_challenge_tx_threshold(
+          challenge_xdr: challenge_envelope.to_xdr(:base64), 
+          server: server_kp, 
+          signers: signers,
+          threshold: 3
+        )
+      }.to raise_error(
+        Stellar::InvalidSep10ChallengeError,
+        /The transaction is not signed by the server/
+      )
+    end
+
+    it "succeeds with extra signers passed" do
+      server_kp = Stellar::KeyPair.random
+      client_kp_a = Stellar::KeyPair.random
+      client_kp_b = Stellar::KeyPair.random
+      client_kp_c = Stellar::KeyPair.random
+
+      challenge_envelope = Stellar::TransactionEnvelope.from_xdr(
+        sep10.build_challenge_tx(
+          server: server_kp,
+          client: client_kp_a,
+          anchor_name: "SDF",
+          timeout: 600,
+        ), 
+        "base64"
+      )
+      challenge_envelope.signatures += [
+        challenge_envelope.tx.sign_decorated(client_kp_a),
+        challenge_envelope.tx.sign_decorated(client_kp_b)
+      ]
+      challenge = challenge_envelope.to_xdr(:base64)
+
+      expect(
+        sep10.verify_challenge_tx_threshold(
+          challenge_xdr: challenge,
+          server: server_kp,
+          signers: Set[
+            {'key' => client_kp_a.address, 'weight' => 1},
+            {'key' => client_kp_b.address, 'weight' => 1},
+            {'key' => client_kp_c.address, 'weight' => 1}
+          ],
+          threshold: 2
+        )
+      ).to eql(
+        Set[
+          {'key' => client_kp_a.address, 'weight' => 1},
+          {'key' => client_kp_b.address, 'weight' => 1}
+        ]
+      )
+    end
+
+    it "rasies an error for unrecognizied signatures" do
+      server_kp = Stellar::KeyPair.random
+      client_kp_a = Stellar::KeyPair.random
+      client_kp_b = Stellar::KeyPair.random
+      client_kp_c = Stellar::KeyPair.random
+
+      challenge_envelope = Stellar::TransactionEnvelope.from_xdr(
+        sep10.build_challenge_tx(
+          server: server_kp,
+          client: client_kp_a,
+          anchor_name: "SDF",
+          timeout: 600,
+        ), 
+        "base64"
+      )
+      challenge_envelope.signatures += [
+        challenge_envelope.tx.sign_decorated(client_kp_a),
+        challenge_envelope.tx.sign_decorated(client_kp_b),
+        challenge_envelope.tx.sign_decorated(client_kp_c)
+      ]
+      challenge = challenge_envelope.to_xdr(:base64)
+
+      expect {
+        sep10.verify_challenge_tx_threshold(
+          challenge_xdr: challenge,
+          server: server_kp,
+          signers: Set[
+            {'key' => client_kp_a.address, 'weight' => 1},
+            {'key' => client_kp_b.address, 'weight' => 1},
+          ],
+          threshold: 2
+        )
+      }.to raise_error(
+        Stellar::InvalidSep10ChallengeError,
+        /Transaction has unrecognized signatures./
+      )
+    end
+
     it "verifies proper challenge and threshold" do
       server_kp = Stellar::KeyPair.random
       client_kp_a = Stellar::KeyPair.random
@@ -254,6 +371,106 @@ describe Stellar::SEP10 do
       }.to raise_error(
         Stellar::InvalidSep10ChallengeError,
         "signers with weight %d do not meet threshold %d." % [1, 7]
+      )
+    end
+
+    it "ignores non-G address" do
+      preauth_tx_hash = "TAQCSRX2RIDJNHFIFHWD63X7D7D6TRT5Y2S6E3TEMXTG5W3OECHZ2OG4"
+      x_hash = "XDRPF6NZRR7EEVO7ESIWUDXHAOMM2QSKIQQBJK6I2FB7YKDZES5UCLWD"
+      server_kp = Stellar::KeyPair.random
+      client_kp = Stellar::KeyPair.random
+
+      challenge_envelope = Stellar::TransactionEnvelope.from_xdr(
+        sep10.build_challenge_tx(
+          server: server_kp,
+          client: client_kp,
+          anchor_name: "SDF",
+          timeout: 600,
+        ), 
+        "base64"
+      )
+      challenge_envelope.signatures += [challenge_envelope.tx.sign_decorated(client_kp)]
+      challenge = challenge_envelope.to_xdr(:base64)
+
+      expect(
+        sep10.verify_challenge_tx_threshold(
+          challenge_xdr: challenge,
+          server: server_kp,
+          signers: Set[
+            {'key'=> client_kp.address, 'weight' => 1},
+            {'key'=> preauth_tx_hash, 'weight' => 1},
+            {'key'=> x_hash, 'weight' => 1}
+          ],
+          threshold: 1
+        )
+      ).to eql(
+        Set[
+          {'key' => client_kp.address, 'weight' => 1}
+        ]
+      )
+    end
+
+    it "raises no signers error" do
+      server_kp = Stellar::KeyPair.random
+      client_kp_a = Stellar::KeyPair.random
+      client_kp_b = Stellar::KeyPair.random
+      client_kp_c = Stellar::KeyPair.random
+      timeout = 600
+      anchor_name = "SDF"
+
+      challenge = sep10.build_challenge_tx(
+        server: server_kp,
+        client: client_kp_a,
+        anchor_name: anchor_name,
+        timeout: timeout,
+      )
+
+      challenge_envelope = Stellar::TransactionEnvelope.from_xdr(challenge, "base64")
+      challenge_envelope.signatures += [
+        client_kp_a, client_kp_b, client_kp_c
+      ].map { |kp| challenge_envelope.tx.sign_decorated(kp) }
+
+      expect {
+        sep10.verify_challenge_tx_threshold(
+          challenge_xdr: challenge_envelope.to_xdr(:base64), 
+          server: server_kp, 
+          signers: Set.new,
+          threshold: 2
+        )
+      }.to raise_error(
+        Stellar::InvalidSep10ChallengeError,
+        /No signers provided./
+      )
+    end
+
+    it "raises an error for no signatures" do
+      server_kp = Stellar::KeyPair.random
+      client_kp = Stellar::KeyPair.random
+
+      challenge_envelope = Stellar::TransactionEnvelope.from_xdr(
+        sep10.build_challenge_tx(
+          server: server_kp,
+          client: client_kp,
+          anchor_name: "SDF",
+          timeout: 600,
+        ), 
+        "base64"
+      )
+      challenge_envelope.signatures.clear
+      challenge = challenge_envelope.to_xdr(:base64)
+
+      expect {
+        sep10.verify_challenge_tx_threshold(
+          challenge_xdr: challenge,
+          server: server_kp,
+          signers: Set[
+            {'key' => client_kp.address, 'weight' => 1}
+          ],
+          threshold: 2
+        )
+      }.to raise_error(
+        Stellar::InvalidSep10ChallengeError,
+        /The transaction is not signed by the server/
       )
     end
   end
@@ -365,13 +582,6 @@ describe Stellar::SEP10 do
       challenge_envelope.signatures += [
         client_kp_a, client_kp_b, client_kp_c
       ].map { |kp| challenge_envelope.tx.sign_decorated(kp) }
-
-      signers = Set[
-        client_kp_a.address,
-        client_kp_b.address,
-        client_kp_c.address,
-        Stellar::KeyPair.random.address
-      ]
 
       expect {
         sep10.verify_challenge_tx_signers(
