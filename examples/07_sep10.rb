@@ -8,36 +8,36 @@ $client_signer_kp2 = Stellar::KeyPair.random
 $server_kp = Stellar::KeyPair.random
 
 def setup_multisig
+  # create funded account
+  # On mainet there is no friendbot, use Stellar::Client.create_account instead
   account = Stellar::Account.from_seed($client_master_kp.seed)
   $client.friendbot(account)
 
-  signer1 = Stellar::Signer.new
-  signer1.key = Stellar::SignerKey.ed25519($client_signer_kp1)
-  signer1.weight = 1
+  # get account sequence number for next transaction
+  sequence_number = $client.account_info(account).sequence.to_i + 1
 
-  add_signer2_op = Stellar::SetOptionsOp.new
-  add_signer2_op.signer = Stellar::Signer.new
-  add_signer2_op.signer.key = Stellar::SignerKey.ed25519($client_signer_kp2)
-  add_signer2_op.signer.weight = 1
-  op2 = Stellar::Operation.new
-  op2.body = Stellar::Operation::Body.new(:set_options, add_signer2_op)
+  # build the non-master signers to be added to the account
+  signer1 = Stellar::Signer.new(
+    key: Stellar::SignerKey.ed25519($client_signer_kp1),
+    weight: 1
+  )
+  signer2 = Stellar::Signer.new(
+    key: Stellar::SignerKey.ed25519($client_signer_kp2),
+    weight: 1
+  )
 
-  set_thresholds_op = Stellar::SetOptionsOp.new
-  set_thresholds_op.low_threshold = 1
-  set_thresholds_op.med_threshold = 2
-  set_thresholds_op.high_threshold = 3
-  op3 = Stellar::Operation.new
-  op3.body = Stellar::Operation::Body.new(:set_options, set_thresholds_op)
-
-  account_info = $client.account_info(account)
-  seq_num = account_info.sequence.to_i + 1
-  tx = Stellar::Transaction.make(:set_options, {
-    :account => $client_master_kp,
-    :sequence => seq_num,
-    :signer => signer1,
-    :fee => 100 * 3
+  # Stellar::Transaction only has method to construct single-operation 
+  # transactions, so we have to add an operation to add an additional signer.
+  tx = Stellar::Transaction.set_options({
+    account: $client_master_kp,
+    sequence: sequence_number,
+    signer: signer1,
+    low_threshold: 1, 
+    med_threshold: 2,
+    high_threshold: 3,
+    fee: 100 * 3
   })
-  tx.operations += [op2, op3]
+  tx.operations << Stellar::Operation.set_options({ signer: signer2 })
 
   envelope_xdr = tx.to_envelope($client_master_kp).to_xdr(:base64)
   begin
@@ -113,9 +113,9 @@ def example_verify_challenge_tx_threshold
       total_weight = 0
       signers_found.each do |signer|
         total_weight += signer['weight']
-        puts "signer: %s, weight: %d" % [signer['key'], signer['weight']]
+        puts "signer: #{signer['key']}, weight: #{signer['weight']}"
       end
-      puts "Account medium threshold: %d, total signature(s) weight: %d" % [info.thresholds["med_threshold"], total_weight]
+      puts "Account medium threshold: #{info.thresholds["med_threshold"]}, total signature(s) weight: #{total_weight}"
     end
   end
 end
