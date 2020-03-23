@@ -4,9 +4,9 @@ require 'contracts'
 module Stellar
 
   autoload :Account
-  autoload :AccountInfo
   autoload :Amount
   autoload :Client
+  autoload :SEP10
 
   module Horizon
     extend ActiveSupport::Autoload
