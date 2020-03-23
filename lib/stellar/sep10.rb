@@ -262,6 +262,8 @@ module Stellar
       signers.each do |s|
         if !signer_strs_found.include?(s['key'])
           next
+        else
+          signer_strs_found.delete(s['key'])
         end
         signers_found.add(s)
         weight += s['weight']
