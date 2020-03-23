@@ -496,7 +496,7 @@ describe Stellar::SEP10 do
           server: server_kp,
           signers: Set[
             {'key' => client_kp.address, 'weight' => 1},
-            {'key' => client_kp.address, 'weight' => 1}
+            {'key' => client_kp.address, 'weight' => 2}
           ],
           threshold: 1
         )
@@ -510,13 +510,13 @@ describe Stellar::SEP10 do
           server: server_kp,
           signers: Set[
             {'key' => client_kp.address, 'weight' => 1},
-            {'key' => client_kp.address, 'weight' => 1}
+            {'key' => client_kp.address, 'weight' => 2}
           ],
-          threshold: 2
+          threshold: 3
         )
       }.to raise_error(
         Stellar::InvalidSep10ChallengeError,
-        /signers with weight 1 do not meet threshold 2./
+        /signers with weight 1 do not meet threshold 3./
       )
     end
 
@@ -544,6 +544,41 @@ describe Stellar::SEP10 do
           challenge_xdr: challenge,
           server: server_kp,
           signers: Set[{'key' => client_kp.address, 'weight' => 1}],
+          threshold: 1
+        )
+      }.to raise_error(
+        Stellar::InvalidSep10ChallengeError,
+        /Transaction has unrecognized signatures./
+      )
+    end
+
+    it "raises an error for duplicate signatures and signers" do
+      server_kp = Stellar::KeyPair.random
+      client_kp = Stellar::KeyPair.random
+
+      challenge_envelope = Stellar::TransactionEnvelope.from_xdr(
+        sep10.build_challenge_tx(
+          server: server_kp,
+          client: client_kp,
+          anchor_name: "SDF",
+          timeout: 600,
+        ), 
+        "base64"
+      )
+      challenge_envelope.signatures += [
+        challenge_envelope.tx.sign_decorated(client_kp),
+        challenge_envelope.tx.sign_decorated(client_kp)
+      ]
+      challenge = challenge_envelope.to_xdr(:base64)
+
+      expect {
+        sep10.verify_challenge_tx_threshold(
+          challenge_xdr: challenge,
+          server: server_kp,
+          signers: Set[
+            {'key' => client_kp.address, 'weight' => 1},
+            {'key' => client_kp.address, 'weight' => 2}
+          ],
           threshold: 1
         )
       }.to raise_error(
