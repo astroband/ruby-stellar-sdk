@@ -10,11 +10,10 @@ $server_kp = Stellar::KeyPair.random
 def setup_multisig
   # create funded account
   # On mainet there is no friendbot, use Stellar::Client.create_account instead
-  account = Stellar::Account.from_seed($client_master_kp.seed)
-  $client.friendbot(account)
+  $client.friendbot($client_master_kp)
 
   # get account sequence number for next transaction
-  sequence_number = $client.account_info(account).sequence.to_i + 1
+  sequence_number = $client.account_info($client_master_kp.address).sequence.to_i + 1
 
   # build the non-master signers to be added to the account
   signer1 = Stellar::Signer.new(
@@ -26,18 +25,22 @@ def setup_multisig
     weight: 1
   )
 
-  # Stellar::Transaction only has method to construct single-operation 
-  # transactions, so we have to add an operation to add an additional signer.
-  tx = Stellar::Transaction.set_options({
-    account: $client_master_kp,
-    sequence: sequence_number,
-    signer: signer1,
-    low_threshold: 1, 
-    med_threshold: 2,
-    high_threshold: 3,
-    fee: 100 * 3
-  })
-  tx.operations << Stellar::Operation.set_options({ signer: signer2 })
+  # construct transaction
+  builder = Stellar::TransactionBuilder.new(
+    source_account: $client_master_kp,
+    sequence_number: sequence_number
+  )
+  tx = builder.add_operation(
+    Stellar::Operation.set_options({ signer: signer1 })
+  ).add_operation(
+    Stellar::Operation.set_options({ signer: signer2 })
+  ).add_operation(
+    Stellar::Operation.set_options({
+      low_threshold: 1, 
+      med_threshold: 2,
+      high_threshold: 3,
+    })
+  ).set_timeout(600).build()
 
   envelope_xdr = tx.to_envelope($client_master_kp).to_xdr(:base64)
   begin
