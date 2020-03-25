@@ -1,15 +1,12 @@
 require 'spec_helper'
 
 describe Stellar::Operation, ".payment" do
-
-
   it "correctly translates the provided amount to the native representation" do
     op = Stellar::Operation.payment(destination: Stellar::KeyPair.random, amount: [:native, 20])
     expect(op.body.value.amount).to eql(20_0000000)
     op = Stellar::Operation.payment(destination: Stellar::KeyPair.random, amount: [:native, "20"])
     expect(op.body.value.amount).to eql(20_0000000)
   end
-
 end
 
 def pk_to_address(pk)
@@ -22,13 +19,14 @@ describe "path payment operations" do
   let(:send_asset){ Stellar::Asset.alphanum4("USD", send_asset_issuer) }
   let(:dest_asset_issuer){ Stellar::KeyPair.master }
   let(:dest_asset){ Stellar::Asset.alphanum4("EUR", dest_asset_issuer) }
-  let(:amount){ [:alphanum4, dest_asset.code, dest_asset_issuer, 9.2] }
-  let(:with){ [:alphanum4, send_asset.code, send_asset_issuer, 10] }
+  let(:amount){ [Stellar::Asset.alphanum4(dest_asset.code, dest_asset_issuer), 9.2] }
+  let(:with){ [Stellar::Asset.alphanum4(send_asset.code, send_asset_issuer), 10] }
   
   describe Stellar::Operation, ".path_payment" do
     it "works" do
       destination = Stellar::KeyPair.random
-      amount = [:alphanum4, "USD", Stellar::KeyPair.master, 10]    
+      # test both forms of arrays
+      amount = [Stellar::Asset.alphanum4("USD", Stellar::KeyPair.master), 10]    
       with = [:alphanum4, "EUR", Stellar::KeyPair.master, 9.2]
 
       op = Stellar::Operation.path_payment(
@@ -98,7 +96,7 @@ describe Stellar::Operation, ".change_trust" do
   let(:asset) { Stellar::Asset.alphanum4("USD", issuer) }
 
   it "creates a ChangeTrustOp" do
-    op = Stellar::Operation.change_trust(line: [:alphanum4, "USD", issuer])
+    op = Stellar::Operation.change_trust(line: Stellar::Asset.alphanum4("USD", issuer))
     expect(op.body.value).to be_an_instance_of(Stellar::ChangeTrustOp)
     expect(op.body.value.line).to eq(Stellar::Asset.alphanum4("USD", issuer))
     expect(op.body.value.limit).to eq(9223372036854775807)
@@ -119,7 +117,7 @@ describe Stellar::Operation, ".change_trust" do
   end
 
   it "creates a ChangeTrustOp with limit" do
-    op = Stellar::Operation.change_trust(line: [:alphanum4, "USD", issuer], limit: 1234.75)
+    op = Stellar::Operation.change_trust(line: Stellar::Asset.alphanum4("USD", issuer), limit: 1234.75)
     expect(op.body.value).to be_an_instance_of(Stellar::ChangeTrustOp)
     expect(op.body.value.line).to eq(Stellar::Asset.alphanum4("USD", issuer))
     expect(op.body.value.limit).to eq(12347500000)
@@ -127,7 +125,7 @@ describe Stellar::Operation, ".change_trust" do
 
   it "throws ArgumentError for incorrect limit argument" do
     expect {
-      Stellar::Operation.change_trust(line: [:alphanum4, "USD", issuer], limit: true)
+      Stellar::Operation.change_trust(line: Stellar::Asset.alphanum4("USD", issuer), limit: true)
     }.to raise_error(ArgumentError)
   end
 end

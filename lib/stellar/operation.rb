@@ -43,7 +43,7 @@ module Stellar
     #                              Stellar::PaymentOp body
     def self.payment(attributes={})
       destination = attributes[:destination]
-      asset, amount = extract_amount(attributes[:amount])
+      asset, amount = get_asset_amount(attributes[:amount])
 
       raise ArgumentError unless destination.is_a?(KeyPair)
 
@@ -96,9 +96,11 @@ module Stellar
     #                              
     def self.path_payment_strict_receive(attributes={})
       destination             = attributes[:destination]
-      asset, amount           = extract_amount(attributes[:amount])
-      send_asset, send_max    = extract_amount(attributes[:with])
-      path                    = (attributes[:path] || []).map{|p| Stellar::Asset.send(*p)}
+      asset, amount           = get_asset_amount(attributes[:amount])
+      send_asset, send_max    = get_asset_amount(attributes[:with])
+      path                    = (attributes[:path] || []).map{
+        |p| p.is_a?(Array) ? Stellar::Asset.send(*p) : p
+      }
 
       raise ArgumentError unless destination.is_a?(KeyPair)
 
@@ -132,9 +134,11 @@ module Stellar
     #                              
     def self.path_payment_strict_send(attributes={})
       destination             = attributes[:destination]
-      asset, dest_min         = extract_amount(attributes[:amount])
-      send_asset, send_amount = extract_amount(attributes[:with])
-      path                    = (attributes[:path] || []).map{|p| Stellar::Asset.send(*p)}
+      asset, dest_min         = get_asset_amount(attributes[:amount])
+      send_asset, send_amount = get_asset_amount(attributes[:with])
+      path                    = (attributes[:path] || []).map{
+        |p| p.is_a?(Array) ? Stellar::Asset.send(*p) : p
+      }
 
       raise ArgumentError unless destination.is_a?(KeyPair)
 
@@ -199,11 +203,17 @@ module Stellar
     end
 
     def self.manage_sell_offer(attributes={})
-      buying     = Asset.send(*attributes[:buying])
-      selling    = Asset.send(*attributes[:selling])
-      amount     = interpret_amount(attributes[:amount])
-      offer_id   = attributes[:offer_id] || 0
-      price      = interpret_price(attributes[:price])
+      buying = attributes[:buying]
+      if buying.is_a?(Array)
+        buying = Asset.send(*buying)
+      end
+      selling = attributes[:selling]
+      if selling.is_a?(Array)
+        selling = Asset.send(*selling)
+      end
+      amount = interpret_amount(attributes[:amount])
+      offer_id = attributes[:offer_id] || 0
+      price = interpret_price(attributes[:price])
 
       op = ManageSellOfferOp.new({
         buying:     buying,
@@ -219,11 +229,17 @@ module Stellar
     end
 
     def self.manage_buy_offer(attributes={})
-      buying     = Asset.send(*attributes[:buying])
-      selling    = Asset.send(*attributes[:selling])
-      amount     = interpret_amount(attributes[:amount])
-      offer_id   = attributes[:offer_id] || 0
-      price      = interpret_price(attributes[:price])
+      buying = attributes[:buying]
+      if buying.is_a?(Array)
+        buying = Asset.send(*buying)
+      end
+      selling = attributes[:selling]
+      if selling.is_a?(Array)
+        selling = Asset.send(*selling)
+      end
+      amount = interpret_amount(attributes[:amount])
+      offer_id = attributes[:offer_id] || 0
+      price = interpret_price(attributes[:price])
 
       op = ManageBuyOfferOp.new({
         buying:     buying,
@@ -239,10 +255,16 @@ module Stellar
     end
 
     def self.create_passive_sell_offer(attributes={})
-      buying     = Asset.send(*attributes[:buying])
-      selling    = Asset.send(*attributes[:selling])
-      amount     = interpret_amount(attributes[:amount])
-      price      = interpret_price(attributes[:price])
+      buying = attributes[:buying]
+      if buying.is_a?(Array)
+        buying = Asset.send(*buying)
+      end
+      selling = attributes[:selling]
+      if selling.is_a?(Array)
+        selling = Asset.send(*selling)
+      end
+      amount = interpret_amount(attributes[:amount])
+      price = interpret_price(attributes[:price])
 
       op = CreatePassiveSellOfferOp.new({
         buying:     buying,
@@ -309,9 +331,12 @@ module Stellar
     def self.allow_trust(attributes={})
       op = AllowTrustOp.new()
 
-      trustor   = attributes[:trustor]
+      trustor = attributes[:trustor]
       authorize = attributes[:authorize]
-      asset     = Asset.send(*attributes[:asset])
+      asset = attributes[:asset]
+      if asset.is_a?(Array)
+        asset = Asset.send(*asset)
+      end
 
       raise ArgumentError, "Bad :trustor" unless trustor.is_a?(Stellar::KeyPair)
       raise ArgumentError, "Bad :authorize" unless authorize == !!authorize # check boolean
@@ -407,9 +432,13 @@ module Stellar
     end
 
     private
-    def self.extract_amount(a)
-      amount   = interpret_amount(a.last)
-      asset    = Stellar::Asset.send(*a[0...-1])
+    def self.get_asset_amount(values)
+      amount = interpret_amount(values.last)
+      if values[0].is_a?(Stellar::Asset)
+        asset = values.first
+      else
+        asset = Stellar::Asset.send(*values[0...-1])
+      end
 
       return asset, amount
     end
