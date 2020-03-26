@@ -1,6 +1,6 @@
 # Stellar::Base
 
-[![Build Status](https://travis-ci.org/bloom-solutions/ruby-stellar-base.svg)](https://travis-ci.org/bloom-solutions/ruby-stellar-base)
+[![Build Status](https://travis-ci.org/stellar/ruby-stellar-base.svg)](https://travis-ci.org/stellar/ruby-stellar-base)
 [![Code Climate](https://codeclimate.com/github/stellar/ruby-stellar-base/badges/gpa.svg)](https://codeclimate.com/github/stellar/ruby-stellar-base)
 
 The stellar-base library is the lowest-level stellar helper library.  It consists of classes
