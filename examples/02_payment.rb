@@ -7,7 +7,7 @@ from = Stellar::KeyPair.random
 client.friendbot(from)
 puts "Creating random recipient..."
 recipient = Stellar::KeyPair.random
-client.friendbot(from)
+client.friendbot(recipient)
 
 puts "Retrieving account's current sequence number..."
 seq_num = client.account_info(from.address).sequence.to_i
@@ -20,7 +20,7 @@ builder = Stellar::TransactionBuilder.new(
 )
 # Note: if you want to send a non-native asset, :amount must take the form: 
 # [<:alphanum12 or :alphanum4>, <code>, <issuer keypair>, <amount>]
-payment_op = Operation.payment({
+payment_op = Stellar::Operation.payment({
   destination: recipient,
   amount: [:native, 100]
 })
@@ -32,4 +32,10 @@ envelope = tx.to_envelope(from).to_xdr(:base64)
 
 puts "Submitting transaction to horizon..."
 # submit the transaction
-client.horizon.transactions._post(tx: envelope)
+begin
+  client.horizon.transactions._post(tx: envelope)
+rescue => e
+  p e
+else
+  puts "Success!"
+end

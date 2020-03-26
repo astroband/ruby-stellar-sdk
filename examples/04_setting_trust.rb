@@ -7,10 +7,10 @@ issuer = Stellar::KeyPair.from_seed("SALQBNNRCXWD32E4QKIXKXCMXCPJKWUP34EAK53SP6P
 
 puts "Creating random account..."
 account_kp = Stellar::KeyPair.random
-client.friendbot(from)
+client.friendbot(account_kp)
 
 puts "Retrieving account's current sequence number..."
-seq_num = client.account_info(from.address).sequence.to_i
+seq_num = client.account_info(account_kp.address).sequence.to_i
 
 puts "Constructing transaction..."
 builder = Stellar::TransactionBuilder.new(
@@ -26,3 +26,5 @@ envelope = tx.to_envelope(account_kp).to_xdr(:base64)
 
 puts "Submitting transaction to horizon..."
 client.horizon.transactions._post(tx: envelope)
+
+puts "Success!"
