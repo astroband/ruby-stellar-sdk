@@ -6,13 +6,21 @@ file.  This project adheres to [Semantic Versioning](http://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
-## [0.21.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.21.0...v0.20.0) - 2019-10-04
+## [0.22.0](https://github.com/stellar/ruby-stellar-base/compare/v0.21.0...v0.22.0) - 2020-03-26
+### Added
+- Add TransactionBuilder ([#54](https://github.com/stellar/ruby-stellar-base/issues/54))
+
+### Changed
+- Regenerate XDR files ([#57](https://github.com/stellar/ruby-stellar-base/issues/57))
+- Allow asset objects to be passed instead of list of parameters ([#59](https://github.com/stellar/ruby-stellar-base/issues/59))
+
+## [0.21.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.20.0...v0.21.0) - 2019-10-04
 ### Changed
 - [Stellar Protocol 12 compatibility](https://github.com/bloom-solutions/ruby-stellar-base/pull/51).
   - XDR changes for path payment
   - constant renames, which may cause breaking changes if referred to directly
 
-## [0.20.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.20.0...v0.19.0) - 2019-05-22
+## [0.20.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.19.0...v0.20.0) - 2019-05-22
 ### Added
 - Stellar Protocol 11 compatibility (#48)
   - XDR changes for [CAP-0006 Buy Offers](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0006.md)
