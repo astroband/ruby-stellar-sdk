@@ -55,6 +55,12 @@ module Stellar
       self
     end
 
+    def set_source_account(account_kp)
+      raise ArgumentError, "Bad source account" unless account_kp.is_a?(Stellar::KeyPair)
+      @source_account = account_kp
+      self
+    end
+
     def set_sequence_number(seq_num)
       raise ArgumentError, "Bad sequence number" unless seq_num.is_a?(Integer) && seq_num >= 0
       @sequence_number = seq_num
@@ -81,6 +87,12 @@ module Stellar
 
     def set_memo(memo)
       @memo = make_memo(memo)
+      self
+    end
+
+    def set_base_fee(base_fee)
+      raise ArgumentError, "Bad base fee" unless base_fee.is_a?(Integer) && base_fee >= 100
+      @base_fee = base_fee
       self
     end
 

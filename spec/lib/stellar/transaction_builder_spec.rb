@@ -109,6 +109,21 @@ describe Stellar::TransactionBuilder do
     end
   end
 
+  describe ".set_source_account" do
+    it "allows source account to be updated" do
+      kp = Stellar::KeyPair.random
+      builder.set_source_account(kp)
+      expect(builder.source_account).to eql(kp)
+    end
+
+    it "returns self" do
+      kp = Stellar::KeyPair.random
+      expect(
+        builder.set_source_account(kp)
+      ).to be_an_instance_of(Stellar::TransactionBuilder)
+    end
+  end
+
   describe ".set_sequence_number" do
     it "allows sequence number to be updated" do
       builder.set_sequence_number(5)
@@ -161,6 +176,19 @@ describe Stellar::TransactionBuilder do
 
     it "works and returns self" do
       expect(builder.set_memo("Hello").memo).to eql(Stellar::Memo.new(:memo_text, "Hello"))
+    end
+  end
+
+  describe ".set_base_fee" do
+    it "adjusts the base fee" do
+      builder.set_base_fee(200)
+      expect(builder.base_fee).to eql(200)
+    end
+
+    it "returns self" do
+      expect(
+        builder.set_base_fee(200)
+      ).to be_an_instance_of(Stellar::TransactionBuilder)
     end
   end
 
