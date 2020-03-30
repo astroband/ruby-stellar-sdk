@@ -427,4 +427,117 @@ describe Stellar::Client do
     end
   end
 
+  describe "#submit_transaction" do
+    let(:kp) { Stellar::KeyPair.from_seed("SBL77A6HQNNILXQQCSS6NMBS4ILSOF7KBINIITUUFBBAI53PNQBZA7QN") }
+    let(:memo_required_kp) { Stellar::KeyPair.from_seed("SCGGMYFIWGQCMDCPTWYMYWVOLERM7K6EIRD3QGXESEZ2O7NNT7CXWTHQ") }
+
+    it("doesn't raise an error when a transaction has a memo", {
+      vcr: {record: :once, match_requests_on: [:method]},
+    }) do
+      seq_num = client.account_info(kp.address).sequence.to_i + 1
+      tx = Stellar::TransactionBuilder.new(
+        source_account: kp, 
+        sequence_number: seq_num,
+        memo: Stellar::Memo.new(:memo_text, "test memo")
+      ).add_operation(
+        Stellar::Operation.payment({
+          destination: memo_required_kp,
+          amount: [Stellar::Asset.native, 100]
+        })
+      ).set_timeout(600).build()
+      envelope = tx.to_envelope(kp)
+
+      client.submit_transaction(tx_envelope: envelope) 
+    end
+
+    it("raises an error for missing memo", {
+      vcr: {record: :once, match_requests_on: [:method]},
+    }) do
+      seq_num = client.account_info(kp.address).sequence.to_i + 1
+      tx = Stellar::TransactionBuilder.new(
+        source_account: kp, 
+        sequence_number: seq_num
+      ).add_operation(
+        Stellar::Operation.payment({
+          destination: memo_required_kp,
+          amount: [Stellar::Asset.native, 100]
+        })
+      ).set_timeout(600).build()
+      envelope = tx.to_envelope(kp)
+
+      expect {
+        client.submit_transaction(tx_envelope: envelope) 
+      }.to raise_error(
+        Stellar::AccountRequiresMemoError, "account requires memo"
+      )
+    end
+  end
+
+  describe "#check_memo_required" do
+    let(:kp) { Stellar::KeyPair.from_seed("SBL77A6HQNNILXQQCSS6NMBS4ILSOF7KBINIITUUFBBAI53PNQBZA7QN") }
+    let(:memo_required_kp) { Stellar::KeyPair.from_seed("SCGGMYFIWGQCMDCPTWYMYWVOLERM7K6EIRD3QGXESEZ2O7NNT7CXWTHQ") }
+    
+    it("raises an error for missing memo", {
+      vcr: {record: :once, match_requests_on: [:method]},
+    }) do
+      seq_num = client.account_info(kp.address).sequence.to_i + 1
+      tx = Stellar::TransactionBuilder.new(
+        source_account: kp, 
+        sequence_number: seq_num
+      ).add_operation(
+        Stellar::Operation.payment({
+          destination: memo_required_kp,
+          amount: [Stellar::Asset.native, 100]
+        })
+      ).set_timeout(600).build()
+      envelope = tx.to_envelope(kp)
+
+      expect {
+        client.check_memo_required(envelope) 
+      }.to raise_error(
+        Stellar::AccountRequiresMemoError, "account requires memo"
+      )
+    end
+
+    it("raises an error for missing memo on account merge operations", {
+      vcr: {record: :once, match_requests_on: [:method]},
+    }) do
+      seq_num = client.account_info(kp.address).sequence.to_i + 1
+      tx = Stellar::TransactionBuilder.new(
+        source_account: kp, 
+        sequence_number: seq_num
+      ).add_operation(
+        Stellar::Operation.account_merge({
+          destination: memo_required_kp
+        })
+      ).set_timeout(600).build()
+      envelope = tx.to_envelope(kp)
+
+      expect {
+        client.check_memo_required(envelope) 
+      }.to raise_error(
+        Stellar::AccountRequiresMemoError, "account requires memo"
+      )
+    end
+
+    it("doesn't raise an error when a transaction has a memo", {
+      vcr: {record: :once, match_requests_on: [:method]},
+    }) do
+      seq_num = client.account_info(kp.address).sequence.to_i + 1
+      tx = Stellar::TransactionBuilder.new(
+        source_account: kp, 
+        sequence_number: seq_num,
+        memo: Stellar::Memo.new(:memo_text, "test memo")
+      ).add_operation(
+        Stellar::Operation.payment({
+          destination: memo_required_kp,
+          amount: [Stellar::Asset.native, 100]
+        })
+      ).set_timeout(600).build()
+      envelope = tx.to_envelope(kp)
+
+      client.check_memo_required(envelope) 
+    end
+  end
+
 end
