@@ -243,7 +243,7 @@ module Stellar
           next
         end
         if info.data["config.memo_required"] == "MQ=="
-          # MQ== is XDR for "1"
+          # MQ== is the base64 encoded string for the string "1"
           raise AccountRequiresMemoError.new("account requires memo")
         end
       end
