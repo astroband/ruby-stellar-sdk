@@ -81,8 +81,8 @@ module Stellar
         sequence:    sequence
       })
 
-      envelope_base64 = transaction.to_envelope(account.keypair).to_xdr(:base64)
-      @horizon.transactions._post(tx: envelope_base64)
+      envelope = transaction.to_envelope(account.keypair)
+      submit_transaction(tx_envelope: envelope)
     end
 
     def friendbot(account)
@@ -111,8 +111,8 @@ module Stellar
         fee: fee,
       })
 
-      envelope_base64 = payment.to_envelope(funder.keypair).to_xdr(:base64)
-      @horizon.transactions._post(tx: envelope_base64)
+      envelope = payment.to_envelope(funder.keypair)
+      submit_transaction(tx_envelope: envelope)
     end
 
     Contract ({
@@ -145,8 +145,8 @@ module Stellar
       signers = [tx_source_account, op_source_account].uniq(&:address)
       to_envelope_args = signers.map(&:keypair)
 
-      envelope_base64 = payment.to_envelope(*to_envelope_args).to_xdr(:base64)
-      @horizon.transactions._post(tx: envelope_base64)
+      envelope = payment.to_envelope(*to_envelope_args)
+      submit_transaction(tx_envelope: envelope)
     end
 
     Contract ({
@@ -192,8 +192,8 @@ module Stellar
 
       tx = Stellar::Transaction.change_trust(args)
 
-      envelope_base64 = tx.to_envelope(source.keypair).to_xdr(:base64)
-      horizon.transactions._post(tx: envelope_base64)
+      envelope = tx.to_envelope(source.keypair)
+      submit_transaction(tx_envelope: envelope)
     end
 
     Contract(C::KeywordArgs[

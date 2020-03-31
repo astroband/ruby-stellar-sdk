@@ -471,6 +471,66 @@ describe Stellar::Client do
         Stellar::AccountRequiresMemoError, "account requires memo"
       )
     end
+
+    it("succeeds for a mix of operations, memo included", {
+      vcr: {record: :once, match_requests_on: [:method]},
+    }) do
+      seq_num = client.account_info(kp.address).sequence.to_i + 1
+      tx = Stellar::TransactionBuilder.new(
+        source_account: kp, 
+        sequence_number: seq_num,
+        memo: Stellar::Memo.new(:memo_text, "test memo")
+      ).add_operation(
+        Stellar::Operation.payment({
+          destination: memo_required_kp,
+          amount: [Stellar::Asset.native, 100]
+        })
+      ).add_operation(
+        Stellar::Operation.bump_sequence({ bump_to: seq_num + 2 })
+      ).set_timeout(600).build()
+      envelope = tx.to_envelope(kp)
+
+      client.submit_transaction(tx_envelope: envelope) 
+    end
+
+    it("fails for a mix of operations, memo not included", {
+      vcr: {record: :once, match_requests_on: [:method]},
+    }) do
+      seq_num = client.account_info(kp.address).sequence.to_i + 1
+      tx = Stellar::TransactionBuilder.new(
+        source_account: kp, 
+        sequence_number: seq_num,
+      ).add_operation(
+        Stellar::Operation.payment({
+          destination: memo_required_kp,
+          amount: [Stellar::Asset.native, 100]
+        })
+      ).add_operation(
+        Stellar::Operation.bump_sequence({ bump_to: seq_num + 2 })
+      ).set_timeout(600).build()
+      envelope = tx.to_envelope(kp)
+
+      expect {
+        client.submit_transaction(tx_envelope: envelope) 
+      }.to raise_error(
+        Stellar::AccountRequiresMemoError, "account requires memo"
+      )
+    end
+
+    it("succeeds for operations that don't require memos", {
+      vcr: {record: :once, match_requests_on: [:method]},
+    }) do
+      seq_num = client.account_info(kp.address).sequence.to_i + 1
+      tx = Stellar::TransactionBuilder.new(
+        source_account: kp, 
+        sequence_number: seq_num,
+      ).add_operation(
+        Stellar::Operation.bump_sequence({ bump_to: seq_num + 2 })
+      ).set_timeout(600).build()
+      envelope = tx.to_envelope(kp)
+
+      client.submit_transaction(tx_envelope: envelope) 
+    end
   end
 
   describe "#check_memo_required" do

@@ -27,7 +27,7 @@ http_interactions:
       Content-Type:
       - application/hal+json; charset=utf-8
       Date:
-      - Tue, 31 Mar 2020 19:22:43 GMT
+      - Tue, 31 Mar 2020 17:28:50 GMT
       Vary:
       - Origin
       X-Ratelimit-Limit:
@@ -99,16 +99,16 @@ http_interactions:
           },
           "horizon_version": "1.0.1-2c2d8fb0c3ae0516dcbbb39f189ca00731c9c8c3",
           "core_version": "stellar-core 12.4.0 (c0136139802ac1a1ac8899424e7888fa9366414e)",
-          "ingest_latest_ledger": 989122,
-          "history_latest_ledger": 989122,
+          "ingest_latest_ledger": 987866,
+          "history_latest_ledger": 987866,
           "history_elder_ledger": 1,
-          "core_latest_ledger": 989122,
+          "core_latest_ledger": 987866,
           "network_passphrase": "Test SDF Network ; September 2015",
           "current_protocol_version": 12,
           "core_supported_protocol_version": 12
         }
     http_version: 
-  recorded_at: Tue, 31 Mar 2020 19:22:43 GMT
+  recorded_at: Tue, 31 Mar 2020 17:28:50 GMT
 - request:
     method: get
     uri: https://horizon-testnet.stellar.org/accounts/GBMKYHYRFMEBJRUGDQ3HGODH4SEJT5BN4SCBJ467NYGN7UCDYJ5SXC6H
@@ -136,9 +136,9 @@ http_interactions:
       Content-Type:
       - application/hal+json; charset=utf-8
       Date:
-      - Tue, 31 Mar 2020 19:22:43 GMT
+      - Tue, 31 Mar 2020 17:28:51 GMT
       Latest-Ledger:
-      - '989122'
+      - '987866'
       Vary:
       - Origin
       X-Ratelimit-Limit:
@@ -222,64 +222,5 @@ http_interactions:
           "paging_token": "GBMKYHYRFMEBJRUGDQ3HGODH4SEJT5BN4SCBJ467NYGN7UCDYJ5SXC6H"
         }
     http_version: 
-  recorded_at: Tue, 31 Mar 2020 19:22:43 GMT
-- request:
-    method: post
-    uri: https://horizon-testnet.stellar.org/transactions
-    body:
-      encoding: UTF-8
-      string: tx=AAAAAFisHxErCBTGhhw2czhn5IiZ9C3khBTz324M39BDwnsrAAAAZAAO4RkAAAAHAAAAAQAAAAAAAAAAAAAAAF6DmtsAAAABAAAACXRlc3QgbWVtbwAAAAAAAAEAAAAAAAAAAQAAAAB1%2FDiWKkQxV8It81gQUHctapeM050vX6nKruTnPtSqFQAAAAAAAAAAO5rKAAAAAAAAAAABQ8J7KwAAAEDepC6RyH%2FNgVQ6ko7bmbbpMt0x53ncnp6%2Fd3jFYFk4Ot6IFOgmC1m3Uxn5tkmoB7OebH%2BjMAFb11MUI7QpJ3AB
-    headers:
-      User-Agent:
-      - Faraday v0.17.3
-      Accept:
-      - application/hal+json,application/problem+json,application/json
-      X-Client-Name:
-      - ruby-stellar-sdk
-      X-Client-Version:
-      - 0.8.0
-      Content-Type:
-      - application/x-www-form-urlencoded
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Cache-Control:
-      - no-cache, no-store, max-age=0
-      Content-Disposition:
-      - inline
-      Content-Type:
-      - application/hal+json; charset=utf-8
-      Date:
-      - Tue, 31 Mar 2020 19:22:48 GMT
-      Vary:
-      - Origin
-      X-Ratelimit-Limit:
-      - '101'
-      X-Ratelimit-Remaining:
-      - '100'
-      X-Ratelimit-Reset:
-      - '1'
-      Content-Length:
-      - '1483'
-      Connection:
-      - keep-alive
-    body:
-      encoding: ASCII-8BIT
-      string: |-
-        {
-          "_links": {
-            "transaction": {
-              "href": "https://horizon-testnet.stellar.org/transactions/849818f8cce07d61f3bd1f72a6082b9aab63136c02a8375a15bfa63144bf1dfd"
-            }
-          },
-          "hash": "849818f8cce07d61f3bd1f72a6082b9aab63136c02a8375a15bfa63144bf1dfd",
-          "ledger": 989123,
-          "envelope_xdr": "AAAAAFisHxErCBTGhhw2czhn5IiZ9C3khBTz324M39BDwnsrAAAAZAAO4RkAAAAHAAAAAQAAAAAAAAAAAAAAAF6DmtsAAAABAAAACXRlc3QgbWVtbwAAAAAAAAEAAAAAAAAAAQAAAAB1/DiWKkQxV8It81gQUHctapeM050vX6nKruTnPtSqFQAAAAAAAAAAO5rKAAAAAAAAAAABQ8J7KwAAAEDepC6RyH/NgVQ6ko7bmbbpMt0x53ncnp6/d3jFYFk4Ot6IFOgmC1m3Uxn5tkmoB7OebH+jMAFb11MUI7QpJ3AB",
-          "result_xdr": "AAAAAAAAAGQAAAAAAAAAAQAAAAAAAAABAAAAAAAAAAA=",
-          "result_meta_xdr": "AAAAAQAAAAIAAAADAA8XwwAAAAAAAAAAWKwfESsIFMaGHDZzOGfkiJn0LeSEFPPfbgzf0EPCeysAAAAV4tYpRAAO4RkAAAAGAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAABAA8XwwAAAAAAAAAAWKwfESsIFMaGHDZzOGfkiJn0LeSEFPPfbgzf0EPCeysAAAAV4tYpRAAO4RkAAAAHAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAABAAAABAAAAAMADuRzAAAAAAAAAAB1/DiWKkQxV8It81gQUHctapeM050vX6nKruTnPtSqFQAAABiuF6OcAA7hMQAAAAEAAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAEADxfDAAAAAAAAAAB1/DiWKkQxV8It81gQUHctapeM050vX6nKruTnPtSqFQAAABjpsm2cAA7hMQAAAAEAAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAMADxfDAAAAAAAAAABYrB8RKwgUxoYcNnM4Z+SImfQt5IQU899uDN/QQ8J7KwAAABXi1ilEAA7hGQAAAAcAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAEADxfDAAAAAAAAAABYrB8RKwgUxoYcNnM4Z+SImfQt5IQU899uDN/QQ8J7KwAAABWnO19EAA7hGQAAAAcAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=="
-        }
-    http_version: 
-  recorded_at: Tue, 31 Mar 2020 19:22:48 GMT
+  recorded_at: Tue, 31 Mar 2020 17:28:51 GMT
 recorded_with: VCR 3.0.3
