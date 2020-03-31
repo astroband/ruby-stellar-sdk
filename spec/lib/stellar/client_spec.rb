@@ -520,6 +520,29 @@ describe Stellar::Client do
       )
     end
 
+    it("succeeds with a multi-operation transaction", {
+      vcr: {record: :once, match_requests_on: [:method]},
+    }) do
+      seq_num = client.account_info(kp.address).sequence.to_i + 1
+      tx = Stellar::TransactionBuilder.new(
+        source_account: kp, 
+        sequence_number: seq_num,
+        memo: Stellar::Memo.new(:memo_text, "test memo")
+      ).add_operation(
+        Stellar::Operation.payment({
+          destination: memo_required_kp,
+          amount: [Stellar::Asset.native, 100]
+        })
+      ).add_operation(
+        Stellar::Operation.account_merge({
+          destination: memo_required_kp
+        })
+      ).set_timeout(600).build()
+      envelope = tx.to_envelope(kp)
+
+      client.check_memo_required(envelope) 
+    end
+
     it("doesn't raise an error when a transaction has a memo", {
       vcr: {record: :once, match_requests_on: [:method]},
     }) do
