@@ -3,7 +3,15 @@ require "active_support/core_ext/object/blank"
 require 'securerandom'
 
 module Stellar
-  class AccountRequiresMemoError < StandardError; end
+  class AccountRequiresMemoError < StandardError
+    attr_reader :account_id, :operation_index
+    
+    def initialize(message, account_id, operation_index)
+      super(message)
+      @account_id = account_id
+      @operation_index = operation_index
+    end
+  end
 
   class Client
     include Contracts
@@ -215,7 +223,7 @@ module Stellar
         return
       end
       destinations = Set.new
-      tx.operations.each do |op|
+      tx.operations.each_with_index do |op, idx|
         if op.body.type == Stellar::OperationType.payment
           destination = op.body.value.destination
         elsif op.body.type == Stellar::OperationType.path_payment_strict_receive
@@ -244,7 +252,7 @@ module Stellar
         end
         if info.data["config.memo_required"] == "MQ=="
           # MQ== is the base64 encoded string for the string "1"
-          raise AccountRequiresMemoError.new("account requires memo")
+          raise AccountRequiresMemoError.new("account requires memo", destination, idx)
         end
       end
     end
