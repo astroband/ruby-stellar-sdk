@@ -3,7 +3,15 @@ require "active_support/core_ext/object/blank"
 require 'securerandom'
 
 module Stellar
-  class InvalidSep10ChallengeError < StandardError; end
+  class AccountRequiresMemoError < StandardError
+    attr_reader :account_id, :operation_index
+    
+    def initialize(message, account_id, operation_index)
+      super(message)
+      @account_id = account_id
+      @operation_index = operation_index
+    end
+  end
 
   class Client
     include Contracts
@@ -81,8 +89,8 @@ module Stellar
         sequence:    sequence
       })
 
-      envelope_base64 = transaction.to_envelope(account.keypair).to_xdr(:base64)
-      @horizon.transactions._post(tx: envelope_base64)
+      envelope = transaction.to_envelope(account.keypair)
+      submit_transaction(tx_envelope: envelope)
     end
 
     def friendbot(account)
@@ -111,8 +119,8 @@ module Stellar
         fee: fee,
       })
 
-      envelope_base64 = payment.to_envelope(funder.keypair).to_xdr(:base64)
-      @horizon.transactions._post(tx: envelope_base64)
+      envelope = payment.to_envelope(funder.keypair)
+      submit_transaction(tx_envelope: envelope)
     end
 
     Contract ({
@@ -145,8 +153,8 @@ module Stellar
       signers = [tx_source_account, op_source_account].uniq(&:address)
       to_envelope_args = signers.map(&:keypair)
 
-      envelope_base64 = payment.to_envelope(*to_envelope_args).to_xdr(:base64)
-      @horizon.transactions._post(tx: envelope_base64)
+      envelope = payment.to_envelope(*to_envelope_args)
+      submit_transaction(tx_envelope: envelope)
     end
 
     Contract ({
@@ -192,8 +200,61 @@ module Stellar
 
       tx = Stellar::Transaction.change_trust(args)
 
-      envelope_base64 = tx.to_envelope(source.keypair).to_xdr(:base64)
-      horizon.transactions._post(tx: envelope_base64)
+      envelope = tx.to_envelope(source.keypair)
+      submit_transaction(tx_envelope: envelope)
+    end
+
+    Contract(C::KeywordArgs[
+      tx_envelope: Stellar::TransactionEnvelope,
+      options: Maybe[{ skip_memo_required_check: C::Bool }]
+    ] => Any)
+    def submit_transaction(tx_envelope:, options: { skip_memo_required_check: false })
+      if !options[:skip_memo_required_check]
+        check_memo_required(tx_envelope)
+      end
+      @horizon.transactions._post(tx: tx_envelope.to_xdr(:base64))
+    end
+
+    Contract Stellar::TransactionEnvelope => Any
+    def check_memo_required(tx_envelope)
+      tx = tx_envelope.tx
+      # Check transactions where the .memo field is nil or of type MemoType.memo_none
+      if !tx.memo.nil? && tx.memo.type != Stellar::MemoType.memo_none
+        return
+      end
+      destinations = Set.new
+      tx.operations.each_with_index do |op, idx|
+        if op.body.type == Stellar::OperationType.payment
+          destination = op.body.value.destination
+        elsif op.body.type == Stellar::OperationType.path_payment_strict_receive
+          destination = op.body.value.destination
+        elsif op.body.type == Stellar::OperationType.path_payment_strict_send
+          destination = op.body.value.destination
+        elsif op.body.type == Stellar::OperationType.account_merge
+          # There is no AccountMergeOp, op.body is an Operation object
+          # and op.body.value is a PublicKey (or AccountID) object.
+          destination = op.body.value
+        else
+          next
+        end
+        
+        if destinations.include?(destination)
+          next
+        end
+        destinations.add(destination)
+       
+        kp = Stellar::KeyPair.from_public_key(destination.value)
+        begin
+          info = account_info(kp.address)
+        rescue Faraday::ResourceNotFound
+          # Don't raise an error if its a 404, but throw one otherwise
+          next
+        end
+        if info.data["config.memo_required"] == "MQ=="
+          # MQ== is the base64 encoded string for the string "1"
+          raise AccountRequiresMemoError.new("account requires memo", destination, idx)
+        end
+      end
     end
 
     Contract(C::KeywordArgs[
@@ -254,6 +315,6 @@ module Stellar
         tx_envelope: transaction_envelope, keypair: keypair
       )
     end
-    
+
   end
 end
