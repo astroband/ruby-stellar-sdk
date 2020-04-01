@@ -468,7 +468,15 @@ describe Stellar::Client do
       expect {
         client.submit_transaction(tx_envelope: envelope) 
       }.to raise_error(
-        Stellar::AccountRequiresMemoError, "account requires memo"
+        an_instance_of(
+          Stellar::AccountRequiresMemoError
+        ).and(
+          having_attributes(
+            message: "account requires memo",
+            account_id: memo_required_kp.public_key,
+            operation_index: 0
+          )
+        )
       )
     end
 
@@ -501,19 +509,27 @@ describe Stellar::Client do
         source_account: kp, 
         sequence_number: seq_num,
       ).add_operation(
+        Stellar::Operation.bump_sequence({ bump_to: seq_num + 2 })
+      ).add_operation(
         Stellar::Operation.payment({
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
         })
-      ).add_operation(
-        Stellar::Operation.bump_sequence({ bump_to: seq_num + 2 })
       ).set_timeout(600).build()
       envelope = tx.to_envelope(kp)
 
       expect {
         client.submit_transaction(tx_envelope: envelope) 
       }.to raise_error(
-        Stellar::AccountRequiresMemoError, "account requires memo"
+        an_instance_of(
+          Stellar::AccountRequiresMemoError
+        ).and(
+          having_attributes(
+            message: "account requires memo",
+            account_id: memo_required_kp.public_key,
+            operation_index: 1
+          )
+        )
       )
     end
 
@@ -555,7 +571,15 @@ describe Stellar::Client do
       expect {
         client.check_memo_required(envelope) 
       }.to raise_error(
-        Stellar::AccountRequiresMemoError, "account requires memo"
+        an_instance_of(
+          Stellar::AccountRequiresMemoError
+        ).and(
+          having_attributes(
+            message: "account requires memo",
+            account_id: memo_required_kp.public_key,
+            operation_index: 0
+          )
+        )
       )
     end
 
@@ -576,7 +600,15 @@ describe Stellar::Client do
       expect {
         client.check_memo_required(envelope) 
       }.to raise_error(
-        Stellar::AccountRequiresMemoError, "account requires memo"
+        an_instance_of(
+          Stellar::AccountRequiresMemoError
+        ).and(
+          having_attributes(
+            message: "account requires memo",
+            account_id: memo_required_kp.public_key,
+            operation_index: 0
+          )
+        )
       )
     end
 

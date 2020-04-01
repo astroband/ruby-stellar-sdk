@@ -27,7 +27,7 @@ http_interactions:
       Content-Type:
       - application/hal+json; charset=utf-8
       Date:
-      - Tue, 31 Mar 2020 19:22:48 GMT
+      - Wed, 01 Apr 2020 18:33:42 GMT
       Vary:
       - Origin
       X-Ratelimit-Limit:
@@ -37,7 +37,7 @@ http_interactions:
       X-Ratelimit-Reset:
       - '1'
       Content-Length:
-      - '2496'
+      - '2499'
       Connection:
       - keep-alive
     body:
@@ -99,16 +99,16 @@ http_interactions:
           },
           "horizon_version": "1.0.1-2c2d8fb0c3ae0516dcbbb39f189ca00731c9c8c3",
           "core_version": "stellar-core 12.4.0 (c0136139802ac1a1ac8899424e7888fa9366414e)",
-          "ingest_latest_ledger": 989123,
-          "history_latest_ledger": 989123,
+          "ingest_latest_ledger": 1004404,
+          "history_latest_ledger": 1004404,
           "history_elder_ledger": 1,
-          "core_latest_ledger": 989123,
+          "core_latest_ledger": 1004404,
           "network_passphrase": "Test SDF Network ; September 2015",
           "current_protocol_version": 12,
           "core_supported_protocol_version": 12
         }
     http_version: 
-  recorded_at: Tue, 31 Mar 2020 19:22:48 GMT
+  recorded_at: Wed, 01 Apr 2020 18:33:42 GMT
 - request:
     method: get
     uri: https://horizon-testnet.stellar.org/accounts/GBMKYHYRFMEBJRUGDQ3HGODH4SEJT5BN4SCBJ467NYGN7UCDYJ5SXC6H
@@ -136,9 +136,9 @@ http_interactions:
       Content-Type:
       - application/hal+json; charset=utf-8
       Date:
-      - Tue, 31 Mar 2020 19:22:48 GMT
+      - Wed, 01 Apr 2020 18:33:42 GMT
       Latest-Ledger:
-      - '989123'
+      - '1004404'
       Vary:
       - Origin
       X-Ratelimit-Limit:
@@ -148,7 +148,7 @@ http_interactions:
       X-Ratelimit-Reset:
       - '1'
       Content-Length:
-      - '2386'
+      - '2387'
       Connection:
       - keep-alive
     body:
@@ -190,9 +190,9 @@ http_interactions:
           },
           "id": "GBMKYHYRFMEBJRUGDQ3HGODH4SEJT5BN4SCBJ467NYGN7UCDYJ5SXC6H",
           "account_id": "GBMKYHYRFMEBJRUGDQ3HGODH4SEJT5BN4SCBJ467NYGN7UCDYJ5SXC6H",
-          "sequence": "4188147164381191",
+          "sequence": "4188147164381198",
           "subentry_count": 0,
-          "last_modified_ledger": 989123,
+          "last_modified_ledger": 1004404,
           "thresholds": {
             "low_threshold": 0,
             "med_threshold": 0,
@@ -205,7 +205,7 @@ http_interactions:
           },
           "balances": [
             {
-              "balance": "9299.9999300",
+              "balance": "9099.9998900",
               "buying_liabilities": "0.0000000",
               "selling_liabilities": "0.0000000",
               "asset_type": "native"
@@ -222,7 +222,7 @@ http_interactions:
           "paging_token": "GBMKYHYRFMEBJRUGDQ3HGODH4SEJT5BN4SCBJ467NYGN7UCDYJ5SXC6H"
         }
     http_version: 
-  recorded_at: Tue, 31 Mar 2020 19:22:49 GMT
+  recorded_at: Wed, 01 Apr 2020 18:33:43 GMT
 - request:
     method: get
     uri: https://horizon-testnet.stellar.org/accounts/GB27YOEWFJCDCV6CFXZVQECQO4WWVF4M2OOS6X5JZKXOJZZ62SVBKQ6B
@@ -250,9 +250,9 @@ http_interactions:
       Content-Type:
       - application/hal+json; charset=utf-8
       Date:
-      - Tue, 31 Mar 2020 19:22:49 GMT
+      - Wed, 01 Apr 2020 18:33:43 GMT
       Latest-Ledger:
-      - '989123'
+      - '1004404'
       Vary:
       - Origin
       X-Ratelimit-Limit:
@@ -262,7 +262,7 @@ http_interactions:
       X-Ratelimit-Reset:
       - '1'
       Content-Length:
-      - '2425'
+      - '2426'
       Connection:
       - keep-alive
     body:
@@ -306,7 +306,7 @@ http_interactions:
           "account_id": "GB27YOEWFJCDCV6CFXZVQECQO4WWVF4M2OOS6X5JZKXOJZZ62SVBKQ6B",
           "sequence": "4188250243596289",
           "subentry_count": 1,
-          "last_modified_ledger": 989123,
+          "last_modified_ledger": 1004404,
           "thresholds": {
             "low_threshold": 0,
             "med_threshold": 0,
@@ -319,7 +319,7 @@ http_interactions:
           },
           "balances": [
             {
-              "balance": "10699.9999900",
+              "balance": "10899.9999900",
               "buying_liabilities": "0.0000000",
               "selling_liabilities": "0.0000000",
               "asset_type": "native"
@@ -338,5 +338,5 @@ http_interactions:
           "paging_token": "GB27YOEWFJCDCV6CFXZVQECQO4WWVF4M2OOS6X5JZKXOJZZ62SVBKQ6B"
         }
     http_version: 
-  recorded_at: Tue, 31 Mar 2020 19:22:49 GMT
+  recorded_at: Wed, 01 Apr 2020 18:33:43 GMT
 recorded_with: VCR 3.0.3

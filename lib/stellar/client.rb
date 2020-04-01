@@ -235,7 +235,7 @@ module Stellar
           # and op.body.value is a PublicKey (or AccountID) object.
           destination = op.body.value
         else
-          return
+          next
         end
         
         if destinations.include?(destination)
