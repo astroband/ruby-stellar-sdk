@@ -1,7 +1,7 @@
 # coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
+lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'stellar/version'
+require "stellar/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "stellar-sdk"
@@ -19,13 +19,13 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "stellar-base", ">= 0.22.0"
   spec.add_dependency "hyperclient", "~> 0.7"
-  spec.add_dependency "excon", "~> 0.44", ">= 0.44.4"
+  spec.add_dependency "excon", "~> 0.71"
   spec.add_dependency "contracts", "~> 0.16"
   spec.add_dependency "activesupport", ">= 5.0"
   spec.add_dependency "toml-rb", "~> 1.1", ">= 1.1.1"
 
   spec.add_development_dependency "bundler", "~> 2.0"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rake", "~> 12.3", ">= 12.3.3"
   spec.add_development_dependency "rspec", "~> 3.1"
   spec.add_development_dependency "guard-rspec", "~> 4.7"
   spec.add_development_dependency "simplecov", "~> 0.18"
