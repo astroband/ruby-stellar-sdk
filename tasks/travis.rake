@@ -1,1 +1,3 @@
-task :travis => %w(spec)
+# frozen_string_literal: true
+
+task travis: %w[spec]

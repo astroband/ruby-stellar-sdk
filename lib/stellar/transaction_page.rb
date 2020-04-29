@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Stellar
   class TransactionPage
     include Contracts
@@ -11,7 +13,7 @@ module Stellar
     def each
       @resource.records.each do |tx|
         yield tx if block_given?
-      end  
+      end
     end
 
     Contract None => TransactionPage
@@ -22,6 +24,5 @@ module Stellar
     def next_page!
       @resource = @resource.next
     end
-
   end
 end

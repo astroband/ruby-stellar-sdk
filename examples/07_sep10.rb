@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'stellar-sdk'
 require 'hyperclient'
 
@@ -36,11 +38,11 @@ def setup_multisig
     Stellar::Operation.set_options({ signer: signer2 })
   ).add_operation(
     Stellar::Operation.set_options({
-      low_threshold: 1, 
-      med_threshold: 2,
-      high_threshold: 3,
-    })
-  ).set_timeout(600).build()
+                                     low_threshold: 1,
+                                     med_threshold: 2,
+                                     high_threshold: 3
+                                   })
+  ).set_timeout(600).build
 
   envelope_xdr = tx.to_envelope($client_master_kp).to_xdr(:base64)
   begin
@@ -50,7 +52,6 @@ def setup_multisig
   end
 end
 
-
 # This function walks throught the steps both the wallet and server would take
 # during a SEP-10 challenge verification.
 def example_verify_challenge_tx_threshold
@@ -59,14 +60,14 @@ def example_verify_challenge_tx_threshold
   envelope_xdr = Stellar::SEP10.build_challenge_tx(
     server: $server_kp,
     client: $client_master_kp,
-    anchor_name: "SDF",
+    anchor_name: 'SDF',
     timeout: 600
   )
   # 3. The wallet recieves the challenge xdr and collects enough signatures from
   #    the accounts signers to reach the medium threshold on the account.
-  #    `envelope.signatures` already contains the server's signature, so the wallet 
+  #    `envelope.signatures` already contains the server's signature, so the wallet
   #    adds to the list.
-  envelope = Stellar::TransactionEnvelope.from_xdr(envelope_xdr, "base64")
+  envelope = Stellar::TransactionEnvelope.from_xdr(envelope_xdr, 'base64')
   envelope.signatures += [
     envelope.tx.sign_decorated($client_master_kp),
     envelope.tx.sign_decorated($client_signer_kp1),
@@ -86,17 +87,17 @@ def example_verify_challenge_tx_threshold
     info = $client.account_info(account)
   rescue Faraday::ResourceNotFound
     # The account doesn't exist yet.
-    # In this situation, all the server can do is verify that the client master 
+    # In this situation, all the server can do is verify that the client master
     # keypair has signed the transaction.
     begin
       Stellar::SEP10.verify_challenge_tx(
         challenge_xdr: envelope_xdr, server: $server_kp
       )
     rescue Stellar::InvalidSep10ChallengeError => e
-      puts "You should handle possible exceptions:"
+      puts 'You should handle possible exceptions:'
       puts e
     else
-      puts "Challenge verified by client master key signature"
+      puts 'Challenge verified by client master key signature'
     end
   else
     # The account exists, so the server should check if the signatures reach the
@@ -105,20 +106,20 @@ def example_verify_challenge_tx_threshold
       signers_found = Stellar::SEP10.verify_challenge_tx_threshold(
         challenge_xdr: envelope_xdr,
         server: $server_kp,
-        threshold: info.thresholds["med_threshold"],
+        threshold: info.thresholds['med_threshold'],
         signers: Set.new(info.signers)
       )
     rescue Stellar::InvalidSep10ChallengeError => e
-      puts "You should handle possible exceptions:"
+      puts 'You should handle possible exceptions:'
       puts e
     else
-      puts "Challenge signatures and threshold verified!"
+      puts 'Challenge signatures and threshold verified!'
       total_weight = 0
       signers_found.each do |signer|
         total_weight += signer['weight']
         puts "signer: #{signer['key']}, weight: #{signer['weight']}"
       end
-      puts "Account medium threshold: #{info.thresholds["med_threshold"]}, total signature(s) weight: #{total_weight}"
+      puts "Account medium threshold: #{info.thresholds['med_threshold']}, total signature(s) weight: #{total_weight}"
     end
   end
 end

@@ -1,4 +1,6 @@
-source "https://rubygems.org"
+# frozen_string_literal: true
+
+source 'https://rubygems.org'
 
 gemspec
 
@@ -9,6 +11,6 @@ gemspec
 # gem "stellar-base", path: "../ruby-stellar-base"
 
 group :development do
-  gem "pry"
+  gem 'pry'
+  gem 'rubocop', '~> 0.82.0', require: false
 end
-

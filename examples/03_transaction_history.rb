@@ -1,17 +1,19 @@
+# frozen_string_literal: true
+
 require 'stellar-sdk'
 
-account = Stellar::Account.from_seed("SBXH4SEH32PENMMB66P4TY6LXUIFMRVFUMX2LJC3P2STHICBJLNQJOH5") 
-client  = Stellar::Client.default_testnet()
+account = Stellar::Account.from_seed('SBXH4SEH32PENMMB66P4TY6LXUIFMRVFUMX2LJC3P2STHICBJLNQJOH5')
+client  = Stellar::Client.default_testnet
 
 # load the first page of transactions
 transactions = client.transactions({
-  account: account, 
-  order: :chronological
-}) # => #<TransactionPage count=50 [...]> 
+                                     account: account,
+                                     order: :chronological
+                                   }) # => #<TransactionPage count=50 [...]>
 
 # TransactionPage implements Enumerable...
 transactions.first # => #<Stellar::Transaction ...>
-transactions.each{|tx| p tx}
+transactions.each { |tx| p tx }
 transactions.take(3) # => [...]
 
 # ...but also has methods to advance pages

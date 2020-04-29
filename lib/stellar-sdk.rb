@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'stellar-base'
 require 'contracts'
 
 module Stellar
-
   autoload :Account
   autoload :Amount
   autoload :Client

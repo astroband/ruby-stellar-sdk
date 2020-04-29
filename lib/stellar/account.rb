@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'toml-rb'
 require 'uri'
 require 'faraday'
@@ -26,23 +28,17 @@ module Stellar
 
     def self.lookup(federated_name)
       _, domain = federated_name.split('*')
-      if domain.nil?
-        raise InvalidFederationAddress.new
-      end
+      raise InvalidFederationAddress if domain.nil?
 
       domain_req = Faraday.new("https://#{domain}/.well-known/stellar.toml").get
 
-      unless domain_req.status == 200
-        raise InvalidStellarDomain.new('Domain does not contain stellar.toml file')
-      end
-      
-      fed_server_url = TomlRB.parse(domain_req.body)["FEDERATION_SERVER"]
-      if fed_server_url.nil?
-        raise InvalidStellarTOML.new('Invalid Stellar TOML file')
-      end
+      raise InvalidStellarDomain, 'Domain does not contain stellar.toml file' unless domain_req.status == 200
 
-      unless fed_server_url =~ URI::regexp
-        raise InvalidFederationURL.new('Invalid Federation Server URL')
+      fed_server_url = TomlRB.parse(domain_req.body)['FEDERATION_SERVER']
+      raise InvalidStellarTOML, 'Invalid Stellar TOML file' if fed_server_url.nil?
+
+      unless fed_server_url =~ URI::DEFAULT_PARSER.make_regexp
+        raise InvalidFederationURL, 'Invalid Federation Server URL'
       end
 
       lookup_req = Faraday.new(fed_server_url).get do |req|
@@ -50,15 +46,13 @@ module Stellar
         req.params[:type] = 'name'
       end
 
-      unless lookup_req.status == 200
-        raise AccountNotFound.new('Account not found')
-      end
+      raise AccountNotFound, 'Account not found' unless lookup_req.status == 200
 
-      JSON.parse(lookup_req.body)["account_id"]
+      JSON.parse(lookup_req.body)['account_id']
     end
 
     def self.master
-      keypair = Stellar::KeyPair.from_raw_seed("allmylifemyhearthasbeensearching")
+      keypair = Stellar::KeyPair.from_raw_seed('allmylifemyhearthasbeensearching')
       new(keypair)
     end
 

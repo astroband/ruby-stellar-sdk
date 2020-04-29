@@ -1,3 +1,5 @@
-require "bundler/gem_tasks"
+# frozen_string_literal: true
 
-Dir["tasks/**/*.rake"].each{|f| load f}
+require 'bundler/gem_tasks'
+
+Dir['tasks/**/*.rake'].each { |f| load f }
