@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'hyperclient'
 require 'active_support/core_ext/object/blank'
 require 'securerandom'
@@ -20,10 +21,10 @@ module Stellar
 
     DEFAULT_FEE = 100
 
-    HORIZON_LOCALHOST_URL = 'http://127.0.0.1:8000'.freeze
-    HORIZON_MAINNET_URL = 'https://horizon.stellar.org'.freeze
-    HORIZON_TESTNET_URL = 'https://horizon-testnet.stellar.org'.freeze
-    FRIENDBOT_URL = 'https://friendbot.stellar.org'.freeze
+    HORIZON_LOCALHOST_URL = 'http://127.0.0.1:8000'
+    HORIZON_MAINNET_URL = 'https://horizon.stellar.org'
+    HORIZON_TESTNET_URL = 'https://horizon-testnet.stellar.org'
+    FRIENDBOT_URL = 'https://friendbot.stellar.org'
 
     def self.default(options = {})
       new options.merge(
@@ -46,7 +47,7 @@ module Stellar
 
     attr_reader :horizon
 
-    Contract ({ horizon: String }) => Any
+    Contract { horizon: String } => Any
     def initialize(options)
       @options = options
       @horizon = Hyperclient.new(options[:horizon]) do |client|
@@ -68,27 +69,28 @@ module Stellar
     Contract Or[Stellar::Account, String] => Any
     def account_info(account_or_address)
       account_id = if account_or_address.is_a?(Stellar::Account)
-        account_or_address.address
-      else
+                     account_or_address.address
+                   else
         account_or_address
                    end
       @horizon.account(account_id: account_id)._get
     end
 
-    Contract ({
+    Contract {
       account: Stellar::Account,
       destination: Stellar::Account
-    }) => Any
+    } => Any
     def account_merge(options = {})
       account     = options[:account]
       destination = options[:destination]
       sequence    = options[:sequence] || (account_info(account).sequence.to_i + 1)
 
-      transaction = Stellar::Transaction.account_merge({
-        account:     account.keypair,
-        destination: destination.keypair,
-        sequence:    sequence
-      })
+      transaction = Stellar::TransactionBuilder.new(
+        source_account: account.keypair,
+        sequence_number: sequence
+      ).add_operation(
+        Stellar::Operation.account_merge(destination: destination.keypair)
+      ).set_timeout(0).build
 
       envelope = transaction.to_envelope(account.keypair)
       submit_transaction(tx_envelope: envelope)
@@ -100,11 +102,11 @@ module Stellar
       Faraday.post(uri.to_s)
     end
 
-    Contract ({
+    Contract {
       account: Stellar::Account,
       funder: Stellar::Account,
       starting_balance: Integer
-    }) => Any
+    } => Any
     def create_account(options = {})
       funder   = options[:funder]
       sequence = options[:sequence] || (account_info(funder).sequence.to_i + 1)
@@ -112,23 +114,26 @@ module Stellar
       # instead of using a hard-coded default value.
       fee = options[:fee] || DEFAULT_FEE
 
-      payment = Stellar::Transaction.create_account({
-        account: funder.keypair,
-        destination: options[:account].keypair,
-        sequence: sequence,
-        starting_balance: options[:starting_balance],
-        fee: fee
-      })
+      payment = Stellar::TransactionBuilder.new(
+        source_account: funder.keypair,
+        sequence_number: sequence,
+        base_fee: fee
+      ).add_operation(
+        Stellar::Operation.create_account(
+          destination: options[:account].keypair,
+          starting_balance: options[:starting_balance]
+        )
+      ).set_timeout(0).build
 
       envelope = payment.to_envelope(funder.keypair)
       submit_transaction(tx_envelope: envelope)
     end
 
-    Contract ({
+    Contract {
       from: Stellar::Account,
       to: Stellar::Account,
       amount: Stellar::Amount
-    }) => Any
+    } => Any
     def send_payment(options = {})
       from_account = options[:from]
       tx_source_account = options[:transaction_source] || from_account
@@ -137,17 +142,16 @@ module Stellar
       sequence = options[:sequence] ||
                  (account_info(tx_source_account).sequence.to_i + 1)
 
-      payment_details = {
-        destination: options[:to].keypair,
-        sequence: sequence,
-        amount: options[:amount].to_payment,
-        memo: options[:memo]
-      }
-
-      payment_details[:account] = tx_source_account.keypair
-      payment_details[:source_account] = op_source_account.keypair if op_source_account.present?
-
-      payment = Stellar::Transaction.payment(payment_details)
+      payment = Stellar::TransactionBuilder.new(
+        source_account: tx_source_account.keypair,
+        sequence_number: sequence
+      ).add_operation(
+        Stellar::Operation.payment(
+          source_account: op_source_account.keypair,
+          destination: options[:to].keypair,
+          amount: options[:amount].to_payment
+        )
+      ).set_memo(options[:memo]).set_timeout(0).build
 
       signers = [tx_source_account, op_source_account].uniq(&:address)
       to_envelope_args = signers.map(&:keypair)
@@ -156,19 +160,19 @@ module Stellar
       submit_transaction(tx_envelope: envelope)
     end
 
-    Contract ({
+    Contract {
       account: Maybe[Stellar::Account],
       limit: Maybe[Pos],
       cursor: Maybe[String]
-    }) => TransactionPage
+    } => TransactionPage
     def transactions(options = {})
       args = options.slice(:limit, :cursor)
 
       resource = if options[:account]
                    args = args.merge(account_id: options[:account].address)
-        @horizon.account_transactions(args)
+                   @horizon.account_transactions(args)
                  else
-        @horizon.transactions(args)
+                   @horizon.transactions(args)
       end
 
       TransactionPage.new(resource)
@@ -190,14 +194,16 @@ module Stellar
     )
       sequence ||= (account_info(source).sequence.to_i + 1)
 
-      args = {
-        account: source.keypair,
-        sequence: sequence,
-        line: asset
-      }
+      args = { line: asset }
       args[:limit] = limit unless limit.nil?
 
-      tx = Stellar::Transaction.change_trust(args)
+      tx = Stellar::TransactionBuilder.new(
+        source_account: source.keypair,
+        sequence_number: sequence,
+        base_fee: fee
+      ).add_operation(
+        Stellar::Operation.change_trust(args)
+      ).set_timeout(0).build
 
       envelope = tx.to_envelope(source.keypair)
       submit_transaction(tx_envelope: envelope)
@@ -208,7 +214,7 @@ module Stellar
       options: Maybe[{ skip_memo_required_check: C::Bool }]
     ] => Any)
     def submit_transaction(tx_envelope:, options: { skip_memo_required_check: false })
-      check_memo_required(tx_envelope) if !options[:skip_memo_required_check]
+      check_memo_required(tx_envelope) unless options[:skip_memo_required_check]
       @horizon.transactions._post(tx: tx_envelope.to_xdr(:base64))
     end
 

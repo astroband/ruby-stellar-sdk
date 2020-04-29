@@ -35,19 +35,19 @@ module Stellar
       # 64 bytes after encoding).
       value = SecureRandom.base64(48)
 
-      tx = Stellar::Transaction.manage_data({
-                                              account: server,
-                                              sequence: 0,
-                                              name: "#{anchor_name} auth",
-                                              value: value,
-                                              source_account: client
-                                            })
-
       now = Time.now.to_i
-      tx.time_bounds = Stellar::TimeBounds.new(
-        min_time: now,
-        max_time: now + timeout
-      )
+
+      tx = Stellar::TransactionBuilder.new(
+        source_account: server,
+        sequence_number: 0,
+        time_bounds: Stellar::TimeBounds.new(min_time: now, max_time: now + timeout)
+      ).add_operation(
+        Stellar::Operation.manage_data(
+          source_account: client,
+          name: "#{anchor_name} auth",
+          value: value
+        )
+      ).build
 
       tx.to_envelope(server).to_xdr(:base64)
     end
