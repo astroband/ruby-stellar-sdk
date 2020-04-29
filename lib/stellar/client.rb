@@ -46,7 +46,7 @@ module Stellar
 
     attr_reader :horizon
 
-    Contract { horizon: String } => Any
+    Contract ({ horizon: String }) => Any
     def initialize(options)
       @options = options
       @horizon = Hyperclient.new(options[:horizon]) do |client|
@@ -75,10 +75,10 @@ module Stellar
       @horizon.account(account_id: account_id)._get
     end
 
-    Contract {
+    Contract ({
       account: Stellar::Account,
       destination: Stellar::Account
-    } => Any
+    }) => Any
     def account_merge(options = {})
       account     = options[:account]
       destination = options[:destination]
@@ -100,11 +100,11 @@ module Stellar
       Faraday.post(uri.to_s)
     end
 
-    Contract {
+    Contract ({
       account: Stellar::Account,
       funder: Stellar::Account,
       starting_balance: Integer
-    } => Any
+    }) => Any
     def create_account(options = {})
       funder   = options[:funder]
       sequence = options[:sequence] || (account_info(funder).sequence.to_i + 1)
@@ -113,22 +113,22 @@ module Stellar
       fee = options[:fee] || DEFAULT_FEE
 
       payment = Stellar::Transaction.create_account({
-                                                      account: funder.keypair,
+        account: funder.keypair,
         destination: options[:account].keypair,
         sequence: sequence,
         starting_balance: options[:starting_balance],
         fee: fee
-                                                    })
+      })
 
       envelope = payment.to_envelope(funder.keypair)
       submit_transaction(tx_envelope: envelope)
     end
 
-    Contract {
+    Contract ({
       from: Stellar::Account,
       to: Stellar::Account,
       amount: Stellar::Amount
-    } => Any
+    }) => Any
     def send_payment(options = {})
       from_account = options[:from]
       tx_source_account = options[:transaction_source] || from_account
@@ -156,11 +156,11 @@ module Stellar
       submit_transaction(tx_envelope: envelope)
     end
 
-    Contract {
+    Contract ({
       account: Maybe[Stellar::Account],
       limit: Maybe[Pos],
       cursor: Maybe[String]
-    } => TransactionPage
+    }) => TransactionPage
     def transactions(options = {})
       args = options.slice(:limit, :cursor)
 
