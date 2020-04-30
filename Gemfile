@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 
-gemspec
+gemspec path: './base'
+gemspec path: './sdk'
 
 # gem "xdr", git: "git@github.com:stellar/ruby-xdr.git"
 # gem "xdr", path: "../ruby-xdr"
@@ -10,5 +11,7 @@ gemspec
 
 group :development do
   gem "pry"
+  gem "faraday"
+  gem "faraday_middleware"
 end
 

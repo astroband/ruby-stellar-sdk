@@ -1,9 +1,9 @@
 # coding: utf-8
-lib = File.expand_path("../lib", __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "stellar/version"
+require_relative './lib/stellar/version'
 
 Gem::Specification.new do |spec|
+  git_files = `git ls-files -z`.split("\x0")
+
   spec.name          = "stellar-sdk"
   spec.version       = Stellar::VERSION
   spec.authors       = ["Scott Fleckenstein"]
@@ -12,9 +12,8 @@ Gem::Specification.new do |spec|
   spec.homepage      = "http://github.com/stellar/ruby-stellar-sdk"
   spec.license       = "Apache-2.0"
 
-  spec.files         = `git ls-files -z`.split("\x0")
+  spec.files         = [*Dir['lib/**/*.rb'] & git_files]
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
   spec.add_dependency "stellar-base", ">= 0.22.0"
