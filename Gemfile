@@ -22,4 +22,3 @@ group :development do
   gem "xdrgen", "~> 0.0"
   gem "yard", "~> 0.9"
 end
-

@@ -10,7 +10,12 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/stellar/ruby-stellar-base"
   spec.license       = "Apache 2.0"
 
-  spec.files         = ['lib/**/*.rb']
+  spec.files         = Dir[
+    'lib/**/*',
+    'README.md',
+    'CHANGELOG.md',
+    'LICENSE',
+  ]
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ["generated", "lib"]
 
