@@ -2,8 +2,6 @@
 require_relative './lib/stellar/version'
 
 Gem::Specification.new do |spec|
-  git_files = `git ls-files -z`.split("\x0")
-
   spec.name          = "stellar-sdk"
   spec.version       = Stellar::VERSION
   spec.authors       = ["Scott Fleckenstein"]
@@ -12,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = "http://github.com/stellar/ruby-stellar-sdk"
   spec.license       = "Apache-2.0"
 
-  spec.files         = [*Dir['lib/**/*.rb'] & git_files]
+  spec.files         = ['lib/**/*.rb']
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
