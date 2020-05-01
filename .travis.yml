@@ -13,7 +13,8 @@ before_install:
   - gem update --system
   - gem install bundler -v 2.0
 script:
-  - cd base && bundle exec rake travis && cd ../sdk && LD_LIBRARY_PATH=lib bundle exec rake travis
+  - cd base && bundle exec rake travis
+  - cd sdk && LD_LIBRARY_PATH=lib bundle exec rake travis
 before_script:
   - cp sdk/spec/config.yml.sample sdk/spec/config.yml
 notifications:
