@@ -20,13 +20,4 @@ Gem::Specification.new do |spec|
   spec.add_dependency "contracts", "~> 0.16"
   spec.add_dependency "activesupport", ">= 5.0"
   spec.add_dependency "toml-rb", "~> 1.1", ">= 1.1.1"
-
-  spec.add_development_dependency "bundler", "~> 2.0"
-  spec.add_development_dependency "rake", "~> 12.3", ">= 12.3.3"
-  spec.add_development_dependency "rspec", "~> 3.1"
-  spec.add_development_dependency "guard-rspec", "~> 4.7"
-  spec.add_development_dependency "simplecov", "~> 0.18"
-  spec.add_development_dependency "yard", "~> 0.9"
-  spec.add_development_dependency "vcr", "~> 3.0"
-  spec.add_development_dependency "webmock", "~> 2.3"
 end
