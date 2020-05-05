@@ -1,8 +1,6 @@
 module Stellar
   module Horizon
     class Problem 
-      include Contracts
-
       def initialize(attributes)
         @attributes = attributes.reverse_merge({
           type: "about:blank",
@@ -13,32 +11,32 @@ module Stellar
         @meta = @attributes.except!(:type, :title, :status, :detail, :instance)
       end
 
-      Contract None => String
+      # @return [String]
       def type
         @attributes[:type] 
       end
 
-      Contract None => String
+      # @return [String]
       def title
         @attributes[:title] 
       end
 
-      Contract None => Num
+      # @return [Integer]
       def status
         @attributes[:status] 
       end
 
-      Contract None => String
+      # @return [String]
       def detail
         @attributes[:detail] 
       end
 
-      Contract None => String
+      # @return [String]
       def instance
         @attributes[:instance] 
       end
 
-      Contract None => HashOf[String, Any]
+      # @return [{String => Object}]
       def meta
         @attributes[:instance] 
       end
