@@ -14,9 +14,6 @@ module Stellar
   end
 
   class Client
-    include Contracts
-    C = Contracts
-
     DEFAULT_FEE = 100
 
     HORIZON_LOCALHOST_URL = 'http://127.0.0.1:8000'
@@ -45,7 +42,7 @@ module Stellar
 
     attr_reader :horizon
 
-    Contract ({horizon: String}) => Any
+    # @option options [String] :horizon The Horizon server URL.
     def initialize(options)
       @options = options
       @horizon = Hyperclient.new(options[:horizon]) do |client|
@@ -64,7 +61,7 @@ module Stellar
       end
     end
 
-    Contract Or[Stellar::Account, String] => Any
+    # @param [Stellar::Account|String] account_or_address
     def account_info(account_or_address)
       if account_or_address.is_a?(Stellar::Account)
         account_id = account_or_address.address
@@ -74,10 +71,8 @@ module Stellar
       @horizon.account(account_id:account_id)._get
     end
 
-    Contract ({
-      account:     Stellar::Account,
-      destination: Stellar::Account
-    }) => Any
+    # @option options [Stellar::Account] :account
+    # @option options [Stellar::Account] :destination
     def account_merge(options={})
       account     = options[:account]
       destination = options[:destination]
@@ -99,11 +94,9 @@ module Stellar
       Faraday.post(uri.to_s)
     end
 
-    Contract ({
-      account:          Stellar::Account,
-      funder:           Stellar::Account,
-      starting_balance: Integer
-    }) => Any
+    # @option options [Stellar::Account] :account
+    # @option options [Stellar::Account] :funder
+    # @option options [Integer] :starting_balance
     def create_account(options={})
       funder   = options[:funder]
       sequence = options[:sequence] || (account_info(funder).sequence.to_i + 1)
@@ -123,11 +116,9 @@ module Stellar
       submit_transaction(tx_envelope: envelope)
     end
 
-    Contract ({
-      from:     Stellar::Account,
-      to:       Stellar::Account,
-      amount:   Stellar::Amount
-    }) => Any
+    # @option options [Stellar::Account] :from The source account
+    # @option options [Stellar::Account] :to The destination account
+    # @option options [Stellar::Amount] :amount The amount to send
     def send_payment(options={})
       from_account     = options[:from]
       tx_source_account = options[:transaction_source] || from_account
@@ -157,11 +148,10 @@ module Stellar
       submit_transaction(tx_envelope: envelope)
     end
 
-    Contract ({
-      account:  Maybe[Stellar::Account],
-      limit:    Maybe[Pos],
-      cursor:   Maybe[String]
-    }) => TransactionPage
+    # @option options [Stellar::Account] :account
+    # @option options [Integer] :limit
+    # @option options [Integer] :cursor
+    # @return [Stellar::TransactionPage]
     def transactions(options={})
       args = options.slice(:limit, :cursor)
 
@@ -175,13 +165,11 @@ module Stellar
       TransactionPage.new(resource)
     end
 
-    Contract(C::KeywordArgs[
-      asset: [Symbol, String, Xor[Stellar::KeyPair, Stellar::Account]],
-      source: Stellar::Account,
-      sequence: Maybe[Integer],
-      fee: Maybe[Integer],
-      limit: Maybe[Integer],
-    ] => Any)
+    # @param [Array(Symbol,String,Stellar::KeyPair|Stellar::Account)] asset
+    # @param [Stellar::Account] source
+    # @param [Integer] sequence
+    # @param [Integer] fee
+    # @param [Integer] limit
     def change_trust(
       asset:,
       source:,
@@ -204,10 +192,8 @@ module Stellar
       submit_transaction(tx_envelope: envelope)
     end
 
-    Contract(C::KeywordArgs[
-      tx_envelope: Stellar::TransactionEnvelope,
-      options: Maybe[{ skip_memo_required_check: C::Bool }]
-    ] => Any)
+    # @param [Stellar::TransactionEnvelope] tx_envelope
+    # @option options [Boolean] :skip_memo_required_check (false)
     def submit_transaction(tx_envelope:, options: { skip_memo_required_check: false })
       if !options[:skip_memo_required_check]
         check_memo_required(tx_envelope)
@@ -215,7 +201,7 @@ module Stellar
       @horizon.transactions._post(tx: tx_envelope.to_xdr(:base64))
     end
 
-    Contract Stellar::TransactionEnvelope => Any
+    # @param [Stellar::TransactionEnvelope] tx_envelope
     def check_memo_required(tx_envelope)
       tx = tx_envelope.tx
       # Check transactions where the .memo field is nil or of type MemoType.memo_none
@@ -237,12 +223,12 @@ module Stellar
         else
           next
         end
-        
+
         if destinations.include?(destination)
           next
         end
         destinations.add(destination)
-       
+
         kp = Stellar::KeyPair.from_public_key(destination.value)
         begin
           info = account_info(kp.address)
@@ -257,12 +243,6 @@ module Stellar
       end
     end
 
-    Contract(C::KeywordArgs[
-      server: Stellar::KeyPair,
-      client: Stellar::KeyPair,
-      anchor_name: String,
-      timeout: C::Optional[Integer]
-    ] => String)
     # DEPRECATED: this function has been moved Stellar::SEP10.build_challenge_tx and
     # will be removed in the next major version release.
     #
@@ -280,10 +260,6 @@ module Stellar
       )
     end
 
-    Contract(C::KeywordArgs[
-      challenge: String,
-      server: Stellar::KeyPair
-    ] => C::Bool)    
     # DEPRECATED: this function has been moved to Stellar::SEP10::read_challenge_tx and
     # will be removed in the next major version release.
     #
@@ -294,14 +270,10 @@ module Stellar
     #
     # @return [Boolean]
     def verify_challenge_tx(challenge:, server:)
-      Stellar::SEP10.verify_challenge_tx(challenge_tx: challenge, server: server)
+      Stellar::SEP10.verify_challenge_tx(challenge_xdr: challenge, server: server)
       true
     end
 
-    Contract(C::KeywordArgs[
-      transaction_envelope: Stellar::TransactionEnvelope,
-      keypair: Stellar::KeyPair
-    ] => C::Bool)
     # DEPRECATED: this function has been moved to Stellar::SEP10::verify_tx_signed_by and
     # will be removed in the next major version release.
     #
@@ -315,6 +287,5 @@ module Stellar
         tx_envelope: transaction_envelope, keypair: keypair
       )
     end
-
   end
 end

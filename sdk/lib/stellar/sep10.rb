@@ -2,16 +2,6 @@ module Stellar
   class InvalidSep10ChallengeError < StandardError; end
 
   class SEP10
-    include Contracts
-    C = Contracts
-
-    Contract(C::KeywordArgs[
-      server: Stellar::KeyPair,
-      client: Stellar::KeyPair,
-      anchor_name: String,
-      timeout: C::Optional[Integer]
-    ] => String)
-    #
     # Helper method to create a valid {SEP0010}[https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0010.md]
     # challenge transaction which you can use for Stellar Web Authentication.
     #    
@@ -51,10 +41,6 @@ module Stellar
     end
 
 
-    Contract(C::KeywordArgs[
-      challenge_xdr: String,
-      server: Stellar::KeyPair
-    ] => [Stellar::TransactionEnvelope, String])    
     # Reads a SEP 10 challenge transaction and returns the decoded transaction envelope and client account ID contained within.
     #
     # It also verifies that transaction is signed by the server.
@@ -138,12 +124,6 @@ module Stellar
       return envelope, client_kp.address
     end
 
-
-    Contract(C::KeywordArgs[
-      challenge_xdr: String,
-      server: Stellar::KeyPair,
-      signers: SetOf[String]
-    ] => C::SetOf[String])
     # Verifies that for a SEP 10 challenge transaction all signatures on the transaction are accounted for.
     #
     # A transaction is verified if it is signed by the server account, and all other signatures match a signer 
@@ -220,13 +200,7 @@ module Stellar
 
     end
 
-    Contract(C::KeywordArgs[
-      challenge_xdr: String,
-      server: Stellar::KeyPair,
-      threshold: Integer,
-      signers: SetOf[::Hash],
-    ] => C::SetOf[::Hash])
-    # Verifies that for a SEP 10 challenge transaction all signatures on the transaction 
+    # Verifies that for a SEP 10 challenge transaction all signatures on the transaction
     # are accounted for and that the signatures meet a threshold on an account. A 
     # transaction is verified if it is signed by the server account, and all other 
     # signatures match a signer that has been provided as an argument, and those 
@@ -277,10 +251,6 @@ module Stellar
       return signers_found
     end
 
-    Contract(C::KeywordArgs[
-      challenge_xdr: String, 
-      server: Stellar::KeyPair
-    ] => nil)
     # DEPRECATED: Use verify_challenge_tx_signers instead.
     # This function does not support multiple client signatures.
     #
@@ -313,10 +283,6 @@ module Stellar
       end
     end
 
-    Contract(C::KeywordArgs[
-      tx_envelope: Stellar::TransactionEnvelope, 
-      signers: SetOf[String]
-    ] => SetOf[String])
     # Verifies every signer passed matches a signature on the transaction exactly once,
     # returning a list of unique signers that were found to have signed the transaction.
     #
@@ -355,10 +321,6 @@ module Stellar
       return signers_found
     end
 
-    Contract(C::KeywordArgs[
-      tx_envelope: Stellar::TransactionEnvelope,
-      keypair: Stellar::KeyPair
-    ] => C::Bool)
     # Verifies if a Stellar::TransactionEnvelope was signed by the given Stellar::KeyPair
     #
     # @param tx_envelope [Stellar::TransactionEnvelope] 

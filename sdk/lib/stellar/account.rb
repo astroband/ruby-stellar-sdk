@@ -5,8 +5,6 @@ require 'json'
 
 module Stellar
   class Account
-    include Contracts
-
     delegate :address, to: :keypair
 
     def self.random
@@ -35,7 +33,7 @@ module Stellar
       unless domain_req.status == 200
         raise InvalidStellarDomain.new('Domain does not contain stellar.toml file')
       end
-      
+
       fed_server_url = TomlRB.parse(domain_req.body)["FEDERATION_SERVER"]
       if fed_server_url.nil?
         raise InvalidStellarTOML.new('Invalid Stellar TOML file')
@@ -64,7 +62,7 @@ module Stellar
 
     attr_reader :keypair
 
-    Contract Stellar::KeyPair => Any
+    # @param [Stellar::KeyPair] keypair
     def initialize(keypair)
       @keypair = keypair
     end
