@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Stellar::Operation, ".payment" do
   it "correctly translates the provided amount to the native representation" do
@@ -14,19 +14,19 @@ def pk_to_address(pk)
 end
 
 describe "path payment operations" do
-  let(:destination){ Stellar::KeyPair.random }
-  let(:send_asset_issuer){ Stellar::KeyPair.master }
-  let(:send_asset){ Stellar::Asset.alphanum4("USD", send_asset_issuer) }
-  let(:dest_asset_issuer){ Stellar::KeyPair.master }
-  let(:dest_asset){ Stellar::Asset.alphanum4("EUR", dest_asset_issuer) }
-  let(:amount){ [Stellar::Asset.alphanum4(dest_asset.code, dest_asset_issuer), 9.2] }
-  let(:with){ [Stellar::Asset.alphanum4(send_asset.code, send_asset_issuer), 10] }
-  
+  let(:destination) { Stellar::KeyPair.random }
+  let(:send_asset_issuer) { Stellar::KeyPair.master }
+  let(:send_asset) { Stellar::Asset.alphanum4("USD", send_asset_issuer) }
+  let(:dest_asset_issuer) { Stellar::KeyPair.master }
+  let(:dest_asset) { Stellar::Asset.alphanum4("EUR", dest_asset_issuer) }
+  let(:amount) { [Stellar::Asset.alphanum4(dest_asset.code, dest_asset_issuer), 9.2] }
+  let(:with) { [Stellar::Asset.alphanum4(send_asset.code, send_asset_issuer), 10] }
+
   describe Stellar::Operation, ".path_payment" do
     it "works" do
       destination = Stellar::KeyPair.random
       # test both forms of arrays
-      amount = [Stellar::Asset.alphanum4("USD", Stellar::KeyPair.master), 10]    
+      amount = [Stellar::Asset.alphanum4("USD", Stellar::KeyPair.master), 10]
       with = [:alphanum4, "EUR", Stellar::KeyPair.master, 9.2]
 
       op = Stellar::Operation.path_payment(
@@ -75,23 +75,20 @@ describe "path payment operations" do
 end
 
 describe Stellar::Operation, ".manage_data" do
-
   it "works" do
     op = Stellar::Operation.manage_data(name: "my name", value: "hello")
     expect(op.body.manage_data_op!.data_name).to eql("my name")
     expect(op.body.manage_data_op!.data_value).to eql("hello")
-    expect{ op.to_xdr }.to_not raise_error
+    expect { op.to_xdr }.to_not raise_error
 
     op = Stellar::Operation.manage_data(name: "my name")
     expect(op.body.manage_data_op!.data_name).to eql("my name")
     expect(op.body.manage_data_op!.data_value).to be_nil
-    expect{ op.to_xdr }.to_not raise_error
+    expect { op.to_xdr }.to_not raise_error
   end
-
 end
 
 describe Stellar::Operation, ".change_trust" do
-
   let(:issuer) { Stellar::KeyPair.from_address("GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7") }
   let(:asset) { Stellar::Asset.alphanum4("USD", issuer) }
 

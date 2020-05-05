@@ -1,8 +1,6 @@
 module Stellar
-
   # reopen class
   class Price
-
     MAX_PRECISION = (2**31) - 1
 
     def self.from_f(number)
@@ -14,7 +12,7 @@ module Stellar
     end
 
     def invert
-      self.class.new(n:d,d:n)
+      self.class.new(n: d, d: n)
     end
 
     def to_f

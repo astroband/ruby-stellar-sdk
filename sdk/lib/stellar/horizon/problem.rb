@@ -1,11 +1,11 @@
 module Stellar
   module Horizon
-    class Problem 
+    class Problem
       def initialize(attributes)
         @attributes = attributes.reverse_merge({
           type: "about:blank",
           title: "Unknown Error",
-          status: 500,
+          status: 500
         })
 
         @meta = @attributes.except!(:type, :title, :status, :detail, :instance)
@@ -13,32 +13,32 @@ module Stellar
 
       # @return [String]
       def type
-        @attributes[:type] 
+        @attributes[:type]
       end
 
       # @return [String]
       def title
-        @attributes[:title] 
+        @attributes[:title]
       end
 
       # @return [Integer]
       def status
-        @attributes[:status] 
+        @attributes[:status]
       end
 
       # @return [String]
       def detail
-        @attributes[:detail] 
+        @attributes[:detail]
       end
 
       # @return [String]
       def instance
-        @attributes[:instance] 
+        @attributes[:instance]
       end
 
       # @return [{String => Object}]
       def meta
-        @attributes[:instance] 
+        @attributes[:instance]
       end
     end
   end

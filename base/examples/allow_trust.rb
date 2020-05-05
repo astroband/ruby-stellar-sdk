@@ -1,17 +1,17 @@
 #!/usr/bin/env ruby
 
-require 'rest-client'
-require 'stellar-base'
+require "rest-client"
+require "stellar-base"
 
 # This is an example of using a higher level allow_trust operation.
 # This assumes that a stellar account is already created and a trustline
 # to an anchor's asset has been established.
 
-HUG_ASSET_CODE = 'HUG'
+HUG_ASSET_CODE = "HUG"
 
 def sequence_from_account(account)
   data = get_account_data(account)
-  data['sequence'].to_i
+  data["sequence"].to_i
 end
 
 def get_account_data(keypair, network_url)
@@ -20,13 +20,10 @@ def get_account_data(keypair, network_url)
 end
 
 def submit_transaction_operation(xdr_envelope, network_url)
-  begin
-    response = RestClient.post "#{network_url}/transactions", { tx: xdr_envelope }
-    JSON.parse(response.body)
-
-  rescue RestClient::ExceptionWithResponse => e
-    # handle exceptions here
-  end
+  response = RestClient.post "#{network_url}/transactions", {tx: xdr_envelope}
+  JSON.parse(response.body)
+rescue RestClient::ExceptionWithResponse => e
+  # handle exceptions here
 end
 
 def allow_trust(address, issuer_keypair)
@@ -38,14 +35,14 @@ def allow_trust(address, issuer_keypair)
     account: issuer_keypair,
     asset: [:alphanum4, HUG_ASSET_CODE, issuer_keypair],
     authorize: true,
-    sequence:  current_sequence + 1, 
+    sequence: current_sequence + 1
   })
 
   xdr_envelope = tx.to_envelope(issuer_keypair).to_xdr(:base64)
   submit_transaction_operation(xdr_envelope)
 end
 
-# Usage: 
+# Usage:
 # issuer_keypair must be a keypair from an anchor with both the public and
 # private key i.e type Stellar::KeyPair
 allow_trust("GCHOWITWOUNRUXGJWYUB4IMICZKROLHDRC2TJH5W324LBJVM4JUVXOZL", issuer_keypair)

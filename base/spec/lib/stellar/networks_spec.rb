@@ -1,19 +1,16 @@
 require "spec_helper"
 
 describe Stellar, ".default_network=" do
-
-  before(:each){ Stellar.default_network = "foo" }
-  after(:each){ Stellar.default_network = nil }
+  before(:each) { Stellar.default_network = "foo" }
+  after(:each) { Stellar.default_network = nil }
 
   it "sets the value returned by current_network " do
     expect(Stellar.current_network).to eql("foo")
   end
-
 end
 
 describe Stellar, ".current_network" do
-
-  after(:each){ Stellar.default_network = nil }
+  after(:each) { Stellar.default_network = nil }
 
   it "returns the public network absent any other configuration" do
     expect(Stellar.current_network).to eql(Stellar::Networks::TESTNET)
@@ -42,9 +39,7 @@ describe Stellar, ".current_network_id" do
 end
 
 describe Stellar, ".on_network" do
-
-  after(:each){ Thread.current["stellar_network_passphrase"] = nil }
-
+  after(:each) { Thread.current["stellar_network_passphrase"] = nil }
 
   it "sets the current_network and a thread local" do
     Stellar.on_network "bar" do
@@ -52,7 +47,6 @@ describe Stellar, ".on_network" do
       expect(Thread.current["stellar_network_passphrase"]).to eql("bar")
     end
   end
-
 
   it "nests" do
     Stellar.on_network "foo" do
@@ -64,14 +58,11 @@ describe Stellar, ".on_network" do
     end
   end
 
-
   it "resets the network value when an error is raised" do
-    begin
-      Stellar.on_network "foo" do
-        raise "kablow"
-      end
-    rescue
-      expect(Stellar.current_network).to_not eql("foo")
+    Stellar.on_network "foo" do
+      raise "kablow"
     end
+  rescue
+    expect(Stellar.current_network).to_not eql("foo")
   end
 end

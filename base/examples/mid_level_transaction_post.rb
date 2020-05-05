@@ -8,26 +8,26 @@
 # which is where we extend the xdrgen generated source files with our higher
 # level api.
 
-require 'stellar-base'
-require 'faraday'
-require 'faraday_middleware'
+require "stellar-base"
+require "faraday"
+require "faraday_middleware"
 
-$server = Faraday.new(url: "http://localhost:39132") do |conn|
+$server = Faraday.new(url: "http://localhost:39132") { |conn|
   conn.response :json
   conn.adapter Faraday.default_adapter
-end
+}
 
-master      = Stellar::KeyPair.from_raw_seed("allmylifemyhearthasbeensearching")
+master = Stellar::KeyPair.from_raw_seed("allmylifemyhearthasbeensearching")
 destination = Stellar::KeyPair.from_raw_seed("allmylifemyhearthasbeensearching")
 
 tx = Stellar::Transaction.payment({
-  account:     master,
+  account: master,
   destination: destination,
-  sequence:    1,
-  amount:      [:native, 20]
+  sequence: 1,
+  amount: [:native, 20]
 })
 
-b64    = tx.to_envelope(master).to_xdr(:base64)
+b64 = tx.to_envelope(master).to_xdr(:base64)
 
-result = $server.get('tx', blob: b64)
+result = $server.get("tx", blob: b64)
 p result.body

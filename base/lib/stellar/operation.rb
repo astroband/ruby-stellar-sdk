@@ -1,8 +1,7 @@
-require 'bigdecimal'
+require "bigdecimal"
 
 module Stellar
   class Operation
-
     MAX_INT64 = 2**63 - 1
 
     #
@@ -14,20 +13,19 @@ module Stellar
     # @option attributes [Stellar::Operation::Body] :body
     #
     # @return [Stellar::Operation] the built operation
-    def self.make(attributes={})
+    def self.make(attributes = {})
       source_account = attributes[:source_account]
-      body           = Stellar::Operation::Body.new(*attributes[:body])
+      body = Stellar::Operation::Body.new(*attributes[:body])
 
-      op = Stellar::Operation.new(body:body)
+      op = Stellar::Operation.new(body: body)
 
       if source_account
         raise ArgumentError, "Bad :source_account" unless source_account.is_a?(Stellar::KeyPair)
         op.source_account = source_account.account_id
       end
 
-      return op
+      op
     end
-
 
     #
     # Helper method to create a valid PaymentOp, wrapped
@@ -41,20 +39,19 @@ module Stellar
     # @option attributes [Array] :amount the amount to pay
     # @return [Stellar::Operation] the built operation, containing a
     #                              Stellar::PaymentOp body
-    def self.payment(attributes={})
+    def self.payment(attributes = {})
       destination = attributes[:destination]
       asset, amount = get_asset_amount(attributes[:amount])
 
       raise ArgumentError unless destination.is_a?(KeyPair)
 
-
-      op             = PaymentOp.new
-      op.asset       = asset
-      op.amount      = amount
+      op = PaymentOp.new
+      op.asset = asset
+      op.amount = amount
       op.destination = destination.account_id
 
-      return make(attributes.merge({
-        body:[:payment, op]
+      make(attributes.merge({
+        body: [:payment, op]
       }))
     end
 
@@ -62,7 +59,7 @@ module Stellar
     # Helper method to create a valid PathPaymentStrictReceiveOp, wrapped
     # in the necessary XDR structs to be included within a
     # transactions `operations` array.
-    # 
+    #
     # @deprecated Please use Operation.path_payment_strict_receive
     #
     # @see Stellar::Asset
@@ -74,8 +71,8 @@ module Stellar
     # @option attributes [Array<Stellar::Asset>] :path the payment path to use
     #
     # @return [Stellar::Operation] the built operation, containing a Stellar::PaymentOp body
-    #                              
-    def self.path_payment(attributes={})
+    #
+    def self.path_payment(attributes = {})
       path_payment_strict_receive(attributes)
     end
 
@@ -83,7 +80,7 @@ module Stellar
     # Helper method to create a valid PathPaymentStrictReceiveOp, wrapped
     # in the necessary XDR structs to be included within a
     # transactions `operations` array.
-    # 
+    #
     # @see Stellar::Asset
     #
     # @param [Hash] attributes the attributes to create the operation with
@@ -93,27 +90,27 @@ module Stellar
     # @option attributes [Array<Stellar::Asset>] :path the payment path to use
     #
     # @return [Stellar::Operation] the built operation, containing a Stellar::PaymentOp body
-    #                              
-    def self.path_payment_strict_receive(attributes={})
-      destination             = attributes[:destination]
-      asset, amount           = get_asset_amount(attributes[:amount])
-      send_asset, send_max    = get_asset_amount(attributes[:with])
-      path                    = (attributes[:path] || []).map{
-        |p| p.is_a?(Array) ? Stellar::Asset.send(*p) : p
+    #
+    def self.path_payment_strict_receive(attributes = {})
+      destination = attributes[:destination]
+      asset, amount = get_asset_amount(attributes[:amount])
+      send_asset, send_max = get_asset_amount(attributes[:with])
+      path = (attributes[:path] || []).map { |p|
+        p.is_a?(Array) ? Stellar::Asset.send(*p) : p
       }
 
       raise ArgumentError unless destination.is_a?(KeyPair)
 
-      op               = PathPaymentStrictReceiveOp.new
-      op.send_asset    = send_asset
-      op.send_max      = send_max
-      op.destination   = destination.account_id
-      op.dest_asset    = asset
-      op.dest_amount   = amount
-      op.path          = path
+      op = PathPaymentStrictReceiveOp.new
+      op.send_asset = send_asset
+      op.send_max = send_max
+      op.destination = destination.account_id
+      op.dest_asset = asset
+      op.dest_amount = amount
+      op.path = path
 
-      return make(attributes.merge({
-        body:[:path_payment_strict_receive, op]
+      make(attributes.merge({
+        body: [:path_payment_strict_receive, op]
       }))
     end
 
@@ -121,7 +118,7 @@ module Stellar
     # Helper method to create a valid PathPaymentStrictSendOp, wrapped
     # in the necessary XDR structs to be included within a
     # transactions `operations` array.
-    # 
+    #
     # @see Stellar::Asset
     #
     # @param [Hash] attributes the attributes to create the operation with
@@ -131,42 +128,42 @@ module Stellar
     # @option attributes [Array<Stellar::Asset>] :path the payment path to use
     #
     # @return [Stellar::Operation] the built operation, containing a Stellar::PaymentOp body
-    #                              
-    def self.path_payment_strict_send(attributes={})
-      destination             = attributes[:destination]
-      asset, dest_min         = get_asset_amount(attributes[:amount])
+    #
+    def self.path_payment_strict_send(attributes = {})
+      destination = attributes[:destination]
+      asset, dest_min = get_asset_amount(attributes[:amount])
       send_asset, send_amount = get_asset_amount(attributes[:with])
-      path                    = (attributes[:path] || []).map{
-        |p| p.is_a?(Array) ? Stellar::Asset.send(*p) : p
+      path = (attributes[:path] || []).map { |p|
+        p.is_a?(Array) ? Stellar::Asset.send(*p) : p
       }
 
       raise ArgumentError unless destination.is_a?(KeyPair)
 
-      op               = PathPaymentStrictSendOp.new
-      op.send_asset    = send_asset
-      op.send_amount   = send_amount
-      op.destination   = destination.account_id
-      op.dest_asset    = asset
-      op.dest_min      = dest_min
-      op.path          = path
+      op = PathPaymentStrictSendOp.new
+      op.send_asset = send_asset
+      op.send_amount = send_amount
+      op.destination = destination.account_id
+      op.dest_asset = asset
+      op.dest_min = dest_min
+      op.path = path
 
-      return make(attributes.merge({
-        body:[:path_payment_strict_send, op]
+      make(attributes.merge({
+        body: [:path_payment_strict_send, op]
       }))
     end
 
-    def self.create_account(attributes={})
-      destination      = attributes[:destination]
+    def self.create_account(attributes = {})
+      destination = attributes[:destination]
       starting_balance = interpret_amount(attributes[:starting_balance])
 
       raise ArgumentError unless destination.is_a?(KeyPair)
 
-      op = CreateAccountOp.new()
+      op = CreateAccountOp.new
       op.destination = destination.account_id
       op.starting_balance = starting_balance
 
-      return make(attributes.merge({
-        body:[:create_account, op]
+      make(attributes.merge({
+        body: [:create_account, op]
       }))
     end
 
@@ -182,10 +179,10 @@ module Stellar
     #
     # @return [Stellar::Operation] the built operation, containing a
     #                              Stellar::ChangeTrustOp body
-    def self.change_trust(attributes={})
+    def self.change_trust(attributes = {})
       line = attributes[:line]
-      if !line.is_a?(Asset)
-        if !Asset::TYPES.include?(line[0])
+      unless line.is_a?(Asset)
+        unless Asset::TYPES.include?(line[0])
           fail ArgumentError, "must be one of #{Asset::TYPES}"
         end
         line = Asset.send(*line)
@@ -197,12 +194,12 @@ module Stellar
 
       op = ChangeTrustOp.new(line: line, limit: limit)
 
-      return make(attributes.merge({
-        body:[:change_trust, op]
+      make(attributes.merge({
+        body: [:change_trust, op]
       }))
     end
 
-    def self.manage_sell_offer(attributes={})
+    def self.manage_sell_offer(attributes = {})
       buying = attributes[:buying]
       if buying.is_a?(Array)
         buying = Asset.send(*buying)
@@ -216,19 +213,19 @@ module Stellar
       price = interpret_price(attributes[:price])
 
       op = ManageSellOfferOp.new({
-        buying:     buying,
-        selling:    selling,
-        amount:     amount,
-        price:      price,
-        offer_id:   offer_id
+        buying: buying,
+        selling: selling,
+        amount: amount,
+        price: price,
+        offer_id: offer_id
       })
 
-      return make(attributes.merge({
-        body:[:manage_sell_offer, op]
+      make(attributes.merge({
+        body: [:manage_sell_offer, op]
       }))
     end
 
-    def self.manage_buy_offer(attributes={})
+    def self.manage_buy_offer(attributes = {})
       buying = attributes[:buying]
       if buying.is_a?(Array)
         buying = Asset.send(*buying)
@@ -242,19 +239,19 @@ module Stellar
       price = interpret_price(attributes[:price])
 
       op = ManageBuyOfferOp.new({
-        buying:     buying,
-        selling:    selling,
-        amount:     amount,
-        price:      price,
-        offer_id:   offer_id
+        buying: buying,
+        selling: selling,
+        amount: amount,
+        price: price,
+        offer_id: offer_id
       })
 
-      return make(attributes.merge({
-        body:[:manage_buy_offer, op]
+      make(attributes.merge({
+        body: [:manage_buy_offer, op]
       }))
     end
 
-    def self.create_passive_sell_offer(attributes={})
+    def self.create_passive_sell_offer(attributes = {})
       buying = attributes[:buying]
       if buying.is_a?(Array)
         buying = Asset.send(*buying)
@@ -267,14 +264,14 @@ module Stellar
       price = interpret_price(attributes[:price])
 
       op = CreatePassiveSellOfferOp.new({
-        buying:     buying,
-        selling:    selling,
-        amount:     amount,
-        price:      price,
+        buying: buying,
+        selling: selling,
+        amount: amount,
+        price: price
       })
 
-      return make(attributes.merge({
-        body:[:create_passive_sell_offer, op]
+      make(attributes.merge({
+        body: [:create_passive_sell_offer, op]
       }))
     end
 
@@ -292,18 +289,17 @@ module Stellar
     #
     # @return [Stellar::Operation] the built operation, containing a
     #                              Stellar::SetOptionsOp body
-    def self.set_options(attributes={})
-      op                = SetOptionsOp.new()
-      op.set_flags      = Stellar::AccountFlags.make_mask attributes[:set]
-      op.clear_flags    = Stellar::AccountFlags.make_mask attributes[:clear]
-      op.master_weight  = attributes[:master_weight]
-      op.low_threshold  = attributes[:low_threshold]
-      op.med_threshold  = attributes[:med_threshold]
+    def self.set_options(attributes = {})
+      op = SetOptionsOp.new
+      op.set_flags = Stellar::AccountFlags.make_mask attributes[:set]
+      op.clear_flags = Stellar::AccountFlags.make_mask attributes[:clear]
+      op.master_weight = attributes[:master_weight]
+      op.low_threshold = attributes[:low_threshold]
+      op.med_threshold = attributes[:med_threshold]
       op.high_threshold = attributes[:high_threshold]
 
-      op.signer      = attributes[:signer]
+      op.signer = attributes[:signer]
       op.home_domain = attributes[:home_domain]
-
 
       inflation_dest = attributes[:inflation_dest]
       if inflation_dest
@@ -311,9 +307,8 @@ module Stellar
         op.inflation_dest = inflation_dest.account_id
       end
 
-
-      return make(attributes.merge({
-        body:[:set_options, op]
+      make(attributes.merge({
+        body: [:set_options, op]
       }))
     end
 
@@ -328,8 +323,8 @@ module Stellar
     #
     # @return [Stellar::Operation] the built operation, containing a
     #                              Stellar::AllowTrustOp body
-    def self.allow_trust(attributes={})
-      op = AllowTrustOp.new()
+    def self.allow_trust(attributes = {})
+      op = AllowTrustOp.new
 
       trustor = attributes[:trustor]
       authorize = attributes[:authorize]
@@ -344,12 +339,12 @@ module Stellar
 
       atc = AllowTrustOp::Asset.new(:asset_type_credit_alphanum4, asset.code)
 
-      op.trustor   = trustor.account_id
+      op.trustor = trustor.account_id
       op.authorize = authorize
-      op.asset     = atc
+      op.asset = atc
 
-      return make(attributes.merge({
-        body:[:allow_trust, op]
+      make(attributes.merge({
+        body: [:allow_trust, op]
       }))
     end
 
@@ -360,14 +355,14 @@ module Stellar
     # @option attributes [Stellar::KeyPair]  :destination
     #
     # @return [Stellar::Operation] the built operation
-    def self.account_merge(attributes={})
+    def self.account_merge(attributes = {})
       destination = attributes[:destination]
 
       raise ArgumentError, "Bad :destination" unless destination.is_a?(KeyPair)
 
       # TODO: add source_account support
-      return make(attributes.merge({
-        body:[:account_merge, destination.account_id]
+      make(attributes.merge({
+        body: [:account_merge, destination.account_id]
       }))
     end
 
@@ -378,14 +373,14 @@ module Stellar
     # @option attributes [Integer]  :sequence
     #
     # @return [Stellar::Operation] the built operation
-    def self.inflation(attributes={})
+    def self.inflation(attributes = {})
       sequence = attributes[:sequence]
 
       raise ArgumentError, "Bad :sequence #{sequence}" unless sequence.is_a?(Integer)
 
       # TODO: add source_account support
-      return make(attributes.merge({
-        body:[:inflation]
+      make(attributes.merge({
+        body: [:inflation]
       }))
     end
 
@@ -396,10 +391,10 @@ module Stellar
     # @option attributes [Integer]  :sequence
     #
     # @return [Stellar::Operation] the built operation
-    def self.manage_data(attributes={})
-      op = ManageDataOp.new()
+    def self.manage_data(attributes = {})
+      op = ManageDataOp.new
 
-      name  = attributes[:name]
+      name = attributes[:name]
       value = attributes[:value]
 
       raise ArgumentError, "Invalid :name" unless name.is_a?(String)
@@ -409,38 +404,39 @@ module Stellar
         raise ArgumentError, ":value too long" unless value.bytesize <= 64
       end
 
-      op.data_name  = name
+      op.data_name = name
       op.data_value = value
 
-      return make(attributes.merge({
-        body:[:manage_data, op]
+      make(attributes.merge({
+        body: [:manage_data, op]
       }))
     end
 
-    def self.bump_sequence(attributes={})
-      op = BumpSequenceOp.new()
+    def self.bump_sequence(attributes = {})
+      op = BumpSequenceOp.new
 
       bump_to = attributes[:bump_to]
 
       raise ArgumentError, ":bump_to too big" unless bump_to <= MAX_INT64
 
-      op.bump_to  = bump_to
+      op.bump_to = bump_to
 
-      return make(attributes.merge({
-        body:[:bump_sequence, op]
+      make(attributes.merge({
+        body: [:bump_sequence, op]
       }))
     end
 
     private
+
     def self.get_asset_amount(values)
       amount = interpret_amount(values.last)
-      if values[0].is_a?(Stellar::Asset)
-        asset = values.first
+      asset = if values[0].is_a?(Stellar::Asset)
+        values.first
       else
-        asset = Stellar::Asset.send(*values[0...-1])
+        Stellar::Asset.send(*values[0...-1])
       end
 
-      return asset, amount
+      [asset, amount]
     end
 
     def self.interpret_amount(amount)
@@ -456,11 +452,10 @@ module Stellar
       end
     end
 
-
     def self.interpret_price(price)
       case price
       when String
-        bd = BigDecimal.new(price)
+        bd = BigDecimal(price)
         Price.from_f(bd)
       when Numeric
         Price.from_f(price)

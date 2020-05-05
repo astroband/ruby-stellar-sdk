@@ -1,6 +1,6 @@
 module Stellar
   class Asset
-    TYPES = %i(native alphanum4 alphanum12)
+    TYPES = %i[native alphanum4 alphanum12]
 
     def self.native
       new(:asset_type_native)
@@ -9,14 +9,14 @@ module Stellar
     def self.alphanum4(code, issuer)
       raise ArgumentError, "Bad :issuer" unless issuer.is_a?(KeyPair)
       code = normalize_code(code, 4)
-      an = AlphaNum4.new({asset_code:code, issuer:issuer.account_id})
+      an = AlphaNum4.new({asset_code: code, issuer: issuer.account_id})
       new(:asset_type_credit_alphanum4, an)
     end
 
     def self.alphanum12(code, issuer)
       raise ArgumentError, "Bad :issuer" unless issuer.is_a?(KeyPair)
       code = normalize_code(code, 12)
-      an = AlphaNum12.new({asset_code:code, issuer:issuer.account_id})
+      an = AlphaNum12.new({asset_code: code, issuer: issuer.account_id})
       new(:asset_type_credit_alphanum12, an)
     end
 
@@ -37,7 +37,7 @@ module Stellar
 
     def inspect
       label = switch.to_s
-      "#<Stellar::Asset #{to_s}>"
+      "#<Stellar::Asset #{self}>"
     end
 
     def code
@@ -50,7 +50,7 @@ module Stellar
         raise "#{switch} assets do not have a code"
       end
     end
-    
+
     def issuer
       case switch
       when AssetType.asset_type_credit_alphanum4
