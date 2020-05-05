@@ -5,11 +5,11 @@ module Stellar
 
     # @param [Fixnum] amount
     # @param [Stellar::Asset] asset
-    def initialize(amount, asset=Stellar::Asset.native())
+    def initialize(amount, asset = Stellar::Asset.native)
       # TODO: how are we going to handle decimal considerations?
 
       @amount = amount
-      @asset  = asset
+      @asset = asset
     end
 
     # @return [Array(Symbol, Fixnum)] in case of a native asset

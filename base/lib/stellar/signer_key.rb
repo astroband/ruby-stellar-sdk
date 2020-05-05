@@ -1,6 +1,5 @@
 module Stellar
   class SignerKey
-
     PREIMAGE_LENGTH = 32
 
     def self.ed25519(keypair)
@@ -8,16 +7,14 @@ module Stellar
       new(:signer_key_type_ed25519, keypair.raw_public_key)
     end
 
-
     def self.preauthorized_transaction(tx)
       new(:signer_key_type_pre_auth_tx, tx.hash)
     end
 
-
     def self.hash_x(preimage)
-      raise ArgumentError, "Must be string" unless preimage.is_a?(String) 
+      raise ArgumentError, "Must be string" unless preimage.is_a?(String)
       raise ArgumentError, "Must be 32 bytes" unless preimage.bytesize == PREIMAGE_LENGTH
-      
+
       hash_x = Digest::SHA256.digest(preimage)
       new(:signer_key_type_hash_x, hash_x)
     end
@@ -38,13 +35,12 @@ module Stellar
 
     def inspect
       label = switch.to_s
-      "#<Stellar::SignerKey #{to_s}>"
+      "#<Stellar::SignerKey #{self}>"
     end
 
     def signature_hint
       # take last 4 bytes
       value.to_xdr.slice(-4, 4)
     end
-
   end
 end

@@ -36,7 +36,7 @@ module Stellar
       from_raw_seed(Stellar.current_network_id)
     end
 
-    def initialize(public_key, secret_key=nil)
+    def initialize(public_key, secret_key = nil)
       @public_key = public_key
       @secret_key = secret_key
     end
@@ -81,7 +81,7 @@ module Stellar
 
     def seed
       raise "no private key" if @secret_key.nil?
-      #TODO: improve the error class above
+      # TODO: improve the error class above
       seed_bytes = raw_seed
       encoder = Util::StrKey.check_encode(:seed, seed_bytes)
     end
@@ -92,14 +92,14 @@ module Stellar
 
     def sign(message)
       raise "no private key" if @secret_key.nil?
-      #TODO: improve the error class above
+      # TODO: improve the error class above
       @secret_key.sign(message)
     end
 
     def sign_decorated(message)
       raw_signature = sign(message)
       Stellar::DecoratedSignature.new({
-        hint:      signature_hint,
+        hint: signature_hint,
         signature: raw_signature
       })
     end
@@ -111,6 +111,5 @@ module Stellar
     rescue RbNaCl::BadSignatureError
       false
     end
-
   end
 end

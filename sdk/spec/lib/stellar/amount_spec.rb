@@ -1,8 +1,7 @@
-require 'spec_helper'
+require "spec_helper"
 
 module Stellar
   RSpec.describe Amount do
-
     describe "#to_payment" do
       context "when asset is the native type" do
         it "returns an array of values" do
@@ -23,8 +22,8 @@ module Stellar
           payment = amount.to_payment
           expect(payment[0]).to eq :alphanum4
           expect(payment[1]).to include "BTC"
-          expect(payment[2].public_key.value).
-            to eq issuer_account.keypair.public_key.value
+          expect(payment[2].public_key.value)
+            .to eq issuer_account.keypair.public_key.value
           expect(payment[3]).to eq 100
         end
       end
@@ -39,8 +38,8 @@ module Stellar
           payment = amount.to_payment
           expect(payment[0]).to eq :alphanum12
           expect(payment[1]).to include "LONGNAME"
-          expect(payment[2].public_key.value).
-            to eq issuer_account.keypair.public_key.value
+          expect(payment[2].public_key.value)
+            .to eq issuer_account.keypair.public_key.value
           expect(payment[3]).to eq 100
         end
       end
@@ -65,6 +64,5 @@ module Stellar
         end
       end
     end
-
   end
 end

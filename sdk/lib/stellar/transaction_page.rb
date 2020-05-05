@@ -10,7 +10,7 @@ module Stellar
     def each
       @resource.records.each do |tx|
         yield tx if block_given?
-      end  
+      end
     end
 
     # @return [Stellar::TransactionPage]
@@ -21,6 +21,5 @@ module Stellar
     def next_page!
       @resource = @resource.next
     end
-
   end
 end

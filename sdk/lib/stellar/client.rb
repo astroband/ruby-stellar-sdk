@@ -1,11 +1,11 @@
-require 'hyperclient'
+require "hyperclient"
 require "active_support/core_ext/object/blank"
-require 'securerandom'
+require "securerandom"
 
 module Stellar
   class AccountRequiresMemoError < StandardError
     attr_reader :account_id, :operation_index
-    
+
     def initialize(message, account_id, operation_index)
       super(message)
       @account_id = account_id
@@ -16,25 +16,25 @@ module Stellar
   class Client
     DEFAULT_FEE = 100
 
-    HORIZON_LOCALHOST_URL = 'http://127.0.0.1:8000'
-    HORIZON_MAINNET_URL = 'https://horizon.stellar.org'
-    HORIZON_TESTNET_URL = 'https://horizon-testnet.stellar.org'
-    FRIENDBOT_URL = 'https://friendbot.stellar.org'.freeze
+    HORIZON_LOCALHOST_URL = "http://127.0.0.1:8000"
+    HORIZON_MAINNET_URL = "https://horizon.stellar.org"
+    HORIZON_TESTNET_URL = "https://horizon-testnet.stellar.org"
+    FRIENDBOT_URL = "https://friendbot.stellar.org".freeze
 
-    def self.default(options={})
+    def self.default(options = {})
       new options.merge(
         horizon: HORIZON_MAINNET_URL
       )
     end
 
-    def self.default_testnet(options={})
+    def self.default_testnet(options = {})
       new options.merge(
-        horizon:   HORIZON_TESTNET_URL,
-        friendbot: HORIZON_TESTNET_URL,
+        horizon: HORIZON_TESTNET_URL,
+        friendbot: HORIZON_TESTNET_URL
       )
     end
 
-    def self.localhost(options={})
+    def self.localhost(options = {})
       new options.merge(
         horizon: HORIZON_LOCALHOST_URL
       )
@@ -45,7 +45,7 @@ module Stellar
     # @option options [String] :horizon The Horizon server URL.
     def initialize(options)
       @options = options
-      @horizon = Hyperclient.new(options[:horizon]) do |client|
+      @horizon = Hyperclient.new(options[:horizon]) { |client|
         client.faraday_block = lambda do |conn|
           conn.use Faraday::Response::RaiseError
           conn.use FaradayMiddleware::FollowRedirects
@@ -54,34 +54,34 @@ module Stellar
           conn.adapter :excon
         end
         client.headers = {
-          'Accept' => 'application/hal+json,application/problem+json,application/json',
+          "Accept" => "application/hal+json,application/problem+json,application/json",
           "X-Client-Name" => "ruby-stellar-sdk",
-          "X-Client-Version" => VERSION,
+          "X-Client-Version" => VERSION
         }
-      end
+      }
     end
 
     # @param [Stellar::Account|String] account_or_address
     def account_info(account_or_address)
-      if account_or_address.is_a?(Stellar::Account)
-        account_id = account_or_address.address
+      account_id = if account_or_address.is_a?(Stellar::Account)
+        account_or_address.address
       else
-        account_id = account_or_address
+        account_or_address
       end
-      @horizon.account(account_id:account_id)._get
+      @horizon.account(account_id: account_id)._get
     end
 
     # @option options [Stellar::Account] :account
     # @option options [Stellar::Account] :destination
-    def account_merge(options={})
-      account     = options[:account]
+    def account_merge(options = {})
+      account = options[:account]
       destination = options[:destination]
-      sequence    = options[:sequence] || (account_info(account).sequence.to_i + 1)
+      sequence = options[:sequence] || (account_info(account).sequence.to_i + 1)
 
       transaction = Stellar::Transaction.account_merge({
-        account:     account.keypair,
+        account: account.keypair,
         destination: destination.keypair,
-        sequence:    sequence
+        sequence: sequence
       })
 
       envelope = transaction.to_envelope(account.keypair)
@@ -97,19 +97,19 @@ module Stellar
     # @option options [Stellar::Account] :account
     # @option options [Stellar::Account] :funder
     # @option options [Integer] :starting_balance
-    def create_account(options={})
-      funder   = options[:funder]
+    def create_account(options = {})
+      funder = options[:funder]
       sequence = options[:sequence] || (account_info(funder).sequence.to_i + 1)
       # In the future, the fee should be grabbed from the network's last transactions,
       # instead of using a hard-coded default value.
       fee = options[:fee] || DEFAULT_FEE
 
       payment = Stellar::Transaction.create_account({
-        account:          funder.keypair,
-        destination:      options[:account].keypair,
-        sequence:         sequence,
+        account: funder.keypair,
+        destination: options[:account].keypair,
+        sequence: sequence,
         starting_balance: options[:starting_balance],
-        fee: fee,
+        fee: fee
       })
 
       envelope = payment.to_envelope(funder.keypair)
@@ -119,8 +119,8 @@ module Stellar
     # @option options [Stellar::Account] :from The source account
     # @option options [Stellar::Account] :to The destination account
     # @option options [Stellar::Amount] :amount The amount to send
-    def send_payment(options={})
-      from_account     = options[:from]
+    def send_payment(options = {})
+      from_account = options[:from]
       tx_source_account = options[:transaction_source] || from_account
       op_source_account = from_account if tx_source_account.present?
 
@@ -129,9 +129,9 @@ module Stellar
 
       payment_details = {
         destination: options[:to].keypair,
-        sequence:    sequence,
-        amount:      options[:amount].to_payment,
-        memo:        options[:memo],
+        sequence: sequence,
+        amount: options[:amount].to_payment,
+        memo: options[:memo]
       }
 
       payment_details[:account] = tx_source_account.keypair
@@ -152,7 +152,7 @@ module Stellar
     # @option options [Integer] :limit
     # @option options [Integer] :cursor
     # @return [Stellar::TransactionPage]
-    def transactions(options={})
+    def transactions(options = {})
       args = options.slice(:limit, :cursor)
 
       resource = if options[:account]
@@ -182,9 +182,9 @@ module Stellar
       args = {
         account: source.keypair,
         sequence: sequence,
-        line: asset,
+        line: asset
       }
-      args[:limit] = limit if !limit.nil?
+      args[:limit] = limit unless limit.nil?
 
       tx = Stellar::Transaction.change_trust(args)
 
@@ -194,8 +194,8 @@ module Stellar
 
     # @param [Stellar::TransactionEnvelope] tx_envelope
     # @option options [Boolean] :skip_memo_required_check (false)
-    def submit_transaction(tx_envelope:, options: { skip_memo_required_check: false })
-      if !options[:skip_memo_required_check]
+    def submit_transaction(tx_envelope:, options: {skip_memo_required_check: false})
+      unless options[:skip_memo_required_check]
         check_memo_required(tx_envelope)
       end
       @horizon.transactions._post(tx: tx_envelope.to_xdr(:base64))
@@ -247,7 +247,7 @@ module Stellar
     # will be removed in the next major version release.
     #
     # A wrapper function for Stellar::SEP10::build_challenge_tx.
-    # 
+    #
     # @param server [Stellar::KeyPair] Keypair for server's signing account.
     # @param client [Stellar::KeyPair] Keypair for the account whishing to authenticate with the server.
     # @param anchor_name [String] Anchor's name to be used in the manage_data key.
@@ -277,7 +277,7 @@ module Stellar
     # DEPRECATED: this function has been moved to Stellar::SEP10::verify_tx_signed_by and
     # will be removed in the next major version release.
     #
-    # @param transaction_envelope [Stellar::TransactionEnvelope] 
+    # @param transaction_envelope [Stellar::TransactionEnvelope]
     # @param keypair [Stellar::KeyPair]
     #
     # @return [Boolean]

@@ -3,10 +3,10 @@ module Stellar
   # Generic format conversion module
   #
   module Convert
-    require 'base64'
+    require "base64"
 
     def to_hex(string)
-      string.unpack("H*").first
+      string.unpack1("H*")
     end
 
     def from_hex(hex_string)
