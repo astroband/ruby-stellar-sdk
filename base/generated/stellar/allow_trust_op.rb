@@ -21,7 +21,8 @@ require 'xdr'
 #       }
 #       asset;
 #   
-#       bool authorize;
+#       // 0, or any bitwise combination of TrustLineFlags
+#       uint32 authorize;
 #   };
 #
 # ===========================================================================
@@ -33,6 +34,6 @@ module Stellar
 
     attribute :trustor,   AccountID
     attribute :asset,     Asset
-    attribute :authorize, XDR::Bool
+    attribute :authorize, Uint32
   end
 end

@@ -5,19 +5,29 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct TransactionResult
+#   struct InnerTransactionResult
 #   {
-#       int64 feeCharged; // actual fee charged for the transaction
+#       // Always 0. Here for binary compatibility.
+#       int64 feeCharged;
 #   
 #       union switch (TransactionResultCode code)
 #       {
-#       case txFEE_BUMP_INNER_SUCCESS:
-#       case txFEE_BUMP_INNER_FAILED:
-#           InnerTransactionResultPair innerResultPair;
+#       // txFEE_BUMP_INNER_SUCCESS is not included
 #       case txSUCCESS:
 #       case txFAILED:
 #           OperationResult results<>;
-#       default:
+#       case txTOO_EARLY:
+#       case txTOO_LATE:
+#       case txMISSING_OPERATION:
+#       case txBAD_SEQ:
+#       case txBAD_AUTH:
+#       case txINSUFFICIENT_BALANCE:
+#       case txNO_ACCOUNT:
+#       case txINSUFFICIENT_FEE:
+#       case txBAD_AUTH_EXTRA:
+#       case txINTERNAL_ERROR:
+#       case txNOT_SUPPORTED:
+#           // txFEE_BUMP_INNER_FAILED is not included
 #           void;
 #       }
 #       result;
@@ -33,7 +43,7 @@ require 'xdr'
 #
 # ===========================================================================
 module Stellar
-  class TransactionResult < XDR::Struct
+  class InnerTransactionResult < XDR::Struct
     include XDR::Namespace
 
     autoload :Result

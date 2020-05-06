@@ -10,7 +10,7 @@ require 'xdr'
 #       // sourceAccount is the account used to run the operation
 #       // if not set, the runtime defaults to "sourceAccount" specified at
 #       // the transaction level
-#       AccountID* sourceAccount;
+#       MuxedAccount* sourceAccount;
 #   
 #       union switch (OperationType type)
 #       {
@@ -31,7 +31,7 @@ require 'xdr'
 #       case ALLOW_TRUST:
 #           AllowTrustOp allowTrustOp;
 #       case ACCOUNT_MERGE:
-#           AccountID destination;
+#           MuxedAccount destination;
 #       case INFLATION:
 #           void;
 #       case MANAGE_DATA:
@@ -53,7 +53,7 @@ module Stellar
 
     autoload :Body
 
-    attribute :source_account, XDR::Option[AccountID]
+    attribute :source_account, XDR::Option[MuxedAccount]
     attribute :body,           Body
   end
 end
