@@ -34,4 +34,4 @@ client = Stellar::Client.default_testnet
 
 # Get our friendly friendbot to
 # fund your new account
-response = client.friendbot(account) # => #<OK>
+client.friendbot(account) # => #<OK>

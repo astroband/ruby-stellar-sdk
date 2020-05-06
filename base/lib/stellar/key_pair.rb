@@ -83,7 +83,7 @@ module Stellar
       raise "no private key" if @secret_key.nil?
       # TODO: improve the error class above
       seed_bytes = raw_seed
-      encoder = Util::StrKey.check_encode(:seed, seed_bytes)
+      Util::StrKey.check_encode(:seed, seed_bytes)
     end
 
     def sign?

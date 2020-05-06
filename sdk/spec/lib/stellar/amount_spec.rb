@@ -58,7 +58,6 @@ module Stellar
 
         it "uses the supplied asset type" do
           asset = Stellar::Asset.alphanum4("BTC", issuer_account.keypair)
-          address = issuer_account.address
           amount = described_class.new(1_000000, asset)
           expect(amount.inspect).to eq "#<Stellar::Amount #{asset}(1000000)>"
         end

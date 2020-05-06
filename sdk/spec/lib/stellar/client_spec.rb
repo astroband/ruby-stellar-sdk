@@ -123,7 +123,7 @@ describe Stellar::Client do
 
     it "merges source account into destination", vcr: {record: :once, match_requests_on: [:method]} do
       [source, destination].each do |account|
-        account = client.create_account(
+        client.create_account(
           funder: funder,
           account: account,
           starting_balance: 100
