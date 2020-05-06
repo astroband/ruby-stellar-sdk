@@ -5,14 +5,18 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct HmacSha256Key
-#   {
-#       opaque key[32];
-#   };
+#   struct
+#       {
+#           uint64 id;
+#           uint256 ed25519;
+#       }
 #
 # ===========================================================================
 module Stellar
-  class HmacSha256Key < XDR::Struct
-    attribute :key, XDR::Opaque[32]
+  class MuxedAccount
+    class Med25519 < XDR::Struct
+      attribute :id,      Uint64
+      attribute :ed25519, Uint256
+    end
   end
 end

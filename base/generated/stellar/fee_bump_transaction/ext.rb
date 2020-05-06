@@ -5,14 +5,20 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct HmacSha256Key
-#   {
-#       opaque key[32];
-#   };
+#   union switch (int v)
+#       {
+#       case 0:
+#           void;
+#       }
 #
 # ===========================================================================
 module Stellar
-  class HmacSha256Key < XDR::Struct
-    attribute :key, XDR::Opaque[32]
+  class FeeBumpTransaction
+    class Ext < XDR::Union
+      switch_on XDR::Int, :v
+
+      switch 0
+
+    end
   end
 end

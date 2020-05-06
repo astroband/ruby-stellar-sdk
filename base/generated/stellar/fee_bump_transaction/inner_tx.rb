@@ -5,20 +5,21 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct
+#   union switch (EnvelopeType type)
 #       {
-#           uint64 sequence;
-#           StellarMessage message;
-#           HmacSha256Mac mac;
+#       case ENVELOPE_TYPE_TX:
+#           TransactionV1Envelope v1;
 #       }
 #
 # ===========================================================================
 module Stellar
-  class AuthenticatedMessage
-    class V0 < XDR::Struct
-      attribute :sequence, Uint64
-      attribute :message,  StellarMessage
-      attribute :mac,      HmacSha256Mac
+  class FeeBumpTransaction
+    class InnerTx < XDR::Union
+      switch_on EnvelopeType, :type
+
+      switch :envelope_type_tx, :v1
+
+      attribute :v1, TransactionV1Envelope
     end
   end
 end

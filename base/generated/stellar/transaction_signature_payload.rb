@@ -10,9 +10,11 @@ require 'xdr'
 #       Hash networkId;
 #       union switch (EnvelopeType type)
 #       {
+#       // Backwards Compatibility: Use ENVELOPE_TYPE_TX to sign ENVELOPE_TYPE_TX_V0
 #       case ENVELOPE_TYPE_TX:
 #           Transaction tx;
-#           /* All other values of type are invalid */
+#       case ENVELOPE_TYPE_TX_FEE_BUMP:
+#           FeeBumpTransaction feeBump;
 #       }
 #       taggedTransaction;
 #   };
