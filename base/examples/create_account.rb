@@ -4,7 +4,7 @@ require "stellar-base"
 require "faraday"
 require "faraday_middleware"
 
-$server = Faraday.new(url: "http://localhost:39132") { |conn|
+server = Faraday.new(url: "http://localhost:39132") { |conn|
   conn.response :json
   conn.adapter Faraday.default_adapter
 }
@@ -21,5 +21,5 @@ tx = Stellar::Transaction.create_account({
 
 b64 = tx.to_envelope(master).to_xdr(:base64)
 p b64
-result = $server.get("tx", blob: b64)
+result = server.get("tx", blob: b64)
 p result.body

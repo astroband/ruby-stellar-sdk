@@ -8,4 +8,6 @@ inherit_gem:
 AllCops:
   Exclude:
   - 'base/generated/**/*'
-  TargetRubyVersion: 2.5
+  - 'base/examples/**/*'
+  - 'sdk/examples/**/*'
+  TargetRubyVersion: 2.4

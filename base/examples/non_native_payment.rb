@@ -16,15 +16,15 @@ require "stellar-base"
 require "faraday"
 require "faraday_middleware"
 
-$server = Faraday.new(url: "http://localhost:39132") { |conn|
+server = Faraday.new(url: "http://localhost:39132") { |conn|
   conn.response :json
   conn.adapter Faraday.default_adapter
 }
 
 def submit(key, tx)
   b64 = tx.to_envelope(key).to_xdr(:base64)
-  response = $server.get("tx", blob: b64)
-  raw = [response.body["result"]].pack("H*")
+  response = server.get("tx", blob: b64)
+  #raw = [response.body["result"]].pack("H*")
   p response.body
 end
 

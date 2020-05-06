@@ -36,7 +36,7 @@ module Stellar
     end
 
     def inspect
-      label = switch.to_s
+      # label = switch.to_s
       "#<Stellar::Asset #{self}>"
     end
 

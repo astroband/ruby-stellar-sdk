@@ -195,9 +195,7 @@ describe Stellar::TransactionBuilder do
   describe ".build" do
     it "raises error for time_bounds not set" do
       expect {
-        tx = builder.add_operation(
-          Stellar::Operation.bump_sequence({"bump_to": 1})
-        ).build
+        builder.add_operation(Stellar::Operation.bump_sequence({"bump_to": 1})).build
       }.to raise_error(
         RuntimeError,
         "TransactionBuilder.time_bounds must be set during initialization or by calling set_timeout"
@@ -211,9 +209,7 @@ describe Stellar::TransactionBuilder do
         time_bounds: Stellar::TimeBounds.new(min_time: "not", max_time: "integers")
       )
       expect {
-        tx = builder.add_operation(
-          Stellar::Operation.bump_sequence({"bump_to": 1})
-        ).build
+        builder.add_operation(Stellar::Operation.bump_sequence({"bump_to": 1})).build
       }.to raise_error(
         RuntimeError, "TimeBounds.min_time and max_time must be Integers"
       )
@@ -226,18 +222,14 @@ describe Stellar::TransactionBuilder do
         time_bounds: Stellar::TimeBounds.new(min_time: Time.now.to_i + 10, max_time: Time.now.to_i)
       )
       expect {
-        tx = builder.add_operation(
-          Stellar::Operation.bump_sequence({"bump_to": 1})
-        ).build
+        builder.add_operation(Stellar::Operation.bump_sequence({"bump_to": 1})).build
       }.to raise_error(
         RuntimeError, "Timebounds.max_time must be greater than min_time"
       )
     end
 
     it "allows max_time to be zero" do
-      tx = builder.add_operation(
-        Stellar::Operation.bump_sequence({"bump_to": 1})
-      ).set_timeout(0).build
+      builder.add_operation(Stellar::Operation.bump_sequence({"bump_to": 1})).set_timeout(0).build
       expect(builder.time_bounds.max_time).to eql(0)
     end
 
@@ -258,7 +250,6 @@ describe Stellar::TransactionBuilder do
 
     it "allows for multiple transactions to be created" do
       first_max_time = Time.now.to_i + 1000
-      bump_op = Stellar::Operation.bump_sequence({"bump_to": 1})
       builder = Stellar::TransactionBuilder.new(
         source_account: key_pair,
         sequence_number: 1,

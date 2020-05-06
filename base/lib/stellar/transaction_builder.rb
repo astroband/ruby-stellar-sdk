@@ -1,6 +1,6 @@
 module Stellar
   class TransactionBuilder
-    attr_reader :source_account, :sequence_number, :base_fee, :time_bounds, :time_bounds, :memo, :operations
+    attr_reader :source_account, :sequence_number, :base_fee, :time_bounds, :memo, :operations
 
     def initialize(
       source_account:,
