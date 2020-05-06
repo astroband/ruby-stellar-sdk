@@ -10,4 +10,5 @@ AllCops:
   - 'base/generated/**/*'
   - 'base/examples/**/*'
   - 'sdk/examples/**/*'
+  - 'vendor/bundle/**/*'
   TargetRubyVersion: 2.4
