@@ -1,0 +1,14 @@
+require:
+- rubocop-rspec
+- standard
+
+inherit_gem:
+  standard: config/base.yml
+
+AllCops:
+  Exclude:
+  - 'base/generated/**/*'
+  - 'base/examples/**/*'
+  - 'sdk/examples/**/*'
+  - 'vendor/bundle/**/*'
+  TargetRubyVersion: 2.4

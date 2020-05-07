@@ -1,15 +1,14 @@
 require "spec_helper"
 
 describe Stellar::Client do
-
   subject(:client) { Stellar::Client.default_testnet }
 
   describe "headers" do
     let(:headers) { client.horizon.headers }
 
     it "has 'Accept'" do
-      expect(headers["Accept"]).
-        to eq "application/hal+json,application/problem+json,application/json"
+      expect(headers["Accept"])
+        .to eq "application/hal+json,application/problem+json,application/json"
     end
 
     it "has 'X-Client-Name'" do
@@ -22,29 +21,29 @@ describe Stellar::Client do
   end
 
   describe "#default_testnet" do
-    it 'instantiates a client pointing to horizon testnet' do
+    it "instantiates a client pointing to horizon testnet" do
       client = described_class.default_testnet
       expect(client.horizon._url).to eq(described_class::HORIZON_TESTNET_URL)
     end
   end
 
   describe "#default" do
-    it 'instantiates a client pointing to horizon mainnet' do
+    it "instantiates a client pointing to horizon mainnet" do
       client = described_class.default
       expect(client.horizon._url).to eq(described_class::HORIZON_MAINNET_URL)
     end
   end
 
   describe "#localhost" do
-    it 'instantiates a client pointing to localhost horizon' do
+    it "instantiates a client pointing to localhost horizon" do
       client = described_class.localhost
       expect(client.horizon._url).to eq(described_class::HORIZON_LOCALHOST_URL)
     end
   end
 
   describe "#initialize" do
-    let(:custom_horizon_url) { 'https://horizon.domain.com' }
-    it 'instantiates a client accepting custom options' do
+    let(:custom_horizon_url) { "https://horizon.domain.com" }
+    it "instantiates a client accepting custom options" do
       client = described_class.new(horizon: custom_horizon_url)
       expect(client.horizon._url).to eq(custom_horizon_url)
     end
@@ -64,9 +63,9 @@ describe Stellar::Client do
       destination_info = client.account_info(account)
       balances = destination_info.balances
       expect(balances).to_not be_empty
-      native_asset_balance_info = balances.find do |b|
+      native_asset_balance_info = balances.find { |b|
         b["asset_type"] == "native"
-      end
+      }
       expect(native_asset_balance_info["balance"].to_f).to be > 0
     end
   end
@@ -79,15 +78,15 @@ describe Stellar::Client do
       client.create_account(
         funder: source,
         account: destination,
-        starting_balance: 100,
+        starting_balance: 100
       )
 
       destination_info = client.account_info(destination)
       balances = destination_info.balances
       expect(balances).to_not be_empty
-      native_asset_balance_info = balances.find do |b|
+      native_asset_balance_info = balances.find { |b|
         b["asset_type"] == "native"
-      end
+      }
       expect(native_asset_balance_info["balance"].to_f).to eq 100.0
     end
   end
@@ -96,7 +95,7 @@ describe Stellar::Client do
     let(:account) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
     let(:client) { Stellar::Client.default_testnet }
 
-    it "returns the current details for the account", vcr: { record: :once, match_requests_on: [:method]} do
+    it "returns the current details for the account", vcr: {record: :once, match_requests_on: [:method]} do
       response = client.account_info(account)
 
       expect(response.id).to eq CONFIG[:source_address]
@@ -122,12 +121,12 @@ describe Stellar::Client do
     let(:source) { Stellar::Account.random }
     let(:destination) { Stellar::Account.random }
 
-    it "merges source account into destination", vcr: { record: :once, match_requests_on: [:method]} do
+    it "merges source account into destination", vcr: {record: :once, match_requests_on: [:method]} do
       [source, destination].each do |account|
-        account = client.create_account(
+        client.create_account(
           funder: funder,
           account: account,
-          starting_balance: 100,
+          starting_balance: 100
         )
       end
 
@@ -137,9 +136,9 @@ describe Stellar::Client do
       )
 
       destination_info = client.account_info(destination)
-      native_asset_balance_info = destination_info.balances.find do |b|
+      native_asset_balance_info = destination_info.balances.find { |b|
         b["asset_type"] == "native"
-      end
+      }
       # balance of merged account is the balance of both accounts minus transaction fee for merge
       expect(native_asset_balance_info["balance"].to_f).to eq 199.99999
     end
@@ -155,7 +154,7 @@ describe Stellar::Client do
         client.create_account(
           funder: source,
           account: destination,
-          starting_balance: 100,
+          starting_balance: 100
         )
 
         amount = Stellar::Amount.new(150)
@@ -163,15 +162,15 @@ describe Stellar::Client do
         client.send_payment(
           from: source,
           to: destination,
-          amount: amount,
+          amount: amount
         )
 
         destination_info = client.account_info(destination)
         balances = destination_info.balances
         expect(balances).to_not be_empty
-        native_asset_balance_info = balances.find do |b|
+        native_asset_balance_info = balances.find { |b|
           b["asset_type"] == "native"
-        end
+        }
         expect(native_asset_balance_info["balance"].to_f).to eq 250.0
       end
     end
@@ -181,17 +180,17 @@ describe Stellar::Client do
       let(:destination) { Stellar::Account.random }
 
       it("sends a alphanum4 asset to the destination", {
-        vcr: {record: :once, match_requests_on: [:method]},
+        vcr: {record: :once, match_requests_on: [:method]}
       }) do
         client.create_account(
           funder: issuer,
           account: destination,
-          starting_balance: 2,
+          starting_balance: 2
         )
 
         client.change_trust(
           asset: [:alphanum4, "BTC", issuer.keypair],
-          source: destination,
+          source: destination
         )
 
         asset = Stellar::Asset.alphanum4("BTC", source.keypair)
@@ -199,13 +198,13 @@ describe Stellar::Client do
         client.send_payment(
           from: source,
           to: destination,
-          amount: amount,
+          amount: amount
         )
 
         destination_info = client.account_info(destination)
-        btc_balance = destination_info.balances.find do |b|
+        btc_balance = destination_info.balances.find { |b|
           b["asset_code"] == "BTC"
-        end["balance"].to_f
+        }["balance"].to_f
 
         expect(btc_balance).to eq 150.0
       end
@@ -216,17 +215,17 @@ describe Stellar::Client do
       let(:destination) { Stellar::Account.random }
 
       it("sends a alphanum12 asset to the destination", {
-        vcr: {record: :once, match_requests_on: [:method]},
+        vcr: {record: :once, match_requests_on: [:method]}
       }) do
         client.create_account(
           funder: issuer,
           account: destination,
-          starting_balance: 2,
+          starting_balance: 2
         )
 
         client.change_trust(
           asset: [:alphanum12, "LONGNAME", issuer.keypair],
-          source: destination,
+          source: destination
         )
 
         asset = Stellar::Asset.alphanum12("LONGNAME", source.keypair)
@@ -235,13 +234,13 @@ describe Stellar::Client do
         client.send_payment(
           from: source,
           to: destination,
-          amount: amount,
+          amount: amount
         )
 
         destination_info = client.account_info(destination)
-        btc_balance = destination_info.balances.find do |b|
+        btc_balance = destination_info.balances.find { |b|
           b["asset_code"] == "LONGNAME"
-        end["balance"].to_f
+        }["balance"].to_f
 
         expect(btc_balance).to eq 150.0
       end
@@ -256,7 +255,7 @@ describe Stellar::Client do
         client.create_account(
           funder: source,
           account: destination,
-          starting_balance: 100,
+          starting_balance: 100
         )
 
         amount = Stellar::Amount.new(150)
@@ -265,11 +264,11 @@ describe Stellar::Client do
           from: source,
           to: destination,
           amount: amount,
-          memo: "DESUKA",
+          memo: "DESUKA"
         )
 
-        last_tx = client.account_info(destination).
-          transactions(order: "desc")._get._embedded.records.first
+        last_tx = client.account_info(destination)
+          .transactions(order: "desc")._get._embedded.records.first
         expect(last_tx.memo).to eq "DESUKA"
       end
     end
@@ -279,19 +278,19 @@ describe Stellar::Client do
       let(:destination) { Stellar::Account.random }
 
       it("sends a payment account through a channel account", {
-        vcr: {record: :once, match_requests_on: [:method]},
+        vcr: {record: :once, match_requests_on: [:method]}
       }) do
         client.create_account(
           funder: source,
           account: destination,
-          starting_balance: 1,
+          starting_balance: 1
         )
 
         tx = client.send_payment(
           from: source,
           to: destination,
           amount: Stellar::Amount.new(0.55),
-          transaction_source: transaction_source,
+          transaction_source: transaction_source
         )
 
         tx_hash = tx._attributes["hash"]
@@ -305,26 +304,26 @@ describe Stellar::Client do
         destination_info = client.account_info(destination)
         balances = destination_info.balances
         expect(balances).to_not be_empty
-        native_asset_balance_info = balances.find do |b|
+        native_asset_balance_info = balances.find { |b|
           b["asset_type"] == "native"
-        end
+        }
         expect(native_asset_balance_info["balance"].to_f).to eq 1.55
       end
 
       it("sends a payment when the channel is the same as `from`", {
-        vcr: {record: :once, match_requests_on: [:method]},
+        vcr: {record: :once, match_requests_on: [:method]}
       }) do
         client.create_account(
           funder: source,
           account: destination,
-          starting_balance: 1,
+          starting_balance: 1
         )
 
         tx = client.send_payment(
           from: source,
           to: destination,
           amount: Stellar::Amount.new(0.55),
-          transaction_source: source,
+          transaction_source: source
         )
 
         tx_hash = tx._attributes["hash"]
@@ -339,7 +338,7 @@ describe Stellar::Client do
   end
 
   describe "#transactions" do
-    let(:cursor) { '348403452088320' }
+    let(:cursor) { "348403452088320" }
 
     context "account transactions" do
       let(:account) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
@@ -375,24 +374,24 @@ describe Stellar::Client do
       let(:truster) { Stellar::Account.random }
 
       it("creates, updates, or deletes a trustline", {
-        vcr: {record: :once, match_requests_on: [:method]},
+        vcr: {record: :once, match_requests_on: [:method]}
       }) do
         client.create_account(
           funder: issuer,
           account: truster,
-          starting_balance: 2,
+          starting_balance: 2
         )
 
         # Create trustline
         client.change_trust(
           asset: [:alphanum4, "BTC", issuer.keypair],
-          source: truster,
+          source: truster
         )
 
         truster_info = client.account_info(truster)
-        btc_balance = truster_info.balances.find do |b|
+        btc_balance = truster_info.balances.find { |b|
           b["asset_code"] == "BTC" && b["asset_issuer"] == issuer.address
-        end
+        }
 
         expect(btc_balance).to_not be_nil
 
@@ -400,13 +399,13 @@ describe Stellar::Client do
         client.change_trust(
           asset: [:alphanum4, "BTC", issuer.keypair],
           source: truster,
-          limit: 100,
+          limit: 100
         )
 
         truster_info = client.account_info(truster)
-        btc_balance = truster_info.balances.find do |b|
+        btc_balance = truster_info.balances.find { |b|
           b["asset_code"] == "BTC" && b["asset_issuer"] == issuer.address
-        end
+        }
 
         expect(btc_balance["limit"].to_f).to eq 100
 
@@ -414,13 +413,13 @@ describe Stellar::Client do
         client.change_trust(
           asset: [:alphanum4, "BTC", issuer.keypair],
           source: truster,
-          limit: 0,
+          limit: 0
         )
 
         truster_info = client.account_info(truster)
-        btc_balance = truster_info.balances.find do |b|
+        btc_balance = truster_info.balances.find { |b|
           b["asset_code"] == "BTC" && b["asset_issuer"] == issuer.address
-        end
+        }
 
         expect(btc_balance).to be_nil
       end
@@ -432,11 +431,11 @@ describe Stellar::Client do
     let(:memo_required_kp) { Stellar::KeyPair.from_seed("SCGGMYFIWGQCMDCPTWYMYWVOLERM7K6EIRD3QGXESEZ2O7NNT7CXWTHQ") }
 
     it("doesn't raise an error when a transaction has a memo", {
-      vcr: {record: :once, match_requests_on: [:method]},
+      vcr: {record: :once, match_requests_on: [:method]}
     }) do
       seq_num = client.account_info(kp.address).sequence.to_i + 1
       tx = Stellar::TransactionBuilder.new(
-        source_account: kp, 
+        source_account: kp,
         sequence_number: seq_num,
         memo: Stellar::Memo.new(:memo_text, "test memo")
       ).add_operation(
@@ -444,29 +443,29 @@ describe Stellar::Client do
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
         })
-      ).set_timeout(600).build()
+      ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
-      client.submit_transaction(tx_envelope: envelope) 
+      client.submit_transaction(tx_envelope: envelope)
     end
 
     it("raises an error for missing memo", {
-      vcr: {record: :once, match_requests_on: [:method]},
+      vcr: {record: :once, match_requests_on: [:method]}
     }) do
       seq_num = client.account_info(kp.address).sequence.to_i + 1
       tx = Stellar::TransactionBuilder.new(
-        source_account: kp, 
+        source_account: kp,
         sequence_number: seq_num
       ).add_operation(
         Stellar::Operation.payment({
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
         })
-      ).set_timeout(600).build()
+      ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
       expect {
-        client.submit_transaction(tx_envelope: envelope) 
+        client.submit_transaction(tx_envelope: envelope)
       }.to raise_error(
         an_instance_of(
           Stellar::AccountRequiresMemoError
@@ -481,11 +480,11 @@ describe Stellar::Client do
     end
 
     it("succeeds for a mix of operations, memo included", {
-      vcr: {record: :once, match_requests_on: [:method]},
+      vcr: {record: :once, match_requests_on: [:method]}
     }) do
       seq_num = client.account_info(kp.address).sequence.to_i + 1
       tx = Stellar::TransactionBuilder.new(
-        source_account: kp, 
+        source_account: kp,
         sequence_number: seq_num,
         memo: Stellar::Memo.new(:memo_text, "test memo")
       ).add_operation(
@@ -494,32 +493,32 @@ describe Stellar::Client do
           amount: [Stellar::Asset.native, 100]
         })
       ).add_operation(
-        Stellar::Operation.bump_sequence({ bump_to: seq_num + 2 })
-      ).set_timeout(600).build()
+        Stellar::Operation.bump_sequence({bump_to: seq_num + 2})
+      ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
-      client.submit_transaction(tx_envelope: envelope) 
+      client.submit_transaction(tx_envelope: envelope)
     end
 
     it("fails for a mix of operations, memo not included", {
-      vcr: {record: :once, match_requests_on: [:method]},
+      vcr: {record: :once, match_requests_on: [:method]}
     }) do
       seq_num = client.account_info(kp.address).sequence.to_i + 1
       tx = Stellar::TransactionBuilder.new(
-        source_account: kp, 
-        sequence_number: seq_num,
+        source_account: kp,
+        sequence_number: seq_num
       ).add_operation(
-        Stellar::Operation.bump_sequence({ bump_to: seq_num + 2 })
+        Stellar::Operation.bump_sequence({bump_to: seq_num + 2})
       ).add_operation(
         Stellar::Operation.payment({
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
         })
-      ).set_timeout(600).build()
+      ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
       expect {
-        client.submit_transaction(tx_envelope: envelope) 
+        client.submit_transaction(tx_envelope: envelope)
       }.to raise_error(
         an_instance_of(
           Stellar::AccountRequiresMemoError
@@ -534,42 +533,42 @@ describe Stellar::Client do
     end
 
     it("succeeds for operations that don't require memos", {
-      vcr: {record: :once, match_requests_on: [:method]},
+      vcr: {record: :once, match_requests_on: [:method]}
     }) do
       seq_num = client.account_info(kp.address).sequence.to_i + 1
       tx = Stellar::TransactionBuilder.new(
-        source_account: kp, 
-        sequence_number: seq_num,
+        source_account: kp,
+        sequence_number: seq_num
       ).add_operation(
-        Stellar::Operation.bump_sequence({ bump_to: seq_num + 2 })
-      ).set_timeout(600).build()
+        Stellar::Operation.bump_sequence({bump_to: seq_num + 2})
+      ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
-      client.submit_transaction(tx_envelope: envelope) 
+      client.submit_transaction(tx_envelope: envelope)
     end
   end
 
   describe "#check_memo_required" do
     let(:kp) { Stellar::KeyPair.from_seed("SBL77A6HQNNILXQQCSS6NMBS4ILSOF7KBINIITUUFBBAI53PNQBZA7QN") }
     let(:memo_required_kp) { Stellar::KeyPair.from_seed("SCGGMYFIWGQCMDCPTWYMYWVOLERM7K6EIRD3QGXESEZ2O7NNT7CXWTHQ") }
-    
+
     it("raises an error for missing memo", {
-      vcr: {record: :once, match_requests_on: [:method]},
+      vcr: {record: :once, match_requests_on: [:method]}
     }) do
       seq_num = client.account_info(kp.address).sequence.to_i + 1
       tx = Stellar::TransactionBuilder.new(
-        source_account: kp, 
+        source_account: kp,
         sequence_number: seq_num
       ).add_operation(
         Stellar::Operation.payment({
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
         })
-      ).set_timeout(600).build()
+      ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
       expect {
-        client.check_memo_required(envelope) 
+        client.check_memo_required(envelope)
       }.to raise_error(
         an_instance_of(
           Stellar::AccountRequiresMemoError
@@ -584,21 +583,21 @@ describe Stellar::Client do
     end
 
     it("raises an error for missing memo on account merge operations", {
-      vcr: {record: :once, match_requests_on: [:method]},
+      vcr: {record: :once, match_requests_on: [:method]}
     }) do
       seq_num = client.account_info(kp.address).sequence.to_i + 1
       tx = Stellar::TransactionBuilder.new(
-        source_account: kp, 
+        source_account: kp,
         sequence_number: seq_num
       ).add_operation(
         Stellar::Operation.account_merge({
           destination: memo_required_kp
         })
-      ).set_timeout(600).build()
+      ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
       expect {
-        client.check_memo_required(envelope) 
+        client.check_memo_required(envelope)
       }.to raise_error(
         an_instance_of(
           Stellar::AccountRequiresMemoError
@@ -613,11 +612,11 @@ describe Stellar::Client do
     end
 
     it("succeeds with a multi-operation transaction", {
-      vcr: {record: :once, match_requests_on: [:method]},
+      vcr: {record: :once, match_requests_on: [:method]}
     }) do
       seq_num = client.account_info(kp.address).sequence.to_i + 1
       tx = Stellar::TransactionBuilder.new(
-        source_account: kp, 
+        source_account: kp,
         sequence_number: seq_num,
         memo: Stellar::Memo.new(:memo_text, "test memo")
       ).add_operation(
@@ -629,18 +628,18 @@ describe Stellar::Client do
         Stellar::Operation.account_merge({
           destination: memo_required_kp
         })
-      ).set_timeout(600).build()
+      ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
-      client.check_memo_required(envelope) 
+      client.check_memo_required(envelope)
     end
 
     it("doesn't raise an error when a transaction has a memo", {
-      vcr: {record: :once, match_requests_on: [:method]},
+      vcr: {record: :once, match_requests_on: [:method]}
     }) do
       seq_num = client.account_info(kp.address).sequence.to_i + 1
       tx = Stellar::TransactionBuilder.new(
-        source_account: kp, 
+        source_account: kp,
         sequence_number: seq_num,
         memo: Stellar::Memo.new(:memo_text, "test memo")
       ).add_operation(
@@ -648,11 +647,10 @@ describe Stellar::Client do
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
         })
-      ).set_timeout(600).build()
+      ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
-      client.check_memo_required(envelope) 
+      client.check_memo_required(envelope)
     end
   end
-
 end

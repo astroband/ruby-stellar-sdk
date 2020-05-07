@@ -1,1 +1,1 @@
-task :travis => %w(spec)
+task travis: %w[spec]

@@ -1,8 +1,6 @@
-require 'stellar-base'
-require 'contracts'
+require "stellar-base"
 
 module Stellar
-
   autoload :Account
   autoload :Amount
   autoload :Client

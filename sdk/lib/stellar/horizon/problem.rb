@@ -1,46 +1,44 @@
 module Stellar
   module Horizon
-    class Problem 
-      include Contracts
-
+    class Problem
       def initialize(attributes)
         @attributes = attributes.reverse_merge({
           type: "about:blank",
           title: "Unknown Error",
-          status: 500,
+          status: 500
         })
 
         @meta = @attributes.except!(:type, :title, :status, :detail, :instance)
       end
 
-      Contract None => String
+      # @return [String]
       def type
-        @attributes[:type] 
+        @attributes[:type]
       end
 
-      Contract None => String
+      # @return [String]
       def title
-        @attributes[:title] 
+        @attributes[:title]
       end
 
-      Contract None => Num
+      # @return [Integer]
       def status
-        @attributes[:status] 
+        @attributes[:status]
       end
 
-      Contract None => String
+      # @return [String]
       def detail
-        @attributes[:detail] 
+        @attributes[:detail]
       end
 
-      Contract None => String
+      # @return [String]
       def instance
-        @attributes[:instance] 
+        @attributes[:instance]
       end
 
-      Contract None => HashOf[String, Any]
+      # @return [{String => Object}]
       def meta
-        @attributes[:instance] 
+        @attributes[:instance]
       end
     end
   end

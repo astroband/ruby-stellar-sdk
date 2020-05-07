@@ -1,9 +1,8 @@
 module Stellar
   class TransactionPage
-    include Contracts
     include Enumerable
 
-    Contract Hyperclient::Link => Any
+    # @param [Hyperclient::Link] resource
     def initialize(resource)
       @resource = resource
     end
@@ -11,10 +10,10 @@ module Stellar
     def each
       @resource.records.each do |tx|
         yield tx if block_given?
-      end  
+      end
     end
 
-    Contract None => TransactionPage
+    # @return [Stellar::TransactionPage]
     def next_page
       self.class.new(@resource.next)
     end
@@ -22,6 +21,5 @@ module Stellar
     def next_page!
       @resource = @resource.next
     end
-
   end
 end

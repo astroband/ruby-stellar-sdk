@@ -1,8 +1,8 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Stellar::AccountFlags do
-  subject{ Stellar::AccountFlags }
-  let(:raw)    { 3 }
+  subject { Stellar::AccountFlags }
+  let(:raw) { 3 }
   let(:result) { subject.parse_mask raw }
 
   it "parses correctly" do

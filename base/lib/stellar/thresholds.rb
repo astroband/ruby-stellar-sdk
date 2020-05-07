@@ -3,10 +3,9 @@ module Stellar
     COMPONENTS = [:master_weight, :low, :medium, :high]
     VALID_RANGE = 0..255
 
-    def make(thresholds={})
-
+    def make(thresholds = {})
       # error if any of the needed components are not provided
-      if COMPONENTS.any?{|c| thresholds[c].blank? }
+      if COMPONENTS.any? { |c| thresholds[c].blank? }
         raise ArgumentError, "invalid thresholds hash, must have #{COMPONENTS.inspect} keys, had: #{thresholds.keys.inspect}"
       end
 
@@ -22,7 +21,6 @@ module Stellar
         end
       end
 
-
       thresholds.values_at(*COMPONENTS).pack("C*")
     end
 
@@ -30,9 +28,9 @@ module Stellar
       master_weight, low, medium, high = combined.unpack("C*")
       {
         master_weight: master_weight,
-        low:           low,
-        medium:        medium,
-        high:          high,
+        low: low,
+        medium: medium,
+        high: high
       }
     end
   end

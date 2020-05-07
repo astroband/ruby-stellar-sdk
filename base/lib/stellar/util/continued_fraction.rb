@@ -5,13 +5,13 @@ module Stellar
       attr_reader :i
       attr_reader :f
 
-      def self.best_r(number, max_precision=MAX_PRECISION)
+      def self.best_r(number, max_precision = MAX_PRECISION)
         cur_cf = new(number)
 
         loop do
-          next_cf = cur_cf.extend()
-          cur_r   = cur_cf.to_r(max_precision)
-          next_r  = next_cf.to_r(max_precision)
+          next_cf = cur_cf.extend
+          cur_r = cur_cf.to_r(max_precision)
+          next_r = next_cf.to_r(max_precision)
 
           break cur_r if cur_cf.done? || cur_r == next_r
 
@@ -21,9 +21,9 @@ module Stellar
         cur_cf.to_r(max_precision)
       end
 
-      def initialize(val, parents=[])
-        @i       = val.floor
-        @f       = val - @i
+      def initialize(val, parents = [])
+        @i = val.floor
+        @f = val - @i
         @parents = parents
       end
 
@@ -43,22 +43,22 @@ module Stellar
       def convergents
         return @convergents if defined? @convergents
 
-        c = [Fraction.new(0,1), Fraction.new(1,0)]
+        c = [Fraction.new(0, 1), Fraction.new(1, 0)]
         to_a.each_with_index do |a, i|
-          i = i + 2
+          i += 2
 
-          h = a * c[i-1].n + c[i-2].n
-          k = a * c[i-1].d + c[i-2].d
-          c << Fraction.new(h,k)
+          h = a * c[i - 1].n + c[i - 2].n
+          k = a * c[i - 1].d + c[i - 2].d
+          c << Fraction.new(h, k)
         end
 
         @converegents = c[2..-1]
       end
 
-      def to_r(max_precision=MAX_PRECISION)
-        fraction = convergents.take_while do |c|
+      def to_r(max_precision = MAX_PRECISION)
+        fraction = convergents.take_while { |c|
           c.n <= max_precision && c.d <= max_precision
-        end.last
+        }.last
 
         Rational(fraction.n, fraction.d)
       end
@@ -67,7 +67,7 @@ module Stellar
         @f == 0
       end
 
-      def extend(count=1)
+      def extend(count = 1)
         result = self
 
         count.times do
@@ -78,11 +78,11 @@ module Stellar
         result
       end
 
-      class Fraction 
+      class Fraction
         attr_reader :n
         attr_reader :d
 
-        def initialize(n,d)
+        def initialize(n, d)
           @n = n
           @d = d
         end

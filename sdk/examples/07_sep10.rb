@@ -1,5 +1,5 @@
-require 'stellar-sdk'
-require 'hyperclient'
+require "stellar-sdk"
+require "hyperclient"
 
 $client = Stellar::Client.default_testnet
 $client_master_kp = Stellar::KeyPair.random
@@ -31,16 +31,16 @@ def setup_multisig
     sequence_number: sequence_number
   )
   tx = builder.add_operation(
-    Stellar::Operation.set_options({ signer: signer1 })
+    Stellar::Operation.set_options({signer: signer1})
   ).add_operation(
-    Stellar::Operation.set_options({ signer: signer2 })
+    Stellar::Operation.set_options({signer: signer2})
   ).add_operation(
     Stellar::Operation.set_options({
-      low_threshold: 1, 
+      low_threshold: 1,
       med_threshold: 2,
-      high_threshold: 3,
+      high_threshold: 3
     })
-  ).set_timeout(600).build()
+  ).set_timeout(600).build
 
   envelope_xdr = tx.to_envelope($client_master_kp).to_xdr(:base64)
   begin
@@ -49,7 +49,6 @@ def setup_multisig
     p e.response
   end
 end
-
 
 # This function walks throught the steps both the wallet and server would take
 # during a SEP-10 challenge verification.
@@ -64,7 +63,7 @@ def example_verify_challenge_tx_threshold
   )
   # 3. The wallet recieves the challenge xdr and collects enough signatures from
   #    the accounts signers to reach the medium threshold on the account.
-  #    `envelope.signatures` already contains the server's signature, so the wallet 
+  #    `envelope.signatures` already contains the server's signature, so the wallet
   #    adds to the list.
   envelope = Stellar::TransactionEnvelope.from_xdr(envelope_xdr, "base64")
   envelope.signatures += [
@@ -86,7 +85,7 @@ def example_verify_challenge_tx_threshold
     info = $client.account_info(account)
   rescue Faraday::ResourceNotFound
     # The account doesn't exist yet.
-    # In this situation, all the server can do is verify that the client master 
+    # In this situation, all the server can do is verify that the client master
     # keypair has signed the transaction.
     begin
       Stellar::SEP10.verify_challenge_tx(
@@ -115,8 +114,8 @@ def example_verify_challenge_tx_threshold
       puts "Challenge signatures and threshold verified!"
       total_weight = 0
       signers_found.each do |signer|
-        total_weight += signer['weight']
-        puts "signer: #{signer['key']}, weight: #{signer['weight']}"
+        total_weight += signer["weight"]
+        puts "signer: #{signer["key"]}, weight: #{signer["weight"]}"
       end
       puts "Account medium threshold: #{info.thresholds["med_threshold"]}, total signature(s) weight: #{total_weight}"
     end

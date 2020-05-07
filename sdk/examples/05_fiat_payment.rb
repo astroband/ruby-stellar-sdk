@@ -1,14 +1,12 @@
-require 'stellar-sdk'
+require "stellar-sdk"
 
-client  = Stellar::Client.default_testnet()
+client = Stellar::Client.default_testnet
 
 def post_transaction(client, envelope)
-  begin
-    client.horizon.transactions._post(tx: envelope)
-  rescue => e
-    p e
-    exit
-  end
+  client.horizon.transactions._post(tx: envelope)
+rescue => e
+  p e
+  exit
 end
 
 puts "Creating issuer for USD..."
@@ -36,7 +34,7 @@ dist_builder = Stellar::TransactionBuilder.new(
   source_account: distribution,
   sequence_number: dist_seq_num + 1
 )
-set_trustline_tx = dist_builder.add_operation(set_trustline_op).set_timeout(600).build()
+set_trustline_tx = dist_builder.add_operation(set_trustline_op).set_timeout(600).build
 envelope = set_trustline_tx.to_envelope(distribution).to_xdr(:base64)
 
 post_transaction(client, envelope)
@@ -50,7 +48,7 @@ pay_dist_tx = Stellar::TransactionBuilder.new(
     destination: distribution,
     amount: [asset, 1000]
   })
-).set_timeout(600).build()
+).set_timeout(600).build
 envelope = pay_dist_tx.to_envelope(issuer).to_xdr(:base64)
 
 post_transaction(client, envelope)
@@ -66,7 +64,7 @@ puts "Adding a trustline from the sender to issuer..."
 set_trustline_tx = Stellar::TransactionBuilder.new(
   source_account: from,
   sequence_number: from_seq_num + 1
-).add_operation(set_trustline_op).set_timeout(600).build()
+).add_operation(set_trustline_op).set_timeout(600).build
 envelope = set_trustline_tx.to_envelope(from).to_xdr(:base64)
 
 post_transaction(client, envelope)
@@ -78,7 +76,7 @@ pay_sender_tx = dist_builder.add_operation(
     destination: from,
     amount: [asset, 100]
   })
-).set_timeout(600).build()
+).set_timeout(600).build
 envelope = pay_sender_tx.to_envelope(distribution).to_xdr(:base64)
 
 post_transaction(client, envelope)
@@ -97,7 +95,7 @@ puts "Adding a trustline from the recipient to issuer..."
 set_trustline_tx = Stellar::TransactionBuilder.new(
   source_account: recipient,
   sequence_number: recipient_seq_num + 1
-).add_operation(set_trustline_op).set_timeout(600).build()
+).add_operation(set_trustline_op).set_timeout(600).build
 envelope = set_trustline_tx.to_envelope(recipient).to_xdr(:base64)
 
 post_transaction(client, envelope)
@@ -110,9 +108,9 @@ payment_tx = Stellar::TransactionBuilder.new(
 ).add_operation(
   Stellar::Operation.payment({
     destination: recipient,
-    amount: [asset, 10] 
+    amount: [asset, 10]
   })
-).set_timeout(600).build()
+).set_timeout(600).build
 # sign transaction and get xdr
 envelope = payment_tx.to_envelope(from).to_xdr(:base64)
 

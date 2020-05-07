@@ -2,19 +2,9 @@ module Stellar
   class InvalidSep10ChallengeError < StandardError; end
 
   class SEP10
-    include Contracts
-    C = Contracts
-
-    Contract(C::KeywordArgs[
-      server: Stellar::KeyPair,
-      client: Stellar::KeyPair,
-      anchor_name: String,
-      timeout: C::Optional[Integer]
-    ] => String)
-    #
     # Helper method to create a valid {SEP0010}[https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0010.md]
     # challenge transaction which you can use for Stellar Web Authentication.
-    #    
+    #
     # @param server [Stellar::KeyPair] Keypair for server's signing account.
     # @param client [Stellar::KeyPair] Keypair for the account whishing to authenticate with the server.
     # @param anchor_name [String] Anchor's name to be used in the manage_data key.
@@ -23,38 +13,33 @@ module Stellar
     # @return [String] A base64 encoded string of the raw TransactionEnvelope xdr struct for the transaction.
     #
     # = Example
-    # 
-    #   Stellar::SEP10.build_challenge_tx(server: server, client: user, anchor_name: anchor, timeout: timeout) 
-    # 
+    #
+    #   Stellar::SEP10.build_challenge_tx(server: server, client: user, anchor_name: anchor, timeout: timeout)
+    #
     # @see {SEP0010: Stellar Web Authentication}[https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0010.md]
     def self.build_challenge_tx(server:, client:, anchor_name:, timeout: 300)
       # The value must be 64 bytes long. It contains a 48 byte
       # cryptographic-quality random string encoded using base64 (for a total of
       # 64 bytes after encoding).
       value = SecureRandom.base64(48)
-            
+
       tx = Stellar::Transaction.manage_data({
         account: server,
-        sequence:  0,
-        name: "#{anchor_name} auth", 
+        sequence: 0,
+        name: "#{anchor_name} auth",
         value: value,
         source_account: client
       })
 
       now = Time.now.to_i
       tx.time_bounds = Stellar::TimeBounds.new(
-        min_time: now, 
+        min_time: now,
         max_time: now + timeout
       )
 
       tx.to_envelope(server).to_xdr(:base64)
     end
 
-
-    Contract(C::KeywordArgs[
-      challenge_xdr: String,
-      server: Stellar::KeyPair
-    ] => [Stellar::TransactionEnvelope, String])    
     # Reads a SEP 10 challenge transaction and returns the decoded transaction envelope and client account ID contained within.
     #
     # It also verifies that transaction is signed by the server.
@@ -71,13 +56,13 @@ module Stellar
     # @return [Stellar::TransactionEnvelope, String]
     #
     # = Example
-    # 
+    #
     #   sep10 = Stellar::SEP10
-    #   challenge = sep10.build_challenge_tx(server: server, client: user, anchor_name: anchor, timeout: timeout) 
+    #   challenge = sep10.build_challenge_tx(server: server, client: user, anchor_name: anchor, timeout: timeout)
     #   envelope, client_address = sep10.read_challenge_tx(challenge: challenge, server: server)
     #
     def self.read_challenge_tx(challenge_xdr:, server:)
-      envelope = Stellar::TransactionEnvelope.from_xdr(challenge_xdr, "base64") 
+      envelope = Stellar::TransactionEnvelope.from_xdr(challenge_xdr, "base64")
       transaction = envelope.tx
 
       if transaction.seq_num != 0
@@ -113,13 +98,13 @@ module Stellar
         )
       end
 
-      if operation.body.value.data_value.unpack("m")[0].size !=  48
+      if operation.body.value.data_value.unpack1("m").size != 48
         raise InvalidSep10ChallengeError.new(
           "The transaction's operation value should be a 64 bytes base64 random string"
         )
       end
 
-      if !verify_tx_signed_by(tx_envelope: envelope, keypair: server)
+      unless verify_tx_signed_by(tx_envelope: envelope, keypair: server)
         raise InvalidSep10ChallengeError.new(
           "The transaction is not signed by the server"
         )
@@ -129,26 +114,20 @@ module Stellar
       now = Time.now.to_i
 
       if time_bounds.nil? || !now.between?(time_bounds.min_time, time_bounds.max_time)
-        raise InvalidSep10ChallengeError.new("The transaction has expired")        
+        raise InvalidSep10ChallengeError.new("The transaction has expired")
       end
 
       # Mirror the return type of the other SDK's and return a string
       client_kp = Stellar::KeyPair.from_public_key(client_account_id.ed25519!)
 
-      return envelope, client_kp.address
+      [envelope, client_kp.address]
     end
 
-
-    Contract(C::KeywordArgs[
-      challenge_xdr: String,
-      server: Stellar::KeyPair,
-      signers: SetOf[String]
-    ] => C::SetOf[String])
     # Verifies that for a SEP 10 challenge transaction all signatures on the transaction are accounted for.
     #
-    # A transaction is verified if it is signed by the server account, and all other signatures match a signer 
-    # that has been provided as an argument. Additional signers can be provided that do not have a signature, 
-    # but all signatures must be matched to a signer for verification to succeed. 
+    # A transaction is verified if it is signed by the server account, and all other signatures match a signer
+    # that has been provided as an argument. Additional signers can be provided that do not have a signature,
+    # but all signatures must be matched to a signer for verification to succeed.
     #
     # If verification succeeds a list of signers that were found is returned, excluding the server account ID.
     #
@@ -160,7 +139,7 @@ module Stellar
     #
     # Raises a InvalidSep10ChallengeError if:
     #     - The transaction is invalid according to Stellar::SEP10.read_challenge_tx.
-    #     - One or more signatures in the transaction are not identifiable as the server account or one of the 
+    #     - One or more signatures in the transaction are not identifiable as the server account or one of the
     #       signers provided in the arguments.
     def self.verify_challenge_tx_signers(
       challenge_xdr:,
@@ -192,7 +171,7 @@ module Stellar
       end
 
       if client_signers.empty?
-        raise InvalidSep10ChallengeError.new("At least one signer with a G... address must be provied") 
+        raise InvalidSep10ChallengeError.new("At least one signer with a G... address must be provied")
       end
 
       # verify all signatures in one pass
@@ -202,7 +181,7 @@ module Stellar
       )
 
       # ensure server signed transaction and remove it
-      if !signers_found.delete?(server.address)
+      unless signers_found.delete?(server.address)
         raise InvalidSep10ChallengeError.new("Transaction not signed by server: #{server.address}")
       end
 
@@ -216,20 +195,13 @@ module Stellar
         raise InvalidSep10ChallengeError.new("Transaction has unrecognized signatures.")
       end
 
-      return signers_found
-
+      signers_found
     end
 
-    Contract(C::KeywordArgs[
-      challenge_xdr: String,
-      server: Stellar::KeyPair,
-      threshold: Integer,
-      signers: SetOf[::Hash],
-    ] => C::SetOf[::Hash])
-    # Verifies that for a SEP 10 challenge transaction all signatures on the transaction 
-    # are accounted for and that the signatures meet a threshold on an account. A 
-    # transaction is verified if it is signed by the server account, and all other 
-    # signatures match a signer that has been provided as an argument, and those 
+    # Verifies that for a SEP 10 challenge transaction all signatures on the transaction
+    # are accounted for and that the signatures meet a threshold on an account. A
+    # transaction is verified if it is signed by the server account, and all other
+    # signatures match a signer that has been provided as an argument, and those
     # signatures meet a threshold on the account.
     #
     # @param challenge_xdr [String] SEP0010 transaction challenge transaction in base64.
@@ -241,7 +213,7 @@ module Stellar
     #
     # Raises a InvalidSep10ChallengeError if:
     #   - The transaction is invalid according to Stellar::SEP10.read_challenge_transaction.
-    #   - One or more signatures in the transaction are not identifiable as the server 
+    #   - One or more signatures in the transaction are not identifiable as the server
     #     account or one of the signers provided in the arguments.
     #   - The signatures are all valid but do not meet the threshold.
     def self.verify_challenge_tx_threshold(
@@ -250,22 +222,22 @@ module Stellar
       threshold:,
       signers:
     )
-      signer_str_set = signers.map { |s| s['key'] }.to_set
+      signer_str_set = signers.map { |s| s["key"] }.to_set
       signer_strs_found = verify_challenge_tx_signers(
-        challenge_xdr: challenge_xdr, 
-        server: server, 
+        challenge_xdr: challenge_xdr,
+        server: server,
         signers: signer_str_set
       )
-  
+
       weight = 0
       signers_found = Set.new
       signers.each do |s|
-        if !signer_strs_found.include?(s['key'])
+        unless signer_strs_found.include?(s["key"])
           next
         end
-        signer_strs_found.delete(s['key'])
+        signer_strs_found.delete(s["key"])
         signers_found.add(s)
-        weight += s['weight']
+        weight += s["weight"]
       end
 
       if weight < threshold
@@ -273,18 +245,14 @@ module Stellar
           "signers with weight #{weight} do not meet threshold #{threshold}."
         )
       end
-  
-      return signers_found
+
+      signers_found
     end
 
-    Contract(C::KeywordArgs[
-      challenge_xdr: String, 
-      server: Stellar::KeyPair
-    ] => nil)
     # DEPRECATED: Use verify_challenge_tx_signers instead.
     # This function does not support multiple client signatures.
     #
-    # Verifies if a transaction is a valid per SEP-10 challenge transaction, if the validation 
+    # Verifies if a transaction is a valid per SEP-10 challenge transaction, if the validation
     # fails, an exception will be thrown.
     #
     # This function performs the following checks:
@@ -303,20 +271,16 @@ module Stellar
       challenge_xdr: String, server: Stellar::KeyPair
     )
       transaction_envelope, client_address = read_challenge_tx(
-          challenge_xdr: challenge_xdr, server: server
+        challenge_xdr: challenge_xdr, server: server
       )
       client_keypair = Stellar::KeyPair.from_address(client_address)
-      if !verify_tx_signed_by(tx_envelope: transaction_envelope, keypair: client_keypair)
+      unless verify_tx_signed_by(tx_envelope: transaction_envelope, keypair: client_keypair)
         raise InvalidSep10ChallengeError.new(
-            "Transaction not signed by client: %s" % [client_keypair.address]
+          "Transaction not signed by client: %s" % [client_keypair.address]
         )
       end
     end
 
-    Contract(C::KeywordArgs[
-      tx_envelope: Stellar::TransactionEnvelope, 
-      signers: SetOf[String]
-    ] => SetOf[String])
     # Verifies every signer passed matches a signature on the transaction exactly once,
     # returning a list of unique signers that were found to have signed the transaction.
     #
@@ -352,33 +316,28 @@ module Stellar
         end
       end
 
-      return signers_found
+      signers_found
     end
 
-    Contract(C::KeywordArgs[
-      tx_envelope: Stellar::TransactionEnvelope,
-      keypair: Stellar::KeyPair
-    ] => C::Bool)
     # Verifies if a Stellar::TransactionEnvelope was signed by the given Stellar::KeyPair
     #
-    # @param tx_envelope [Stellar::TransactionEnvelope] 
+    # @param tx_envelope [Stellar::TransactionEnvelope]
     # @param keypair [Stellar::KeyPair]
     #
     # @return [Boolean]
     #
     # = Example
-    # 
+    #
     #   Stellar::SEP10.verify_tx_signed_by(tx_envelope: envelope, keypair: keypair)
     #
     def self.verify_tx_signed_by(tx_envelope:, keypair:)
       tx_hash = tx_envelope.tx.hash
-      tx_envelope.signatures.any? do |sig| 
+      tx_envelope.signatures.any? do |sig|
         if sig.hint != keypair.signature_hint
           next
         end
         keypair.verify(sig.signature, tx_hash)
       end
     end
-
   end
 end

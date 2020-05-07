@@ -40,6 +40,6 @@ describe Stellar::Asset, "#code" do
   end
 
   it "raises an error when called on a native asset" do
-    expect{ Stellar::Asset.native.code }.to raise_error(RuntimeError)
+    expect { Stellar::Asset.native.code }.to raise_error(RuntimeError)
   end
 end

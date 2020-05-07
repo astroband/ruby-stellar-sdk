@@ -1,13 +1,12 @@
 module Stellar
   class TransactionBuilder
-
-    attr_reader :source_account, :sequence_number, :base_fee, :time_bounds, :time_bounds, :memo, :operations
+    attr_reader :source_account, :sequence_number, :base_fee, :time_bounds, :memo, :operations
 
     def initialize(
-      source_account:, 
-      sequence_number:, 
-      base_fee: 100, 
-      time_bounds: nil, 
+      source_account:,
+      sequence_number:,
+      base_fee: 100,
+      time_bounds: nil,
       memo: nil
     )
       raise ArgumentError, "Bad :source_account" unless source_account.is_a?(Stellar::KeyPair)
@@ -19,8 +18,8 @@ module Stellar
       @sequence_number = sequence_number
       @base_fee = base_fee
       @time_bounds = time_bounds
-      @memo = self.make_memo(memo)
-      @operations = Array.new
+      @memo = make_memo(memo)
+      @operations = []
     end
 
     def build
@@ -50,7 +49,7 @@ module Stellar
       self
     end
 
-    def clear_operations()
+    def clear_operations
       @operations.clear
       self
     end
@@ -76,10 +75,10 @@ module Stellar
         @time_bounds = Stellar::TimeBounds.new(min_time: 0, max_time: nil)
       end
 
-      if timeout == 0
-        @time_bounds.max_time = timeout
+      @time_bounds.max_time = if timeout == 0
+        timeout
       else
-        @time_bounds.max_time = Time.now.to_i + timeout
+        Time.now.to_i + timeout
       end
 
       self
@@ -98,21 +97,20 @@ module Stellar
 
     def make_memo(memo)
       case memo
-      when Stellar::Memo ;
+      when Stellar::Memo
         memo
-      when nil ;
+      when nil
         Memo.new(:memo_none)
-      when Integer ;
+      when Integer
         Memo.new(:memo_id, memo)
-      when String ;
+      when String
         Memo.new(:memo_text, memo)
-      when Array ;
+      when Array
         t, val = *memo
         Memo.new(:"memo_#{t}", val)
       else
         raise ArgumentError, "Bad :memo"
       end
     end
-
   end
 end
