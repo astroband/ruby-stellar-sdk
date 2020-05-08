@@ -22,7 +22,7 @@ module Stellar
 
         if source_account
           raise ArgumentError, "Bad :source_account" unless source_account.is_a?(Stellar::KeyPair)
-          op.source_account = source_account.account_id
+          op.source_account = source_account.muxed_account
         end
 
         op

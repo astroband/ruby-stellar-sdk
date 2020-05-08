@@ -13,5 +13,9 @@ module Stellar
 
       Stellar.current_network_id + Stellar::EnvelopeType.to_xdr(val)
     end
+
+    def source_account
+      source_account_ed25519
+    end
   end
 end

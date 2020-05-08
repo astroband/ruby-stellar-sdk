@@ -27,8 +27,12 @@ module Stellar
       when EnvelopeType.envelope_type_tx_fee_bump
         fee_bump!.public_send(method, *args)
       else
-        raise "Unknown switch `#{switch}` for Stellar::TransactionEnvelope"
+        super
       end
+    end
+
+    def respond_to_missing?(method, include_private = false)
+      ["tx", "signatures"].include?(method) || super
     end
 
     # Checks to ensure that every signature for the envelope is

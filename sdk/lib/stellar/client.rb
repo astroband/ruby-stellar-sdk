@@ -80,7 +80,7 @@ module Stellar
 
       transaction = Stellar::TransactionBuilder.new(
         source_account: destination.keypair,
-        sequence_number: sequence,
+        sequence_number: sequence
       ).add_operation(
         Stellar::Operation.account_merge(destination: destination.keypair)
       ).set_timeout(0).build
@@ -108,11 +108,11 @@ module Stellar
       payment = Stellar::TransactionBuilder.new(
         source_account: funder.keypair,
         sequence_number: sequence,
-        base_fee: fee,
+        base_fee: fee
       ).add_operation(
         Stellar::Operation.create_account({
           destination: options[:account].keypair,
-          starting_balance: options[:starting_balance],
+          starting_balance: options[:starting_balance]
         })
       ).set_timeout(0).build
 
