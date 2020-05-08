@@ -144,7 +144,7 @@ describe Stellar::Client do
     end
   end
 
-  describe "#send_payment" do
+  describe "#send_payment", focus: true do
     let(:source) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
 
     context "native asset" do

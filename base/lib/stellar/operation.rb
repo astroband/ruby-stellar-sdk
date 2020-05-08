@@ -49,7 +49,7 @@ module Stellar
         op = PaymentOp.new
         op.asset = asset
         op.amount = amount
-        op.destination = destination.account_id
+        op.destination = destination.muxed_account
 
         make(attributes.merge({
           body: [:payment, op]
@@ -363,7 +363,7 @@ module Stellar
 
         # TODO: add source_account support
         make(attributes.merge({
-          body: [:account_merge, destination.account_id]
+          body: [:account_merge, destination.muxed_account]
         }))
       end
 

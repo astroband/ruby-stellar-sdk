@@ -1,6 +1,36 @@
 module Stellar
   class TransactionEnvelope
-    #
+    class << self
+      def v0(tx:, signatures:)
+        v0_envelope = TransactionV0Envelope.new(tx: tx, signatures: signatures)
+        new(:envelope_type_tx_v0, v0_envelope)
+      end
+
+      def v1(tx:, signatures:)
+        v1_envelope = TransactionV1Envelope.new(tx: tx, signatures: signatures)
+        new(:envelope_type_tx, v1_envelope)
+      end
+
+      def fee_bump(tx:, signatures:)
+        fee_bump_envelope = TransactionFeeBumpEnvelope.new(tx: tx, signatures: signatures)
+        new(:envelope_type_tx_fee_bump, fee_bump_envelope)
+      end
+    end
+
+    # Delegates any undefined method to the currently set arm
+    def method_missing(method, *args, &block)
+      case switch
+      when EnvelopeType.envelope_type_tx_v0
+        v0!.public_send(method, *args)
+      when EnvelopeType.envelope_type_tx
+        v1!.public_send(method, *args)
+      when EnvelopeType.envelope_type_tx_fee_bump
+        fee_bump!.public_send(method, *args)
+      else
+        raise "Unknown switch `#{switch}` for Stellar::TransactionEnvelope"
+      end
+    end
+
     # Checks to ensure that every signature for the envelope is
     # a valid signature of one of the provided `key_pairs`
     #
