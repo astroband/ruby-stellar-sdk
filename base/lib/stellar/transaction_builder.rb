@@ -7,7 +7,8 @@ module Stellar
       sequence_number:,
       base_fee: 100,
       time_bounds: nil,
-      memo: nil
+      memo: nil,
+      v1: false
     )
       raise ArgumentError, "Bad :source_account" unless source_account.is_a?(Stellar::KeyPair)
       raise ArgumentError, "Bad :sequence_number" unless sequence_number.is_a?(Integer) && sequence_number >= 0
@@ -20,6 +21,7 @@ module Stellar
       @time_bounds = time_bounds
       @memo = make_memo(memo)
       @operations = []
+      @v1 = v1
     end
 
     def build
@@ -30,15 +32,24 @@ module Stellar
       elsif @time_bounds.max_time != 0 && @time_bounds.min_time > @time_bounds.max_time
         raise "Timebounds.max_time must be greater than min_time"
       end
-      tx = Stellar::Transaction.new(
-        source_account: @source_account.account_id,
+
+      attrs = {
         fee: @base_fee * @operations.length,
         seq_num: @sequence_number,
         time_bounds: @time_bounds,
         memo: @memo,
         operations: @operations,
         ext: Stellar::Transaction::Ext.new(0)
-      )
+      }
+
+      tx = if @v1
+             attrs[:source_account] = @source_account.muxed_account
+             Stellar::Transaction.new(attrs)
+           else
+             attrs[:source_account_ed25519] = @source_account.raw_public_key
+             Stellar::TransactionV0.new(attrs)
+           end
+
       @sequence_number += 1
       tx
     end
