@@ -144,7 +144,7 @@ describe Stellar::Client do
     end
   end
 
-  describe "#send_payment", focus: true do
+  describe "#send_payment" do
     let(:source) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
 
     context "native asset" do
@@ -472,7 +472,7 @@ describe Stellar::Client do
         ).and(
           having_attributes(
             message: "account requires memo",
-            account_id: memo_required_kp.public_key,
+            account_id: memo_required_kp.muxed_account,
             operation_index: 0
           )
         )
@@ -525,7 +525,7 @@ describe Stellar::Client do
         ).and(
           having_attributes(
             message: "account requires memo",
-            account_id: memo_required_kp.public_key,
+            account_id: memo_required_kp.muxed_account,
             operation_index: 1
           )
         )
@@ -575,7 +575,7 @@ describe Stellar::Client do
         ).and(
           having_attributes(
             message: "account requires memo",
-            account_id: memo_required_kp.public_key,
+            account_id: memo_required_kp.muxed_account,
             operation_index: 0
           )
         )
@@ -604,7 +604,7 @@ describe Stellar::Client do
         ).and(
           having_attributes(
             message: "account requires memo",
-            account_id: memo_required_kp.public_key,
+            account_id: memo_required_kp.muxed_account,
             operation_index: 0
           )
         )
