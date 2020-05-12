@@ -8,7 +8,7 @@ gem "stellar-base", path: "./base"
 gem "stellar-sdk", path: "./sdk"
 
 group :development do
-  gem "faraday"
+  gem "faraday", "<= 0.16.2"
   gem "faraday_middleware"
   gem "guard-rspec", "~> 4.7"
   gem "netrc", "~> 0.11"
