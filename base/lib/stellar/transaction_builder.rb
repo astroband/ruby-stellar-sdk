@@ -43,12 +43,12 @@ module Stellar
       }
 
       tx = if @v1
-             attrs[:source_account] = @source_account.muxed_account
-             Stellar::Transaction.new(attrs)
-           else
-             attrs[:source_account_ed25519] = @source_account.raw_public_key
-             Stellar::TransactionV0.new(attrs)
-           end
+        attrs[:source_account] = @source_account.muxed_account
+        Stellar::Transaction.new(attrs)
+      else
+        attrs[:source_account_ed25519] = @source_account.raw_public_key
+        Stellar::TransactionV0.new(attrs)
+      end
 
       @sequence_number += 1
       tx

@@ -32,12 +32,12 @@ module Stellar
       tx = Stellar::TransactionBuilder.new(
         source_account: server,
         sequence_number: 0,
-        time_bounds: time_bounds,
+        time_bounds: time_bounds
       ).add_operation(
         Stellar::Operation.manage_data(
           name: "#{anchor_name} auth",
           value: value,
-          source_account: client,
+          source_account: client
         )
       ).build
 

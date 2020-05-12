@@ -15,7 +15,7 @@ module Stellar
     end
 
     def source_account
-      self.source_account_ed25519
+      source_account_ed25519
     end
   end
 end
