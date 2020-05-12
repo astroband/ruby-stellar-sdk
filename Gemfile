@@ -21,6 +21,7 @@ group :development do
   gem "webmock", "~> 2.3"
   gem "xdrgen", "~> 0.0"
   gem "yard", "~> 0.9"
+  gem "xdr", git: "https://github.com/astroband/ruby-xdr"
 end
 
 group :rubocop do

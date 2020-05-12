@@ -23,19 +23,23 @@ module Stellar
       # 64 bytes after encoding).
       value = SecureRandom.base64(48)
 
-      tx = Stellar::Transaction.manage_data({
-        account: server,
-        sequence: 0,
-        name: "#{anchor_name} auth",
-        value: value,
-        source_account: client
-      })
-
       now = Time.now.to_i
-      tx.time_bounds = Stellar::TimeBounds.new(
+      time_bounds = Stellar::TimeBounds.new(
         min_time: now,
         max_time: now + timeout
       )
+
+      tx = Stellar::TransactionBuilder.new(
+        source_account: server,
+        sequence_number: 0,
+        time_bounds: time_bounds,
+      ).add_operation(
+        Stellar::Operation.manage_data(
+          name: "#{anchor_name} auth",
+          value: value,
+          source_account: client,
+        )
+      ).build
 
       tx.to_envelope(server).to_xdr(:base64)
     end
@@ -71,7 +75,7 @@ module Stellar
         )
       end
 
-      if transaction.source_account != server.public_key
+      if transaction.source_account != server.raw_public_key
         raise InvalidSep10ChallengeError.new(
           "The transaction source account is not equal to the server's account"
         )
