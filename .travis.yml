@@ -18,7 +18,7 @@ script:
 
 jobs:
   include:
-    rvm: jruby-9.2.5.0
+    rvm: jruby-9.2.9.0
     script:
       - bundle exec rubocop
       - cd $TRAVIS_BUILD_DIR/sdk && LD_LIBRARY_PATH=lib bundle exec rake travis
