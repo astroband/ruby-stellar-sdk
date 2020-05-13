@@ -132,6 +132,17 @@ describe Stellar::KeyPair do
     end
   end
 
+  describe "#muxed_account" do
+    let(:key_pair) { Stellar::KeyPair.random }
+    subject { key_pair.muxed_account }
+
+    it { should be_a(Stellar::MuxedAccount) }
+
+    it "contains the public key" do
+      expect(subject.ed25519!).to eql(key_pair.raw_public_key)
+    end
+  end
+
   describe "#signer_key" do
     let(:key_pair) { Stellar::KeyPair.random }
     subject { key_pair.signer_key }

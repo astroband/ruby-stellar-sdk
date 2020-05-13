@@ -105,7 +105,7 @@ module Stellar
         op = PathPaymentStrictReceiveOp.new
         op.send_asset = send_asset
         op.send_max = send_max
-        op.destination = destination.account_id
+        op.destination = destination.muxed_account
         op.dest_asset = asset
         op.dest_amount = amount
         op.path = path
@@ -143,7 +143,7 @@ module Stellar
         op = PathPaymentStrictSendOp.new
         op.send_asset = send_asset
         op.send_amount = send_amount
-        op.destination = destination.account_id
+        op.destination = destination.muxed_account
         op.dest_asset = asset
         op.dest_min = dest_min
         op.path = path

@@ -23,19 +23,23 @@ describe "path payment operations" do
   let(:with) { [Stellar::Asset.alphanum4(send_asset.code, send_asset_issuer), 10] }
 
   describe Stellar::Operation, ".path_payment" do
-    it "works" do
-      destination = Stellar::KeyPair.random
-      # test both forms of arrays
-      amount = [Stellar::Asset.alphanum4("USD", Stellar::KeyPair.master), 10]
-      with = [:alphanum4, "EUR", Stellar::KeyPair.master, 9.2]
+    # test both forms of arrays
+    let(:amount) { [Stellar::Asset.alphanum4("USD", Stellar::KeyPair.master), 10] }
+    let(:with) { [:alphanum4, "EUR", Stellar::KeyPair.master, 9.2] }
 
-      op = Stellar::Operation.path_payment(
-        destination: destination,
-        amount: amount,
-        with: with
-      )
+    context "with non-multiplexed destination" do
+      let(:destination) { Stellar::KeyPair.random }
 
-      expect(op.body.arm).to eql(:path_payment_strict_receive_op)
+      it "works" do
+        op = Stellar::Operation.path_payment(
+          destination: destination,
+          amount: amount,
+          with: with
+        )
+
+        expect(op.body.arm).to eql(:path_payment_strict_receive_op)
+        expect { op.to_xdr }.not_to raise_error
+      end
     end
   end
 
@@ -48,11 +52,12 @@ describe "path payment operations" do
       )
 
       expect(op.body.arm).to eql(:path_payment_strict_receive_op)
-      expect(op.body.value.destination).to eql(destination.public_key)
+      expect(op.body.value.destination).to eql(destination.muxed_account)
       expect(op.body.value.send_asset).to eql(send_asset)
       expect(op.body.value.dest_asset).to eql(dest_asset)
       expect(op.body.value.send_max).to eq(100000000)
       expect(op.body.value.dest_amount).to eq(92000000)
+      expect { op.to_xdr }.not_to raise_error
     end
   end
 
@@ -65,11 +70,12 @@ describe "path payment operations" do
       )
 
       expect(op.body.arm).to eql(:path_payment_strict_send_op)
-      expect(op.body.value.destination).to eql(destination.public_key)
+      expect(op.body.value.destination).to eql(destination.muxed_account)
       expect(op.body.value.send_asset).to eql(send_asset)
       expect(op.body.value.dest_asset).to eql(dest_asset)
       expect(op.body.value.send_amount).to eq(100000000)
       expect(op.body.value.dest_min).to eq(92000000)
+      expect { op.to_xdr }.not_to raise_error
     end
   end
 end

@@ -8,7 +8,8 @@ module Stellar
         account_id: [6 << 3].pack("C"), # Base32-encodes to 'G...'
         seed: [18 << 3].pack("C"), # Base32-encodes to 'S...'
         pre_auth_tx: [19 << 3].pack("C"), # Base32-encodes to 'T...'
-        hash_x: [23 << 3].pack("C") # Base32-encodes to 'X...'
+        hash_x: [23 << 3].pack("C"), # Base32-encodes to 'X...'
+        muxed_account: [12 << 3].pack("C") # Base32-encodes to 'M...'
       }
 
       def self.check_encode(version, byte_str)
@@ -21,10 +22,10 @@ module Stellar
 
       def self.check_decode(expected_version, str)
         decoded = begin
-                         Base32.decode(str)
+                    Base32.decode(str)
                   rescue
-                    (raise ArgumentError, "Invalid base32 string")
-                       end
+                    raise ArgumentError, "Invalid base32 string"
+                  end
         version_byte = decoded[0]
         payload = decoded[1...-2]
         check = decoded[-2..-1]
