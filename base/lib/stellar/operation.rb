@@ -335,13 +335,19 @@ module Stellar
         end
 
         raise ArgumentError, "Bad :trustor" unless trustor.is_a?(Stellar::KeyPair)
-        raise ArgumentError, "Bad :authorize" unless authorize == !!authorize # check boolean
+
+        op.authorize = if authorize == !!authorize # check boolean
+          authorize ? TrustLineFlags.authorized_flag : 0
+        else
+          raise ArgumentError, "Bad :authorize" if authorize > TrustLineFlags.authorized_to_maintain_liabilities_flag.value
+          authorize
+        end
+
         raise ArgumentError, "Bad :asset" unless asset.type == Stellar::AssetType.asset_type_credit_alphanum4
 
         atc = AllowTrustOp::Asset.new(:asset_type_credit_alphanum4, asset.code)
 
         op.trustor = trustor.account_id
-        op.authorize = authorize
         op.asset = atc
 
         make(attributes.merge({
