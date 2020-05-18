@@ -54,6 +54,28 @@ module Stellar
       tx
     end
 
+    def build_fee_bump(inner_txe:)
+      if inner_txe.switch != Stellar::EnvelopeType.envelope_type_tx
+        raise "Invalid inner transaction type, it should be a `envelope_type_tx` but received a #{inner_tx.to_envelope.switch}."
+      end
+
+      inner_tx = inner_txe.tx
+      inner_ops = inner_tx.operations
+      inner_base_fee_rate = inner_tx.fee.fdiv(inner_ops.length)
+
+      # The fee rate for fee bump is at least the fee rate of the inner transaction
+      if @base_fee < inner_base_fee_rate
+        raise "Insufficient base_fee, it should be at least #{inner_base_fee_rate} stroops."
+      end
+
+      Stellar::FeeBumpTransaction.new(
+        fee_source: @source_account.muxed_account,
+        fee: @base_fee * (inner_ops.length + 1),
+        inner_tx: Stellar::FeeBumpTransaction::InnerTx.new(:envelope_type_tx, inner_txe.v1!),
+        ext: Stellar::FeeBumpTransaction::Ext.new(0)
+      )
+    end
+
     def add_operation(operation)
       raise ArgumentError, "Bad operation" unless operation.is_a? Stellar::Operation
       @operations.push(operation)

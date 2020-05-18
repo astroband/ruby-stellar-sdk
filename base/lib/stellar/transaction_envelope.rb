@@ -12,7 +12,7 @@ module Stellar
       end
 
       def fee_bump(tx:, signatures:)
-        fee_bump_envelope = TransactionFeeBumpEnvelope.new(tx: tx, signatures: signatures)
+        fee_bump_envelope = FeeBumpTransactionEnvelope.new(tx: tx, signatures: signatures)
         new(:envelope_type_tx_fee_bump, fee_bump_envelope)
       end
     end

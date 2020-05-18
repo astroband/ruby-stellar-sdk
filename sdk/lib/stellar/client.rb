@@ -202,35 +202,42 @@ module Stellar
       @horizon.transactions._post(tx: Base64.encode64(tx_envelope.to_xdr))
     end
 
+    # Required by SEP-0029
     # @param [Stellar::TransactionEnvelope] tx_envelope
     def check_memo_required(tx_envelope)
       tx = tx_envelope.tx
+
+      if tx.is_a?(Stellar::FeeBumpTransaction)
+        tx = tx.inner_tx.v1!.tx
+      end
+
       # Check transactions where the .memo field is nil or of type MemoType.memo_none
       if !tx.memo.nil? && tx.memo.type != Stellar::MemoType.memo_none
         return
       end
+
       destinations = Set.new
+      ot = Stellar::OperationType
+
       tx.operations.each_with_index do |op, idx|
-        if op.body.type == Stellar::OperationType.payment
-          destination = op.body.value.destination
-        elsif op.body.type == Stellar::OperationType.path_payment_strict_receive
-          destination = op.body.value.destination
-        elsif op.body.type == Stellar::OperationType.path_payment_strict_send
-          destination = op.body.value.destination
-        elsif op.body.type == Stellar::OperationType.account_merge
+        destination = case op.body.type
+        when ot.payment, ot.path_payment_strict_receive, ot.path_payment_strict_send
+          op.body.value.destination
+        when ot.account_merge
           # There is no AccountMergeOp, op.body is an Operation object
           # and op.body.value is a PublicKey (or AccountID) object.
-          destination = op.body.value
+          op.body.value
         else
           next
         end
 
-        if destinations.include?(destination)
+        if destinations.include?(destination) || destination.switch == Stellar::CryptoKeyType.key_type_muxed_ed25519
           next
         end
-        destinations.add(destination)
 
+        destinations.add(destination)
         kp = Stellar::KeyPair.from_public_key(destination.value)
+
         begin
           info = account_info(kp.address)
         rescue Faraday::ResourceNotFound
