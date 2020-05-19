@@ -17,7 +17,35 @@ module Stellar
         raise ArgumentError, "Invalid version: #{version}" if version_byte.blank?
         payload = version_byte + byte_str.dup.force_encoding("BINARY")
         check = checksum(payload)
-        Base32.encode(payload + check)
+        # TODO: sort out, is it 100% safe to remove padding
+        # SEP-23 says yes, but shit happens
+        Base32.encode(payload + check).tr("=", "")
+      end
+
+      def self.encode_muxed_account(data)
+        muxed = Stellar::MuxedAccount.from_xdr(data)
+
+        if muxed.switch == Stellar::CryptoKeyType.key_type_ed25519
+          return check_encode(:account_id, muxed.ed25519)
+        end
+
+        check_encode(:muxed_account, muxed.med25519!.to_xdr)
+      end
+
+      def self.decode_muxed_account(strkey)
+        muxed = case strkey.size
+        when 56
+          Stellar::MuxedAccount.new(:key_type_ed25519, check_decode(:account_id, strkey))
+        when 69
+          med25519 = Stellar::MuxedAccount::Med25519.from_xdr(
+            check_decode(:muxed_account, strkey)
+          )
+          Stellar::MuxedAccount.new(:key_type_muxed_ed25519, med25519)
+        else
+          raise ArgumentError, "invalid encoded string"
+        end
+
+        return muxed.to_xdr
       end
 
       def self.check_decode(expected_version, str)
@@ -31,6 +59,7 @@ module Stellar
         check = decoded[-2..-1]
         version = VERSION_BYTES.key(version_byte)
 
+        raise ArgumentError, "invalid encoded string" if str != Base32.encode(decoded).tr("=", "")
         raise ArgumentError, "Unexpected version: #{version.inspect}" if version != expected_version
         raise ArgumentError, "Invalid checksum" if check != checksum(decoded[0...-2])
         payload
