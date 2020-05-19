@@ -45,7 +45,7 @@ module Stellar
           raise ArgumentError, "invalid encoded string"
         end
 
-        return muxed.to_xdr
+        muxed.to_xdr
       end
 
       def self.check_decode(expected_version, str)
