@@ -663,7 +663,7 @@ describe Stellar::Client do
       let(:inner_tx_source) { Stellar::KeyPair.from_seed("SDV5KT5DLFVUA2OCBXQSKTZ7E7MBLEJ23UH5FDHGWTXFKOCN34GRR2BA") }
       let(:fee_source) { Stellar::KeyPair.from_seed("SDHEM6T54CZ2OB3HM6JMHOXMLUI3GOGSR5VF26EO35I3NDWWZVPPHBGL") }
 
-      it "raises an error for missing memo", vcr: { record: :once, match_requests_on: [:method]} do
+      it "raises an error for missing memo", vcr: {record: :once, match_requests_on: [:method]} do
         inner_tx_seq_num = client.account_info(inner_tx_source.address).sequence.to_i + 1
 
         inner_tx = Stellar::TransactionBuilder.new(
@@ -673,7 +673,7 @@ describe Stellar::Client do
         ).add_operation(
           Stellar::Operation.payment(
             destination: memo_required_kp,
-            amount: [Stellar::Asset.native, 100],
+            amount: [Stellar::Asset.native, 100]
           )
         ).set_timeout(0).build
 
@@ -681,7 +681,7 @@ describe Stellar::Client do
 
         fee_bump_tx = Stellar::TransactionBuilder.new(
           source_account: fee_source,
-          sequence_number: fee_bump_seq_num,
+          sequence_number: fee_bump_seq_num
         ).build_fee_bump(inner_txe: inner_tx.to_envelope(inner_tx_source))
 
         envelope = fee_bump_tx.to_envelope(fee_source)

@@ -21,8 +21,8 @@ module Stellar
         # TransactionV0 is a transaction with the AccountID discriminant
         # stripped off, we need to put it back to build a valid transaction
         # which we can use to build a TransactionSignaturePayloadTaggedTransaction
-        Stellar::PublicKeyType.to_xdr(Stellar::PublicKeyType.public_key_type_ed25519) + self.to_xdr
-      );
+        Stellar::PublicKeyType.to_xdr(Stellar::PublicKeyType.public_key_type_ed25519) + to_xdr
+      )
 
       tagged_tx = Stellar::TransactionSignaturePayload::TaggedTransaction.new(:envelope_type_tx, tx)
 

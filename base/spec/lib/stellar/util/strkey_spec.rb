@@ -80,8 +80,8 @@ describe Stellar::Util::StrKey do
     end
 
     it "decodes ed25519 correctly" do
-      rawEd25519 = decode(:account_id, "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ")
-      expected = Stellar::MuxedAccount.new(:key_type_ed25519, rawEd25519).to_xdr
+      raw_ed25519 = decode(:account_id, "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ")
+      expected = Stellar::MuxedAccount.new(:key_type_ed25519, raw_ed25519).to_xdr
 
       strkey = "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ"
 
