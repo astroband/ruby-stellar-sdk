@@ -1,7 +1,7 @@
 module Stellar::Concerns
   module Transaction
     # Returns the string of bytes that, when hashed, provide the value which
-    # should be signed to create a valid stellar transaciton signature
+    # should be signed to create a valid stellar transaction signature
     def signature_base
       signature_base_prefix + to_xdr
     end
