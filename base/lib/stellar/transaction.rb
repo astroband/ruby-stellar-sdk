@@ -171,9 +171,11 @@ module Stellar
     end
 
     def signature_base_prefix
-      val = Stellar::EnvelopeType.envelope_type_tx
-
-      Stellar.current_network_id + Stellar::EnvelopeType.to_xdr(val)
+      tagged_tx = Stellar::TransactionSignaturePayload::TaggedTransaction.new(:envelope_type_tx, self)
+      Stellar::TransactionSignaturePayload.new(
+        network_id: Stellar.current_network_id,
+        tagged_transaction: tagged_tx
+      ).to_xdr
     end
 
     def to_envelope(*key_pairs)
