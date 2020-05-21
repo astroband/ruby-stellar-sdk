@@ -319,8 +319,9 @@ module Stellar
       # transactions `operations` array.
       #
       # @param [Hash] attributes the attributes to create the operation with
-      # @option attributes [Stellar::KeyPair]  :trustor
+      # @option attributes [Stellar::KeyPair] :trustor
       # @option attributes [Stellar::Asset] :asset
+      # @option attributes [Symbol, Boolean] :authorize :full, maintain_liabilities or :none
       #
       # @return [Stellar::Operation] the built operation, containing a
       #                              Stellar::AllowTrustOp body
@@ -336,11 +337,12 @@ module Stellar
 
         raise ArgumentError, "Bad :trustor" unless trustor.is_a?(Stellar::KeyPair)
 
-        op.authorize = if authorize == !!authorize # check boolean
-          authorize ? TrustLineFlags.authorized_flag : 0
+        op.authorize = case authorize
+        when :none, false then 0 # we handle booleans here for the backward compatibility
+        when :full, true then TrustLineFlags.authorized_flag.value
+        when :maintain_liabilities then TrustLineFlags.authorized_to_maintain_liabilities_flag.value
         else
-          raise ArgumentError, "Bad :authorize" if authorize > TrustLineFlags.authorized_to_maintain_liabilities_flag.value
-          authorize
+          raise ArgumentError, "Bad :authorize, supported values: :full, :maintain_liabilities, :none"
         end
 
         raise ArgumentError, "Bad :asset" unless asset.type == Stellar::AssetType.asset_type_credit_alphanum4
