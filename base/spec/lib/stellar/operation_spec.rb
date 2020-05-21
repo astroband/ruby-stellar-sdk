@@ -137,37 +137,36 @@ describe Stellar::Operation, ".allow_trust" do
   let(:issuer) { Stellar::KeyPair.from_address("GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7") }
   let(:trustor) { Stellar::KeyPair.random }
   let(:asset) { Stellar::Asset.alphanum4("USD", issuer) }
+  let(:authorize) { :full }
   subject { Stellar::Operation.allow_trust(trustor: trustor, authorize: authorize, asset: asset) }
 
-  context "when 'authorize' is true" do
-    let(:authorize) { true }
-
-    it "sets authoize = TrustLineFlags.authorized_flag" do
-      expect(subject.body.value.authorize).to eq(Stellar::TrustLineFlags.authorized_flag)
-    end
+  it "produces valid Stellar::AllowTrustOp body" do
+    expect { subject.to_xdr }.not_to raise_error
   end
 
-  context "when 'authorize' is false" do
-    let(:authorize) { false }
+  describe "'authorize' parameter options" do
+    {
+      1 => [true, :full],
+      0 => [false, :none],
+      2 => [:maintain_liabilities]
+    }.each do |output, inputs|
+      inputs.each do |input|
+        context "when 'authorize' parameter is #{input}" do
+          let(:authorize) { input }
 
-    it "sets authorize = 0" do
-      expect(subject.body.value.authorize).to eq(0)
+          it "sets authorize to #{output}" do
+            expect(subject.body.value.authorize).to eq(output)
+          end
+        end
+      end
     end
-  end
 
-  context "when 'authorize' is number" do
-    let(:authorize) { Stellar::TrustLineFlags.authorized_to_maintain_liabilities_flag.value }
+    context "when 'authorize' is invalid" do
+      let(:authorize) { Stellar::TrustLineFlags.authorized_to_maintain_liabilities_flag.value + 1 }
 
-    it "sets authorize to that number" do
-      expect(subject.body.value.authorize).to eq(authorize)
-    end
-  end
-
-  context "when 'authorize' is invalid" do
-    let(:authorize) { Stellar::TrustLineFlags.authorized_to_maintain_liabilities_flag.value + 1 }
-
-    it "raises an error" do
-      expect { subject }.to raise_error(ArgumentError)
+      it "raises an error" do
+        expect { subject }.to raise_error(ArgumentError)
+      end
     end
   end
 end
