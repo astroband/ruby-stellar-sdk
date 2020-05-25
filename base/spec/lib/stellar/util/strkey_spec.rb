@@ -58,9 +58,9 @@ describe Stellar::Util::StrKey do
 
     let(:muxed_account) { Stellar::MuxedAccount.new(:key_type_muxed_ed25519, med25519) }
 
-    it "properly encodes" do
-      strkey = subject.encode_muxed_account(muxed_account.to_xdr)
-      expect(strkey).to eq("MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6")
+    it "encodes muxed account as ed25519" do
+      strkey = subject.encode_muxed_account(muxed_account)
+      expect(strkey).to eq("GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ")
     end
   end
 
@@ -72,62 +72,13 @@ describe Stellar::Util::StrKey do
       )
     end
 
-    it "decodes med25519 properly" do
-      expected = Stellar::MuxedAccount.new(:key_type_muxed_ed25519, med25519).to_xdr
-      strkey = "MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6"
-
-      expect(subject.decode_muxed_account(strkey)).to eq(expected)
-    end
-
     it "decodes ed25519 correctly" do
       raw_ed25519 = decode(:account_id, "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ")
-      expected = Stellar::MuxedAccount.new(:key_type_ed25519, raw_ed25519).to_xdr
+      expected = Stellar::MuxedAccount.new(:key_type_ed25519, raw_ed25519)
 
       strkey = "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ"
 
       expect(subject.decode_muxed_account(strkey)).to eq(expected)
-    end
-
-    it "raises an error on non-zero unused trailing bit" do
-      # unused trailing bit must be zero in the encoding of the last three bytes (24 bits) as five base-32 symbols (25 bits)
-      expect {
-        subject.decode_muxed_account(
-          "MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL7"
-        )
-      }.to raise_error(ArgumentError, /invalid encoded string/)
-    end
-
-    it "raises an error if strkey has an invalid algorithm" do
-      # Invalid algorithm (low 3 bits of version byte are 7)
-      expect {
-        subject.decode_muxed_account(
-          "M4AAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITIU2K"
-        )
-      }.to raise_error(ArgumentError, /Unexpected version/)
-    end
-
-    it "raises an error if strkey has an invalid length" do
-      expect {
-        subject.decode_muxed_account(
-          "MCAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITKNOGA"
-        )
-      }.to raise_error(ArgumentError, /invalid encoded string/)
-    end
-
-    it "raises an error if strkey has padding bytes" do
-      expect {
-        subject.decode_muxed_account(
-          "MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL6==="
-        )
-      }.to raise_error(ArgumentError, /invalid encoded string/)
-    end
-
-    it "raises an error if strkey has an invalid checksum" do
-      expect {
-        subject.decode_muxed_account(
-          "MAAAAAAAAAAAAAB7BQ2L7E5NBWMXDUCMZSIPOBKRDSBYVLMXGSSKF6YNPIB7Y77ITLVL4"
-        )
-      }.to raise_error(ArgumentError, /Invalid checksum/)
     end
   end
 end
