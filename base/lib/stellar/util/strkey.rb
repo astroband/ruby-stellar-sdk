@@ -8,8 +8,7 @@ module Stellar
         account_id: [6 << 3].pack("C"), # Base32-encodes to 'G...'
         seed: [18 << 3].pack("C"), # Base32-encodes to 'S...'
         pre_auth_tx: [19 << 3].pack("C"), # Base32-encodes to 'T...'
-        hash_x: [23 << 3].pack("C"), # Base32-encodes to 'X...'
-        muxed_account: [12 << 3].pack("C") # Base32-encodes to 'M...'
+        hash_x: [23 << 3].pack("C") # Base32-encodes to 'X...'
       }
 
       def self.check_encode(version, byte_str)
@@ -22,30 +21,25 @@ module Stellar
         Base32.encode(payload + check).tr("=", "")
       end
 
-      def self.encode_muxed_account(data)
-        muxed = Stellar::MuxedAccount.from_xdr(data)
-
-        if muxed.switch == Stellar::CryptoKeyType.key_type_ed25519
-          return check_encode(:account_id, muxed.ed25519)
+      # Converts an Stellar::MuxedAccount to its string representation, forcing the ed25519 representation.
+      # @param [Stellar::MuxedAccount] muxed account
+      # @return [String] "G.."-like address
+      def self.encode_muxed_account(muxed_account)
+        ed25519 = if muxed_account.switch == Stellar::CryptoKeyType.key_type_ed25519
+          muxed_account.ed25519
+        else
+          muxed_account.med25519!.ed25519
         end
 
-        check_encode(:muxed_account, muxed.med25519!.to_xdr)
+        check_encode(:account_id, ed25519)
       end
 
+      # Returns a Stellar::MuxedAccount, forcing the ed25519 discriminant
+      #
+      # @param [String] address to decode to XDR
+      # @return [Stellar::MuxedAccount] MuxedAccount with ed25519 discriminant
       def self.decode_muxed_account(strkey)
-        muxed = case strkey.size
-        when 56
-          Stellar::MuxedAccount.new(:key_type_ed25519, check_decode(:account_id, strkey))
-        when 69
-          med25519 = Stellar::MuxedAccount::Med25519.from_xdr(
-            check_decode(:muxed_account, strkey)
-          )
-          Stellar::MuxedAccount.new(:key_type_muxed_ed25519, med25519)
-        else
-          raise ArgumentError, "invalid encoded string"
-        end
-
-        muxed.to_xdr
+        Stellar::MuxedAccount.new(:key_type_ed25519, check_decode(:account_id, strkey))
       end
 
       def self.check_decode(expected_version, str)
