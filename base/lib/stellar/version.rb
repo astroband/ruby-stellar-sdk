@@ -1,5 +1,5 @@
 module Stellar
   module Base
-    VERSION = "0.22.0"
+    VERSION = "1.0.0-alpha.0"
   end
 end
