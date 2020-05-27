@@ -1,3 +1,3 @@
 module Stellar
-  VERSION = "1.0.0-alpha.0"
+  VERSION = "0.9.0-alpha.0"
 end
