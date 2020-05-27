@@ -1,0 +1,1 @@
+task travis: %w[spec]

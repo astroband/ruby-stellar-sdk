@@ -1,2 +1,5 @@
-# Each line is a file pattern followed by one or more owners.
-* @ramontayag
+# Stellar Ruby SDK code owners File
+#
+# Reference: https://help.github.com/articles/about-codeowners
+
+* @astroband/team
