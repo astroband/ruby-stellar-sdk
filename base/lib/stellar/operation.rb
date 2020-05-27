@@ -22,7 +22,7 @@ module Stellar
 
         if source_account
           raise ArgumentError, "Bad :source_account" unless source_account.is_a?(Stellar::KeyPair)
-          op.source_account = source_account.account_id
+          op.source_account = source_account.muxed_account
         end
 
         op
@@ -49,7 +49,7 @@ module Stellar
         op = PaymentOp.new
         op.asset = asset
         op.amount = amount
-        op.destination = destination.account_id
+        op.destination = destination.muxed_account
 
         make(attributes.merge({
           body: [:payment, op]
@@ -105,7 +105,7 @@ module Stellar
         op = PathPaymentStrictReceiveOp.new
         op.send_asset = send_asset
         op.send_max = send_max
-        op.destination = destination.account_id
+        op.destination = destination.muxed_account
         op.dest_asset = asset
         op.dest_amount = amount
         op.path = path
@@ -143,7 +143,7 @@ module Stellar
         op = PathPaymentStrictSendOp.new
         op.send_asset = send_asset
         op.send_amount = send_amount
-        op.destination = destination.account_id
+        op.destination = destination.muxed_account
         op.dest_asset = asset
         op.dest_min = dest_min
         op.path = path
@@ -319,8 +319,9 @@ module Stellar
       # transactions `operations` array.
       #
       # @param [Hash] attributes the attributes to create the operation with
-      # @option attributes [Stellar::KeyPair]  :trustor
+      # @option attributes [Stellar::KeyPair] :trustor
       # @option attributes [Stellar::Asset] :asset
+      # @option attributes [Symbol, Boolean] :authorize :full, maintain_liabilities or :none
       #
       # @return [Stellar::Operation] the built operation, containing a
       #                              Stellar::AllowTrustOp body
@@ -335,13 +336,20 @@ module Stellar
         end
 
         raise ArgumentError, "Bad :trustor" unless trustor.is_a?(Stellar::KeyPair)
-        raise ArgumentError, "Bad :authorize" unless authorize == !!authorize # check boolean
+
+        op.authorize = case authorize
+        when :none, false then 0 # we handle booleans here for the backward compatibility
+        when :full, true then TrustLineFlags.authorized_flag.value
+        when :maintain_liabilities then TrustLineFlags.authorized_to_maintain_liabilities_flag.value
+        else
+          raise ArgumentError, "Bad :authorize, supported values: :full, :maintain_liabilities, :none"
+        end
+
         raise ArgumentError, "Bad :asset" unless asset.type == Stellar::AssetType.asset_type_credit_alphanum4
 
         atc = AllowTrustOp::Asset.new(:asset_type_credit_alphanum4, asset.code)
 
         op.trustor = trustor.account_id
-        op.authorize = authorize
         op.asset = atc
 
         make(attributes.merge({
@@ -363,7 +371,7 @@ module Stellar
 
         # TODO: add source_account support
         make(attributes.merge({
-          body: [:account_merge, destination.account_id]
+          body: [:account_merge, destination.muxed_account]
         }))
       end
 

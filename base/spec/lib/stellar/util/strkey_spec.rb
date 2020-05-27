@@ -3,6 +3,10 @@ require "spec_helper"
 describe Stellar::Util::StrKey do
   subject { Stellar::Util::StrKey }
 
+  def decode(version, bytes)
+    subject.check_decode(version, bytes)
+  end
+
   describe "#check_decode" do
     it "properly decodes" do
       expect(decode(:seed, "SAAAAAAAAAADST3H")).to eq_bytes("\x00\x00\x00\x00\x00\x00\x39")
@@ -24,10 +28,6 @@ describe Stellar::Util::StrKey do
     it "raises an ArgumentError if the decoded value cannot be validated by the checksum" do
       expect { decode :seed, "SAAAAAAAAAADST3M" }.to raise_error(ArgumentError)
     end
-
-    def decode(version, bytes)
-      subject.check_decode(version, bytes)
-    end
   end
 
   describe "#check_encode" do
@@ -45,6 +45,40 @@ describe Stellar::Util::StrKey do
 
     def encode(version, bytes)
       subject.check_encode(version, bytes)
+    end
+  end
+
+  describe "#encode_muxed_account" do
+    let(:med25519) do
+      Stellar::MuxedAccount::Med25519.new(
+        id: 0,
+        ed25519: decode(:account_id, "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ")
+      )
+    end
+
+    let(:muxed_account) { Stellar::MuxedAccount.new(:key_type_muxed_ed25519, med25519) }
+
+    it "encodes muxed account as ed25519" do
+      strkey = subject.encode_muxed_account(muxed_account)
+      expect(strkey).to eq("GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ")
+    end
+  end
+
+  describe "#decode_muxed_account" do
+    let(:med25519) do
+      Stellar::MuxedAccount::Med25519.new(
+        id: 0,
+        ed25519: decode(:account_id, "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ")
+      )
+    end
+
+    it "decodes ed25519 correctly" do
+      raw_ed25519 = decode(:account_id, "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ")
+      expected = Stellar::MuxedAccount.new(:key_type_ed25519, raw_ed25519)
+
+      strkey = "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ"
+
+      expect(subject.decode_muxed_account(strkey)).to eq(expected)
     end
   end
 end

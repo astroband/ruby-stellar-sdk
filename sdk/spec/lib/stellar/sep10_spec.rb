@@ -18,7 +18,7 @@ describe Stellar::SEP10 do
     it "generates a valid SEP10 challenge" do
       expect(transaction.seq_num).to eql(0)
       expect(transaction.operations.size).to eql(1)
-      expect(transaction.source_account).to eql(server.public_key)
+      expect(transaction.source_account).to eql(server.raw_public_key)
 
       time_bounds = transaction.time_bounds
       expect(time_bounds.max_time - time_bounds.min_time).to eql(600)
@@ -26,7 +26,7 @@ describe Stellar::SEP10 do
 
       expect(operation.body.arm).to eql(:manage_data_op)
       expect(operation.body.value.data_name).to eql("SDF auth")
-      expect(operation.source_account).to eql(user.public_key)
+      expect(operation.source_account).to eql(user.muxed_account)
       data_value = operation.body.value.data_value
       expect(data_value.bytes.size).to eql(64)
       expect(data_value.unpack1("m").size).to eql(48)

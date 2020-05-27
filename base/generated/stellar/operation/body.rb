@@ -24,7 +24,7 @@ require 'xdr'
 #       case ALLOW_TRUST:
 #           AllowTrustOp allowTrustOp;
 #       case ACCOUNT_MERGE:
-#           AccountID destination;
+#           MuxedAccount destination;
 #       case INFLATION:
 #           void;
 #       case MANAGE_DATA:
@@ -66,7 +66,7 @@ module Stellar
       attribute :set_options_op,                 SetOptionsOp
       attribute :change_trust_op,                ChangeTrustOp
       attribute :allow_trust_op,                 AllowTrustOp
-      attribute :destination,                    AccountID
+      attribute :destination,                    MuxedAccount
       attribute :manage_data_op,                 ManageDataOp
       attribute :bump_sequence_op,               BumpSequenceOp
       attribute :manage_buy_offer_op,            ManageBuyOfferOp

@@ -1,5 +1,7 @@
 module Stellar
   class Transaction
+    include Stellar::Concerns::Transaction
+
     class << self
       #
       # @see  Stellar::Operation.payment
@@ -142,7 +144,7 @@ module Stellar
           result.seq_num = sequence
           result.fee = fee
           result.memo = make_memo(attributes[:memo])
-          result.source_account = account.account_id
+          result.source_account = account.muxed_account
           result.apply_defaults
         end
       end
@@ -168,65 +170,18 @@ module Stellar
       end
     end
 
-    def sign(key_pair)
-      key_pair.sign(hash)
-    end
-
-    def sign_decorated(key_pair)
-      key_pair.sign_decorated(hash)
-    end
-
-    def hash
-      Digest::SHA256.digest(signature_base)
-    end
-
-    # Returns the string of bytes that, when hashed, provide the value which
-    # should be signed to create a valid stellar transaciton signature
-    def signature_base
-      signature_base_prefix + to_xdr
-    end
-
     def signature_base_prefix
-      val = Stellar::EnvelopeType.envelope_type_tx
-
-      Stellar.current_network_id + Stellar::EnvelopeType.to_xdr(val)
+      tagged_tx = Stellar::TransactionSignaturePayload::TaggedTransaction.new(:envelope_type_tx, self)
+      Stellar::TransactionSignaturePayload.new(
+        network_id: Stellar.current_network_id,
+        tagged_transaction: tagged_tx
+      ).to_xdr
     end
 
     def to_envelope(*key_pairs)
       signatures = (key_pairs || []).map(&method(:sign_decorated))
 
-      TransactionEnvelope.new({
-        signatures: signatures,
-        tx: self
-      })
-    end
-
-    def merge(other)
-      cloned = Marshal.load Marshal.dump(self)
-      cloned.operations += other.to_operations
-      cloned
-    end
-
-    #
-    # Extracts the operations from this single transaction,
-    # setting the source account on the extracted operations.
-    #
-    # Useful for merging transactions.
-    #
-    # @return [Array<Operation>] the operations
-    def to_operations
-      # FIXME: what was the purpose of this?
-      # cloned = Marshal.load Marshal.dump(operations)
-      operations.each do |op|
-        op.source_account ||= source_account
-      end
-    end
-
-    def apply_defaults
-      self.operations ||= []
-      self.fee ||= 100
-      self.memo ||= Memo.new(:memo_none)
-      self.ext ||= Stellar::Transaction::Ext.new 0
+      TransactionEnvelope.v1(signatures: signatures, tx: self)
     end
   end
 end

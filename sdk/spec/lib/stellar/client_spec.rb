@@ -427,8 +427,8 @@ describe Stellar::Client do
   end
 
   describe "#submit_transaction" do
-    let(:kp) { Stellar::KeyPair.from_seed("SBL77A6HQNNILXQQCSS6NMBS4ILSOF7KBINIITUUFBBAI53PNQBZA7QN") }
-    let(:memo_required_kp) { Stellar::KeyPair.from_seed("SCGGMYFIWGQCMDCPTWYMYWVOLERM7K6EIRD3QGXESEZ2O7NNT7CXWTHQ") }
+    let(:kp) { Stellar::KeyPair.from_seed("SA27TR6PZVJOD24LJUBYQLJXYBXV6JW6ZZCJYLTHQ6KVMZZISC63SUBA") }
+    let(:memo_required_kp) { Stellar::KeyPair.from_seed("SAUZR3L5N43GQQZWO5HDSQJ76J65H5BUCNDRQB4DMA72ZJUXNUXVVTJY") }
 
     it("doesn't raise an error when a transaction has a memo", {
       vcr: {record: :once, match_requests_on: [:method]}
@@ -472,7 +472,7 @@ describe Stellar::Client do
         ).and(
           having_attributes(
             message: "account requires memo",
-            account_id: memo_required_kp.public_key,
+            account_id: memo_required_kp.muxed_account,
             operation_index: 0
           )
         )
@@ -525,7 +525,7 @@ describe Stellar::Client do
         ).and(
           having_attributes(
             message: "account requires memo",
-            account_id: memo_required_kp.public_key,
+            account_id: memo_required_kp.muxed_account,
             operation_index: 1
           )
         )
@@ -548,9 +548,10 @@ describe Stellar::Client do
     end
   end
 
+  # TODO refactor using contexts and moving tx building out of examples
   describe "#check_memo_required" do
-    let(:kp) { Stellar::KeyPair.from_seed("SBL77A6HQNNILXQQCSS6NMBS4ILSOF7KBINIITUUFBBAI53PNQBZA7QN") }
-    let(:memo_required_kp) { Stellar::KeyPair.from_seed("SCGGMYFIWGQCMDCPTWYMYWVOLERM7K6EIRD3QGXESEZ2O7NNT7CXWTHQ") }
+    let(:kp) { Stellar::KeyPair.from_seed("SA27TR6PZVJOD24LJUBYQLJXYBXV6JW6ZZCJYLTHQ6KVMZZISC63SUBA") }
+    let(:memo_required_kp) { Stellar::KeyPair.from_seed("SAUZR3L5N43GQQZWO5HDSQJ76J65H5BUCNDRQB4DMA72ZJUXNUXVVTJY") }
 
     it("raises an error for missing memo", {
       vcr: {record: :once, match_requests_on: [:method]}
@@ -575,7 +576,7 @@ describe Stellar::Client do
         ).and(
           having_attributes(
             message: "account requires memo",
-            account_id: memo_required_kp.public_key,
+            account_id: memo_required_kp.muxed_account,
             operation_index: 0
           )
         )
@@ -604,7 +605,7 @@ describe Stellar::Client do
         ).and(
           having_attributes(
             message: "account requires memo",
-            account_id: memo_required_kp.public_key,
+            account_id: memo_required_kp.muxed_account,
             operation_index: 0
           )
         )
@@ -651,6 +652,50 @@ describe Stellar::Client do
       envelope = tx.to_envelope(kp)
 
       client.check_memo_required(envelope)
+    end
+
+    context "when destination is muxed account" do
+      it "skips the check" do
+      end
+    end
+
+    context "when tx is fee bump" do
+      let(:inner_tx_source) { Stellar::KeyPair.from_seed("SDV5KT5DLFVUA2OCBXQSKTZ7E7MBLEJ23UH5FDHGWTXFKOCN34GRR2BA") }
+      let(:fee_source) { Stellar::KeyPair.from_seed("SDHEM6T54CZ2OB3HM6JMHOXMLUI3GOGSR5VF26EO35I3NDWWZVPPHBGL") }
+
+      it "raises an error for missing memo", vcr: {record: :once, match_requests_on: [:method]} do
+        inner_tx_seq_num = client.account_info(inner_tx_source.address).sequence.to_i + 1
+
+        inner_tx = Stellar::TransactionBuilder.new(
+          source_account: inner_tx_source,
+          sequence_number: inner_tx_seq_num,
+          v1: true
+        ).add_operation(
+          Stellar::Operation.payment(
+            destination: memo_required_kp,
+            amount: [Stellar::Asset.native, 100]
+          )
+        ).set_timeout(0).build
+
+        fee_bump_seq_num = client.account_info(fee_source.address).sequence.to_i + 1
+
+        fee_bump_tx = Stellar::TransactionBuilder.new(
+          source_account: fee_source,
+          sequence_number: fee_bump_seq_num
+        ).build_fee_bump(inner_txe: inner_tx.to_envelope(inner_tx_source))
+
+        envelope = fee_bump_tx.to_envelope(fee_source)
+
+        expect { client.check_memo_required(envelope) }.to raise_error(
+          an_instance_of(Stellar::AccountRequiresMemoError).and(
+            having_attributes(
+              message: "account requires memo",
+              account_id: memo_required_kp.muxed_account,
+              operation_index: 0
+            )
+          )
+        )
+      end
     end
   end
 end
