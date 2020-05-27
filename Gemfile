@@ -1,9 +1,5 @@
 source "https://rubygems.org"
 
-# gem "xdr", git: "git@github.com:stellar/ruby-xdr.git"
-# gem "xdr", path: "../ruby-xdr"
-
-# gem "stellar-base", git: "git@github.com:stellar/ruby-stellar-base.git"
 gem "stellar-base", path: "./base"
 gem "stellar-sdk", path: "./sdk"
 
@@ -21,7 +17,7 @@ group :development do
   gem "webmock", "~> 2.3"
   gem "xdrgen", "~> 0.0"
   gem "yard", "~> 0.9"
-  gem "xdr", git: "https://github.com/astroband/ruby-xdr"
+  gem "xdr", git: "https://github.com/stellar/ruby-xdr.git", ref: "1884cc1"
 end
 
 group :rubocop do
