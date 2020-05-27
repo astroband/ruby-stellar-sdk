@@ -7,10 +7,11 @@ Gem::Specification.new do |spec|
   spec.email = ["scott@stellar.org"]
   spec.summary = "Stellar client library: XDR"
   spec.homepage = "https://github.com/stellar/ruby-stellar-base"
-  spec.license = "Apache 2.0"
+  spec.license = "Apache-2.0"
 
   spec.files = Dir[
     "lib/**/*",
+    "generated/**/*",
     "README.md",
     "CHANGELOG.md",
     "LICENSE",
