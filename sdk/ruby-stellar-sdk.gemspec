@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "stellar-base", "~> 0.23.0-alpha.0"
+  spec.add_dependency "stellar-base", "0.23.0.pre"
   spec.add_dependency "hyperclient", "~> 0.7"
   spec.add_dependency "excon", "~> 0.71"
   spec.add_dependency "activesupport", ">= 5.0"
