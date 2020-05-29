@@ -7,19 +7,18 @@ This library helps you to integrate your application into the [Stellar network](
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add this lines to your application's Gemfile:
 
 ```ruby
 gem 'stellar-sdk'
+gem 'xdr', git: 'https://github.com/stellar/ruby-xdr.git', tag: 'v3.0.1'
 ```
 
 And then execute:
 
     $ bundle
-
-Or install it yourself as:
-
-    $ gem install stellar-sdk
+    
+**Note** we need to add such explicit `xdr` dependency, because version 3.0.1 is not on RubyGems yet. When it's published, you can remove this line
 
 Also requires libsodium. Installable via `brew install libsodium` on OS X.
 
