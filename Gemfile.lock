@@ -1,16 +1,16 @@
 GIT
   remote: https://github.com/stellar/ruby-xdr.git
-  revision: 1884cc1bbf9d0b4551702c6382fdf6e0988395f8
-  ref: 1884cc1
+  revision: 3819098a195bb238be8e0d35d9c54e9e5b26159a
+  tag: v3.0.1
   specs:
-    xdr (3.0.0)
+    xdr (3.0.1)
       activemodel (>= 5.2.0)
       activesupport (>= 5.2.0)
 
 PATH
   remote: base
   specs:
-    stellar-base (0.23.0.pre.alpha.0)
+    stellar-base (0.23.0.pre)
       activesupport (>= 5.0.0)
       base32 (>= 0.3)
       digest-crc (>= 0.5)
@@ -20,7 +20,7 @@ PATH
 PATH
   remote: sdk
   specs:
-    stellar-sdk (0.9.0.pre.alpha.0)
+    stellar-sdk (0.9.0.pre)
       activesupport (>= 5.0)
       excon (~> 0.71)
       hyperclient (~> 0.7)

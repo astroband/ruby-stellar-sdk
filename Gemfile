@@ -17,7 +17,7 @@ group :development do
   gem "webmock", "~> 2.3"
   gem "xdrgen", "~> 0.0"
   gem "yard", "~> 0.9"
-  gem "xdr", git: "https://github.com/stellar/ruby-xdr.git", ref: "1884cc1"
+  gem "xdr", git: "https://github.com/stellar/ruby-xdr.git", tag: "v3.0.1"
 end
 
 group :rubocop do
