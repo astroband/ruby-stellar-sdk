@@ -15,7 +15,7 @@ PATH
       base32 (>= 0.3)
       digest-crc (>= 0.5)
       rbnacl (>= 6.0)
-      xdr (~> 3.0.0)
+      xdr (~> 3.0.1)
 
 PATH
   remote: sdk
