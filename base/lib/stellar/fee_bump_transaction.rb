@@ -9,7 +9,7 @@ module Stellar
     end
 
     def signature_base_prefix
-      val = Stellar::EnvelopeType.envelope_type_tx_v0
+      val = Stellar::EnvelopeType.envelope_type_tx_fee_bump
 
       Stellar.current_network_id + Stellar::EnvelopeType.to_xdr(val)
     end

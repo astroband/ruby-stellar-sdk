@@ -170,7 +170,7 @@ module Stellar
       end
     end
 
-    def signature_base_prefix
+    def signature_base
       tagged_tx = Stellar::TransactionSignaturePayload::TaggedTransaction.new(:envelope_type_tx, self)
       Stellar::TransactionSignaturePayload.new(
         network_id: Stellar.current_network_id,
