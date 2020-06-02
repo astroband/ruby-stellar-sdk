@@ -49,18 +49,32 @@ describe Stellar::Util::StrKey do
   end
 
   describe "#encode_muxed_account" do
-    let(:med25519) do
-      Stellar::MuxedAccount::Med25519.new(
-        id: 0,
-        ed25519: decode(:account_id, "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ")
-      )
+    context "when ed25519 account is given" do
+      let(:ed25519) do
+        decode(:account_id, "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ")
+      end
+      let(:muxed_account) { Stellar::MuxedAccount.new(:key_type_ed25519, ed25519) }
+
+      it "encodes muxed account as ed25519" do
+        strkey = subject.encode_muxed_account(muxed_account)
+        expect(strkey).to eq("GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ")
+      end
     end
 
-    let(:muxed_account) { Stellar::MuxedAccount.new(:key_type_muxed_ed25519, med25519) }
+    context "when med25519 account is given" do
+      let(:med25519) do
+        Stellar::MuxedAccount::Med25519.new(
+          id: 0,
+          ed25519: decode(:account_id, "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ")
+        )
+      end
 
-    it "encodes muxed account as ed25519" do
-      strkey = subject.encode_muxed_account(muxed_account)
-      expect(strkey).to eq("GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ")
+      let(:muxed_account) { Stellar::MuxedAccount.new(:key_type_muxed_ed25519, med25519) }
+
+      it "encodes muxed account as ed25519" do
+        strkey = subject.encode_muxed_account(muxed_account)
+        expect(strkey).to eq("GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ")
+      end
     end
   end
 

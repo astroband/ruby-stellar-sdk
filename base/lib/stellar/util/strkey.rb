@@ -26,7 +26,7 @@ module Stellar
       # @return [String] "G.."-like address
       def self.encode_muxed_account(muxed_account)
         ed25519 = if muxed_account.switch == Stellar::CryptoKeyType.key_type_ed25519
-          muxed_account.ed25519
+          muxed_account.ed25519!
         else
           muxed_account.med25519!.ed25519
         end
