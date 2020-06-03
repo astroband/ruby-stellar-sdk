@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.9.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.9.0...v0.8.0)
+### Added
+- Stellar Protocol 13 support
+  - Fee-Bump transactions ([CAP-0015](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0015.md))
+  - Multiplexed accounts ([CAP-0027](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0027.md))
+  - Fine-Grained control on trustline authorization ([CAP-0018](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0018.md))
 ## [0.8.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.7.0...v0.8.0)
 ### Added
 - SEP-10 Multisig Support [#69](https://github.com/stellar/ruby-stellar-sdk/pull/69)
