@@ -1,6 +1,6 @@
-require 'stellar-sdk'
+require "stellar-sdk"
 
-client  = Stellar::Client.default_testnet()
+client = Stellar::Client.default_testnet
 
 puts "Creating random sender..."
 from = Stellar::KeyPair.random
@@ -18,7 +18,7 @@ builder = Stellar::TransactionBuilder.new(
   source_account: from,
   sequence_number: seq_num + 1
 )
-# Note: if you want to send a non-native asset, :amount must take the form: 
+# Note: if you want to send a non-native asset, :amount must take the form:
 # [<:alphanum12 or :alphanum4>, <code>, <issuer keypair>, <amount>]
 payment_op = Stellar::Operation.payment({
   destination: recipient,
@@ -26,7 +26,7 @@ payment_op = Stellar::Operation.payment({
 })
 
 # add payment to transaction and set a 600ms timeout
-tx = builder.add_operation(payment_op).set_timeout(600).build()
+tx = builder.add_operation(payment_op).set_timeout(600).build
 # sign transaction and get xdr
 envelope = tx.to_envelope(from).to_xdr(:base64)
 

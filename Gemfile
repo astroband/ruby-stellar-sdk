@@ -22,3 +22,8 @@ group :development do
   gem "xdrgen", "~> 0.0"
   gem "yard", "~> 0.9"
 end
+
+group :rubocop do
+  gem "standard", "~> 0.3", require: false
+  gem "rubocop-rspec", "~> 1.38", require: false
+end
