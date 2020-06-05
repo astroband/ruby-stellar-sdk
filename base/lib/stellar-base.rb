@@ -31,6 +31,6 @@ require_relative './stellar/util/strkey'
 require_relative './stellar/util/continued_fraction'
 require_relative './stellar/convert'
 require_relative './stellar/networks'
-require_relative './stellar/base/version'
+require_relative './stellar/version'
 
-require_relative './stellar/base/compat'
+require_relative './stellar/compat'
