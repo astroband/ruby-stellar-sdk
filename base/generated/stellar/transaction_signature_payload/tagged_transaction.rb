@@ -7,9 +7,11 @@ require 'xdr'
 #
 #   union switch (EnvelopeType type)
 #       {
+#       // Backwards Compatibility: Use ENVELOPE_TYPE_TX to sign ENVELOPE_TYPE_TX_V0
 #       case ENVELOPE_TYPE_TX:
 #           Transaction tx;
-#           /* All other values of type are invalid */
+#       case ENVELOPE_TYPE_TX_FEE_BUMP:
+#           FeeBumpTransaction feeBump;
 #       }
 #
 # ===========================================================================
@@ -18,9 +20,11 @@ module Stellar
     class TaggedTransaction < XDR::Union
       switch_on EnvelopeType, :type
 
-      switch :envelope_type_tx, :tx
+      switch :envelope_type_tx,          :tx
+      switch :envelope_type_tx_fee_bump, :fee_bump
 
-      attribute :tx, Transaction
+      attribute :tx,       Transaction
+      attribute :fee_bump, FeeBumpTransaction
     end
   end
 end

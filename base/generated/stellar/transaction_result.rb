@@ -11,6 +11,9 @@ require 'xdr'
 #   
 #       union switch (TransactionResultCode code)
 #       {
+#       case txFEE_BUMP_INNER_SUCCESS:
+#       case txFEE_BUMP_INNER_FAILED:
+#           InnerTransactionResultPair innerResultPair;
 #       case txSUCCESS:
 #       case txFAILED:
 #           OperationResult results<>;

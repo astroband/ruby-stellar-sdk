@@ -49,6 +49,7 @@ module Stellar
   autoload :AccountEntry
   autoload :TrustLineFlags
   MASK_TRUSTLINE_FLAGS = 1
+  MASK_TRUSTLINE_FLAGS_V13 = 3
   autoload :TrustLineEntry
   autoload :OfferEntryFlags
   MASK_OFFERENTRY_FLAGS = 1
@@ -60,6 +61,7 @@ end
 module Stellar
   include XDR::Namespace
 
+  autoload :MuxedAccount
   autoload :DecoratedSignature
   autoload :OperationType
   autoload :CreateAccountOp
@@ -79,9 +81,14 @@ module Stellar
   autoload :Memo
   autoload :TimeBounds
   MAX_OPS_PER_TX = 100
+  autoload :TransactionV0
+  autoload :TransactionV0Envelope
   autoload :Transaction
-  autoload :TransactionSignaturePayload
+  autoload :TransactionV1Envelope
+  autoload :FeeBumpTransaction
+  autoload :FeeBumpTransactionEnvelope
   autoload :TransactionEnvelope
+  autoload :TransactionSignaturePayload
   autoload :ClaimOfferAtom
   autoload :CreateAccountResultCode
   autoload :CreateAccountResult
@@ -116,6 +123,8 @@ module Stellar
   autoload :OperationResultCode
   autoload :OperationResult
   autoload :TransactionResultCode
+  autoload :InnerTransactionResult
+  autoload :InnerTransactionResultPair
   autoload :TransactionResult
 end
 module Stellar

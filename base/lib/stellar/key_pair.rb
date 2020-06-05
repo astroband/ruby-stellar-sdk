@@ -45,6 +45,10 @@ module Stellar
       Stellar::AccountID.new :public_key_type_ed25519, raw_public_key
     end
 
+    def muxed_account
+      Stellar::MuxedAccount.new :key_type_ed25519, raw_public_key
+    end
+
     def public_key
       Stellar::PublicKey.new :public_key_type_ed25519, raw_public_key
     end

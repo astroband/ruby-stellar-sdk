@@ -8,7 +8,7 @@ gem "stellar-base", path: "./base"
 gem "stellar-sdk", path: "./sdk"
 
 group :development do
-  gem "faraday"
+  gem "faraday", "<= 0.16.2"
   gem "faraday_middleware"
   gem "guard-rspec", "~> 4.7"
   gem "netrc", "~> 0.11"
@@ -21,6 +21,7 @@ group :development do
   gem "webmock", "~> 2.3"
   gem "xdrgen", "~> 0.0"
   gem "yard", "~> 0.9"
+  gem "xdr", git: "https://github.com/astroband/ruby-xdr"
 end
 
 group :rubocop do

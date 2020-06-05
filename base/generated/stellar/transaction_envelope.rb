@@ -5,18 +5,27 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct TransactionEnvelope
+#   union TransactionEnvelope switch (EnvelopeType type)
 #   {
-#       Transaction tx;
-#       /* Each decorated signature is a signature over the SHA256 hash of
-#        * a TransactionSignaturePayload */
-#       DecoratedSignature signatures<20>;
+#   case ENVELOPE_TYPE_TX_V0:
+#       TransactionV0Envelope v0;
+#   case ENVELOPE_TYPE_TX:
+#       TransactionV1Envelope v1;
+#   case ENVELOPE_TYPE_TX_FEE_BUMP:
+#       FeeBumpTransactionEnvelope feeBump;
 #   };
 #
 # ===========================================================================
 module Stellar
-  class TransactionEnvelope < XDR::Struct
-    attribute :tx,         Transaction
-    attribute :signatures, XDR::VarArray[DecoratedSignature, 20]
+  class TransactionEnvelope < XDR::Union
+    switch_on EnvelopeType, :type
+
+    switch :envelope_type_tx_v0,       :v0
+    switch :envelope_type_tx,          :v1
+    switch :envelope_type_tx_fee_bump, :fee_bump
+
+    attribute :v0,       TransactionV0Envelope
+    attribute :v1,       TransactionV1Envelope
+    attribute :fee_bump, FeeBumpTransactionEnvelope
   end
 end

@@ -8,7 +8,7 @@ require 'xdr'
 #   struct Transaction
 #   {
 #       // account used to run the transaction
-#       AccountID sourceAccount;
+#       MuxedAccount sourceAccount;
 #   
 #       // the fee the sourceAccount will pay
 #       uint32 fee;
@@ -39,7 +39,7 @@ module Stellar
 
     autoload :Ext
 
-    attribute :source_account, AccountID
+    attribute :source_account, MuxedAccount
     attribute :fee,            Uint32
     attribute :seq_num,        SequenceNumber
     attribute :time_bounds,    XDR::Option[TimeBounds]
