@@ -12,9 +12,17 @@ addons:
 before_install:
   - gem update --system
   - gem install bundler -v 2.0
-script: LD_LIBRARY_PATH=lib bundle exec rake travis
+script:
+  - cd $TRAVIS_BUILD_DIR/sdk && LD_LIBRARY_PATH=lib bundle exec rake travis
+
+jobs:
+  include:
+    rvm: jruby-9.2.5.0
+    script: cd $TRAVIS_BUILD_DIR/sdk && LD_LIBRARY_PATH=lib bundle exec rake travis
+
 before_script:
-  - cp spec/config.yml.sample spec/config.yml
+  - cp sdk/spec/config.yml.sample sdk/spec/config.yml
+
 notifications:
   slack:
     secure: D1gWWsjE9i9XLRM6Bfw2pu3tTPW025iqjhgwE3KNw1QwP2TrehbCwRpjVR4rrnaju9FhYqM0+eT4rFc9g6itBPf2pfN1WziVf/CVJORYTzR9HbLL1rMOaWhEv4x/+Uwu0kxQon9ThnM9w6XjjD1+NoBfGn4Lcgc/OgmUGw1jAvQ=
