@@ -199,7 +199,7 @@ module Stellar
       unless options[:skip_memo_required_check]
         check_memo_required(tx_envelope)
       end
-      @horizon.transactions._post(tx: Base64.encode64(tx_envelope.to_xdr))
+      @horizon.transactions._post(tx: tx_envelope.to_xdr(:base64))
     end
 
     # Required by SEP-0029
