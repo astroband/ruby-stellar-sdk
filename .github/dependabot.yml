@@ -1,0 +1,16 @@
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+- package-ecosystem: "bundler"
+  directory: "/base"
+  schedule:
+    interval: "daily"
+  allow:
+  - dependency-type: "direct"
+- package-ecosystem: "bundler"
+  directory: "/sdk"
+  schedule:
+    interval: "daily"
+  allow:
+  - dependency-type: "direct"
