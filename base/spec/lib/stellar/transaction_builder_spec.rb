@@ -1,6 +1,7 @@
 require "spec_helper"
 
 describe Stellar::TransactionBuilder do
+  let(:base_fee) { 100 }
   let(:key_pair) { Stellar::KeyPair.random }
   builder = nil
   before(:each) do
@@ -277,6 +278,72 @@ describe Stellar::TransactionBuilder do
       expect(builder.operations).to eql([
         Stellar::Operation.bump_sequence({"bump_to": 2})
       ])
+    end
+  end
+
+  describe "#build_fee_bump" do
+    subject do
+      Stellar::TransactionBuilder.new(
+        source_account: key_pair,
+        sequence_number: 1,
+        base_fee: base_fee
+      )
+    end
+
+    let(:inner_tx) do
+      builder = Stellar::TransactionBuilder.new(
+        source_account: Stellar::KeyPair.random,
+        sequence_number: 1,
+        base_fee: base_fee
+      )
+
+      builder
+        .add_operation(Stellar::Operation.bump_sequence("bump_to": 5))
+        .set_timeout(0)
+        .build
+    end
+
+    let(:fee_bump_tx) { subject.build_fee_bump(inner_txe: inner_tx.to_envelope(key_pair)) }
+
+    it "returns Stellar::FeeBumpTransaction instance" do
+      expect(fee_bump_tx).to be_instance_of(Stellar::FeeBumpTransaction)
+      expect { fee_bump_tx.to_xdr }.not_to raise_error
+    end
+
+    it "sets proper fee amount" do
+      expect(fee_bump_tx.fee).to eq(base_fee * (inner_tx.operations.length + 1))
+    end
+
+    it "makes source account fee source" do
+      expect(fee_bump_tx.fee_source).to eq(key_pair.muxed_account)
+    end
+
+    context "when inner tx is v0" do
+      let(:inner_tx) do
+        subject
+          .add_operation(Stellar::Operation.bump_sequence("bump_to": 5))
+          .set_timeout(0)
+          .build
+          .to_v0
+      end
+
+      it "is converted to v1 under the hood" do
+        expect { fee_bump_tx.to_xdr }.not_to raise_error
+      end
+    end
+
+    context "when inner tx is invalid" do
+      let(:fee_bump_txe) do
+        Stellar::TransactionEnvelope.from_xdr(
+          "AAAABQAAAADgSJG2GOUMy/H9lHyjYZOwyuyytH8y0wWaoc596L+bEgAAAAAAAADIAAAAAgAAAABzdv3ojkzWHMD7KUoXhrPx0GH18vHKV0ZfqpMiEblG1gAAAGQAAAAAAAAACAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA9IYXBweSBiaXJ0aGRheSEAAAAAAQAAAAAAAAABAAAAAOBIkbYY5QzL8f2UfKNhk7DK7LK0fzLTBZqhzn3ov5sSAAAAAAAAAASoF8gAAAAAAAAAAAERuUbWAAAAQK933Dnt1pxXlsf1B5CYn81PLxeYsx+MiV9EGbMdUfEcdDWUySyIkdzJefjpR5ejdXVp/KXosGmNUQ+DrIBlzg0AAAAAAAAAAei/mxIAAABAijIIQpL6KlFefiL4FP8UWQktWEz4wFgGNSaXe7mZdVMuiREntehi1b7MRqZ1h+W+Y0y+Z2HtMunsilT2yS5mAA==",
+          "base64"
+        )
+      end
+
+      it "raises error" do
+        # Basically, try to wrap FeeBumpTx in another FeeBumpTx
+        expect { subject.build_fee_bump(inner_txe: fee_bump_txe) }.to raise_error(ArgumentError, /Invalid inner transaction type/)
+      end
     end
   end
 end
