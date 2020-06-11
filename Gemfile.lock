@@ -10,7 +10,7 @@ GIT
 PATH
   remote: base
   specs:
-    stellar-base (0.23.0.rc2)
+    stellar-base (0.23.0)
       activesupport (>= 5.0.0)
       base32 (>= 0.3)
       digest-crc (>= 0.5)
@@ -20,11 +20,11 @@ PATH
 PATH
   remote: sdk
   specs:
-    stellar-sdk (0.23.0.rc2)
+    stellar-sdk (0.23.0)
       activesupport (>= 5.0)
       excon (~> 0.71)
       hyperclient (~> 0.7)
-      stellar-base (= 0.23.0.rc2)
+      stellar-base (= 0.23.0)
       toml-rb (~> 1.1, >= 1.1.1)
 
 GEM
