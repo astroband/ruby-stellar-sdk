@@ -6,6 +6,13 @@ file.  This project adheres to [Semantic Versioning](http://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
+## [0.23.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.23.0...v0.22.0)
+### Added
+- Stellar Protocol 13 support
+  - Fee-Bump transactions ([CAP-0015](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0015.md))
+  - Multiplexed accounts ([CAP-0027](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0027.md))
+  - Fine-Grained control on trustline authorization ([CAP-0018](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0018.md))
+  
 ## [0.22.0](https://github.com/stellar/ruby-stellar-base/compare/v0.21.0...v0.22.0) - 2020-03-26
 ### Added
 - Add TransactionBuilder ([#54](https://github.com/stellar/ruby-stellar-base/issues/54))
