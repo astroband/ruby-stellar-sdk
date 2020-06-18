@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.23.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.23.0...v0.9.0)
+- No changes. We bumped this version to sync `stellar-sdk` and `stellar-base` versions
+
 ## [0.9.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.9.0...v0.8.0)
 ### Added
 - Stellar Protocol 13 support
