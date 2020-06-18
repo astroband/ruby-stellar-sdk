@@ -6,7 +6,12 @@ file.  This project adheres to [Semantic Versioning](http://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
-## [0.23.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.23.0...v0.22.0)
+## [0.23.1](https://github.com/stellar/ruby-stellar-sdk/compare/v0.23.1...v0.23.0) - 2020-06-18
+### Added
+- Transaction builder now builds V1 transactions
+- FeeBumpTransaction can wrap V0 transaction
+  
+## [0.23.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.23.0...v0.22.0) - 2020-06-11
 ### Added
 - Stellar Protocol 13 support
   - Fee-Bump transactions ([CAP-0015](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0015.md))
