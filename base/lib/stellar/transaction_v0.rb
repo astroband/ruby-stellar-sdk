@@ -2,6 +2,18 @@ module Stellar
   class TransactionV0
     include Stellar::Concerns::Transaction
 
+    def to_v1
+      Transaction.new(
+        source_account: Stellar::MuxedAccount.new(:key_type_ed25519, source_account),
+        seq_num: seq_num,
+        operations: operations,
+        fee: fee,
+        memo: memo,
+        time_bounds: time_bounds,
+        ext: ext
+      )
+    end
+
     def to_envelope(*key_pairs)
       signatures = (key_pairs || []).map(&method(:sign_decorated))
 

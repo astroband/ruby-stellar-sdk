@@ -668,8 +668,7 @@ describe Stellar::Client do
 
         inner_tx = Stellar::TransactionBuilder.new(
           source_account: inner_tx_source,
-          sequence_number: inner_tx_seq_num,
-          v1: true
+          sequence_number: inner_tx_seq_num
         ).add_operation(
           Stellar::Operation.payment(
             destination: memo_required_kp,

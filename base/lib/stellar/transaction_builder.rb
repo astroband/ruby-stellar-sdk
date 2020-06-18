@@ -7,8 +7,7 @@ module Stellar
       sequence_number:,
       base_fee: 100,
       time_bounds: nil,
-      memo: nil,
-      v1: false
+      memo: nil
     )
       raise ArgumentError, "Bad :source_account" unless source_account.is_a?(Stellar::KeyPair)
       raise ArgumentError, "Bad :sequence_number" unless sequence_number.is_a?(Integer) && sequence_number >= 0
@@ -21,7 +20,6 @@ module Stellar
       @time_bounds = time_bounds
       @memo = make_memo(memo)
       @operations = []
-      @v1 = v1
     end
 
     def build
@@ -34,6 +32,7 @@ module Stellar
       end
 
       attrs = {
+        source_account: @source_account.muxed_account,
         fee: @base_fee * @operations.length,
         seq_num: @sequence_number,
         time_bounds: @time_bounds,
@@ -42,21 +41,17 @@ module Stellar
         ext: Stellar::Transaction::Ext.new(0)
       }
 
-      tx = if @v1
-        attrs[:source_account] = @source_account.muxed_account
-        Stellar::Transaction.new(attrs)
-      else
-        attrs[:source_account_ed25519] = @source_account.raw_public_key
-        Stellar::TransactionV0.new(attrs)
-      end
-
       @sequence_number += 1
-      tx
+
+      Stellar::Transaction.new(attrs)
     end
 
     def build_fee_bump(inner_txe:)
-      if inner_txe.switch != Stellar::EnvelopeType.envelope_type_tx
-        raise "Invalid inner transaction type, it should be a `envelope_type_tx` but received a #{inner_tx.to_envelope.switch}."
+      p inner_txe.switch
+      if inner_txe.switch == Stellar::EnvelopeType.envelope_type_tx_v0
+        inner_txe = Stellar::TransactionEnvelope.v1(tx: inner_txe.tx.to_v1, signatures: inner_txe.signatures)
+      elsif inner_txe.switch != Stellar::EnvelopeType.envelope_type_tx
+        raise ArgumentError, "Invalid inner transaction type #{inner_txe.switch}"
       end
 
       inner_tx = inner_txe.tx
@@ -108,11 +103,7 @@ module Stellar
         @time_bounds = Stellar::TimeBounds.new(min_time: 0, max_time: nil)
       end
 
-      @time_bounds.max_time = if timeout == 0
-        timeout
-      else
-        Time.now.to_i + timeout
-      end
+      @time_bounds.max_time = timeout == 0 ? timeout : Time.now.to_i + timeout
 
       self
     end

@@ -18,7 +18,7 @@ describe Stellar::SEP10 do
     it "generates a valid SEP10 challenge" do
       expect(transaction.seq_num).to eql(0)
       expect(transaction.operations.size).to eql(1)
-      expect(transaction.source_account).to eql(server.raw_public_key)
+      expect(transaction.source_account).to eql(server.muxed_account)
 
       time_bounds = transaction.time_bounds
       expect(time_bounds.max_time - time_bounds.min_time).to eql(600)

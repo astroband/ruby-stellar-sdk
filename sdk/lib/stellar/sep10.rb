@@ -75,7 +75,7 @@ module Stellar
         )
       end
 
-      if transaction.source_account != server.raw_public_key
+      if transaction.source_account != server.muxed_account
         raise InvalidSep10ChallengeError.new(
           "The transaction source account is not equal to the server's account"
         )
