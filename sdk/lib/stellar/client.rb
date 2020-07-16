@@ -78,12 +78,11 @@ module Stellar
       destination = options[:destination]
       sequence = options[:sequence] || (account_info(account).sequence.to_i + 1)
 
-      transaction = Stellar::TransactionBuilder.new(
+      transaction = Stellar::TransactionBuilder.account_merge(
         source_account: destination.keypair,
-        sequence_number: sequence
-      ).add_operation(
-        Stellar::Operation.account_merge(destination: destination.keypair)
-      ).set_timeout(0).build
+        sequence_number: sequence,
+        destination: destination.keypair
+      )
 
       envelope = transaction.to_envelope(account.keypair)
       submit_transaction(tx_envelope: envelope)
@@ -105,17 +104,13 @@ module Stellar
       # instead of using a hard-coded default value.
       fee = options[:fee] || DEFAULT_FEE
 
-      payment = Stellar::TransactionBuilder.new(
+      payment = Stellar::TransactionBuilder.create_account(
         source_account: funder.keypair,
         sequence_number: sequence,
-        base_fee: fee
-      ).add_operation(
-        Stellar::Operation.create_account({
-          destination: options[:account].keypair,
-          starting_balance: options[:starting_balance]
-        })
-      ).set_timeout(0).build
-
+        base_fee: fee,
+        destination: options[:account].keypair,
+        starting_balance: options[:starting_balance]
+      )
       envelope = payment.to_envelope(funder.keypair)
       submit_transaction(tx_envelope: envelope)
     end
@@ -180,14 +175,18 @@ module Stellar
     )
       sequence ||= (account_info(source).sequence.to_i + 1)
 
-      args = {
+      op_args = {
         account: source.keypair,
         sequence: sequence,
         line: asset
       }
-      args[:limit] = limit unless limit.nil?
+      op_args[:limit] = limit unless limit.nil?
 
-      tx = Stellar::Transaction.change_trust(args)
+      tx = Stellar::TransactionBuilder.change_trust(
+        source_account: source.keypair,
+        sequence_number: sequence,
+        **op_args
+      )
 
       envelope = tx.to_envelope(source.keypair)
       submit_transaction(tx_envelope: envelope)

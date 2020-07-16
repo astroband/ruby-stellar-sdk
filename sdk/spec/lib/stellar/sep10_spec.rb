@@ -1067,12 +1067,11 @@ describe Stellar::SEP10 do
       client_kp = Stellar::KeyPair.random
       value = SecureRandom.base64(48)
 
-      tx = Stellar::Transaction.manage_data({
-        account: server_kp,
-        sequence: 0,
+      tx = Stellar::TransactionBuilder.manage_data({
+        source_account: server_kp,
+        sequence_number: 0,
         name: "SDF auth",
-        value: value,
-        source_account: client_kp
+        value: value
       })
 
       now = Time.now.to_i
@@ -1127,7 +1126,11 @@ describe Stellar::SEP10 do
   describe "#verify_tx_signed_by" do
     let(:keypair) { Stellar::KeyPair.random }
     let(:envelope) do
-      Stellar::Transaction.bump_sequence(account: keypair, bump_to: 1000, sequence: 0).to_envelope(keypair)
+      Stellar::TransactionBuilder.bump_sequence(
+        source_account: keypair,
+        bump_to: 1000,
+        sequence_number: 0
+      ).to_envelope(keypair)
     end
 
     it "returns true if transaction envelope is signed by keypair" do

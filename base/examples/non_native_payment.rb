@@ -45,16 +45,16 @@ gets # pause to get the account's sequence from the hayashi db
 destination_sequence = FILL_ME_IN
 # destination_sequence = 17179869185
 
-submit destination, Stellar::Transaction.change_trust({
-  account: destination,
-  sequence: destination_sequence,
+submit destination, Stellar::TransactionBuilder.change_trust({
+  source_account: destination,
+  sequence_number: destination_sequence,
   line: [:alphanum4, "USD\x00", master],
   limit: 1000
 })
 
-submit master, Stellar::Transaction.payment({
-  account: master,
+submit master, Stellar::TransactionBuilder.payment({
+  source_account: master,
   destination: destination,
-  sequence: 3,
+  sequence_number: 3,
   amount: [:alphanum4, "USD\x00", master, 100]
 })

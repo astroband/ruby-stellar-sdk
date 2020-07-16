@@ -12,12 +12,12 @@ server = Faraday.new(url: "http://localhost:39132") { |conn|
 master = Stellar::KeyPair.master
 destination = Stellar::KeyPair.random
 
-tx = Stellar::Transaction.create_account({
-  account: master,
+tx = Stellar::TransactionBuilder.create_account(
+  source_account: master,
+  sequence_number: 1,
   destination: destination,
-  sequence: 1,
   starting_balance: 50
-})
+)
 
 b64 = tx.to_envelope(master).to_xdr(:base64)
 p b64

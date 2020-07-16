@@ -30,10 +30,10 @@ end
 master = Stellar::KeyPair.master
 destination = Stellar::KeyPair.master
 
-submit master, Stellar::Transaction.payment({
-  account: master,
+submit master, Stellar::TransactionBuilder.payment({
+  source_account: master,
   destination: destination,
-  sequence: 1,
+  sequence_number: 1,
   amount: [:native, 2000]
 })
 
@@ -44,30 +44,30 @@ gets # pause to get the account's sequence from the hayashi db
 destination_sequence = FILL_ME_IN
 # destination_sequence = 17179869185
 
-submit destination, Stellar::Transaction.change_trust({
-  account: destination,
-  sequence: destination_sequence,
+submit destination, Stellar::TransactionBuilder.change_trust({
+  source_account: destination,
+  sequence_number: destination_sequence,
   line: [:alphanum4, "USD\x00", master],
   limit: 1000
 })
 
-submit destination, Stellar::Transaction.change_trust({
-  account: destination,
-  sequence: destination_sequence + 1,
+submit destination, Stellar::TransactionBuilder.change_trust({
+  source_account: destination,
+  sequence_number: destination_sequence + 1,
   line: [:alphanum4, "EUR\x00", master],
   limit: 1000
 })
 
-submit master, Stellar::Transaction.payment({
-  account: master,
+submit master, Stellar::TransactionBuilder.payment({
+  source_account: master,
   destination: destination,
-  sequence: destination_sequence + 2,
+  sequence_number: destination_sequence + 2,
   amount: [:alphanum4, "USD\x00", master, 1000]
 })
 
-submit master, Stellar::Transaction.manage_offer({
-  account: destination,
-  sequence: destination_sequence + 3,
+submit master, Stellar::TransactionBuilder.manage_offer({
+  source_account: destination,
+  sequence_number: destination_sequence + 3,
   selling: [:alphanum4, "USD\x00", usd_gateway],
   buying: [:alphanum4, "EUR\x00", eur_gateway],
   amount: 100,

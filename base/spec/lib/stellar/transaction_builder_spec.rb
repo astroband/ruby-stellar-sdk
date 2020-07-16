@@ -65,6 +65,16 @@ describe Stellar::TransactionBuilder do
         ArgumentError, "Bad :memo"
       )
     end
+
+    it "sets default time bounds unlimited" do
+      builder = Stellar::TransactionBuilder.new(
+        source_account: key_pair,
+        sequence_number: 1
+      )
+      expect(builder.time_bounds.min_time).to eql(0)
+      expect(builder.time_bounds.max_time).to eql(0)
+    end
+
     it "success" do
       builder = Stellar::TransactionBuilder.new(
         source_account: key_pair,
@@ -74,6 +84,55 @@ describe Stellar::TransactionBuilder do
         memo: "My test memo"
       )
       expect(builder.memo).to eql(Stellar::Memo.new(:memo_text, "My test memo"))
+    end
+  end
+
+  describe "constructor's memo assignment" do
+    subject do
+      Stellar::TransactionBuilder.new(
+        source_account: Stellar::KeyPair.random,
+        sequence_number: 1,
+        memo: memo
+      ).build
+    end
+
+    context "a number is provided" do
+      let(:memo) { 3 }
+
+      it "sets to an ID memo" do
+        expect(subject.memo).to eql(Stellar::Memo.new(:memo_id, 3))
+      end
+    end
+
+    context "a string is provided" do
+      let(:memo) { "hello" }
+
+      it "sets to an text memo" do
+        expect(subject.memo).to eql(Stellar::Memo.new(:memo_text, "hello"))
+      end
+    end
+
+    context "a Stellar::Memo instance provided" do
+      let(:memo) { Stellar::Memo.new(:memo_text, "hello") }
+
+      it "uses the provided value directly" do
+        expect(subject.memo).to eql(memo)
+      end
+    end
+
+    [
+      [[:id, 3], Stellar::Memo.new(:memo_id, 3)],
+      [[:text, "h"], Stellar::Memo.new(:memo_text, "h")],
+      [[:hash, "h"], Stellar::Memo.new(:memo_hash, "h")],
+      [[:return, "h"], Stellar::Memo.new(:memo_return, "h")]
+    ].each do |memo_shorthand, expected|
+      context "when #{memo_shorthand[0]} shorthand is provided" do
+        let(:memo) { memo_shorthand }
+
+        it "sets #{memo_shorthand[0]} memo" do
+          expect(subject.memo).to eql(expected)
+        end
+      end
     end
   end
 
@@ -194,15 +253,6 @@ describe Stellar::TransactionBuilder do
   end
 
   describe ".build" do
-    it "raises error for time_bounds not set" do
-      expect {
-        builder.add_operation(Stellar::Operation.bump_sequence({"bump_to": 1})).build
-      }.to raise_error(
-        RuntimeError,
-        "TransactionBuilder.time_bounds must be set during initialization or by calling set_timeout"
-      )
-    end
-
     it "raises an error for non-integer timebounds" do
       builder = Stellar::TransactionBuilder.new(
         source_account: key_pair,
@@ -230,14 +280,14 @@ describe Stellar::TransactionBuilder do
     end
 
     it "allows max_time to be zero" do
-      builder.add_operation(Stellar::Operation.bump_sequence({"bump_to": 1})).set_timeout(0).build
+      builder.add_operation(Stellar::Operation.bump_sequence({"bump_to": 1})).build
       expect(builder.time_bounds.max_time).to eql(0)
     end
 
     it "updates sequence number by 1 per build" do
       builder.add_operation(
         Stellar::Operation.bump_sequence({"bump_to": 1})
-      ).set_timeout(0).build
+      ).build
       expect(builder.sequence_number).to eql(2)
     end
 
@@ -281,6 +331,38 @@ describe Stellar::TransactionBuilder do
     end
   end
 
+  describe ".path_payment_strict_receive" do
+    it "works" do
+      tx = Stellar::TransactionBuilder.path_payment_strict_receive({
+        source_account: Stellar::KeyPair.random,
+        sequence_number: 1,
+        fee: 100,
+        destination: Stellar::KeyPair.random,
+        with: [:alphanum4, "USD", Stellar::KeyPair.master, 10],
+        amount: [:alphanum4, "EUR", Stellar::KeyPair.master, 9.2]
+      })
+
+      expect(tx.operations.size).to eq(1)
+      expect(tx.operations.first.body.arm).to eql(:path_payment_strict_receive_op)
+    end
+  end
+
+  describe ".path_payment_strict_send" do
+    it "works" do
+      tx = Stellar::TransactionBuilder.path_payment_strict_send({
+        source_account: Stellar::KeyPair.random,
+        sequence_number: 1,
+        fee: 100,
+        destination: Stellar::KeyPair.random,
+        with: [:alphanum4, "USD", Stellar::KeyPair.master, 10],
+        amount: [:alphanum4, "EUR", Stellar::KeyPair.master, 9.2]
+      })
+
+      expect(tx.operations.size).to eq(1)
+      expect(tx.operations.first.body.arm).to eql(:path_payment_strict_send_op)
+    end
+  end
+
   describe "#build_fee_bump" do
     subject do
       Stellar::TransactionBuilder.new(
@@ -298,8 +380,7 @@ describe Stellar::TransactionBuilder do
       )
 
       builder
-        .add_operation(Stellar::Operation.bump_sequence("bump_to": 5))
-        .set_timeout(0)
+        .add_operation(Stellar::Operation.bump_sequence(bump_to: 5))
         .build
     end
 
@@ -322,7 +403,6 @@ describe Stellar::TransactionBuilder do
       let(:inner_tx) do
         subject
           .add_operation(Stellar::Operation.bump_sequence("bump_to": 5))
-          .set_timeout(0)
           .build
           .to_v0
       end

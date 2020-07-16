@@ -4,12 +4,17 @@ describe Stellar::TransactionEnvelope do
   let(:sender) { Stellar::KeyPair.random }
   let(:receiver) { Stellar::KeyPair.random }
   let(:transaction) do
-    Stellar::Transaction.payment({
-      account: sender,
+    tx_builder = Stellar::TransactionBuilder.new(
+      source_account: sender,
+      sequence_number: 1
+    )
+
+    op = Stellar::Operation.payment(
       destination: receiver,
-      sequence: 1,
       amount: [:native, 20000000]
-    })
+    )
+
+    tx_builder.set_timeout(0).add_operation(op).build
   end
 
   let(:envelope) { transaction.to_envelope(*signers) }
