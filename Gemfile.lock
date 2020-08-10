@@ -11,17 +11,17 @@ PATH
   remote: base
   specs:
     stellar-base (0.23.1)
-      activesupport (>= 5.0.0)
-      base32 (>= 0.3)
-      digest-crc (>= 0.5)
-      rbnacl (>= 6.0)
+      activesupport (~> 5.0)
+      base32 (~> 0.3.0)
+      digest-crc (~> 0.5.0)
+      rbnacl (~> 7.0)
       xdr (~> 3.0.1)
 
 PATH
   remote: sdk
   specs:
     stellar-sdk (0.23.1)
-      activesupport (>= 5.0)
+      activesupport (~> 5.0)
       excon (~> 0.71)
       hyperclient (~> 0.7)
       stellar-base (= 0.23.1)
