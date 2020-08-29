@@ -19,8 +19,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "stellar-base", Stellar::VERSION
-  spec.add_dependency "hyperclient", "~> 0.7"
-  spec.add_dependency "excon", "~> 0.71"
-  spec.add_dependency "activesupport", ">= 5.0"
+  spec.add_dependency "hyperclient", ">= 0.7.0", "< 1.0"
+  spec.add_dependency "excon", ">= 0.71.0", "< 1.0"
+  spec.add_dependency "activesupport", ">= 5.0.0", "< 7.0"
   spec.add_dependency "toml-rb", ">= 1.1.1", "< 3.0"
 end

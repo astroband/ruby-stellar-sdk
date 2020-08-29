@@ -197,8 +197,8 @@ describe Stellar::SEP10 do
       )
 
       challenge_envelope = Stellar::TransactionEnvelope.from_xdr(challenge, "base64")
-      challenge_envelope.signatures = [client_kp_a, client_kp_b, client_kp_c].map {
-        |kp| challenge_envelope.tx.sign_decorated(kp)
+      challenge_envelope.signatures = [client_kp_a, client_kp_b, client_kp_c].map { |kp|
+        challenge_envelope.tx.sign_decorated(kp)
       }
 
       signers = Set[
@@ -722,8 +722,8 @@ describe Stellar::SEP10 do
       )
 
       challenge_envelope = Stellar::TransactionEnvelope.from_xdr(challenge, "base64")
-      challenge_envelope.signatures = [client_kp_a, client_kp_b, client_kp_c].map {
-        |kp| challenge_envelope.tx.sign_decorated(kp)
+      challenge_envelope.signatures = [client_kp_a, client_kp_b, client_kp_c].map { |kp|
+        challenge_envelope.tx.sign_decorated(kp)
       }
 
       signers = Set[
@@ -1067,12 +1067,12 @@ describe Stellar::SEP10 do
       client_kp = Stellar::KeyPair.random
       value = SecureRandom.base64(48)
 
-      tx = Stellar::TransactionBuilder.manage_data({
+      tx = Stellar::TransactionBuilder.manage_data(
         source_account: server_kp,
         sequence_number: 0,
         name: "SDF auth",
         value: value
-      })
+      )
 
       now = Time.now.to_i
       tx.time_bounds = Stellar::TimeBounds.new(
