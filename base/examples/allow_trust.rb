@@ -30,12 +30,12 @@ def allow_trust(address, issuer_keypair)
   account = Stellar::KeyPair.from_address(address)
   current_sequence = sequence_from_account(issuer_keypair)
 
-  tx = Stellar::Transaction.allow_trust({
+  tx = Stellar::TransactionBuilder.allow_trust({
     trustor: account,
-    account: issuer_keypair,
+    source_account: issuer_keypair,
     asset: [:alphanum4, HUG_ASSET_CODE, issuer_keypair],
     authorize: true,
-    sequence: current_sequence + 1
+    sequence_number: current_sequence + 1
   })
 
   xdr_envelope = tx.to_envelope(issuer_keypair).to_xdr(:base64)

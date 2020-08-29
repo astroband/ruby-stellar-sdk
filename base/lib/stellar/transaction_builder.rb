@@ -2,12 +2,34 @@ module Stellar
   class TransactionBuilder
     attr_reader :source_account, :sequence_number, :base_fee, :time_bounds, :memo, :operations
 
+    class << self
+      # This enable user to call shortcut methods, like
+      # TransactionBuilder.payment(...),
+      # TransactionBuilder.manage_data(...) and etc.
+      # It reduces the boilerplate, when you just need to
+      # shoot a single operation in transaction
+      def method_missing(method_name, *args, **kwargs)
+        unless Stellar::Operation.respond_to?(method_name)
+          return super
+        end
+
+        op = Stellar::Operation.send(method_name, **kwargs)
+
+        new(**kwargs).add_operation(op).build
+      end
+
+      def respond_to_missing?(method_name, include_private = false)
+        Stellar::Operation.respond_to?(method_name) || super
+      end
+    end
+
     def initialize(
       source_account:,
       sequence_number:,
       base_fee: 100,
       time_bounds: nil,
-      memo: nil
+      memo: nil,
+      **_ # ignore any additional parameters without errors
     )
       raise ArgumentError, "Bad :source_account" unless source_account.is_a?(Stellar::KeyPair)
       raise ArgumentError, "Bad :sequence_number" unless sequence_number.is_a?(Integer) && sequence_number >= 0
@@ -18,6 +40,11 @@ module Stellar
       @sequence_number = sequence_number
       @base_fee = base_fee
       @time_bounds = time_bounds
+
+      if time_bounds.nil?
+        set_timeout(0)
+      end
+
       @memo = make_memo(memo)
       @operations = []
     end
@@ -47,7 +74,6 @@ module Stellar
     end
 
     def build_fee_bump(inner_txe:)
-      p inner_txe.switch
       if inner_txe.switch == Stellar::EnvelopeType.envelope_type_tx_v0
         inner_txe = Stellar::TransactionEnvelope.v1(tx: inner_txe.tx.to_v1, signatures: inner_txe.signatures)
       elsif inner_txe.switch != Stellar::EnvelopeType.envelope_type_tx

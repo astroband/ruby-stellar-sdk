@@ -20,10 +20,10 @@ server = Faraday.new(url: "http://localhost:39132") { |conn|
 master = Stellar::KeyPair.from_raw_seed("allmylifemyhearthasbeensearching")
 destination = Stellar::KeyPair.from_raw_seed("allmylifemyhearthasbeensearching")
 
-tx = Stellar::Transaction.payment({
-  account: master,
+tx = Stellar::TransactionBuilder.payment({
+  source_account: master,
   destination: destination,
-  sequence: 1,
+  sequence_number: 1,
   amount: [:native, 20]
 })
 
