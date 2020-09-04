@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe Stellar::SEP10 do
+RSpec.describe Stellar::SEP10 do
   subject(:sep10) { Stellar::SEP10 }
 
   let(:server) { Stellar::KeyPair.random }

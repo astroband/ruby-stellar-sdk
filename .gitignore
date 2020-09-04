@@ -1,6 +1,7 @@
 .bundle/
 .yardoc
 .ruby-version
+.rspec_status
 _yardoc/
 coverage/
 doc/

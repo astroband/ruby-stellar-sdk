@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe Stellar::Transaction do
+RSpec.describe Stellar::Transaction do
   subject do
     Stellar::Transaction.new({
       source_account: Stellar::MuxedAccount.new(:key_type_ed25519, "\x00" * 32),

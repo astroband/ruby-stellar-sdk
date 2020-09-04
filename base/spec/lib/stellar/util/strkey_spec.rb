@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe Stellar::Util::StrKey do
+RSpec.describe Stellar::Util::StrKey do
   subject { Stellar::Util::StrKey }
 
   def decode(version, bytes)

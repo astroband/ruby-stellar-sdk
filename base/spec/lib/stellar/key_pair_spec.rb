@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe Stellar::KeyPair do
+RSpec.describe Stellar::KeyPair do
   describe ".from_seed" do
     subject { Stellar::KeyPair.from_seed(seed) }
 

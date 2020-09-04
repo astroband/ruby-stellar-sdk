@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe Stellar::Thresholds, ".parse" do
+RSpec.describe Stellar::Thresholds, ".parse" do
   subject { Stellar::Thresholds }
   let(:raw) { "\x01\x02\x03\x04" }
   let(:result) { subject.parse raw }
@@ -22,7 +20,7 @@ describe Stellar::Thresholds, ".parse" do
   end
 end
 
-describe Stellar::Thresholds, ".make" do
+RSpec.describe Stellar::Thresholds, ".make" do
   subject { Stellar::Thresholds }
   let(:good) { {master_weight: 1, low: 2, medium: 3, high: 4} }
 

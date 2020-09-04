@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe Stellar::Operation, ".payment" do
+RSpec.describe Stellar::Operation, ".payment" do
   it "correctly translates the provided amount to the native representation" do
     op = Stellar::Operation.payment(destination: Stellar::KeyPair.random, amount: [:native, 20])
     expect(op.body.value.amount).to eql(20_0000000)
@@ -9,11 +7,7 @@ describe Stellar::Operation, ".payment" do
   end
 end
 
-def pk_to_address(pk)
-  Stellar::Convert.pk_to_address(pk)
-end
-
-describe "path payment operations" do
+RSpec.describe "path payment operations" do
   let(:destination) { Stellar::KeyPair.random }
   let(:send_asset_issuer) { Stellar::KeyPair.master }
   let(:send_asset) { Stellar::Asset.alphanum4("USD", send_asset_issuer) }
@@ -80,7 +74,7 @@ describe "path payment operations" do
   end
 end
 
-describe Stellar::Operation, ".manage_data" do
+RSpec.describe Stellar::Operation, ".manage_data" do
   it "works" do
     op = Stellar::Operation.manage_data(name: "my name", value: "hello")
     expect(op.body.manage_data_op!.data_name).to eql("my name")
@@ -94,7 +88,7 @@ describe Stellar::Operation, ".manage_data" do
   end
 end
 
-describe Stellar::Operation, ".change_trust" do
+RSpec.describe Stellar::Operation, ".change_trust" do
   let(:issuer) { Stellar::KeyPair.from_address("GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7") }
   let(:asset) { Stellar::Asset.alphanum4("USD", issuer) }
 
@@ -133,7 +127,7 @@ describe Stellar::Operation, ".change_trust" do
   end
 end
 
-describe Stellar::Operation, ".allow_trust" do
+RSpec.describe Stellar::Operation, ".allow_trust" do
   let(:issuer) { Stellar::KeyPair.from_address("GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7") }
   let(:trustor) { Stellar::KeyPair.random }
   let(:asset) { Stellar::Asset.alphanum4("USD", issuer) }

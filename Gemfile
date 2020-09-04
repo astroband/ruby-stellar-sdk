@@ -16,6 +16,7 @@ group :development, :test do
   gem "faraday_middleware"
   gem "octokit"
   gem "rspec"
+  gem "rspec-its"
   gem "simplecov", require: false
   gem "simplecov_json_formatter"
   gem "standard", "0.5.2", require: false

@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe Stellar::Price, "#from_f" do
+RSpec.describe Stellar::Price, "#from_f" do
   subject { Stellar::Price }
   let(:seed) { 225571644875421139403973254661022579608 } # generated using Random.new
   let(:random) { Random.new(seed) }

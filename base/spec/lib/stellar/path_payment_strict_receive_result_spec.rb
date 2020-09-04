@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe Stellar::PathPaymentStrictReceiveResult, "#send_amount" do
+RSpec.describe Stellar::PathPaymentStrictReceiveResult, "#send_amount" do
   context "when the result is not successful" do
     subject { Stellar::PathPaymentStrictReceiveResult.new(:path_payment_strict_receive_malformed) }
 

@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe Stellar::SignerKey, ".hash_x" do
+RSpec.describe Stellar::SignerKey, ".hash_x" do
   subject { Stellar::SignerKey }
 
   let(:hash_preimage) { "a" * 32 }
