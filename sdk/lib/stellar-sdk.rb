@@ -1,5 +1,5 @@
 require "stellar-base"
-require_relative "./stellar/version"
+require_relative "stellar/sdk/version"
 
 module Stellar
   autoload :Account

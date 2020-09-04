@@ -7,10 +7,11 @@ doc/
 pkg/
 spec/reports/
 tmp/
+vendor/bundle
 *.bundle
 *.so
 *.o
 *.a
 mkmf.log
-spec/config.yml
+sdk/spec/config.yml
 .vscode

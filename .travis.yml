@@ -1,30 +1,33 @@
+version: ~> 1.0
+
+dist: focal
+os: linux
+virt: lxd
+
 language: ruby
+cache:
+- apt
+- bundler
+addons:
+  apt:
+  - libsodium-dev
+
 rvm:
 - 2.5
 - 2.6
 - 2.7
-cache: bundler
-addons:
-  apt:
-    packages:
-    - libsodium-dev
-before_install:
-  - gem update --system
-script:
-  - bundle exec rubocop
-  - cd $TRAVIS_BUILD_DIR/base && bundle exec rake travis
-  - cd $TRAVIS_BUILD_DIR/sdk && LD_LIBRARY_PATH=lib bundle exec rake travis
-
 jobs:
+  fast_finish: true
   include:
-    rvm: jruby-9.2.9.0
-    install: bundle install --jobs=3 --retry=3
-    script:
-      - bundle exec rubocop
-      - cd $TRAVIS_BUILD_DIR/sdk && LD_LIBRARY_PATH=lib bundle exec rake travis
+  - rvm: jruby-9.2.13.0
+    env: JRUBY_OPTS="--debug"
 
+before_install:
+- yes | gem update --system --force
+- bundle config set without 'development debug'
 before_script:
-  - cp sdk/spec/config.yml.sample sdk/spec/config.yml
+- cp sdk/spec/config.yml.sample sdk/spec/config.yml
+
 notifications:
   slack:
     secure: D1gWWsjE9i9XLRM6Bfw2pu3tTPW025iqjhgwE3KNw1QwP2TrehbCwRpjVR4rrnaju9FhYqM0+eT4rFc9g6itBPf2pfN1WziVf/CVJORYTzR9HbLL1rMOaWhEv4x/+Uwu0kxQon9ThnM9w6XjjD1+NoBfGn4Lcgc/OgmUGw1jAvQ=

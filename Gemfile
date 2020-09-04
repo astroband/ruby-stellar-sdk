@@ -3,24 +3,31 @@ source "https://rubygems.org"
 gem "stellar-base", path: "./base"
 gem "stellar-sdk", path: "./sdk"
 
-group :development do
-  gem "faraday", "<= 0.16.2"
-  gem "faraday_middleware"
-  gem "guard-rspec", "~> 4.7"
-  gem "netrc", "~> 0.11"
-  gem "octokit", "~> 4.17"
-  gem "pry"
-  gem "rake", "~> 12.3", ">= 12.3.3"
-  gem "rspec", "~> 3.1"
-  gem "simplecov", "~> 0.18"
-  gem "vcr", "~> 3.0"
-  gem "webmock", "~> 2.3"
-  gem "xdrgen", "~> 0.0"
-  gem "yard", "~> 0.9"
-  gem "xdr", git: "https://github.com/stellar/ruby-xdr.git", tag: "v3.0.1"
+gem "rake"
+gem "yard"
+
+platforms :jruby do
+  gem "jruby-openssl"
 end
 
-group :rubocop do
+group :development, :test do
+  gem "bundler-audit"
+  gem "faraday"
+  gem "faraday_middleware"
+  gem "octokit"
+  gem "rspec"
+  gem "simplecov", require: false
+  gem "simplecov_json_formatter"
   gem "standard", "0.5.2", require: false
-  gem "rubocop-rspec", "1.39.0", require: false
+  gem "vcr"
+  gem "webmock"
+end
+
+group :development do
+  gem "gem-release"
+  gem "guard-rspec"
+  gem "pry"
+  gem "pry-doc"
+  gem "netrc"
+  gem "xdrgen"
 end
