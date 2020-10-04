@@ -33,7 +33,6 @@ require_relative "./stellar/fee_bump_transaction"
 require_relative "./stellar/transaction_builder"
 require_relative "./stellar/transaction_envelope"
 require_relative "./stellar/util/strkey"
-require_relative "./stellar/util/continued_fraction"
 require_relative "./stellar/convert"
 require_relative "./stellar/networks"
 

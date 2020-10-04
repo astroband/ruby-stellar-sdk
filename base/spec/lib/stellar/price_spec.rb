@@ -10,21 +10,18 @@ RSpec.describe Stellar::Price, "#from_f" do
       actual_p = subject.from_f(expected)
       actual = actual_p.to_f
 
-      expect(actual).to be_within(0.000000001).of(actual)
+      expect(actual).to be_within(0.0000001).of(expected)
       expect(actual_p.n).to be <= Stellar::Price::MAX_PRECISION
       expect(actual_p.d).to be <= Stellar::Price::MAX_PRECISION
     end
   end
 
   it "works with bigdecimal" do
-    whole = random.rand(1_000_000)
-    fractional = random.rand(10_000_000) # seven significant digits available for fractional
-
-    expected = BigDecimal("#{whole}.#{fractional}")
+    expected = BigDecimal("2.93850088")
     actual_p = subject.from_f(expected)
     actual = BigDecimal(actual_p.n) / BigDecimal(actual_p.d)
 
-    expect(actual).to be_within(BigDecimal("0.000000001")).of(actual)
+    expect(actual).to be_within(0.0000001).of(expected)
     expect(actual_p.n).to be <= Stellar::Price::MAX_PRECISION
     expect(actual_p.d).to be <= Stellar::Price::MAX_PRECISION
   end
