@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gem "stellar-base", path: "./base"
 gem "stellar-sdk", path: "./sdk"
+gem "xdrgen", github: "astroband/xdrgen", group: :development
 
 gem "rake"
 gem "yard"
@@ -30,5 +31,4 @@ group :development do
   gem "pry"
   gem "pry-doc"
   gem "netrc"
-  gem "xdrgen"
 end

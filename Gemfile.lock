@@ -1,3 +1,13 @@
+GIT
+  remote: https://github.com/astroband/xdrgen.git
+  revision: a22b804ff565d1e8e333cc69a373f09fc15fdb27
+  specs:
+    xdrgen (0.0.1)
+      activesupport (>= 5.0.0, < 7.0)
+      memoist (~> 0.11)
+      slop (>= 3.4.0, < 5.0)
+      treetop (~> 1.5)
+
 PATH
   remote: base
   specs:
@@ -21,13 +31,14 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (5.2.4.4)
-      activesupport (= 5.2.4.4)
-    activesupport (5.2.4.4)
+    activemodel (6.0.3.3)
+      activesupport (= 6.0.3.3)
+    activesupport (6.0.3.3)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
+      zeitwerk (~> 2.2, >= 2.2.2)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
     ast (2.4.1)
@@ -81,12 +92,12 @@ GEM
       net-http-digest_auth
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
-    jruby-openssl (0.10.4-java)
+    jruby-openssl (0.10.5-java)
     listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     lumberjack (1.2.8)
-    memoist (0.11.0)
+    memoist (0.16.2)
     method_source (1.0.0)
     minitest (5.14.2)
     multipart-post (2.1.1)
@@ -162,7 +173,7 @@ GEM
       simplecov-html (~> 0.11)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.2)
-    slop (3.6.0)
+    slop (4.8.2)
     spoon (0.0.6)
       ffi
     standard (0.5.2)
@@ -173,7 +184,7 @@ GEM
     thread_safe (0.3.6-java)
     toml-rb (2.0.1)
       citrus (~> 3.0, > 3.0)
-    treetop (1.5.3)
+    treetop (1.6.11)
       polyglot (~> 0.3)
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
@@ -186,12 +197,8 @@ GEM
     xdr (3.0.1)
       activemodel (>= 5.2.0)
       activesupport (>= 5.2.0)
-    xdrgen (0.0.1)
-      activesupport (~> 5)
-      memoist (~> 0.11.0)
-      slop (~> 3.4)
-      treetop (~> 1.5.3)
     yard (0.9.25)
+    zeitwerk (2.4.0)
 
 PLATFORMS
   java
@@ -218,7 +225,7 @@ DEPENDENCIES
   stellar-sdk!
   vcr
   webmock
-  xdrgen
+  xdrgen!
   yard
 
 BUNDLED WITH
