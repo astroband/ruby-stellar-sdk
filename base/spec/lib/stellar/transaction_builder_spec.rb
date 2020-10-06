@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe Stellar::TransactionBuilder do
+RSpec.describe Stellar::TransactionBuilder do
   let(:base_fee) { 100 }
   let(:key_pair) { Stellar::KeyPair.random }
   builder = nil

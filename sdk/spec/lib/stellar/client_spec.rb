@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe Stellar::Client do
+RSpec.describe Stellar::Client do
   subject(:client) { Stellar::Client.default_testnet }
 
   describe "headers" do

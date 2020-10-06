@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe Stellar, ".default_network=" do
+RSpec.describe Stellar, ".default_network=" do
   before(:each) { Stellar.default_network = "foo" }
   after(:each) { Stellar.default_network = nil }
 
@@ -9,7 +7,7 @@ describe Stellar, ".default_network=" do
   end
 end
 
-describe Stellar, ".current_network" do
+RSpec.describe Stellar, ".current_network" do
   after(:each) { Stellar.default_network = nil }
 
   it "returns the public network absent any other configuration" do
@@ -32,13 +30,13 @@ describe Stellar, ".current_network" do
   end
 end
 
-describe Stellar, ".current_network_id" do
+RSpec.describe Stellar, ".current_network_id" do
   it "returns the sha256 of the current_network" do
     expect(Stellar.current_network_id).to eql(Digest::SHA256.digest(Stellar.current_network))
   end
 end
 
-describe Stellar, ".on_network" do
+RSpec.describe Stellar, ".on_network" do
   after(:each) { Thread.current["stellar_network_passphrase"] = nil }
 
   it "sets the current_network and a thread local" do

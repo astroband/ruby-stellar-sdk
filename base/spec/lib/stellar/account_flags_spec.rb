@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe Stellar::AccountFlags do
+RSpec.describe Stellar::AccountFlags do
   subject { Stellar::AccountFlags }
   let(:raw) { 3 }
   let(:result) { subject.parse_mask raw }

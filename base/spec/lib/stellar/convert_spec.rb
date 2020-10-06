@@ -1,6 +1,4 @@
-require "spec_helper"
-
-describe Stellar::Convert do
+RSpec.describe Stellar::Convert do
   subject { Stellar::Convert }
   let(:raw) { "\x01\x02\x03\x04" }
   let(:hex) { "01020304" }
