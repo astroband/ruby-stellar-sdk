@@ -8,7 +8,7 @@ gem "rake"
 gem "yard"
 
 platforms :jruby do
-  gem "jruby-openssl"
+  gem "jruby-openssl", "0.10.4"
 end
 
 group :development, :test do

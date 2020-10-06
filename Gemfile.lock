@@ -92,7 +92,7 @@ GEM
       net-http-digest_auth
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
-    jruby-openssl (0.10.5-java)
+    jruby-openssl (0.10.4-java)
     listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -210,7 +210,7 @@ DEPENDENCIES
   faraday_middleware
   gem-release
   guard-rspec
-  jruby-openssl
+  jruby-openssl (= 0.10.4)
   netrc
   octokit
   pry
