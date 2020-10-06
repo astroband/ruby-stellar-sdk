@@ -5,24 +5,18 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   union switch (int v)
-#       {
-#       case 0:
-#           void;
-#       case 1:
-#           AccountEntryExtensionV1 v1;
-#       }
+#   struct CreateClaimableBalanceOp
+#   {
+#       Asset asset;
+#       int64 amount;
+#       Claimant claimants<10>;
+#   };
 #
 # ===========================================================================
 module Stellar
-  class AccountEntry
-    class Ext < XDR::Union
-      switch_on XDR::Int, :v
-
-      switch 0
-      switch 1, :v1
-
-      attribute :v1, AccountEntryExtensionV1
-    end
+  class CreateClaimableBalanceOp < XDR::Struct
+    attribute :asset,     Asset
+    attribute :amount,    Int64
+    attribute :claimants, XDR::VarArray[Claimant, 10]
   end
 end

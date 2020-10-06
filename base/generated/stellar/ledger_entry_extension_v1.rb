@@ -5,24 +5,26 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   union switch (int v)
+#   struct LedgerEntryExtensionV1
+#   {
+#       SponsorshipDescriptor sponsoringID;
+#   
+#       union switch (int v)
 #       {
 #       case 0:
 #           void;
-#       case 1:
-#           AccountEntryExtensionV1 v1;
 #       }
+#       ext;
+#   };
 #
 # ===========================================================================
 module Stellar
-  class AccountEntry
-    class Ext < XDR::Union
-      switch_on XDR::Int, :v
+  class LedgerEntryExtensionV1 < XDR::Struct
+    include XDR::Namespace
 
-      switch 0
-      switch 1, :v1
+    autoload :Ext
 
-      attribute :v1, AccountEntryExtensionV1
-    end
+    attribute :sponsoring_id, SponsorshipDescriptor
+    attribute :ext,           Ext
   end
 end

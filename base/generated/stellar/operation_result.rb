@@ -38,6 +38,16 @@ require 'xdr'
 #           ManageBuyOfferResult manageBuyOfferResult;
 #       case PATH_PAYMENT_STRICT_SEND:
 #           PathPaymentStrictSendResult pathPaymentStrictSendResult;
+#       case CREATE_CLAIMABLE_BALANCE:
+#           CreateClaimableBalanceResult createClaimableBalanceResult;
+#       case CLAIM_CLAIMABLE_BALANCE:
+#           ClaimClaimableBalanceResult claimClaimableBalanceResult;
+#       case BEGIN_SPONSORING_FUTURE_RESERVES:
+#           BeginSponsoringFutureReservesResult beginSponsoringFutureReservesResult;
+#       case END_SPONSORING_FUTURE_RESERVES:
+#           EndSponsoringFutureReservesResult endSponsoringFutureReservesResult;
+#       case REVOKE_SPONSORSHIP:
+#           RevokeSponsorshipResult revokeSponsorshipResult;
 #       }
 #       tr;
 #   default:

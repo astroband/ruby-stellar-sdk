@@ -9,20 +9,16 @@ require 'xdr'
 #       {
 #       case 0:
 #           void;
-#       case 1:
-#           AccountEntryExtensionV1 v1;
 #       }
 #
 # ===========================================================================
 module Stellar
-  class AccountEntry
+  class AccountEntryExtensionV2
     class Ext < XDR::Union
       switch_on XDR::Int, :v
 
       switch 0
-      switch 1, :v1
 
-      attribute :v1, AccountEntryExtensionV1
     end
   end
 end

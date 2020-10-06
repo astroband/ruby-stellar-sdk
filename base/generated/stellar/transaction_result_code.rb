@@ -24,8 +24,9 @@ require 'xdr'
 #       txBAD_AUTH_EXTRA = -10,      // unused signatures attached to transaction
 #       txINTERNAL_ERROR = -11,      // an unknown error occured
 #   
-#       txNOT_SUPPORTED = -12,        // transaction type not supported
-#       txFEE_BUMP_INNER_FAILED = -13 // fee bump inner transaction failed
+#       txNOT_SUPPORTED = -12,         // transaction type not supported
+#       txFEE_BUMP_INNER_FAILED = -13, // fee bump inner transaction failed
+#       txBAD_SPONSORSHIP = -14        // sponsorship not confirmed
 #   };
 #
 # ===========================================================================
@@ -46,6 +47,7 @@ module Stellar
     member :tx_internal_error,         -11
     member :tx_not_supported,          -12
     member :tx_fee_bump_inner_failed,  -13
+    member :tx_bad_sponsorship,        -14
 
     seal
   end

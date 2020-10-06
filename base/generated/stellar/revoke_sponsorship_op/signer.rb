@@ -5,24 +5,18 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   union switch (int v)
+#   struct
 #       {
-#       case 0:
-#           void;
-#       case 1:
-#           AccountEntryExtensionV1 v1;
+#           AccountID accountID;
+#           SignerKey signerKey;
 #       }
 #
 # ===========================================================================
 module Stellar
-  class AccountEntry
-    class Ext < XDR::Union
-      switch_on XDR::Int, :v
-
-      switch 0
-      switch 1, :v1
-
-      attribute :v1, AccountEntryExtensionV1
+  class RevokeSponsorshipOp
+    class Signer < XDR::Struct
+      attribute :account_id, AccountID
+      attribute :signer_key, SignerKey
     end
   end
 end

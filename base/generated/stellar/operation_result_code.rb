@@ -13,7 +13,8 @@ require 'xdr'
 #       opNO_ACCOUNT = -2,          // source account was not found
 #       opNOT_SUPPORTED = -3,       // operation not supported at this time
 #       opTOO_MANY_SUBENTRIES = -4, // max number of subentries already reached
-#       opEXCEEDED_WORK_LIMIT = -5  // operation did too much work
+#       opEXCEEDED_WORK_LIMIT = -5, // operation did too much work
+#       opTOO_MANY_SPONSORING = -6  // account is sponsoring too many entries
 #   };
 #
 # ===========================================================================
@@ -25,6 +26,7 @@ module Stellar
     member :op_not_supported,       -3
     member :op_too_many_subentries, -4
     member :op_exceeded_work_limit, -5
+    member :op_too_many_sponsoring, -6
 
     seal
   end

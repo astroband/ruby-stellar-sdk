@@ -5,24 +5,16 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   union switch (int v)
-#       {
-#       case 0:
-#           void;
-#       case 1:
-#           AccountEntryExtensionV1 v1;
-#       }
+#   enum ClaimableBalanceIDType
+#   {
+#       CLAIMABLE_BALANCE_ID_TYPE_V0 = 0
+#   };
 #
 # ===========================================================================
 module Stellar
-  class AccountEntry
-    class Ext < XDR::Union
-      switch_on XDR::Int, :v
+  class ClaimableBalanceIDType < XDR::Enum
+    member :claimable_balance_id_type_v0, 0
 
-      switch 0
-      switch 1, :v1
-
-      attribute :v1, AccountEntryExtensionV1
-    end
+    seal
   end
 end

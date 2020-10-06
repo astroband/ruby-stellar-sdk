@@ -5,24 +5,18 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   union switch (int v)
-#       {
-#       case 0:
-#           void;
-#       case 1:
-#           AccountEntryExtensionV1 v1;
-#       }
+#   enum RevokeSponsorshipType
+#   {
+#       REVOKE_SPONSORSHIP_LEDGER_ENTRY = 0,
+#       REVOKE_SPONSORSHIP_SIGNER = 1
+#   };
 #
 # ===========================================================================
 module Stellar
-  class AccountEntry
-    class Ext < XDR::Union
-      switch_on XDR::Int, :v
+  class RevokeSponsorshipType < XDR::Enum
+    member :revoke_sponsorship_ledger_entry, 0
+    member :revoke_sponsorship_signer,       1
 
-      switch 0
-      switch 1, :v1
-
-      attribute :v1, AccountEntryExtensionV1
-    end
+    seal
   end
 end
