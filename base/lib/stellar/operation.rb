@@ -200,6 +200,18 @@ module Stellar
         }))
       end
 
+      def create_claimable_balance(asset:, amount:, claimants:, **attributes)
+        op = CreateClaimableBalanceOp.new(asset: asset, amount: amount, claimants: claimants)
+
+        make(attributes.merge(body: [:create_claimable_balance, op]))
+      end
+
+      def claim_claimable_balance(balance_id:, **attributes)
+        op = ClaimClaimableBalanceOp.new(balance_id: balance_id)
+
+        make(attributes.merge(body: [:claim_claimable_balance, op]))
+      end
+
       def manage_sell_offer(attributes = {})
         buying = attributes[:buying]
         if buying.is_a?(Array)

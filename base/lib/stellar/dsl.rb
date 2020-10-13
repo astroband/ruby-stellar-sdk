@@ -1,5 +1,30 @@
 module Stellar
   module DSL
+    # Constructs a new ClaimPredicate using DSL
+    #
+    # @example fulfilled during [T+5min, T+60min] period, where T refers to claimable balance entry creation time
+    #   Stellar::ClaimPredicate { before_relative_time(1.hour) & ~before_relative_time(5.minutes) }
+    #
+    # @example not fulfilled starting from today midnight until tomorrow midnight,
+    #   Stellar::ClaimPredicate { before_absolute_time(Date.today.end_of_day) | ~before_absolute_time(Date.tomorrow.end_of_day) }
+    #
+    # @example always fulfilled
+    #   Stellar::ClaimPredicate { }
+    def ClaimPredicate(&block)
+      return ClaimPredicate.unconditional unless block
+      ClaimPredicate.construct(&block)
+    end
+
+    def Claimant(destination, &block)
+      Claimant.new(
+        ClaimantType.claimant_type_v0,
+        Claimant::V0.new(
+          destination: KeyPair(destination).account_id,
+          predicate: ClaimPredicate(&block)
+        )
+      )
+    end
+
     def Asset(subject = nil)
       case subject
       when Asset

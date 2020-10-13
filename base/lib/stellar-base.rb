@@ -5,6 +5,8 @@ require "active_support/core_ext/object/blank"
 require "active_support/core_ext/enumerable"
 require "active_support/core_ext/kernel/reporting"
 
+require_relative "stellar/ext/xdr"
+
 # See ../generated for code-gen'ed files
 silence_warnings do
   require "stellar-base-generated"
@@ -20,6 +22,7 @@ Stellar::ONE = 1_0000000
 
 require_relative "./stellar/account_flags"
 require_relative "./stellar/asset"
+require_relative "./stellar/claim_predicate"
 require_relative "./stellar/key_pair"
 require_relative "./stellar/operation"
 require_relative "./stellar/path_payment_strict_receive_result"
