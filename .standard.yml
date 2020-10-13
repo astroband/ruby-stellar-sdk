@@ -4,6 +4,7 @@ ruby_version: 2.2.2
 default_ignores: false
 
 ignore:
+  - bin/*
   - base/generated/**/*
   - base/examples/**/*
   - sdk/examples/**/*

@@ -1,8 +1,16 @@
 GIT
-  remote: https://github.com/astroband/xdrgen.git
-  revision: a22b804ff565d1e8e333cc69a373f09fc15fdb27
+  remote: https://github.com/astroband/ruby-xdr.git
+  revision: d7fc0b9a1bc97edeffa43698eb3dab408deb7f6d
   specs:
-    xdrgen (0.0.1)
+    xdr (3.0.1)
+      activemodel (>= 4.2, < 7.0)
+      activesupport (>= 4.2, < 7.0)
+
+GIT
+  remote: https://github.com/astroband/xdrgen.git
+  revision: 4c85a490b22536ea37f840f876d104d53eb91f7b
+  specs:
+    xdrgen (0.1.0)
       activesupport (>= 5.0.0, < 7.0)
       memoist (~> 0.11)
       slop (>= 3.4.0, < 5.0)
@@ -41,8 +49,10 @@ GEM
       zeitwerk (~> 2.2, >= 2.2.2)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
+    amazing_print (1.2.1)
     ast (2.4.1)
     base32 (0.3.4)
+    break (0.21.0)
     bundler-audit (0.7.0.1)
       bundler (>= 1.2.0, < 3)
       thor (>= 0.18, < 2)
@@ -124,6 +134,9 @@ GEM
     pry-doc (1.1.0)
       pry (~> 0.11)
       yard (~> 0.9.11)
+    pry-docmore (0.1.1)
+      pry
+      pry-doc
     public_suffix (4.0.6)
     rainbow (3.0.0)
     rake (13.0.1)
@@ -194,9 +207,6 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
-    xdr (3.0.1)
-      activemodel (>= 5.2.0)
-      activesupport (>= 5.2.0)
     yard (0.9.25)
     zeitwerk (2.4.0)
 
@@ -205,6 +215,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  amazing_print
+  break
   bundler-audit
   faraday
   faraday_middleware
@@ -215,16 +227,18 @@ DEPENDENCIES
   octokit
   pry
   pry-doc
+  pry-docmore
   rake
   rspec
   rspec-its
   simplecov
   simplecov_json_formatter
-  standard (= 0.5.2)
+  standard
   stellar-base!
   stellar-sdk!
   vcr
   webmock
+  xdr!
   xdrgen!
   yard
 

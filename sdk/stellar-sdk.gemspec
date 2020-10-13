@@ -15,6 +15,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir["lib/**/*"]
   spec.extra_rdoc_files += Dir["README*", "LICENSE*", "CHANGELOG*"]
   spec.require_paths = ["lib"]
+  spec.bindir = "exe"
 
   spec.metadata = {
     "documentation_uri" => "https://rubydoc.info/gems/stellar-sdk/#{version}/",

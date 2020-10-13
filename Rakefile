@@ -11,7 +11,7 @@ desc "Run spec task for all projects"
 task :spec do
   errors = []
   GEMS.each do |gem|
-    system(%(cd #{gem} && #{$0} spec --trace)) || errors << gem
+    system(%(cd #{gem} && bundle exec rake spec --trace)) || errors << gem
   end
   fail("Errors in #{errors.join(", ")}") unless errors.empty?
 end

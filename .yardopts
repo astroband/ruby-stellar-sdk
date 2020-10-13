@@ -2,6 +2,9 @@
 --protected
 --no-private
 --embed-mixin ClassMethods
-lib/**/*.rb
+--embed-mixin FactoryMethods
+base/generated/**/*.rb
+base/lib/**/*.rb
+sdk/lib/**/*.rb
 -
-doc/*.md
+README

@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gem "stellar-base", path: "./base"
 gem "stellar-sdk", path: "./sdk"
+gem "xdr", github: "astroband/ruby-xdr"
 gem "xdrgen", github: "astroband/xdrgen", group: :development
 
 gem "rake"
@@ -20,15 +21,18 @@ group :development, :test do
   gem "rspec-its"
   gem "simplecov", require: false
   gem "simplecov_json_formatter"
-  gem "standard", "0.5.2", require: false
+  gem "standard", require: false
   gem "vcr"
   gem "webmock"
 end
 
 group :development do
+  gem "amazing_print"
+  gem "break"
   gem "gem-release"
   gem "guard-rspec"
   gem "pry"
   gem "pry-doc"
+  gem "pry-docmore"
   gem "netrc"
 end

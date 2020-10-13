@@ -20,6 +20,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir["lib/**/*", "generated/**/*"]
   spec.extra_rdoc_files += Dir["README*", "LICENSE*", "CHANGELOG*"]
   spec.require_paths = %w[generated lib]
+  spec.bindir = "exe"
 
   spec.metadata = {
     "documentation_uri" => "https://rubydoc.info/gems/stellar-base/#{version}/",
