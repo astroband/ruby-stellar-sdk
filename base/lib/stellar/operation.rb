@@ -212,6 +212,16 @@ module Stellar
         make(attributes.merge(body: [:claim_claimable_balance, op]))
       end
 
+      def begin_sponsoring_future_reserves(sponsored_keypair:, **attributes)
+        op = BeginSponsoringFutureReservesOp.new(sponsored_id: sponsored_keypair.account_id)
+
+        make(attributes.merge(body: [:begin_sponsoring_future_reserves, op]))
+      end
+
+      def end_sponsoring_future_reserves(**attributes)
+        make(attributes.merge(body: [:end_sponsoring_future_reserves]))
+      end
+
       def manage_sell_offer(attributes = {})
         buying = attributes[:buying]
         if buying.is_a?(Array)
