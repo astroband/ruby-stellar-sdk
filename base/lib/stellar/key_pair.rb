@@ -1,40 +1,44 @@
 module Stellar
   class KeyPair
-    def self.from_seed(seed)
-      seed_bytes = Util::StrKey.check_decode(:seed, seed)
-      from_raw_seed seed_bytes
+    module FactoryMethods
+      def from_seed(seed)
+        seed_bytes = Util::StrKey.check_decode(:seed, seed)
+        from_raw_seed seed_bytes
+      end
+
+      def from_raw_seed(seed_bytes)
+        secret_key = RbNaCl::SigningKey.new(seed_bytes)
+        public_key = secret_key.verify_key
+        new(public_key, secret_key)
+      end
+
+      def from_public_key(pk_bytes)
+        public_key = RbNaCl::VerifyKey.new(pk_bytes)
+        new(public_key)
+      end
+
+      def from_address(address)
+        pk_bytes = Util::StrKey.check_decode(:account_id, address)
+        from_public_key(pk_bytes)
+      end
+
+      def random
+        secret_key = RbNaCl::SigningKey.generate
+        public_key = secret_key.verify_key
+        new(public_key, secret_key)
+      end
+
+      def from_network_passphrase(passphrase)
+        network_id = Digest::SHA256.digest(passphrase)
+        from_raw_seed network_id
+      end
+
+      def master
+        from_raw_seed(Stellar.current_network_id)
+      end
     end
 
-    def self.from_raw_seed(seed_bytes)
-      secret_key = RbNaCl::SigningKey.new(seed_bytes)
-      public_key = secret_key.verify_key
-      new(public_key, secret_key)
-    end
-
-    def self.from_public_key(pk_bytes)
-      public_key = RbNaCl::VerifyKey.new(pk_bytes)
-      new(public_key)
-    end
-
-    def self.from_address(address)
-      pk_bytes = Util::StrKey.check_decode(:account_id, address)
-      from_public_key(pk_bytes)
-    end
-
-    def self.random
-      secret_key = RbNaCl::SigningKey.generate
-      public_key = secret_key.verify_key
-      new(public_key, secret_key)
-    end
-
-    def self.from_network_passphrase(passphrase)
-      network_id = Digest::SHA256.digest(passphrase)
-      from_raw_seed network_id
-    end
-
-    def self.master
-      from_raw_seed(Stellar.current_network_id)
-    end
+    extend FactoryMethods
 
     def initialize(public_key, secret_key = nil)
       @public_key = public_key
@@ -114,6 +118,10 @@ module Stellar
       false
     rescue RbNaCl::BadSignatureError
       false
+    end
+
+    def to_keypair
+      self
     end
   end
 end

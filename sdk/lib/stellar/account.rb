@@ -66,6 +66,10 @@ module Stellar
     def initialize(keypair)
       @keypair = keypair
     end
+
+    def to_keypair
+      keypair
+    end
   end
 
   class AccountNotFound < StandardError
