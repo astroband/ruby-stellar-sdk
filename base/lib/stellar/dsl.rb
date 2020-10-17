@@ -12,7 +12,7 @@ module Stellar
     #   Stellar::ClaimPredicate { }
     def ClaimPredicate(&block)
       return ClaimPredicate.unconditional unless block
-      ClaimPredicate.construct(&block)
+      ClaimPredicate.compose(&block)
     end
 
     def Claimant(destination, &block)

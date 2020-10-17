@@ -24,7 +24,11 @@ end
 
 
 network_passphrase = Stellar::Networks::TESTNET
+
+# https://stellar.expert/explorer/testnet/account/GCLR75LIUXITGNHSKF7WAEJEWZTIVACKHFMYZTQCP4SKW5MCFXMZODWM
 sponsor_keypair = KeyPair("SAR2GU5YPVG2Y5I4OSQN2O3WTGSTTENSNUOVNO2LHPMC4B32W4Z2YNPB")
+
+# https://stellar.expert/explorer/testnet/account/GDQLZTJBZT2KSDYWTS6TGCVSPNG6XXOLBMG3SXVFENASZTPKN4UPNAYV
 claimant_keypair = KeyPair("SDHNCLQ2JJDGBCZFLSIP5PGHFJXZMA6SH4Y5PRT4HJLR7ZYFAL74VSCU")
 
 tx_create = Stellar::TransactionBuilder.create_claimable_balance(

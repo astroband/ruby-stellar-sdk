@@ -17,7 +17,7 @@ RSpec.describe Stellar::ClaimPredicate do
 
     context "with incorrect args" do
       let(:timestamp) { "abc" }
-      specify { expect { predicate }.to raise_error(ArgumentError) }
+      specify { expect { predicate }.to raise_error(TypeError) }
     end
   end
 
@@ -45,7 +45,7 @@ RSpec.describe Stellar::ClaimPredicate do
 
     context "with incorrect arg" do
       let(:other) { "abc" }
-      specify { expect { call }.to raise_error(ArgumentError) }
+      specify { expect { call }.to raise_error(TypeError) }
     end
   end
 
@@ -60,7 +60,7 @@ RSpec.describe Stellar::ClaimPredicate do
 
     context "with incorrect arg" do
       let(:other) { "abc" }
-      specify { expect { call }.to raise_error(ArgumentError) }
+      specify { expect { call }.to raise_error(TypeError) }
     end
   end
 
