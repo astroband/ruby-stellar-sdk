@@ -47,16 +47,3 @@ XDR::Union.define_method(:attribute) do |attr|
   return unless @arm.to_s == attr
   get
 end
-
-# Fix for SomeStruct.from_xdr(string, encoding) not supporting passing
-# symbols for encoding
-module Stellar
-  module ConvertsToXDRExt
-    # @param string [#to_s] string to be decoded as XDR
-    # @param encoding [:raw|:hex|:base64|#to_s] if string needs to be decoded first
-    def from_xdr(string, encoding = :raw)
-      super(string, encoding.to_s)
-    end
-  end
-end
-XDR::Concerns::ConvertsToXDR.prepend(Stellar::ConvertsToXDRExt)

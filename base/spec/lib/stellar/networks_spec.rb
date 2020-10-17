@@ -57,12 +57,10 @@ RSpec.describe Stellar, ".on_network" do
   end
 
   it "resets the network value when an error is raised" do
-    begin
-      Stellar.on_network "foo" do
-        raise "kablow"
-      end
-    rescue
-      expect(Stellar.current_network).to_not eql("foo")
+    Stellar.on_network "foo" do
+      raise "kablow"
     end
+  rescue
+    expect(Stellar.current_network).to_not eql("foo")
   end
 end

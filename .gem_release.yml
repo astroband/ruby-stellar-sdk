@@ -1,0 +1,4 @@
+bump:
+  recurse: true
+  sign: true
+  skip_ci: true

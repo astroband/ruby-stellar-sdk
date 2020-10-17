@@ -12,15 +12,20 @@ addons:
   apt:
   - libsodium-dev
 
+env:
+  global: JRUBY_OPTS="--debug"
 rvm:
-- 2.5
-- 2.6
+- jruby-9.2
 - 2.7
+- 2.6
+- 2.5
+script: bin/rake spec
+
 jobs:
   fast_finish: true
   include:
-  - rvm: jruby-9.2.13.0
-    env: JRUBY_OPTS="--debug"
+  - rvm: 2.7
+    script: bin/rake
 
 before_install:
 - yes | gem update --system --force

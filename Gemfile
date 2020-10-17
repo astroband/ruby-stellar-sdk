@@ -29,7 +29,7 @@ end
 group :development do
   gem "amazing_print"
   gem "break"
-  gem "gem-release"
+  gem "gem-release", require: false
   gem "guard-rspec"
   gem "pry"
   gem "pry-doc"
