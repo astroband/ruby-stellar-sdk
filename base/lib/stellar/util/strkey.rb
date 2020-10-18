@@ -44,10 +44,10 @@ module Stellar
 
       def self.check_decode(expected_version, str)
         decoded = begin
-                    Base32.decode(str)
-                  rescue
-                    raise ArgumentError, "Invalid base32 string"
-                  end
+          Base32.decode(str)
+        rescue
+          raise ArgumentError, "Invalid base32 string"
+        end
         version_byte = decoded[0]
         payload = decoded[1...-2]
         check = decoded[-2..-1]

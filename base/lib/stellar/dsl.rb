@@ -29,11 +29,11 @@ module Stellar
       case subject
       when Asset
         subject
-      when nil, /^(XLM-)?native$/
+      when nil, /^(XLM[-:])?native$/
         Asset.native
-      when /^([0-9A-Z]{1,4})-(G[A-Z0-9]{55})$/
+      when /^([0-9A-Z]{1,4})[-:](G[A-Z0-9]{55})$/
         Asset.alphanum4($1, KeyPair($2))
-      when /^([0-9A-Z]{5,12})-(G[A-Z0-9]{55})$/
+      when /^([0-9A-Z]{5,12})[-:](G[A-Z0-9]{55})$/
         Asset.alphanum12($1, KeyPair($2))
       else
         raise TypeError, "Cannot convert #{subject.inspect} to Stellar::Asset"
@@ -58,7 +58,25 @@ module Stellar
       when nil
         KeyPair.random
       else
-        raise TypeError, "Cannot convert #{subject.inspect} to Stellar::KeyPair"
+        raise TypeError, "cannot convert #{subject.inspect} to Stellar::KeyPair"
+      end
+    end
+
+    # Provides conversion from different input types into the SignerKey to use in ManageData operation.
+    # @param input [String|zStellar::Account|Stellar::PublicKey|Stellar::SignerKey|Stellar::Keypair] subject.
+    # @return [Stellar::SignerKey] Stellar::Keypair instance.
+    def SignerKey(input = nil)
+      case input
+      when Transaction
+        SignerKey.pre_auth_tx(input.hash)
+      when /^[0-9A-Za-z+\/=]{44}$/
+        SignerKey.hash_x(Stellar::Convert.from_base64(input))
+      when /^[0-9a-f]{64}$/
+        SignerKey.hash_x(Stellar::Convert.from_hex(input))
+      when /^.{32}$/
+        SignerKey.hash_x(input)
+      else
+        SignerKey.ed25519(KeyPair(input))
       end
     end
   end

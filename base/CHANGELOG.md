@@ -46,7 +46,7 @@ bumps.  A breaking change will get clearly notified in this log.
         )
         
         ```
-      - Add `createClaimableBalance` and `claim_claimable_balance` helpers to Operation
+      - Extend Operation with `create_claimable_balance` and `claim_claimable_balance` helpers
       - Add Claimant and ClaimPredicate DSL methods to reduce the noise.
         ```
         include Stellar::DSL
@@ -64,6 +64,18 @@ bumps.  A breaking change will get clearly notified in this log.
           )
         ])
         ```
+  - Add [CAP-33 Sponsored Reserves](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0033.md) support
+    - Extend the operation class with helpers that allow sponsoring reserves and also revoke sponsorships.
+      - `Operation.begin_sponsoring_future_reserves`
+      - `Operation.end_sponsoring_future_reserves`
+      - `Operation.revoke_sponsorship(account_id:)`
+      - `Operation.revoke_sponsorship(account_id:, asset:)`
+      - `Operation.revoke_sponsorship(account_id:, offer_id:)`
+      - `Operation.revoke_sponsorship(account_id:, data_name:)`
+      - `Operation.revoke_sponsorship(account_id:, balance_id:)`
+      - `Operation.revoke_sponsorship(account_id:, signer:)`
+        
+
 ## [0.23.1](https://github.com/stellar/ruby-stellar-sdk/compare/v0.23.1...v0.23.0) - 2020-06-18
 ### Added
 - Transaction builder now builds V1 transactions

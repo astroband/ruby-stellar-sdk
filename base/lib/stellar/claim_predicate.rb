@@ -102,7 +102,7 @@ module Stellar
       raise TypeError, "no conversion from #{other.class.name} to ClaimPredicate" unless ClaimPredicate === other
       ClaimPredicate.new(ClaimPredicateType::AND, [self, other])
     end
-    alias & and
+    alias_method :&, :and
 
     # Constructs an `or` claim predicate.
     #
@@ -115,7 +115,7 @@ module Stellar
       raise TypeError, "no conversion from #{other.class.name} to ClaimPredicate" unless ClaimPredicate === other
       ClaimPredicate.new(ClaimPredicateType::OR, [self, other])
     end
-    alias | or
+    alias_method :|, :or
 
     # Constructs a `not` claim predicate.
     #
@@ -125,6 +125,6 @@ module Stellar
     def not
       ClaimPredicate.new(ClaimPredicateType::NOT, self)
     end
-    alias ~@ not
+    alias_method :~@, :not
   end
 end
