@@ -1,5 +1,9 @@
 version: ~> 1.0
 
+branches:
+  except:
+  - develop
+
 dist: focal
 os: linux
 virt: lxd
