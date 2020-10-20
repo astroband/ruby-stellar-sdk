@@ -12,18 +12,18 @@ module Stellar
   #        methods of specifying a network if you need two threads in the same process to communicate with
   #        different networks
   #
-  # @see Stellar.default_network
   # @see Stellar.on_network
-  def self.default_network=(passphrase)
-    @default_network = passphrase
-  end
+  mattr_accessor :default_network, default: Networks::TESTNET
 
-  # Returns the passphrase for the currently-configured network, as set by Stellar.default_network
-  # or Stellar.on_network
+  # Stellar network passphrase selected for current thread
+  #
+  # @see Stellar.current_network
+  # @see Stellar.on_network
+  thread_mattr_accessor :network
+
+  # Returns the passphrase for the network currently active per-thread with a fallback to `Stellar.default_network`
   def self.current_network
-    Thread.current["stellar_network_passphrase"] ||
-      @default_network ||
-      Stellar::Networks::TESTNET
+    network.presence || default_network
   end
 
   # Returns the id for the currently configured network, suitable for use in generating
@@ -34,10 +34,10 @@ module Stellar
 
   # Executes the provided block in the context of the provided network.
   def self.on_network(passphrase, &block)
-    old = Thread.current["stellar_network_passphrase"]
-    Thread.current["stellar_network_passphrase"] = passphrase
+    old = network
+    self.network = passphrase
     block.call
   ensure
-    Thread.current["stellar_network_passphrase"] = old
+    self.network = old
   end
 end

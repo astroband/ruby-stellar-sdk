@@ -160,5 +160,39 @@ module Stellar
         raise ArgumentError, "evaluation is not implemented for #{switch.name} predicate"
       end
     end
+
+    def describe
+      case switch
+      when ClaimPredicateType::UNCONDITIONAL
+        "always"
+      when ClaimPredicateType::BEFORE_RELATIVE_TIME
+        dur = ActiveSupport::Duration.build(value)
+        "less than #{dur.inspect} since creation"
+      when ClaimPredicateType::BEFORE_ABSOLUTE_TIME
+        "before #{Time.at(value).to_formatted_s(:db)}"
+      when ClaimPredicateType::AND
+        value.map(&:describe).join(" and ")
+      when ClaimPredicateType::OR
+        "(" << value.map(&:describe).join(" or ") << ")"
+      when ClaimPredicateType::NOT
+        case value.switch
+        when ClaimPredicateType::UNCONDITIONAL
+          "never"
+        when ClaimPredicateType::BEFORE_RELATIVE_TIME
+          dur = ActiveSupport::Duration.build(value.value)
+          "#{dur.inspect} or more since creation"
+        when ClaimPredicateType::BEFORE_ABSOLUTE_TIME
+          "after #{Time.at(value.value).to_formatted_s(:db)}"
+        else
+          "not (#{value.describe})"
+        end
+      else
+        raise ArgumentError, "evaluation is not implemented for #{switch.name} predicate"
+      end
+    end
+
+    def inspect
+      "#<ClaimPredicate: #{describe}>"
+    end
   end
 end

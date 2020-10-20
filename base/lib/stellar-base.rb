@@ -4,6 +4,7 @@ require "digest/sha2"
 require "active_support/core_ext/object/blank"
 require "active_support/core_ext/enumerable"
 require "active_support/core_ext/kernel/reporting"
+require "active_support/core_ext/module/attribute_accessors_per_thread"
 
 require_relative "stellar/ext/xdr"
 

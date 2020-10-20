@@ -179,7 +179,7 @@ RSpec.describe Stellar::Operation do
 
   describe ".begin_sponsoring_future_reserves" do
     before { attrs.merge!(sponsored: account) }
-    subject(:operation) { described_class.begin_sponsoring_future_reserves(attrs) }
+    subject(:operation) { described_class.begin_sponsoring_future_reserves(**attrs) }
 
     it_behaves_like "XDR serializable"
     its("source_account") { is_expected.to eq(sponsor.muxed_account) }
@@ -190,7 +190,7 @@ RSpec.describe Stellar::Operation do
 
   describe ".end_sponsoring_future_reserves" do
     before { attrs.merge!(source_account: account) }
-    subject(:operation) { described_class.end_sponsoring_future_reserves(attrs) }
+    subject(:operation) { described_class.end_sponsoring_future_reserves(**attrs) }
 
     it_behaves_like "XDR serializable"
     its("source_account") { is_expected.to eq(account.muxed_account) }
