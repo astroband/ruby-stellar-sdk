@@ -64,6 +64,24 @@ bumps.  A breaking change will get clearly notified in this log.
           )
         ])
         ```
+      - Add simple predicate evaluation feature so that developers can sanity-check their predicates
+        ```
+        include Stellar::DSL
+        
+        predicate = ClaimPredicate { before_relative_time(1.week) & ~before_relative_time(10.seconds) }
+        
+        # predicate.evaluate(balance_creation_time, claim_evaluation_time)
+        predicate.evaluate("2020-10-20 09:00:00", "2020-10-20 09:00:05") # => false
+        predicate.evaluate("2020-10-20 09:00:00", "2020-10-20 09:01:00") # => true
+        predicate.evaluate("2020-10-20 09:00:00", "2020-10-27 08:50:00") # => true
+        
+        # you can also pass an instance of ActiveSupport::Duration as a second parameter, in this case
+        # it works as a relative offset from `balance_creation_time` 
+        predicate.evaluate("2020-10-20 09:00:00", 1.week + 1.second) # => false
+        
+        # it is effectively the same as
+        predicate.evaluate("2020-10-20 09:00:00", "2020-10-27 09:00:01") # => false                 
+        ``` 
   - Add [CAP-33 Sponsored Reserves](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0033.md) support
     - Extend the operation class with helpers that allow sponsoring reserves and also revoke sponsorships.
       - `Operation.begin_sponsoring_future_reserves`

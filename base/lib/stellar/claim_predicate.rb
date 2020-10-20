@@ -126,5 +126,39 @@ module Stellar
       ClaimPredicate.new(ClaimPredicateType::NOT, self)
     end
     alias_method :~@, :not
+
+    # Evaluates the predicate value for provided inputs.
+    #
+    # @param created_at [#to_time|#to_int] closing time of the ledger containing CreateClaimableBalance operation
+    # @param claiming_at [#to_time|#to_int|ActiveSupport::Duration] time point to evaluate predicate at, either
+    #   absolute time or duration relative to `created_at`. In reality predicate will be evaluated by stellar-core
+    #   using the closing time of a ledger containing ClaimClaimableBalance operation, in either successful
+    #   or failed state.
+    #
+    # @return [Boolean] `true` if this predicate would allow claiming the balance, `false` otherwise
+    def evaluate(created_at, claiming_at)
+      created_at = created_at.to_time if created_at.respond_to?(:to_time)
+      claiming_at = created_at + claiming_at if claiming_at.is_a?(ActiveSupport::Duration)
+      claiming_at = claiming_at.to_time if claiming_at.respond_to?(:to_time)
+
+      return false if claiming_at < created_at
+
+      case switch
+      when ClaimPredicateType::UNCONDITIONAL
+        true
+      when ClaimPredicateType::BEFORE_RELATIVE_TIME
+        Integer(claiming_at) < Integer(created_at) + value
+      when ClaimPredicateType::BEFORE_ABSOLUTE_TIME
+        Integer(claiming_at).to_i < value
+      when ClaimPredicateType::AND
+        value[0].evaluate(created_at, claiming_at) && value[1].evaluate(created_at, claiming_at)
+      when ClaimPredicateType::OR
+        value[0].evaluate(created_at, claiming_at) || value[1].evaluate(created_at, claiming_at)
+      when ClaimPredicateType::NOT
+        !value.evaluate(created_at, claiming_at)
+      else
+        raise ArgumentError, "evaluation is not implemented for #{switch.name} predicate"
+      end
+    end
   end
 end
