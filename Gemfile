@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gem "stellar-base", path: "./base"
 gem "stellar-sdk", path: "./sdk"
-gem "xdr", github: "astroband/ruby-xdr"
+# gem "xdr", github: "astroband/ruby-xdr"
 gem "xdrgen", github: "astroband/xdrgen", group: :development
 
 gem "rake"

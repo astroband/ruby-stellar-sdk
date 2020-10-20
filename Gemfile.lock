@@ -1,12 +1,4 @@
 GIT
-  remote: https://github.com/astroband/ruby-xdr.git
-  revision: 2870d47459e815f59fc7e1f67c71b4c05cab75bb
-  specs:
-    xdr (3.0.1)
-      activemodel (>= 4.2, < 7.0)
-      activesupport (>= 4.2, < 7.0)
-
-GIT
   remote: https://github.com/astroband/xdrgen.git
   revision: 4c85a490b22536ea37f840f876d104d53eb91f7b
   specs:
@@ -24,7 +16,7 @@ PATH
       base32 (>= 0.3.0, < 1.0)
       digest-crc (>= 0.5.0, < 1.0)
       rbnacl (>= 6.0.0, < 8.0)
-      xdr (>= 3.0.1, < 4.0)
+      xdr (>= 3.0.2, < 4.0)
 
 PATH
   remote: sdk
@@ -65,8 +57,9 @@ GEM
       rake (~> 13.0)
     docile (1.3.2)
     excon (0.78.0)
-    faraday (1.0.1)
+    faraday (1.1.0)
       multipart-post (>= 1.2, < 3)
+      ruby2_keywords
     faraday-digestauth (0.4.1)
       faraday (>= 0.7)
       net-http-digest_auth (~> 1.4)
@@ -178,6 +171,7 @@ GEM
       rubocop (>= 0.87.0)
       rubocop-ast (>= 0.4.0)
     ruby-progressbar (1.10.1)
+    ruby2_keywords (0.0.2)
     sawyer (0.8.2)
       addressable (>= 2.3.5)
       faraday (> 0.8, < 2.0)
@@ -208,6 +202,9 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
+    xdr (3.0.2)
+      activemodel (>= 4.2, < 7.0)
+      activesupport (>= 4.2, < 7.0)
     yard (0.9.25)
     zeitwerk (2.4.0)
 
@@ -239,7 +236,6 @@ DEPENDENCIES
   stellar-sdk!
   vcr
   webmock
-  xdr!
   xdrgen!
   yard
 
