@@ -19,7 +19,7 @@ group :development, :test do
   gem "octokit"
   gem "rspec"
   gem "rspec-its"
-  gem "simplecov", require: false
+  gem "simplecov", "~> 0.17.0", require: false
   gem "simplecov_json_formatter"
   gem "standard", require: false
   gem "vcr"

@@ -1,5 +1,4 @@
 require:
-- rubocop-rspec
 - standard
 
 inherit_gem:
