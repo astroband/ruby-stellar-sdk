@@ -22,7 +22,8 @@ require 'xdr'
 #       case txBAD_AUTH_EXTRA:
 #       case txINTERNAL_ERROR:
 #       case txNOT_SUPPORTED:
-#           // txFEE_BUMP_INNER_FAILED is not included
+#       // txFEE_BUMP_INNER_FAILED is not included
+#       case txBAD_SPONSORSHIP:
 #           void;
 #       }
 #
@@ -45,6 +46,7 @@ module Stellar
       switch :tx_bad_auth_extra
       switch :tx_internal_error
       switch :tx_not_supported
+      switch :tx_bad_sponsorship
 
       attribute :results, XDR::VarArray[OperationResult]
     end

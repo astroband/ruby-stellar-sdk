@@ -168,7 +168,6 @@ module Stellar
         }))
       end
 
-      #
       # Helper method to create a valid ChangeTrustOp, wrapped
       # in the necessary XDR structs to be included within a
       # transactions `operations` array.
@@ -198,6 +197,64 @@ module Stellar
         make(attributes.merge({
           body: [:change_trust, op]
         }))
+      end
+
+      # Helper method to create a valid CreateClaimableBalanceOp, ready to be used
+      # within a transactions `operations` array.
+      #
+      # @see Stellar::DSL::Claimant
+      # @see https://github.com/astroband/ruby-stellar-sdk/tree/master/base/examples/claimable_balances.rb
+      #
+      # @param asset [Asset] the asset to transfer to a claimable balance
+      # @param amount [Fixnum] the amount of `asset` to put into a claimable balance
+      # @param claimants [Array<Claimant>] accounts authorized to claim the balance in the future
+      #
+      # @return [Operation] the built operation
+      def create_claimable_balance(asset:, amount:, claimants:, **attributes)
+        op = CreateClaimableBalanceOp.new(asset: asset, amount: amount, claimants: claimants)
+
+        make(attributes.merge(body: [:create_claimable_balance, op]))
+      end
+
+      # Helper method to create a valid CreateClaimableBalanceOp, ready to be used
+      # within a transactions `operations` array.
+      #
+      # @see Stellar::DSL::Claimant
+      # @see https://github.com/astroband/ruby-stellar-sdk/tree/master/base/examples/claimable_balances.rb
+      #
+      # @param balance_id [ClaimableBalanceID] unique ID of claimable balance
+      #
+      # @return [Operation] the built operation, containing a Stellar::ChangeTrustOp body
+      def claim_claimable_balance(balance_id:, **attributes)
+        op = ClaimClaimableBalanceOp.new(balance_id: balance_id)
+
+        make(attributes.merge(body: [:claim_claimable_balance, op]))
+      end
+
+      def begin_sponsoring_future_reserves(sponsored:, **attributes)
+        op = BeginSponsoringFutureReservesOp.new(
+          sponsored_id: Stellar.KeyPair(sponsored).account_id
+        )
+
+        make(attributes.merge(body: [:begin_sponsoring_future_reserves, op]))
+      end
+
+      def end_sponsoring_future_reserves(**attributes)
+        make(attributes.merge(body: [:end_sponsoring_future_reserves]))
+      end
+
+      # @param sponsored [#to_keypair] owner of sponsored entry
+      def revoke_sponsorship(sponsored:, **attributes)
+        key_fields = attributes.slice(:offer_id, :data_name, :balance_id, :asset, :signer)
+        raise ArgumentError, "conflicting attributes: #{key_fields.keys.join(", ")}" if key_fields.size > 1
+        account_id = Stellar.KeyPair(sponsored).account_id
+        key, value = key_fields.first
+        op = if key == :signer
+          RevokeSponsorshipOp.signer(account_id: account_id, signer_key: Stellar.SignerKey(value))
+        else
+          RevokeSponsorshipOp.ledger_key(LedgerKey.from(account_id: account_id, **key_fields))
+        end
+        make(attributes.merge(body: [:revoke_sponsorship, op]))
       end
 
       def manage_sell_offer(attributes = {})

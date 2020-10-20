@@ -1,0 +1,66 @@
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  build-base:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.7
+        bundler-cache: true
+    - name: Run tests
+      run: pushd base; ../bin/rake spec; popd
+    - name: Run linters
+      run: pushd base; ../bin/bundle exec standardrb -f json -o coverage/.rubocop.json; popd
+    - name: Analyze with SonarCloud
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        projectBaseDir: base
+
+  build-sdk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+          bundler-cache: true
+      - name: Copy config
+        run: cp sdk/spec/config.yml.sample sdk/spec/config.yml
+      - name: Run tests
+        run: bin/rake spec
+      - name: Run linters
+        run: pushd sdk; ../bin/bundle exec standardrb -f json -o coverage/.rubocop.json; popd
+      - name: Analyze with SonarCloud
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: sdk
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: [2.6, 2.5, jruby, truffleruby]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Copy config
+        run: cp sdk/spec/config.yml.sample sdk/spec/config.yml
+      - name: Run test
+        run: bin/rake spec

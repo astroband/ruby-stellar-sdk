@@ -11,12 +11,12 @@ desc "Run spec task for all projects"
 task :spec do
   errors = []
   GEMS.each do |gem|
-    system(%(cd #{gem} && #{$0} spec --trace)) || errors << gem
+    system(%(cd #{gem} && bundle exec rake spec --trace)) || errors << gem
   end
   fail("Errors in #{errors.join(", ")}") unless errors.empty?
 end
 
 desc "Run code quality checks"
-task code_quality: %i[bundle:audit standard]
+task lint: %i[bundle:audit standard]
 
-task default: %i[code_quality spec]
+task default: %i[lint spec]

@@ -15,6 +15,8 @@ require 'xdr'
 #           OfferEntry offer;
 #       case DATA:
 #           DataEntry data;
+#       case CLAIMABLE_BALANCE:
+#           ClaimableBalanceEntry claimableBalance;
 #       }
 #
 # ===========================================================================
@@ -23,15 +25,17 @@ module Stellar
     class Data < XDR::Union
       switch_on LedgerEntryType, :type
 
-      switch :account,   :account
-      switch :trustline, :trust_line
-      switch :offer,     :offer
-      switch :data,      :data
+      switch :account,           :account
+      switch :trustline,         :trust_line
+      switch :offer,             :offer
+      switch :data,              :data
+      switch :claimable_balance, :claimable_balance
 
-      attribute :account,    AccountEntry
-      attribute :trust_line, TrustLineEntry
-      attribute :offer,      OfferEntry
-      attribute :data,       DataEntry
+      attribute :account,           AccountEntry
+      attribute :trust_line,        TrustLineEntry
+      attribute :offer,             OfferEntry
+      attribute :data,              DataEntry
+      attribute :claimable_balance, ClaimableBalanceEntry
     end
   end
 end

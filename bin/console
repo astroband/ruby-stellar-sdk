@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
+require "break"
 require "stellar-sdk"
 require "pry"
-require "pry-byebug"
 Pry.start

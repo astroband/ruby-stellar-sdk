@@ -33,6 +33,12 @@ require 'xdr'
 #           AccountID accountID;
 #           string64 dataName;
 #       } data;
+#   
+#   case CLAIMABLE_BALANCE:
+#       struct
+#       {
+#           ClaimableBalanceID balanceID;
+#       } claimableBalance;
 #   };
 #
 # ===========================================================================
@@ -44,17 +50,20 @@ module Stellar
     autoload :TrustLine
     autoload :Offer
     autoload :Data
+    autoload :ClaimableBalance
 
     switch_on LedgerEntryType, :type
 
-    switch :account,   :account
-    switch :trustline, :trust_line
-    switch :offer,     :offer
-    switch :data,      :data
+    switch :account,           :account
+    switch :trustline,         :trust_line
+    switch :offer,             :offer
+    switch :data,              :data
+    switch :claimable_balance, :claimable_balance
 
-    attribute :account,    Account
-    attribute :trust_line, TrustLine
-    attribute :offer,      Offer
-    attribute :data,       Data
+    attribute :account,           Account
+    attribute :trust_line,        TrustLine
+    attribute :offer,             Offer
+    attribute :data,              Data
+    attribute :claimable_balance, ClaimableBalance
   end
 end

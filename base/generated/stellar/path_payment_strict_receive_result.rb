@@ -5,7 +5,8 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   union PathPaymentStrictReceiveResult switch (PathPaymentStrictReceiveResultCode code)
+#   union PathPaymentStrictReceiveResult switch (
+#       PathPaymentStrictReceiveResultCode code)
 #   {
 #   case PATH_PAYMENT_STRICT_RECEIVE_SUCCESS:
 #       struct

@@ -22,7 +22,7 @@ module Stellar
       end
 
       # Converts an Stellar::MuxedAccount to its string representation, forcing the ed25519 representation.
-      # @param [Stellar::MuxedAccount] muxed account
+      # @param muxed_account [Stellar::MuxedAccount] account
       # @return [String] "G.."-like address
       def self.encode_muxed_account(muxed_account)
         ed25519 = if muxed_account.switch == Stellar::CryptoKeyType.key_type_ed25519
@@ -36,7 +36,7 @@ module Stellar
 
       # Returns a Stellar::MuxedAccount, forcing the ed25519 discriminant
       #
-      # @param [String] address to decode to XDR
+      # @param strkey [String] address string to decode
       # @return [Stellar::MuxedAccount] MuxedAccount with ed25519 discriminant
       def self.decode_muxed_account(strkey)
         Stellar::MuxedAccount.new(:key_type_ed25519, check_decode(:account_id, strkey))
@@ -44,10 +44,10 @@ module Stellar
 
       def self.check_decode(expected_version, str)
         decoded = begin
-                    Base32.decode(str)
-                  rescue
-                    raise ArgumentError, "Invalid base32 string"
-                  end
+          Base32.decode(str)
+        rescue
+          raise ArgumentError, "Invalid base32 string"
+        end
         version_byte = decoded[0]
         payload = decoded[1...-2]
         check = decoded[-2..-1]

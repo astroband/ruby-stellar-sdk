@@ -6,6 +6,94 @@ file.  This project adheres to [Semantic Versioning](http://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
+## [Unreleased]
+### Added
+- Add conversion methods for KeyPair and Asset
+- Stellar Protocol 14 support
+  - Regenerate XDR wrappers from definitions in stellar-core 14.1.1
+  - Add [CAP-23 Two-Part Payments](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0023.md) support
+      - Add ClaimPredicate DSL methods which help with creation of claim predicates.
+        ```
+        # use class-level helpers to create simple predicates    
+        unconditional   = Stellar::ClaimPredicate.unconditional
+        before_rel_time = Stellar::ClaimPredicate.before_relative_time(1.hour)
+        before_abs_time = Stellar::ClaimPredicate.before_absolute_time(Date.tomorrow.beginning_of_day)
+    
+        # negate predicates using `~` unary operator
+        ~predicate # same as predicate.not
+            
+        # build complex predicates using `&` and `|` infix operators
+        predicate & other_predicate # same as `predicate.and(other_predicate)`
+        predicate | other_predicate # same as `predicate.or(other_predicate)`
+        
+        # quickly define complex predicates using `.compose` class method with the block 
+        unconditional = Stellar::ClaimPredicate.compose { }
+        complex = Stellar::ClaimPredicate.compose do 
+          before_relative_time(1.week) & ~before_relative_time(10.seconds) | 
+        end
+    
+        # here's what building this predicate would look like without DSL 
+        complex = Stellar::ClaimPredicate.new(
+            Stellar::ClaimPredicateType::AND, 
+            Stellar::ClaimPredicate.new(
+                Stellar::ClaimPredicateType::BEFORE_RELATIVE_TIME, 7 * 24 * 60 * 60
+            ), 
+            Stellar::ClaimPredicate.new(
+                Stellar::ClaimPredicateType::NOT, Stellar::ClaimPredicate.new(
+                    Stellar::ClaimPredicateType::BEFORE_RELATIVE_TIME, 10
+                )
+            )
+        )
+        
+        ```
+      - Extend Operation with `create_claimable_balance` and `claim_claimable_balance` helpers
+      - Add Claimant and ClaimPredicate DSL methods to reduce the noise.
+        ```
+        include Stellar::DSL
+        
+        sender = KeyPair('S....')
+        recipient = 'G....'
+        
+        op = Operation.create_claimable_balance(
+            asset: Stellar::Asset.native,
+            amount: 100,
+            claimants: [
+              Claimant(recipient) { after(10.seconds) & before(1.week) },
+              Claimant(sender), # allow unconditional claim-back 
+            ]
+          )
+        ])
+        ```
+      - Add simple predicate evaluation feature so that developers can sanity-check their predicates
+        ```
+        include Stellar::DSL
+        
+        predicate = ClaimPredicate { before_relative_time(1.week) & ~before_relative_time(10.seconds) }
+        
+        # predicate.evaluate(balance_creation_time, claim_evaluation_time)
+        predicate.evaluate("2020-10-20 09:00:00", "2020-10-20 09:00:05") # => false
+        predicate.evaluate("2020-10-20 09:00:00", "2020-10-20 09:01:00") # => true
+        predicate.evaluate("2020-10-20 09:00:00", "2020-10-27 08:50:00") # => true
+        
+        # you can also pass an instance of ActiveSupport::Duration as a second parameter, in this case
+        # it works as a relative offset from `balance_creation_time` 
+        predicate.evaluate("2020-10-20 09:00:00", 1.week + 1.second) # => false
+        
+        # it is effectively the same as
+        predicate.evaluate("2020-10-20 09:00:00", "2020-10-27 09:00:01") # => false                 
+        ``` 
+  - Add [CAP-33 Sponsored Reserves](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0033.md) support
+    - Extend the operation class with helpers that allow sponsoring reserves and also revoke sponsorships.
+      - `Operation.begin_sponsoring_future_reserves`
+      - `Operation.end_sponsoring_future_reserves`
+      - `Operation.revoke_sponsorship(account_id:)`
+      - `Operation.revoke_sponsorship(account_id:, asset:)`
+      - `Operation.revoke_sponsorship(account_id:, offer_id:)`
+      - `Operation.revoke_sponsorship(account_id:, data_name:)`
+      - `Operation.revoke_sponsorship(account_id:, balance_id:)`
+      - `Operation.revoke_sponsorship(account_id:, signer:)`
+        
+
 ## [0.23.1](https://github.com/stellar/ruby-stellar-sdk/compare/v0.23.1...v0.23.0) - 2020-06-18
 ### Added
 - Transaction builder now builds V1 transactions

@@ -42,6 +42,16 @@ require 'xdr'
 #           ManageBuyOfferOp manageBuyOfferOp;
 #       case PATH_PAYMENT_STRICT_SEND:
 #           PathPaymentStrictSendOp pathPaymentStrictSendOp;
+#       case CREATE_CLAIMABLE_BALANCE:
+#           CreateClaimableBalanceOp createClaimableBalanceOp;
+#       case CLAIM_CLAIMABLE_BALANCE:
+#           ClaimClaimableBalanceOp claimClaimableBalanceOp;
+#       case BEGIN_SPONSORING_FUTURE_RESERVES:
+#           BeginSponsoringFutureReservesOp beginSponsoringFutureReservesOp;
+#       case END_SPONSORING_FUTURE_RESERVES:
+#           void;
+#       case REVOKE_SPONSORSHIP:
+#           RevokeSponsorshipOp revokeSponsorshipOp;
 #       }
 #       body;
 #   };

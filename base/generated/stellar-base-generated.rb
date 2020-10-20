@@ -46,6 +46,10 @@ module Stellar
   autoload :Signer
   autoload :AccountFlags
   MASK_ACCOUNT_FLAGS = 0x7
+  MAX_SIGNERS = 20
+  SponsorshipDescriptor = XDR::Option[AccountID]
+  autoload :AccountEntryExtensionV2
+  autoload :AccountEntryExtensionV1
   autoload :AccountEntry
   autoload :TrustLineFlags
   MASK_TRUSTLINE_FLAGS = 1
@@ -55,7 +59,16 @@ module Stellar
   MASK_OFFERENTRY_FLAGS = 1
   autoload :OfferEntry
   autoload :DataEntry
+  autoload :ClaimPredicateType
+  autoload :ClaimPredicate
+  autoload :ClaimantType
+  autoload :Claimant
+  autoload :ClaimableBalanceIDType
+  autoload :ClaimableBalanceID
+  autoload :ClaimableBalanceEntry
+  autoload :LedgerEntryExtensionV1
   autoload :LedgerEntry
+  autoload :LedgerKey
   autoload :EnvelopeType
 end
 module Stellar
@@ -76,7 +89,13 @@ module Stellar
   autoload :AllowTrustOp
   autoload :ManageDataOp
   autoload :BumpSequenceOp
+  autoload :CreateClaimableBalanceOp
+  autoload :ClaimClaimableBalanceOp
+  autoload :BeginSponsoringFutureReservesOp
+  autoload :RevokeSponsorshipType
+  autoload :RevokeSponsorshipOp
   autoload :Operation
+  autoload :OperationID
   autoload :MemoType
   autoload :Memo
   autoload :TimeBounds
@@ -120,6 +139,16 @@ module Stellar
   autoload :ManageDataResult
   autoload :BumpSequenceResultCode
   autoload :BumpSequenceResult
+  autoload :CreateClaimableBalanceResultCode
+  autoload :CreateClaimableBalanceResult
+  autoload :ClaimClaimableBalanceResultCode
+  autoload :ClaimClaimableBalanceResult
+  autoload :BeginSponsoringFutureReservesResultCode
+  autoload :BeginSponsoringFutureReservesResult
+  autoload :EndSponsoringFutureReservesResultCode
+  autoload :EndSponsoringFutureReservesResult
+  autoload :RevokeSponsorshipResultCode
+  autoload :RevokeSponsorshipResult
   autoload :OperationResultCode
   autoload :OperationResult
   autoload :TransactionResultCode
@@ -137,7 +166,6 @@ module Stellar
   autoload :LedgerHeader
   autoload :LedgerUpgradeType
   autoload :LedgerUpgrade
-  autoload :LedgerKey
   autoload :BucketEntryType
   autoload :BucketMetadata
   autoload :BucketEntry
