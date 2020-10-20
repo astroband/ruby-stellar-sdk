@@ -4,12 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [Unreleased](https://github.com/stellar/ruby-stellar-sdk/compare/v0.23.0...v0.23.1)
 
-## [0.23.1](https://github.com/stellar/ruby-stellar-sdk/compare/v0.23.1...v0.23.0) - 2020-06-18
+## [0.24.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.23.1...v0.24.0) - 2020-10-20
+- Protocol 14 support
+
+## [0.23.1](https://github.com/stellar/ruby-stellar-sdk/compare/v0.23.0...v0.23.1) - 2020-06-18
 - Fix SEP10, considering muxed accounts
 
-## [0.23.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.23.0...v0.9.0)
+## [0.23.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.9.0...v0.23.0)
 - No changes. We bumped this version to sync `stellar-sdk` and `stellar-base` versions
 
 ## [0.9.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.9.0...v0.8.0)
