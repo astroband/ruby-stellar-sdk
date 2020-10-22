@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.bindir = "exe"
 
   spec.metadata = {
+    "github_repo" => "ssh://github.com/astroband/ruby-stellar-sdk",
     "documentation_uri" => "https://rubydoc.info/gems/stellar-base/#{version}/",
     "changelog_uri" => "https://github.com/astroband/ruby-stellar-sdk/blob/v#{version}/base/CHANGELOG.md",
     "source_code_uri" => "https://github.com/astroband/ruby-stellar-sdk/tree/v#{version}/base"
