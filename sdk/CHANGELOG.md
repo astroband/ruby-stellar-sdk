@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased](https://github.com/stellar/ruby-stellar-sdk/compare/v0.23.0...v0.23.1)
+## [Unreleased](https://github.com/stellar/ruby-stellar-sdk/compare/v0.24.0...master)
+### Changed
+- `Stellar::SEP10` is updated to comply with SEP10 v2.1.0
+  - `build_challenge_tx` now accepts `domain` instead of `anchor_name`, using the
+    old param name will now result in deprecation warning
+  - `read_challenge_tx` correctly validates multi-op challenge transactions 
+  - `verify_challenge_tx_threshold` now expects simple `{'GA...' => weight, ... }` hash for `signers`  
+### Removed:
+- Deprecated `Stellar::SEP10.verify_challenge_tx` method is removed  
 
 ## [0.24.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.23.1...v0.24.0) - 2020-10-20
 - Protocol 14 support

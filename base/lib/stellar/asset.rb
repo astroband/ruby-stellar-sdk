@@ -6,14 +6,24 @@ module Stellar
       new(:asset_type_native)
     end
 
+    # @param code   [String] asset code
+    # @param issuer [#to_keypair] asset issuer
+    #
+    # @return [Stellar::Asset::AlphaNum4] asset4 representation
     def self.alphanum4(code, issuer)
+      issuer = issuer.to_keypair if issuer.respond_to?(:to_keypair)
       raise ArgumentError, "Bad :issuer" unless issuer.is_a?(KeyPair)
       code = normalize_code(code, 4)
       an = AlphaNum4.new({asset_code: code, issuer: issuer.account_id})
       new(:asset_type_credit_alphanum4, an)
     end
 
+    # @param code   [String] asset code
+    # @param issuer [#to_keypair] asset issuer
+    #
+    # @return [Stellar::Asset::AlphaNum4] asset4 representation
     def self.alphanum12(code, issuer)
+      issuer = issuer.to_keypair if issuer.respond_to?(:to_keypair)
       raise ArgumentError, "Bad :issuer" unless issuer.is_a?(KeyPair)
       code = normalize_code(code, 12)
       an = AlphaNum12.new({asset_code: code, issuer: issuer.account_id})
