@@ -5,6 +5,8 @@ require "active_support/core_ext/object/blank"
 require "active_support/core_ext/enumerable"
 require "active_support/core_ext/kernel/reporting"
 require "active_support/core_ext/module/attribute_accessors_per_thread"
+require "active_support/core_ext/module/delegation"
+require "active_support/deprecation"
 
 require_relative "stellar/ext/xdr"
 
@@ -18,6 +20,7 @@ require_relative "stellar/base/version"
 Stellar::VERSION = Stellar::Base::VERSION
 
 Stellar::ONE = 1_0000000
+Stellar::Deprecation = ActiveSupport::Deprecation.new("next release", "stellar-base")
 
 # extensions onto the generated files must be loaded manually, below
 

@@ -2,17 +2,13 @@ RSpec.describe Stellar::TransactionEnvelope do
   let(:sender) { Stellar::KeyPair.random }
   let(:receiver) { Stellar::KeyPair.random }
   let(:transaction) do
-    tx_builder = Stellar::TransactionBuilder.new(
-      source_account: sender,
-      sequence_number: 1
-    )
-
-    op = Stellar::Operation.payment(
-      destination: receiver,
-      amount: [:native, 20000000]
-    )
-
-    tx_builder.set_timeout(0).add_operation(op).build
+    Stellar::TransactionBuilder.new(
+      source_account: sender, sequence_number: 1
+    ).add_operation(
+      Stellar::Operation.payment(
+        destination: receiver, amount: [:native, 20000000]
+      )
+    ).set_timeout(0).build
   end
 
   let(:envelope) { transaction.to_envelope(*signers) }
@@ -90,6 +86,6 @@ RSpec.describe Stellar::TransactionEnvelope do
   describe "#hash" do
     let(:signers) { [sender] }
     subject { envelope.hash }
-    it { is_expected.to eq(Digest::SHA256.digest(envelope.to_xdr)) }
+    it { is_expected.to eq(Digest::SHA256.digest(envelope.tx.signature_base)) }
   end
 end

@@ -1,13 +1,7 @@
 module Stellar
   class TransactionEnvelope
-    # Delegates any undefined method to the currently set arm
-    def method_missing(method, *args, &block)
-      value&.public_send(method, *args) || super
-    end
-
-    def respond_to_missing?(method, include_private = false)
-      %w[tx signatures].include?(method) || super
-    end
+    delegate :tx, :signatures, to: :value
+    delegate :hash, to: :tx
 
     # Checks to ensure that every signature for the envelope is
     # a valid signature of one of the provided `key_pairs`
@@ -19,21 +13,17 @@ module Stellar
     #
     # @return [Boolean] true if all signatures are from the provided key_pairs and validly sign the tx's hash
     def signed_correctly?(*key_pairs)
-      hash = tx.hash
       return false if signatures.empty?
 
-      key_index = key_pairs.index_by(&:signature_hint)
+      tx_hash = tx.hash
+      keys_by_hint = key_pairs.index_by(&:signature_hint)
 
       signatures.all? do |sig|
-        key_pair = key_index[sig.hint]
+        key_pair = keys_by_hint[sig.hint]
         break false if key_pair.nil?
 
-        key_pair.verify(sig.signature, hash)
+        key_pair.verify(sig.signature, tx_hash)
       end
-    end
-
-    def hash
-      Digest::SHA256.digest(to_xdr)
     end
 
     def merge(other)

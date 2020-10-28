@@ -192,7 +192,7 @@ RSpec.describe Stellar::KeyPair do
     context "when the key_pair has no private key" do
       let(:key_pair) { Stellar::KeyPair.from_public_key("\x00" * 32) }
 
-      it { expect { subject }.to raise_error("no private key") }
+      it { expect { subject }.to raise_error("no private key, signing is not available") }
     end
 
     context "when the key_pair has both public/private keys" do

@@ -47,14 +47,16 @@ module Stellar
       case subject
       when ->(subj) { subj.respond_to?(:to_keypair) }
         subject.to_keypair
-      when /G[A-Z0-9]{55}/
-        KeyPair.from_address(subject)
-      when /S[A-Z0-9]{55}/
-        KeyPair.from_seed(subject)
       when PublicKey
         KeyPair.from_public_key(subject.value)
       when SignerKey
         KeyPair.from_raw_seed(subject.value)
+      when /^G[A-Z0-9]{55}$/
+        KeyPair.from_address(subject.to_str)
+      when /^S[A-Z0-9]{55}$/
+        KeyPair.from_seed(subject.to_str)
+      when /^.{32}$/
+        KeyPair.from_raw_seed(subject.to_str)
       when nil
         KeyPair.random
       else

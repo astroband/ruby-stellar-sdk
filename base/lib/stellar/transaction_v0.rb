@@ -3,15 +3,7 @@ module Stellar
     include Stellar::Concerns::Transaction
 
     def to_v1
-      Transaction.new(
-        source_account: Stellar::MuxedAccount.new(:key_type_ed25519, source_account),
-        seq_num: seq_num,
-        operations: operations,
-        fee: fee,
-        memo: memo,
-        time_bounds: time_bounds,
-        ext: ext
-      )
+      Transaction.new(**attributes.except(:source_account_ed25519), source_account: source_account)
     end
 
     def to_envelope(*key_pairs)
@@ -45,7 +37,7 @@ module Stellar
     end
 
     def source_account
-      source_account_ed25519
+      Stellar::MuxedAccount.ed25519(source_account_ed25519)
     end
   end
 end
