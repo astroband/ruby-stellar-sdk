@@ -16,7 +16,7 @@ bumps.  A breaking change will get clearly notified in this log.
   - Regenerate XDR wrappers from definitions in stellar-core 14.1.1
   - Add [CAP-23 Two-Part Payments](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0023.md) support
       - Add ClaimPredicate DSL methods which help with creation of claim predicates.
-        ```
+        ```ruby
         # use class-level helpers to create simple predicates    
         unconditional   = Stellar::ClaimPredicate.unconditional
         before_rel_time = Stellar::ClaimPredicate.before_relative_time(1.hour)
@@ -51,7 +51,7 @@ bumps.  A breaking change will get clearly notified in this log.
         ```
       - Extend Operation with `create_claimable_balance` and `claim_claimable_balance` helpers
       - Add Claimant and ClaimPredicate DSL methods to reduce the noise.
-        ```
+        ```ruby
         include Stellar::DSL
         
         sender = KeyPair('S....')
@@ -68,7 +68,7 @@ bumps.  A breaking change will get clearly notified in this log.
         ])
         ```
       - Add simple predicate evaluation feature so that developers can sanity-check their predicates
-        ```
+        ```ruby
         include Stellar::DSL
         
         predicate = ClaimPredicate { before_relative_time(1.week) & ~before_relative_time(10.seconds) }
