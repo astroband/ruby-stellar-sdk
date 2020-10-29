@@ -5,6 +5,7 @@ module Stellar
     MAX_INT64 = 2**63 - 1
 
     class << self
+      include Stellar::DSL
       #
       # Construct a new Stellar::Operation from the provided
       # source account and body
@@ -233,7 +234,7 @@ module Stellar
 
       def begin_sponsoring_future_reserves(sponsored:, **attributes)
         op = BeginSponsoringFutureReservesOp.new(
-          sponsored_id: Stellar.KeyPair(sponsored).account_id
+          sponsored_id: KeyPair(sponsored).account_id
         )
 
         make(attributes.merge(body: [:begin_sponsoring_future_reserves, op]))
@@ -247,10 +248,10 @@ module Stellar
       def revoke_sponsorship(sponsored:, **attributes)
         key_fields = attributes.slice(:offer_id, :data_name, :balance_id, :asset, :signer)
         raise ArgumentError, "conflicting attributes: #{key_fields.keys.join(", ")}" if key_fields.size > 1
-        account_id = Stellar.KeyPair(sponsored).account_id
+        account_id = KeyPair(sponsored).account_id
         key, value = key_fields.first
         op = if key == :signer
-          RevokeSponsorshipOp.signer(account_id: account_id, signer_key: Stellar.SignerKey(value))
+          RevokeSponsorshipOp.signer(account_id: account_id, signer_key: SignerKey(value))
         else
           RevokeSponsorshipOp.ledger_key(LedgerKey.from(account_id: account_id, **key_fields))
         end

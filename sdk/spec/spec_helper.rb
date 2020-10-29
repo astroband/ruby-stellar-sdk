@@ -13,6 +13,7 @@ Dir["support/**/*.rb", base: __dir__].sort.each { |f| require_relative f }
 CONFIG = YAML.load_file(File.expand_path("config.yml", __dir__)).with_indifferent_access
 
 RSpec.configure do |config|
+  config.include Stellar::DSL
   config.filter_run_when_matching focus: true
   config.run_all_when_everything_filtered = true
 

@@ -1,5 +1,7 @@
 module Stellar
   module DSL
+    module_function
+
     # Constructs a new ClaimPredicate using DSL
     #
     # @example fulfilled during [T+5min, T+60min] period, where T refers to claimable balance entry creation time
@@ -83,5 +85,5 @@ module Stellar
     end
   end
 
-  extend DSL
+  include DSL
 end

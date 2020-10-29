@@ -7,6 +7,8 @@ require "stellar-base"
 Dir["support/**/*.rb", base: __dir__].sort.each { |f| require_relative f }
 
 RSpec.configure do |config|
+  config.include Stellar::DSL
+
   config.filter_run_when_matching focus: true
   config.run_all_when_everything_filtered = true
 
