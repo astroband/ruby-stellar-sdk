@@ -3,36 +3,39 @@ source "https://rubygems.org"
 gem "stellar-base", path: "./base"
 gem "stellar-sdk", path: "./sdk"
 # gem "xdr", github: "astroband/ruby-xdr"
-gem "xdrgen", github: "astroband/xdrgen", group: :development
+# gem "xdrgen", github: "astroband/xdrgen", group: :development
 
-gem "rake"
-gem "yard"
-
-platforms :jruby do
-  gem "jruby-openssl", "0.10.4"
-end
-
-group :development, :test do
-  gem "bundler-audit"
-  gem "faraday"
-  gem "faraday_middleware"
-  gem "octokit"
+group :test do
+  gem "rake"
   gem "rspec"
   gem "rspec-its"
-  gem "simplecov", "~> 0.17.0", require: false
-  gem "simplecov_json_formatter"
-  gem "standard", require: false
   gem "vcr"
+  gem "yard"
   gem "webmock"
+
+  gem "codecov", require: false
+  gem "simplecov", "~> 0.19.0", require: false
+  gem "simplecov_json_formatter"
+end
+
+group :lint do
+  gem "bundler-audit"
+  gem "standard", "0.8.1", require: false
+  gem "yard-junk", require: false
 end
 
 group :development do
   gem "amazing_print"
   gem "break"
+  gem "faraday"
+  gem "faraday_middleware"
   gem "gem-release", require: false
-  gem "guard-rspec"
+  gem "octokit"
   gem "pry"
   gem "pry-doc"
-  gem "pry-docmore"
   gem "netrc"
+end
+
+group :guard, optional: true do
+  gem "guard-rspec"
 end
