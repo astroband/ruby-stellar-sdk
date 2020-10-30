@@ -39,11 +39,12 @@ XDR::DSL::Union.redefine_method(:switch) do |switch, arm = nil|
   end
 end
 
-# XDR::Union generates an attribute method for each `arm`, but lacks the
-# actual `attribute(attr)` method those generated methods delegate to.
-# We follow the semantics of the bang variant `XDR::Union#attribute!` method,
-# except that calls to `raise` are replaced with early returns of nil.
-XDR::Union.define_method(:attribute) do |attr|
-  return unless @arm.to_s == attr
-  get
+# XDR::Union delegates missing methods to the underlying value
+XDR::Union.define_method(:method_missing) do |name, *args|
+  return super(name, *args) unless value&.respond_to?(name)
+  value&.public_send(name, *args)
+end
+
+XDR::Union.define_method(:respond_to_missing?) do |*args|
+  value&.respond_to?(*args)
 end

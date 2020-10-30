@@ -1,12 +1,16 @@
-require "rspec/its"
 require "simplecov"
-SimpleCov.start
 
-require "stellar-base"
+require "rspec/its"
 
-Dir["support/**/*.rb", base: __dir__].sort.each { |f| require_relative f }
+require_relative "../lib/stellar-base"
+
+require_relative "support/matchers/be_strkey"
+require_relative "support/matchers/eq_bytes"
+require_relative "support/matchers/have_length"
 
 RSpec.configure do |config|
+  config.include Stellar::DSL
+
   config.filter_run_when_matching focus: true
   config.run_all_when_everything_filtered = true
 

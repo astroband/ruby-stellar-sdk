@@ -1,18 +1,20 @@
-require "bundler/setup"
+require "simplecov"
 
 require "rspec/its"
-require "yaml"
 
-require "simplecov"
-SimpleCov.start
+require_relative "../lib/stellar-sdk"
 
-require "stellar-sdk"
+require_relative "support/vcr"
 
-Dir["support/**/*.rb", base: __dir__].sort.each { |f| require_relative f }
-
-CONFIG = YAML.load_file(File.expand_path("config.yml", __dir__)).with_indifferent_access
+CONFIG = {
+  source_address: "GCIDYJRG5HV4WEESRA4LEKIMXLCU46XIKXGZK4PWX5K23PJIATMWR3UE",
+  source_seed: "SALQBNNRCXWD32E4QKIXKXCMXCPJKWUP34EAK53SP6PNGAUVWSAM5IUQ",
+  channel_address: "GBLVRKRL4NCY6MBDPRYMH4CQZMYME2CJGCVAD5YSRPDUS74AREQE7QOK",
+  channel_seed: "SAOS5HRNKGRGFVQQPEZOJN33MHUGHMS6GR3LB7GWFJFKSVSWIFYMQYFM"
+}
 
 RSpec.configure do |config|
+  config.include Stellar::DSL
   config.filter_run_when_matching focus: true
   config.run_all_when_everything_filtered = true
 

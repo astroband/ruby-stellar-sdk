@@ -8,6 +8,11 @@ As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
 ## [Unreleased](https://github.com/stellar/ruby-stellar-sdk/compare/v0.24.0...master)
+### Added
+- `MuxedAccount` implements `#to_keypair` conversion protocol
+- `MuxedAccount` correctly responds to `#address` with strkey encoded public key   
+### Fixed
+- `Transaction::V0#source_account` now properly returns `MuxedAccount` instead of raw bytes 
 
 ## [0.24.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.23.1...v0.24.0) - 2020-10-20
 ### Added

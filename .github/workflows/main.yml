@@ -1,66 +1,51 @@
 name: Test
 
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+    - master
 
 jobs:
-  build-base:
+  linting:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: 2.7
         bundler-cache: true
-    - name: Run tests
-      run: pushd base; ../bin/rake spec; popd
-    - name: Run linters
-      run: pushd base; ../bin/bundle exec standardrb -f json -o coverage/.rubocop.json; popd
-    - name: Analyze with SonarCloud
-      uses: sonarsource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      with:
-        projectBaseDir: base
+    - name: Enforce codestyle with `standard`
+      run: bin/rake lint:code
+    - name: Check for vulnerable dependencies with `bundle-audit`
+      run: bin/rake lint:deps
+    - name: Check Yard syntax with `yard-junk`
+      run: bin/rake lint:docs
 
-  build-sdk:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7
-          bundler-cache: true
-      - name: Copy config
-        run: cp sdk/spec/config.yml.sample sdk/spec/config.yml
-      - name: Run tests
-        run: bin/rake spec
-      - name: Run linters
-        run: pushd sdk; ../bin/bundle exec standardrb -f json -o coverage/.rubocop.json; popd
-      - name: Analyze with SonarCloud
-        uses: sonarsource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectBaseDir: sdk
-
-  test:
+  build:
+    needs: [linting]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [2.6, 2.5, jruby, truffleruby]
+        ruby: [2.7, 2.6, 2.5, jruby, truffleruby]
     steps:
-      - uses: actions/checkout@v2
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
-          bundler-cache: true
-      - name: Copy config
-        run: cp sdk/spec/config.yml.sample sdk/spec/config.yml
-      - name: Run test
-        run: bin/rake spec
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+        bundler-cache: true
+    - name: Run test
+      run: bin/rake test
+    - name: Upload code coverage data to CodeClimate
+      uses: paambaati/codeclimate-action@v2.7.4
+      env:
+        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      with:
+        coverageLocations: |
+          base/coverage/coverage.json:simplecov
+          sdk/coverage/coverage.json:simplecov
+        debug: true
+      if: success() && matrix.ruby == '2.7'
+      continue-on-error: true

@@ -1,0 +1,12 @@
+--output-dir ../doc/stellar-sdk
+--protected
+--no-private
+--markup markdown
+--embed-mixin ClassMethods
+--embed-mixin FactoryMethods
+lib/**/*.rb
+-
+README.md
+CHANGELOG.md
+LICENSE
+

@@ -173,8 +173,8 @@ RSpec.shared_examples "XDR serializable" do
 end
 
 RSpec.describe Stellar::Operation do
-  let(:sponsor) { Stellar.KeyPair("GCLR75LIUXITGNHSKF7WAEJEWZTIVACKHFMYZTQCP4SKW5MCFXMZODWM") }
-  let(:account) { Stellar.KeyPair("GDQLZTJBZT2KSDYWTS6TGCVSPNG6XXOLBMG3SXVFENASZTPKN4UPNAYV") }
+  let(:sponsor) { KeyPair("GCLR75LIUXITGNHSKF7WAEJEWZTIVACKHFMYZTQCP4SKW5MCFXMZODWM") }
+  let(:account) { KeyPair("GDQLZTJBZT2KSDYWTS6TGCVSPNG6XXOLBMG3SXVFENASZTPKN4UPNAYV") }
   let(:attrs) { {source_account: sponsor} }
 
   describe ".begin_sponsoring_future_reserves" do

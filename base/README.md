@@ -1,7 +1,7 @@
-# Stellar::Base
-
-[![Build Status](https://travis-ci.org/stellar/ruby-stellar-base.svg)](https://travis-ci.org/stellar/ruby-stellar-base)
-[![Code Climate](https://codeclimate.com/github/stellar/ruby-stellar-base/badges/gpa.svg)](https://codeclimate.com/github/stellar/ruby-stellar-base)
+# Stellar SDK for Ruby: XDR and Low Level Abstractions
+[![stellar-base](https://badge.fury.io/rb/stellar-base.svg)](https://badge.fury.io/rb/stellar-base)
+[![Test](https://github.com/astroband/ruby-stellar-sdk/workflows/Test/badge.svg)](https://github.com/astroband/ruby-stellar-sdk/actions?query=branch%3Amaster)
+[![Maintainability](https://api.codeclimate.com/v1/badges/dadfcd9396aba493cb93/maintainability)](https://codeclimate.com/github/astroband/ruby-stellar-sdk/maintainability)
 
 The stellar-base library is the lowest-level stellar helper library.  It consists of classes
 to read, write, hash, and sign the xdr structures that are used in stellard.
