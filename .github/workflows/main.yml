@@ -21,6 +21,8 @@ jobs:
       run: bin/rake lint:deps
     - name: Check Yard syntax with `yard-junk`
       run: bin/rake lint:docs
+    - name: Analyze the licences with `fossa`
+      uses: fossa-contrib/fossa-action@v1
 
   build:
     needs: [linting]
