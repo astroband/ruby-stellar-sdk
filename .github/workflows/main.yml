@@ -23,6 +23,9 @@ jobs:
       run: bin/rake lint:docs
     - name: Analyze the licences with `fossa`
       uses: fossa-contrib/fossa-action@v1
+      with:
+        fossa-api-key: ${{ secrets.FOSSA_API_KEY }}
+        github-token: ${{ github.token }}
 
   build:
     needs: [linting]
