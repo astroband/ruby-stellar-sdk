@@ -10,16 +10,18 @@ require 'xdr'
 #       ACCOUNT = 0,
 #       TRUSTLINE = 1,
 #       OFFER = 2,
-#       DATA = 3
+#       DATA = 3,
+#       CLAIMABLE_BALANCE = 4
 #   };
 #
 # ===========================================================================
 module Stellar
   class LedgerEntryType < XDR::Enum
-    member :account,   0
-    member :trustline, 1
-    member :offer,     2
-    member :data,      3
+    member :account,           0
+    member :trustline,         1
+    member :offer,             2
+    member :data,              3
+    member :claimable_balance, 4
 
     seal
   end

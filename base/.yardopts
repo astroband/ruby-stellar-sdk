@@ -1,0 +1,12 @@
+--output-dir ../doc/stellar-base/
+--protected
+--no-private
+--markup markdown
+--embed-mixin ClassMethods
+--embed-mixin FactoryMethods
+generated/**/*.rb
+lib/**/*.rb
+-
+README.md
+CHANGELOG.md
+LICENSE

@@ -32,9 +32,8 @@ module Stellar::Concerns
     #
     # @return [Array<Operation>] the operations
     def to_operations
-      # FIXME: what was the purpose of this?
-      # cloned = Marshal.load Marshal.dump(operations)
-      operations.each do |op|
+      cloned = Marshal.load Marshal.dump(operations)
+      cloned.each do |op|
         op.source_account ||= source_account
       end
     end

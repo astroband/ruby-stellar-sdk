@@ -14,5 +14,4 @@ vendor/bundle
 *.o
 *.a
 mkmf.log
-sdk/spec/config.yml
 .vscode

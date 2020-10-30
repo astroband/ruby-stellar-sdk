@@ -164,3 +164,118 @@ RSpec.describe Stellar::Operation, ".allow_trust" do
     end
   end
 end
+
+RSpec.shared_examples "XDR serializable" do
+  it "roundtrips" do
+    base64 = subject.to_xdr(:base64)
+    expect(described_class.from_xdr(base64, :base64)).to eq(subject)
+  end
+end
+
+RSpec.describe Stellar::Operation do
+  let(:sponsor) { KeyPair("GCLR75LIUXITGNHSKF7WAEJEWZTIVACKHFMYZTQCP4SKW5MCFXMZODWM") }
+  let(:account) { KeyPair("GDQLZTJBZT2KSDYWTS6TGCVSPNG6XXOLBMG3SXVFENASZTPKN4UPNAYV") }
+  let(:attrs) { {source_account: sponsor} }
+
+  describe ".begin_sponsoring_future_reserves" do
+    before { attrs.merge!(sponsored: account) }
+    subject(:operation) { described_class.begin_sponsoring_future_reserves(**attrs) }
+
+    it_behaves_like "XDR serializable"
+    its("source_account") { is_expected.to eq(sponsor.muxed_account) }
+    its("body.switch.name") { is_expected.to eq("begin_sponsoring_future_reserves") }
+    its("body.value") { is_expected.to be_a(Stellar::BeginSponsoringFutureReservesOp) }
+    its("body.value.sponsored_id") { is_expected.to eq(account.account_id) }
+  end
+
+  describe ".end_sponsoring_future_reserves" do
+    before { attrs.merge!(source_account: account) }
+    subject(:operation) { described_class.end_sponsoring_future_reserves(**attrs) }
+
+    it_behaves_like "XDR serializable"
+    its("source_account") { is_expected.to eq(account.muxed_account) }
+    its("body.switch.name") { is_expected.to eq("end_sponsoring_future_reserves") }
+    its("body.value") { is_expected.to be_nil }
+  end
+
+  describe ".revoke_sponsorship" do
+    let(:default_params) { {source_account: sponsor, sponsored: account} }
+
+    subject(:operation) do
+      described_class.revoke_sponsorship(**default_params)
+    end
+
+    shared_examples "Revoke Sponsorship Op" do |*args|
+      include_context "XDR serializable"
+
+      its("source_account") { is_expected.to eq(sponsor.muxed_account) }
+
+      current_field, current_type = ["body.value", Stellar::RevokeSponsorshipOp]
+      its(current_field) { is_expected.to be_a(current_type) }
+
+      args.each_with_index do |(field, type), index|
+        current_field << "." << field.to_s
+        current_type = type.is_a?(Module) ? type : current_type.const_get(type)
+
+        its(current_field) { is_expected.to be_a(current_type) }
+      end
+
+      it "encodes sponsored account as part of the innermost struct" do
+        inner_value = operation.body.value.value.value
+        expect(inner_value.to_xdr(:hex)).to include(account.account_id.to_xdr(:hex))
+      end
+    end
+
+    context "with minimal params" do
+      subject(:operation) do
+        described_class.revoke_sponsorship(**default_params)
+      end
+
+      it_behaves_like "Revoke Sponsorship Op",
+        [:ledger_key, Stellar::LedgerKey],
+        [:account, "Account"]
+    end
+
+    context "with `data_name` param" do
+      subject { described_class.revoke_sponsorship(data_name: "My Data Key", **default_params) }
+      it_behaves_like "Revoke Sponsorship Op",
+        [:ledger_key, Stellar::LedgerKey],
+        [:data, "Data"]
+    end
+
+    context "with `offer_id` param" do
+      subject { described_class.revoke_sponsorship(offer_id: 1234567, **default_params) }
+
+      it_behaves_like "Revoke Sponsorship Op",
+        [:ledger_key, Stellar::LedgerKey],
+        [:offer, "Offer"]
+    end
+
+    context "with `balance_id` param" do
+      let(:balance_id) { "62c85d1427571e0514d269ce2384b3baf6c124fbdc5f793fd2409b3c853dc02e" }
+      subject { described_class.revoke_sponsorship(balance_id: balance_id, **default_params) }
+
+      it_behaves_like "Revoke Sponsorship Op",
+        [:ledger_key, Stellar::LedgerKey],
+        [:claimable_balance, "ClaimableBalance"]
+    end
+
+    context "with `asset` param" do
+      let(:asset) { "TEST-GDQLZTJBZT2KSDYWTS6TGCVSPNG6XXOLBMG3SXVFENASZTPKN4UPNAYV" }
+      subject { described_class.revoke_sponsorship(asset: asset, **default_params) }
+
+      it_behaves_like "Revoke Sponsorship Op",
+        [:ledger_key, Stellar::LedgerKey],
+        [:trust_line, "TrustLine"]
+    end
+
+    context "with `signer` param" do
+      let(:signer) { "GDQLZTJBZT2KSDYWTS6TGCVSPNG6XXOLBMG3SXVFENASZTPKN4UPNAYV" }
+      subject { described_class.revoke_sponsorship(signer: signer, **default_params) }
+
+      it_behaves_like "Revoke Sponsorship Op",
+        [:signer, "Signer"],
+        [:signer_key, Stellar::SignerKey]
+    end
+  end
+end

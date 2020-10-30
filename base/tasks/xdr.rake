@@ -23,6 +23,7 @@ namespace :xdr do
       namespace: "stellar-base-generated",
       language: :ruby
     )
+    IO.write("Stellar.x", compilation.source)
     compilation.compile
   end
 

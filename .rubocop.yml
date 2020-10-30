@@ -1,5 +1,4 @@
 require:
-- rubocop-rspec
 - standard
 
 inherit_gem:
@@ -11,4 +10,4 @@ AllCops:
   - 'base/examples/**/*'
   - 'sdk/examples/**/*'
   - 'vendor/bundle/**/*'
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5

@@ -19,6 +19,8 @@ require 'xdr'
 #           OfferEntry offer;
 #       case DATA:
 #           DataEntry data;
+#       case CLAIMABLE_BALANCE:
+#           ClaimableBalanceEntry claimableBalance;
 #       }
 #       data;
 #   
@@ -27,6 +29,8 @@ require 'xdr'
 #       {
 #       case 0:
 #           void;
+#       case 1:
+#           LedgerEntryExtensionV1 v1;
 #       }
 #       ext;
 #   };

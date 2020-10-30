@@ -21,7 +21,7 @@ require 'xdr'
 #       // thresholds stores unsigned bytes: [weight of master|low|medium|high]
 #       Thresholds thresholds;
 #   
-#       Signer signers<20>; // possible signers for this account
+#       Signer signers<MAX_SIGNERS>; // possible signers for this account
 #   
 #       // reserved for future use
 #       union switch (int v)
@@ -29,17 +29,7 @@ require 'xdr'
 #       case 0:
 #           void;
 #       case 1:
-#           struct
-#           {
-#               Liabilities liabilities;
-#   
-#               union switch (int v)
-#               {
-#               case 0:
-#                   void;
-#               }
-#               ext;
-#           } v1;
+#           AccountEntryExtensionV1 v1;
 #       }
 #       ext;
 #   };
@@ -59,7 +49,7 @@ module Stellar
     attribute :flags,           Uint32
     attribute :home_domain,     String32
     attribute :thresholds,      Thresholds
-    attribute :signers,         XDR::VarArray[Signer, 20]
+    attribute :signers,         XDR::VarArray[Signer, MAX_SIGNERS]
     attribute :ext,             Ext
   end
 end

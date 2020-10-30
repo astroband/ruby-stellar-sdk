@@ -15,8 +15,9 @@ require 'xdr'
 #       ACCOUNT_MERGE_IMMUTABLE_SET = -3,   // source account has AUTH_IMMUTABLE set
 #       ACCOUNT_MERGE_HAS_SUB_ENTRIES = -4, // account has trust lines/offers
 #       ACCOUNT_MERGE_SEQNUM_TOO_FAR = -5,  // sequence number is over max allowed
-#       ACCOUNT_MERGE_DEST_FULL = -6        // can't add source balance to
+#       ACCOUNT_MERGE_DEST_FULL = -6,       // can't add source balance to
 #                                           // destination balance
+#       ACCOUNT_MERGE_IS_SPONSOR = -7       // can't merge account that is a sponsor
 #   };
 #
 # ===========================================================================
@@ -29,6 +30,7 @@ module Stellar
     member :account_merge_has_sub_entries, -4
     member :account_merge_seqnum_too_far,  -5
     member :account_merge_dest_full,       -6
+    member :account_merge_is_sponsor,      -7
 
     seal
   end

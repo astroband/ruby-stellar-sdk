@@ -12,7 +12,8 @@ require 'xdr'
 #       ENVELOPE_TYPE_TX = 2,
 #       ENVELOPE_TYPE_AUTH = 3,
 #       ENVELOPE_TYPE_SCPVALUE = 4,
-#       ENVELOPE_TYPE_TX_FEE_BUMP = 5
+#       ENVELOPE_TYPE_TX_FEE_BUMP = 5,
+#       ENVELOPE_TYPE_OP_ID = 6
 #   };
 #
 # ===========================================================================
@@ -24,6 +25,7 @@ module Stellar
     member :envelope_type_auth,        3
     member :envelope_type_scpvalue,    4
     member :envelope_type_tx_fee_bump, 5
+    member :envelope_type_op_id,       6
 
     seal
   end
