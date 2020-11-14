@@ -34,8 +34,6 @@ jobs:
 before_install:
 - yes | gem update --system --force
 - bundle config set without 'development debug'
-before_script:
-- cp sdk/spec/config.yml.sample sdk/spec/config.yml
 
 notifications:
   slack:
