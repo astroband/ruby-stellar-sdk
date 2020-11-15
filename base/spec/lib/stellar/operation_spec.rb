@@ -278,4 +278,21 @@ RSpec.describe Stellar::Operation do
         [:signer_key, Stellar::SignerKey]
     end
   end
+
+  describe ".create_account" do
+    before { attrs.merge!(destination: account, starting_balance: 50) }
+    subject(:operation) { described_class.create_account(**attrs) }
+
+    it_behaves_like "XDR serializable"
+
+    it "accepts 0 as starting balance" do
+      attrs[:starting_balance] = 0
+      expect { operation.to_xdr(:base64) }.not_to raise_error
+    end
+
+    it "fails when starting balance is missing" do
+      attrs.delete(:starting_balance)
+      expect { operation.to_xdr(:base64) }.to raise_error(ArgumentError)
+    end
+  end
 end
