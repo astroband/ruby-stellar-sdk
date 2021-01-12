@@ -2,9 +2,10 @@ RSpec.describe Stellar::SEP10 do
   let(:server) { KeyPair() }
   let(:user) { KeyPair() }
   let(:domain) { "testnet.stellar.org" }
+  let(:options) { {} }
   let(:nonce) { SecureRandom.base64(48) }
 
-  let(:challenge) { described_class.build_challenge_tx(server: server, client: user, domain: domain) }
+  let(:challenge) { described_class.build_challenge_tx(server: server, client: user, home_domain: domain, **options) }
   let(:envelope) { Stellar::TransactionEnvelope.from_xdr(challenge, :base64) }
   let(:transaction) { envelope.tx }
 
@@ -13,7 +14,7 @@ RSpec.describe Stellar::SEP10 do
   let(:response_xdr) { response.to_xdr(:base64) }
 
   describe ".build_challenge_tx" do
-    let(:attrs) { {server: server, client: user, domain: domain} }
+    let(:attrs) { {server: server, client: user, home_domain: domain} }
 
     subject(:challenge) do
       xdr = described_class.build_challenge_tx(**attrs)
@@ -44,6 +45,20 @@ RSpec.describe Stellar::SEP10 do
       time_bounds = challenge.time_bounds
       expect(time_bounds.max_time - time_bounds.min_time).to eql(600)
     end
+
+    it "allows to customize auth domain" do
+      attrs[:auth_domain] = "auth.example.com"
+
+      expect(challenge.operations.size).to eql(2)
+
+      auth_domain_check_operation = challenge.operations[1]
+      expect(auth_domain_check_operation.source_account).to eql(server.muxed_account)
+
+      body = auth_domain_check_operation.body
+      expect(body.arm).to eql(:manage_data_op)
+      expect(body.data_name).to eql("web_auth_domain")
+      expect(body.data_value).to eql("auth.example.com")
+    end
   end
 
   describe "#read_challenge_tx" do
@@ -55,6 +70,10 @@ RSpec.describe Stellar::SEP10 do
 
     let(:invalid_operation) {
       Stellar::Operation.payment(source_account: server, destination: KeyPair(), amount: [:native, 20])
+    }
+
+    let(:auth_domain_operation) {
+      Stellar::Operation.manage_data(source_account: server, name: "web_auth_domain", value: "wrong.example.com")
     }
 
     subject(:read_challenge) {
@@ -147,6 +166,14 @@ RSpec.describe Stellar::SEP10 do
       transaction.time_bounds = Stellar::TimeBounds.new(min_time: now + 100, max_time: now + 500)
 
       expect { read_challenge }.to raise_invalid("has expired")
+    end
+
+    it "throws an error if provided auth domain is wrong" do
+      options[:auth_domain] = "wrong.example.com"
+      attrs[:auth_domain] = "auth.example.com"
+      transaction.operations << auth_domain_operation
+
+      expect { read_challenge }.to raise_invalid("has 'manageData' operation with 'web_auth_domain' key and invalid value")
     end
   end
 
