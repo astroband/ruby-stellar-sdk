@@ -113,6 +113,10 @@ module Stellar
         raise InvalidSep10ChallengeError, "The transaction's first operation should be manageData"
       end
 
+      if options.key?(:home_domain) && auth_op.body.value.data_name != "#{options[:home_domain]} auth"
+        raise InvalidSep10ChallengeError, "The transaction's operation data name is invalid"
+      end
+
       if auth_op.body.value.data_value.unpack1("m").size != 48
         raise InvalidSep10ChallengeError, "The transaction's operation value should be a 64 bytes base64 random string"
       end

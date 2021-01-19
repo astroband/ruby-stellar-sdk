@@ -125,6 +125,13 @@ RSpec.describe Stellar::SEP10 do
       expect { read_challenge }.to raise_invalid("first operation should be manageData")
     end
 
+    context "when `home_domain` is provided for check" do
+      it "throws an error if operation data name does not contain home domain" do
+        attrs[:home_domain] = "wrong.#{domain}"
+        expect { read_challenge }.to raise_invalid("operation data name is invalid")
+      end
+    end
+
     it "throws an error if operation value is not a 64 bytes base64 string" do
       transaction.operations.first.body.value.data_value = SecureRandom.random_bytes(64)
       expect { read_challenge }.to raise_invalid("value should be a 64 bytes base64 random string")
