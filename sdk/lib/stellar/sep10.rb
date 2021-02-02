@@ -30,10 +30,6 @@ module Stellar
         MSG
         domain = options[:anchor_name]
       end
-      # The value must be 64 bytes long. It contains a 48 byte
-      # cryptographic-quality random string encoded using base64 (for a total of
-      # 64 bytes after encoding).
-      value = SecureRandom.base64(48)
 
       now = Time.now.to_i
       time_bounds = Stellar::TimeBounds.new(
@@ -41,19 +37,34 @@ module Stellar
         max_time: now + timeout
       )
 
-      tx = Stellar::TransactionBuilder.new(
+      tb = Stellar::TransactionBuilder.new(
         source_account: server,
         sequence_number: 0,
         time_bounds: time_bounds
-      ).add_operation(
+      )
+
+      # The value must be 64 bytes long. It contains a 48 byte
+      # cryptographic-quality random string encoded using base64 (for a total of
+      # 64 bytes after encoding).
+      tb.add_operation(
         Stellar::Operation.manage_data(
           name: "#{domain} auth",
-          value: value,
+          value: SecureRandom.base64(48),
           source_account: client
         )
-      ).build
+      )
 
-      tx.to_envelope(server).to_xdr(:base64)
+      if options.key?(:auth_domain)
+        tb.add_operation(
+          Stellar::Operation.manage_data(
+            name: "web_auth_domain",
+            value: options[:auth_domain],
+            source_account: server
+          )
+        )
+      end
+
+      tb.build.to_envelope(server).to_xdr(:base64)
     end
 
     # Reads a SEP 10 challenge transaction and returns the decoded transaction envelope and client account ID contained within.
@@ -68,8 +79,8 @@ module Stellar
     # @example
     #   sep10 = Stellar::SEP10
     #   server = Stellar::KeyPair.random # this should be the SIGNING_KEY from your stellar.toml
-    #   challenge = sep10.build_challenge_tx(server: server, client: user, home_domain: domain, timeout: timeout)
-    #   envelope, client_address = sep10.read_challenge_tx(server: server, challenge: challenge)
+    #   challenge = sep10.build_challenge_tx(server: server, client: user, domain: domain, timeout: timeout)
+    #   envelope, client_address = sep10.read_challenge_tx(server: server, challenge_xdr: challenge)
     #
     # @param challenge_xdr [String] SEP0010 transaction challenge in base64.
     # @param server [Stellar::KeyPair] keypair for server where the challenge was generated.
@@ -94,7 +105,9 @@ module Stellar
       auth_op, *rest_ops = transaction.operations
       client_account_id = auth_op.source_account
 
-      if client_account_id.nil?
+      auth_op_body = auth_op.body.value
+
+      if client_account_id.blank?
         raise InvalidSep10ChallengeError, "The transaction's operation should contain a source account"
       end
 
@@ -102,15 +115,26 @@ module Stellar
         raise InvalidSep10ChallengeError, "The transaction's first operation should be manageData"
       end
 
-      if auth_op.body.value.data_value.unpack1("m").size != 48
+      if options.key?(:domain) && auth_op_body.data_name != "#{options[:domain]} auth"
+        raise InvalidSep10ChallengeError, "The transaction's operation data name is invalid"
+      end
+
+      if auth_op_body.data_value.unpack1("m").size != 48
         raise InvalidSep10ChallengeError, "The transaction's operation value should be a 64 bytes base64 random string"
       end
 
       rest_ops.each do |op|
-        if op.body.arm != :manage_data_op
+        body = op.body
+
+        if body.arm != :manage_data_op
           raise InvalidSep10ChallengeError, "The transaction has operations that are not of type 'manageData'"
         elsif op.source_account != server.muxed_account
           raise InvalidSep10ChallengeError, "The transaction has operations that are unrecognized"
+        else
+          op_params = body.value
+          if op_params.data_name == "web_auth_domain" && options.key?(:auth_domain) && op_params.data_value != options[:auth_domain]
+            raise InvalidSep10ChallengeError, "The transaction has 'manageData' operation with 'web_auth_domain' key and invalid value"
+          end
         end
       end
 
@@ -121,7 +145,7 @@ module Stellar
       time_bounds = transaction.time_bounds
       now = Time.now.to_i
 
-      if time_bounds.nil? || !now.between?(time_bounds.min_time, time_bounds.max_time)
+      if time_bounds.blank? || !now.between?(time_bounds.min_time, time_bounds.max_time)
         raise InvalidSep10ChallengeError, "The transaction has expired"
       end
 
