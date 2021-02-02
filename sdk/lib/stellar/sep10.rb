@@ -14,21 +14,21 @@ module Stellar
     #
     # @param server [Stellar::KeyPair] server's signing keypair (SIGNING_KEY in service's stellar.toml)
     # @param client [Stellar::KeyPair] account trying to authenticate with the server
-    # @param home_domain [String] service's domain to be used in the manage_data key
+    # @param domain [String] service's domain to be used in the manage_data key
     # @param timeout [Integer] challenge duration (default to 5 minutes)
     #
     # @return [String] A base64 encoded string of the raw TransactionEnvelope xdr struct for the transaction.
     #
     # @see {SEP0010: Stellar Web Authentication}[https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0010.md]
-    def self.build_challenge_tx(server:, client:, home_domain: nil, timeout: 300, **options)
-      if home_domain.blank? && options.key?(:anchor_name)
+    def self.build_challenge_tx(server:, client:, domain: nil, timeout: 300, **options)
+      if domain.blank? && options.key?(:anchor_name)
         ActiveSupport::Deprecation.new("next release", "stellar-sdk").warn <<~MSG
           SEP-10 v2.0.0 requires usage of service home domain instead of anchor name in the challenge transaction.
           Please update your implementation to use `Stellar::SEP10.build_challenge_tx(..., home_domain: 'example.com')`.
           Using `anchor_name` parameter makes your service incompatible with SEP10-2.0 clients, support for this parameter
           is deprecated and will be removed in the next major release of stellar-base.
         MSG
-        home_domain = options[:anchor_name]
+        domain = options[:anchor_name]
       end
 
       now = Time.now.to_i
@@ -48,7 +48,7 @@ module Stellar
       # 64 bytes after encoding).
       tb.add_operation(
         Stellar::Operation.manage_data(
-          name: "#{home_domain} auth",
+          name: "#{domain} auth",
           value: SecureRandom.base64(48),
           source_account: client
         )
@@ -79,7 +79,7 @@ module Stellar
     # @example
     #   sep10 = Stellar::SEP10
     #   server = Stellar::KeyPair.random # this should be the SIGNING_KEY from your stellar.toml
-    #   challenge = sep10.build_challenge_tx(server: server, client: user, home_domain: domain, timeout: timeout)
+    #   challenge = sep10.build_challenge_tx(server: server, client: user, domain: domain, timeout: timeout)
     #   envelope, client_address = sep10.read_challenge_tx(server: server, challenge_xdr: challenge)
     #
     # @param challenge_xdr [String] SEP0010 transaction challenge in base64.
@@ -113,7 +113,7 @@ module Stellar
         raise InvalidSep10ChallengeError, "The transaction's first operation should be manageData"
       end
 
-      if options.key?(:home_domain) && auth_op.body.value.data_name != "#{options[:home_domain]} auth"
+      if options.key?(:domain) && auth_op.body.value.data_name != "#{options[:domain]} auth"
         raise InvalidSep10ChallengeError, "The transaction's operation data name is invalid"
       end
 

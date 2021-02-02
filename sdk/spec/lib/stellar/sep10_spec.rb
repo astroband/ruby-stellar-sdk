@@ -5,7 +5,7 @@ RSpec.describe Stellar::SEP10 do
   let(:options) { {} }
   let(:nonce) { SecureRandom.base64(48) }
 
-  let(:challenge) { described_class.build_challenge_tx(server: server, client: user, home_domain: domain, **options) }
+  let(:challenge) { described_class.build_challenge_tx(server: server, client: user, domain: domain, **options) }
   let(:envelope) { Stellar::TransactionEnvelope.from_xdr(challenge, :base64) }
   let(:transaction) { envelope.tx }
 
@@ -14,7 +14,7 @@ RSpec.describe Stellar::SEP10 do
   let(:response_xdr) { response.to_xdr(:base64) }
 
   describe ".build_challenge_tx" do
-    let(:attrs) { {server: server, client: user, home_domain: domain} }
+    let(:attrs) { {server: server, client: user, domain: domain} }
 
     subject(:challenge) do
       xdr = described_class.build_challenge_tx(**attrs)
@@ -125,9 +125,9 @@ RSpec.describe Stellar::SEP10 do
       expect { read_challenge }.to raise_invalid("first operation should be manageData")
     end
 
-    context "when `home_domain` is provided for check" do
+    context "when `domain` is provided for check" do
       it "throws an error if operation data name does not contain home domain" do
-        attrs[:home_domain] = "wrong.#{domain}"
+        attrs[:domain] = "wrong.#{domain}"
         expect { read_challenge }.to raise_invalid("operation data name is invalid")
       end
     end
