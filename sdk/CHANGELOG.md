@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/stellar/ruby-stellar-sdk/compare/v0.25.0...master)
+- `Stellar::SEP10` is updated to comply with SEP10 v3.1.0
+  - `build_challenge_tx` now accepts `auth_domain`. If it is passed, challenge tx will contain an additional operation, that will be used later for validation
+  - `read_challenge_tx` now accepts `auth_domain`. If it is passed, challenge will be also validated for complience with it
 
 ## [0.25.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.24.0...0.25.0)
 ### Changed
