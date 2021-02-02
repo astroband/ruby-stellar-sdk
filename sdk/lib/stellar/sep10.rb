@@ -105,6 +105,8 @@ module Stellar
       auth_op, *rest_ops = transaction.operations
       client_account_id = auth_op.source_account
 
+      auth_op_body = auth_op.body.value
+
       if client_account_id.blank?
         raise InvalidSep10ChallengeError, "The transaction's operation should contain a source account"
       end
@@ -113,11 +115,11 @@ module Stellar
         raise InvalidSep10ChallengeError, "The transaction's first operation should be manageData"
       end
 
-      if options.key?(:domain) && auth_op.body.value.data_name != "#{options[:domain]} auth"
+      if options.key?(:domain) && auth_op_body.data_name != "#{options[:domain]} auth"
         raise InvalidSep10ChallengeError, "The transaction's operation data name is invalid"
       end
 
-      if auth_op.body.value.data_value.unpack1("m").size != 48
+      if auth_op_body.data_value.unpack1("m").size != 48
         raise InvalidSep10ChallengeError, "The transaction's operation value should be a 64 bytes base64 random string"
       end
 
