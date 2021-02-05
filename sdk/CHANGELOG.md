@@ -4,12 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased](https://github.com/stellar/ruby-stellar-sdk/compare/v0.25.0...master)
-- `Stellar::SEP10` is updated to comply with SEP10 v3.1.0
-  - `build_challenge_tx` now accepts `auth_domain`. If it is passed, challenge tx will contain an additional operation, that will be used later for validation
-  - `read_challenge_tx` now accepts `auth_domain`. If it is passed, challenge will be also validated for complience with it
+## [Unreleased](https://github.com/stellar/ruby-stellar-sdk/compare/v0.26.0...master)
 
-## [0.25.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.24.0...0.25.0)
+## [0.26.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.25.0...v0.26.0) - 2021-02-05
+### Changed
+- `Stellar::SEP10` is updated to comply with SEP10 v3.0.0 and v3.1.0
+  - `read_challenge_tx`` now verifies `domain` in challenge auth operation, as per SEP10 v3.0.0
+  - it is now possible to provide `auth_domain` parameter to enforce auth server domain verification:
+    - `build_challenge_tx` will encode the extra auth domain operation into the challenge tx
+    - `read_challenge_tx` will verify that the challenge includes the correct auth domain operation
+
+## [0.25.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.24.0...v0.25.0) - 2020-10-30
 ### Changed
 - `Stellar::SEP10` is updated to comply with SEP10 v2.1.0
   - `build_challenge_tx` now accepts `domain` instead of `anchor_name`, using the

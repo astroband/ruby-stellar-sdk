@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
-## [Unreleased](https://github.com/stellar/ruby-stellar-sdk/compare/v0.25.0...master)
+## [Unreleased](https://github.com/stellar/ruby-stellar-sdk/compare/v0.26.0...master)
+
+## [0.26.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.25.0...0.26.0) - 2021-02-05
+- No changes
 
 ## [0.25.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.24.0...v0.25.0) - 2020-10-30
 ### Added
