@@ -20,7 +20,7 @@ end
 
 group :lint do
   gem "bundler-audit"
-  gem "standard", "0.8.1", require: false
+  gem "standard", "1.0.1", require: false
   gem "yard-junk", require: false
 end
 
