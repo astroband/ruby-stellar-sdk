@@ -193,7 +193,7 @@ GEM
     xdr (3.0.2)
       activemodel (>= 4.2, < 7.0)
       activesupport (>= 4.2, < 7.0)
-    yard (0.9.25)
+    yard (0.9.26)
     yard-junk (0.0.7)
       backports
       rainbow
