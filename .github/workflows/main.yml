@@ -44,7 +44,7 @@ jobs:
     - name: Run test
       run: bin/rake test
     - name: Upload code coverage data to CodeClimate
-      uses: paambaati/codeclimate-action@v2.7.4
+      uses: paambaati/codeclimate-action@v2.7.5
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       with:
