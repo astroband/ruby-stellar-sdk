@@ -33,7 +33,7 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     amazing_print (1.2.2)
     ast (2.4.1)
-    backports (3.18.2)
+    backports (3.20.2)
     base32 (0.3.4)
     break (0.21.0)
     bundler-audit (0.7.0.1)
@@ -181,7 +181,6 @@ GEM
     thread_safe (0.3.6-java)
     toml-rb (2.0.1)
       citrus (~> 3.0, > 3.0)
-    tty-color (0.5.2)
     tzinfo (1.2.9)
       thread_safe (~> 0.1)
     unicode-display_width (1.7.0)
@@ -194,10 +193,9 @@ GEM
       activemodel (>= 4.2, < 7.0)
       activesupport (>= 4.2, < 7.0)
     yard (0.9.26)
-    yard-junk (0.0.7)
-      backports
+    yard-junk (0.0.9)
+      backports (>= 3.18)
       rainbow
-      tty-color
       yard
     zeitwerk (2.4.2)
 
