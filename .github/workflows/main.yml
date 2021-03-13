@@ -24,7 +24,7 @@ jobs:
     - name: Analyze the licences with `fossa`
       uses: fossa-contrib/fossa-action@v1
       with:
-        fossa-api-key: ${{ secrets.FOSSA_API_KEY }}
+        fossa-api-key: a412c0a6d01bf4706220887cd095f79d
         github-token: ${{ github.token }}
 
   build:
