@@ -3,7 +3,6 @@ source "https://rubygems.org"
 gem "stellar-base", path: "./base"
 gem "stellar-sdk", path: "./sdk"
 # gem "xdr", github: "astroband/ruby-xdr"
-# gem "xdrgen", github: "astroband/xdrgen", group: :development
 
 group :test do
   gem "rake"
@@ -34,6 +33,7 @@ group :development do
   gem "pry"
   gem "pry-doc"
   gem "netrc"
+  gem "xdrgen"
 end
 
 group :guard, optional: true do

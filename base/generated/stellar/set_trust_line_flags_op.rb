@@ -5,20 +5,21 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct AllowTrustOp
+#   struct SetTrustLineFlagsOp
 #   {
 #       AccountID trustor;
-#       AssetCode asset;
+#       Asset asset;
 #   
-#       // One of 0, AUTHORIZED_FLAG, or AUTHORIZED_TO_MAINTAIN_LIABILITIES_FLAG
-#       uint32 authorize;
+#       uint32 clearFlags; // which flags to clear
+#       uint32 setFlags;   // which flags to set
 #   };
 #
 # ===========================================================================
 module Stellar
-  class AllowTrustOp < XDR::Struct
-    attribute :trustor,   AccountID
-    attribute :asset,     AssetCode
-    attribute :authorize, Uint32
+  class SetTrustLineFlagsOp < XDR::Struct
+    attribute :trustor,     AccountID
+    attribute :asset,       Asset
+    attribute :clear_flags, Uint32
+    attribute :set_flags,   Uint32
   end
 end

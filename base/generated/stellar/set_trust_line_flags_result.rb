@@ -5,10 +5,9 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   union BeginSponsoringFutureReservesResult switch (
-#       BeginSponsoringFutureReservesResultCode code)
+#   union SetTrustLineFlagsResult switch (SetTrustLineFlagsResultCode code)
 #   {
-#   case BEGIN_SPONSORING_FUTURE_RESERVES_SUCCESS:
+#   case SET_TRUST_LINE_FLAGS_SUCCESS:
 #       void;
 #   default:
 #       void;
@@ -16,10 +15,10 @@ require 'xdr'
 #
 # ===========================================================================
 module Stellar
-  class BeginSponsoringFutureReservesResult < XDR::Union
-    switch_on BeginSponsoringFutureReservesResultCode, :code
+  class SetTrustLineFlagsResult < XDR::Union
+    switch_on SetTrustLineFlagsResultCode, :code
 
-    switch :begin_sponsoring_future_reserves_success
+    switch :set_trust_line_flags_success
     switch :default
 
   end
