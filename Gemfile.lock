@@ -93,6 +93,7 @@ GEM
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     lumberjack (1.2.8)
+    memoist (0.11.0)
     method_source (1.0.0)
     minitest (5.14.2)
     multipart-post (2.1.1)
@@ -108,6 +109,7 @@ GEM
     parallel (1.20.1)
     parser (3.0.1.0)
       ast (~> 2.4.1)
+    polyglot (0.3.5)
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -170,6 +172,7 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.2)
+    slop (3.6.0)
     spoon (0.0.6)
       ffi
     standard (1.0.5)
@@ -180,6 +183,8 @@ GEM
     thread_safe (0.3.6-java)
     toml-rb (2.0.1)
       citrus (~> 3.0, > 3.0)
+    treetop (1.5.3)
+      polyglot (~> 0.3)
     tzinfo (1.2.9)
       thread_safe (~> 0.1)
     unicode-display_width (2.0.0)
@@ -191,6 +196,11 @@ GEM
     xdr (3.0.2)
       activemodel (>= 4.2, < 7.0)
       activesupport (>= 4.2, < 7.0)
+    xdrgen (0.1.0)
+      activesupport (~> 6)
+      memoist (~> 0.11.0)
+      slop (~> 3.4)
+      treetop (~> 1.5.3)
     yard (0.9.26)
     yard-junk (0.0.9)
       backports (>= 3.18)
@@ -225,6 +235,7 @@ DEPENDENCIES
   stellar-sdk!
   vcr
   webmock
+  xdrgen
   yard
   yard-junk
 

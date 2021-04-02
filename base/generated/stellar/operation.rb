@@ -52,6 +52,12 @@ require 'xdr'
 #           void;
 #       case REVOKE_SPONSORSHIP:
 #           RevokeSponsorshipOp revokeSponsorshipOp;
+#       case CLAWBACK:
+#           ClawbackOp clawbackOp;
+#       case CLAWBACK_CLAIMABLE_BALANCE:
+#           ClawbackClaimableBalanceOp clawbackClaimableBalanceOp;
+#       case SET_TRUST_LINE_FLAGS:
+#           SetTrustLineFlagsOp setTrustLineFlagsOp;
 #       }
 #       body;
 #   };
