@@ -175,7 +175,7 @@ GEM
     slop (3.6.0)
     spoon (0.0.6)
       ffi
-    standard (1.0.1)
+    standard (1.0.4)
       rubocop (= 1.11.0)
       rubocop-performance (= 1.10.1)
     thor (1.1.0)
@@ -230,7 +230,7 @@ DEPENDENCIES
   rspec-its
   simplecov (~> 0.21.2)
   simplecov_json_formatter
-  standard (= 1.0.1)
+  standard (= 1.0.4)
   stellar-base!
   stellar-sdk!
   vcr
