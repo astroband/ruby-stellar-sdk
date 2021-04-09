@@ -11,7 +11,7 @@ group :test do
   gem "rspec-its"
   gem "vcr"
   gem "yard"
-  gem "webmock"
+  gem "webmock", ">= 3.12.1"
 
   gem "codecov", require: false
   gem "simplecov", "~> 0.21.2", require: false
