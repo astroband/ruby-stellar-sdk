@@ -35,6 +35,7 @@ require_relative "./stellar/path_payment_strict_receive_result"
 require_relative "./stellar/price"
 require_relative "./stellar/signer_key"
 require_relative "./stellar/thresholds"
+require_relative "./stellar/trust_line_flags"
 
 require_relative "./stellar/concerns/transaction"
 require_relative "./stellar/fee_bump_transaction"

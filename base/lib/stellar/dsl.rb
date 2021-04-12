@@ -27,6 +27,9 @@ module Stellar
       )
     end
 
+    # @param [Asset, String, nil] subject
+    # @return [Stellar::Asset] instance of the Stellar::Asset
+    # @raise [TypeError] if subject cannot be converted to Stellar::Asset
     def Asset(subject = nil)
       case subject
       when Asset
@@ -45,6 +48,7 @@ module Stellar
     # Generates Stellar::Keypair from subject, use Stellar::Client.to_keypair as shortcut.
     # @param subject [String|Stellar::Account|Stellar::PublicKey|Stellar::SignerKey|Stellar::Keypair] subject.
     # @return [Stellar::Keypair] Stellar::Keypair instance.
+    # @raise [TypeError] if subject cannot be converted to Stellar::KeyPair
     def KeyPair(subject = nil)
       case subject
       when ->(subj) { subj.respond_to?(:to_keypair) }

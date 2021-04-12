@@ -4,5 +4,6 @@ class << Stellar::Operation
 
   deprecate deprecator: Stellar::Deprecation,
             manage_offer: :manage_sell_offer,
-            create_passive_offer: :create_passive_sell_offer
+            create_passive_offer: :create_passive_sell_offer,
+            allow_trust: :set_trust_line_flags
 end

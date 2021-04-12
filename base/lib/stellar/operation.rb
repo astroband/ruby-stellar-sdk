@@ -3,6 +3,11 @@ require "bigdecimal"
 module Stellar
   class Operation
     MAX_INT64 = 2**63 - 1
+    TRUST_LINE_FLAGS_MAPPING = {
+      full: Stellar::TrustLineFlags.authorized_flag,
+      maintain_liabilities: Stellar::TrustLineFlags.authorized_to_maintain_liabilities_flag,
+      clawback_enabled: Stellar::TrustLineFlags.trustline_clawback_enabled_flag
+    }.freeze
 
     class << self
       include Stellar::DSL
@@ -17,16 +22,17 @@ module Stellar
       # @return [Stellar::Operation] the built operation
       def make(attributes = {})
         source_account = attributes[:source_account]
-        body = Stellar::Operation::Body.new(*attributes[:body])
 
-        op = Stellar::Operation.new(body: body)
-
-        if source_account
-          raise ArgumentError, "Bad :source_account" unless source_account.is_a?(Stellar::KeyPair)
-          op.source_account = source_account.muxed_account
+        if source_account && !source_account.is_a?(Stellar::KeyPair)
+          raise ArgumentError, "Bad :source_account"
         end
 
-        op
+        body = Stellar::Operation::Body.new(*attributes[:body])
+
+        Stellar::Operation.new(
+          body: body,
+          source_account: source_account&.muxed_account
+        )
       end
 
       #
@@ -371,11 +377,31 @@ module Stellar
         }))
       end
 
+      # @param asset [Stellar::Asset]
+      # @param trustor [Stellar::KeyPair]
+      # @param flags [{String, Symbol, Stellar::TrustLineFlags => true, false}] flags to to set or clear
+      # @param source_account [Stellar::KeyPair]  source account (default is `nil`, which will use the source account of transaction)
+      def set_trust_line_flags(asset:, trustor:, flags: {}, source_account: nil)
+        op = Stellar::SetTrustLineFlagsOp.new
+        op.trustor = KeyPair(trustor).account_id
+        op.asset = Asset(asset)
+        op.attributes = Stellar::TrustLineFlags.set_clear_masks(flags)
+
+        make(
+          source_account: source_account,
+          body: [:set_trust_line_flags, op]
+        )
+      end
+
+      # DEPRECATED in favor of `set_trustline_flags`
       #
       # Helper method to create a valid AllowTrustOp, wrapped
       # in the necessary XDR structs to be included within a
       # transactions `operations` array.
       #
+      # @deprecated Use `set_trustline_flags` operation
+      #   See {https://github.com/stellar/stellar-protocol/blob/master/core/cap-0035.md#allow-trust-operation-1 CAP-35 description}
+      #   for more details
       # @param [Hash] attributes the attributes to create the operation with
       # @option attributes [Stellar::KeyPair] :trustor
       # @option attributes [Stellar::Asset] :asset
@@ -387,7 +413,8 @@ module Stellar
         op = AllowTrustOp.new
 
         trustor = attributes[:trustor]
-        authorize = attributes[:authorize]
+        # we handle booleans here for the backward compatibility
+        authorize = attributes[:authorize].yield_self { |value| value == true ? :full : value }
         asset = attributes[:asset]
         if asset.is_a?(Array)
           asset = Asset.send(*asset)
@@ -395,10 +422,13 @@ module Stellar
 
         raise ArgumentError, "Bad :trustor" unless trustor.is_a?(Stellar::KeyPair)
 
-        op.authorize = case authorize
-        when :none, false then 0 # we handle booleans here for the backward compatibility
-        when :full, true then TrustLineFlags.authorized_flag.value
-        when :maintain_liabilities then TrustLineFlags.authorized_to_maintain_liabilities_flag.value
+        allowed_flags = TRUST_LINE_FLAGS_MAPPING.slice(:full, :maintain_liabilities)
+
+        # we handle booleans here for the backward compatibility
+        op.authorize = if allowed_flags.key?(authorize)
+          allowed_flags[authorize].value
+        elsif [:none, false].include?(authorize)
+          0
         else
           raise ArgumentError, "Bad :authorize, supported values: :full, :maintain_liabilities, :none"
         end
@@ -489,6 +519,47 @@ module Stellar
         make(attributes.merge({
           body: [:bump_sequence, op]
         }))
+      end
+
+      def clawback(source_account:, from:, amount:)
+        asset, amount = get_asset_amount(amount)
+
+        if amount == 0
+          raise ArgumentError, "Amount can not be zero"
+        end
+
+        if amount < 0
+          raise ArgumentError, "Negative amount is not allowed"
+        end
+
+        op = ClawbackOp.new(
+          amount: amount,
+          from: from.muxed_account,
+          asset: asset
+        )
+
+        make({
+          source_account: source_account,
+          body: [:clawback, op]
+        })
+      end
+
+      # Helper method to create clawback claimable balance operation
+      #
+      # @param [Stellar::KeyPair] source_account the attributes to create the operation with
+      # @param [String] balance_id `ClaimableBalanceID`, serialized in hex
+      #
+      # @return [Stellar::Operation] the built operation
+      def clawback_claimable_balance(source_account:, balance_id:)
+        balance_id = Stellar::ClaimableBalanceID.from_xdr(balance_id, :hex)
+        op = ClawbackClaimableBalanceOp.new(balance_id: balance_id)
+
+        make(
+          source_account: source_account,
+          body: [:clawback_claimable_balance, op]
+        )
+      rescue XDR::ReadError
+        raise ArgumentError, "Claimable balance id '#{balance_id}' is invalid"
       end
 
       private
