@@ -106,7 +106,7 @@ GEM
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
     parallel (1.20.1)
-    parser (3.0.0.0)
+    parser (3.0.1.0)
       ast (~> 2.4.1)
     pry (0.14.0)
       coderay (~> 1.1)
@@ -127,7 +127,7 @@ GEM
     rbnacl (7.1.1)
       ffi
     regexp_parser (2.1.1)
-    rexml (3.2.4)
+    rexml (3.2.5)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
       rspec-expectations (~> 3.10.0)
@@ -144,7 +144,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
-    rubocop (1.11.0)
+    rubocop (1.12.1)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
@@ -172,8 +172,8 @@ GEM
     simplecov_json_formatter (0.1.2)
     spoon (0.0.6)
       ffi
-    standard (1.0.1)
-      rubocop (= 1.11.0)
+    standard (1.0.5)
+      rubocop (= 1.12.1)
       rubocop-performance (= 1.10.1)
     thor (1.1.0)
     thread_safe (0.3.6)
@@ -220,7 +220,7 @@ DEPENDENCIES
   rspec-its
   simplecov (~> 0.21.2)
   simplecov_json_formatter
-  standard (= 1.0.1)
+  standard (= 1.0.5)
   stellar-base!
   stellar-sdk!
   vcr
