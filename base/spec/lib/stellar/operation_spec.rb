@@ -296,3 +296,37 @@ RSpec.describe Stellar::Operation do
     end
   end
 end
+
+RSpec.describe Stellar::Operation, ".manage_buy_offer" do
+  let(:buying_issuer) { Stellar::KeyPair.from_address("GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7") }
+  let(:buying_asset) { Stellar::Asset.alphanum4("USD", buying_issuer) }
+
+  let(:selling_issuer) { Stellar::KeyPair.master }
+  let(:selling_asset) { Stellar::Asset.alphanum4("EUR", selling_issuer) }
+
+  it "creates a ManageBuyOfferOp" do
+    op = Stellar::Operation.manage_buy_offer(buying: buying_asset, selling: selling_asset, buyAmount: 50, price: 10)
+    expect(op.body.value).to be_an_instance_of(Stellar::ManageBuyOfferOp)
+    expect(op.body.value.buying).to eq(Stellar::Asset.alphanum4("USD", buying_issuer))
+    expect(op.body.value.selling).to eq(Stellar::Asset.alphanum4("EUR", selling_issuer))
+    expect(op.body.value.buyAmount).to eq(50)
+    expect(op.body.value.price).to eq(10)
+  end
+end
+
+RSpec.describe Stellar::Operation, ".manage_sell_offer" do
+  let(:buying_issuer) { Stellar::KeyPair.from_address("GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7") }
+  let(:buying_asset) { Stellar::Asset.alphanum4("USD", buying_issuer) }
+
+  let(:selling_issuer) { Stellar::KeyPair.master }
+  let(:selling_asset) { Stellar::Asset.alphanum4("EUR", selling_issuer) }
+
+  it "creates a ManageSellOfferOp" do
+    op = Stellar::Operation.manage_sell_offer(buying: buying_asset, selling: selling_asset, buyAmount: 50, price: 10)
+    expect(op.body.value).to be_an_instance_of(Stellar::ManageSellOfferOp)
+    expect(op.body.value.buying).to eq(Stellar::Asset.alphanum4("USD", buying_issuer))
+    expect(op.body.value.selling).to eq(Stellar::Asset.alphanum4("EUR", selling_issuer))
+    expect(op.body.value.buyAmount).to eq(50)
+    expect(op.body.value.price).to eq(10)
+  end
+end
