@@ -300,7 +300,7 @@ module Stellar
         op = ManageBuyOfferOp.new({
           buying: buying,
           selling: selling,
-          amount: amount,
+          buy_amount: amount,
           price: price,
           offer_id: offer_id
         })
