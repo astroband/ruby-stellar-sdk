@@ -405,10 +405,8 @@ module Stellar
 
         raise ArgumentError, "Bad :asset" unless asset.type == Stellar::AssetType.asset_type_credit_alphanum4
 
-        atc = AllowTrustOp::Asset.new(:asset_type_credit_alphanum4, asset.code)
-
         op.trustor = trustor.account_id
-        op.asset = atc
+        op.asset = AssetCode.new(:asset_type_credit_alphanum4, asset.code)
 
         make(attributes.merge({
           body: [:allow_trust, op]

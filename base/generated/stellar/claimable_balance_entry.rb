@@ -24,6 +24,8 @@ require 'xdr'
 #       {
 #       case 0:
 #           void;
+#       case 1:
+#           ClaimableBalanceEntryExtensionV1 v1;
 #       }
 #       ext;
 #   };

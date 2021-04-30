@@ -48,6 +48,12 @@ require 'xdr'
 #           EndSponsoringFutureReservesResult endSponsoringFutureReservesResult;
 #       case REVOKE_SPONSORSHIP:
 #           RevokeSponsorshipResult revokeSponsorshipResult;
+#       case CLAWBACK:
+#           ClawbackResult clawbackResult;
+#       case CLAWBACK_CLAIMABLE_BALANCE:
+#           ClawbackClaimableBalanceResult clawbackClaimableBalanceResult;
+#       case SET_TRUST_LINE_FLAGS:
+#           SetTrustLineFlagsResult setTrustLineFlagsResult;
 #       }
 #       tr;
 #   default:

@@ -45,6 +45,12 @@ require 'xdr'
 #           EndSponsoringFutureReservesResult endSponsoringFutureReservesResult;
 #       case REVOKE_SPONSORSHIP:
 #           RevokeSponsorshipResult revokeSponsorshipResult;
+#       case CLAWBACK:
+#           ClawbackResult clawbackResult;
+#       case CLAWBACK_CLAIMABLE_BALANCE:
+#           ClawbackClaimableBalanceResult clawbackClaimableBalanceResult;
+#       case SET_TRUST_LINE_FLAGS:
+#           SetTrustLineFlagsResult setTrustLineFlagsResult;
 #       }
 #
 # ===========================================================================
@@ -72,6 +78,9 @@ module Stellar
       switch :begin_sponsoring_future_reserves, :begin_sponsoring_future_reserves_result
       switch :end_sponsoring_future_reserves,   :end_sponsoring_future_reserves_result
       switch :revoke_sponsorship,               :revoke_sponsorship_result
+      switch :clawback,                         :clawback_result
+      switch :clawback_claimable_balance,       :clawback_claimable_balance_result
+      switch :set_trust_line_flags,             :set_trust_line_flags_result
 
       attribute :create_account_result,                   CreateAccountResult
       attribute :payment_result,                          PaymentResult
@@ -92,6 +101,9 @@ module Stellar
       attribute :begin_sponsoring_future_reserves_result, BeginSponsoringFutureReservesResult
       attribute :end_sponsoring_future_reserves_result,   EndSponsoringFutureReservesResult
       attribute :revoke_sponsorship_result,               RevokeSponsorshipResult
+      attribute :clawback_result,                         ClawbackResult
+      attribute :clawback_claimable_balance_result,       ClawbackClaimableBalanceResult
+      attribute :set_trust_line_flags_result,             SetTrustLineFlagsResult
     end
   end
 end

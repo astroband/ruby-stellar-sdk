@@ -5,10 +5,9 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   union BeginSponsoringFutureReservesResult switch (
-#       BeginSponsoringFutureReservesResultCode code)
+#   union ClawbackResult switch (ClawbackResultCode code)
 #   {
-#   case BEGIN_SPONSORING_FUTURE_RESERVES_SUCCESS:
+#   case CLAWBACK_SUCCESS:
 #       void;
 #   default:
 #       void;
@@ -16,10 +15,10 @@ require 'xdr'
 #
 # ===========================================================================
 module Stellar
-  class BeginSponsoringFutureReservesResult < XDR::Union
-    switch_on BeginSponsoringFutureReservesResultCode, :code
+  class ClawbackResult < XDR::Union
+    switch_on ClawbackResultCode, :code
 
-    switch :begin_sponsoring_future_reserves_success
+    switch :clawback_success
     switch :default
 
   end

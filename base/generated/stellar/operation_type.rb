@@ -25,7 +25,10 @@ require 'xdr'
 #       CLAIM_CLAIMABLE_BALANCE = 15,
 #       BEGIN_SPONSORING_FUTURE_RESERVES = 16,
 #       END_SPONSORING_FUTURE_RESERVES = 17,
-#       REVOKE_SPONSORSHIP = 18
+#       REVOKE_SPONSORSHIP = 18,
+#       CLAWBACK = 19,
+#       CLAWBACK_CLAIMABLE_BALANCE = 20,
+#       SET_TRUST_LINE_FLAGS = 21
 #   };
 #
 # ===========================================================================
@@ -50,6 +53,9 @@ module Stellar
     member :begin_sponsoring_future_reserves, 16
     member :end_sponsoring_future_reserves,   17
     member :revoke_sponsorship,               18
+    member :clawback,                         19
+    member :clawback_claimable_balance,       20
+    member :set_trust_line_flags,             21
 
     seal
   end

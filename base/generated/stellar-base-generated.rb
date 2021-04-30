@@ -38,6 +38,7 @@ module Stellar
   AssetCode4 = XDR::Opaque[4]
   AssetCode12 = XDR::Opaque[12]
   autoload :AssetType
+  autoload :AssetCode
   autoload :Asset
   autoload :Price
   autoload :Liabilities
@@ -46,6 +47,7 @@ module Stellar
   autoload :Signer
   autoload :AccountFlags
   MASK_ACCOUNT_FLAGS = 0x7
+  MASK_ACCOUNT_FLAGS_V17 = 0xF
   MAX_SIGNERS = 20
   SponsorshipDescriptor = XDR::Option[AccountID]
   autoload :AccountEntryExtensionV2
@@ -54,6 +56,7 @@ module Stellar
   autoload :TrustLineFlags
   MASK_TRUSTLINE_FLAGS = 1
   MASK_TRUSTLINE_FLAGS_V13 = 3
+  MASK_TRUSTLINE_FLAGS_V17 = 7
   autoload :TrustLineEntry
   autoload :OfferEntryFlags
   MASK_OFFERENTRY_FLAGS = 1
@@ -65,6 +68,9 @@ module Stellar
   autoload :Claimant
   autoload :ClaimableBalanceIDType
   autoload :ClaimableBalanceID
+  autoload :ClaimableBalanceFlags
+  MASK_CLAIMABLE_BALANCE_FLAGS = 0x1
+  autoload :ClaimableBalanceEntryExtensionV1
   autoload :ClaimableBalanceEntry
   autoload :LedgerEntryExtensionV1
   autoload :LedgerEntry
@@ -94,6 +100,9 @@ module Stellar
   autoload :BeginSponsoringFutureReservesOp
   autoload :RevokeSponsorshipType
   autoload :RevokeSponsorshipOp
+  autoload :ClawbackOp
+  autoload :ClawbackClaimableBalanceOp
+  autoload :SetTrustLineFlagsOp
   autoload :Operation
   autoload :OperationID
   autoload :MemoType
@@ -149,6 +158,12 @@ module Stellar
   autoload :EndSponsoringFutureReservesResult
   autoload :RevokeSponsorshipResultCode
   autoload :RevokeSponsorshipResult
+  autoload :ClawbackResultCode
+  autoload :ClawbackResult
+  autoload :ClawbackClaimableBalanceResultCode
+  autoload :ClawbackClaimableBalanceResult
+  autoload :SetTrustLineFlagsResultCode
+  autoload :SetTrustLineFlagsResult
   autoload :OperationResultCode
   autoload :OperationResult
   autoload :TransactionResultCode

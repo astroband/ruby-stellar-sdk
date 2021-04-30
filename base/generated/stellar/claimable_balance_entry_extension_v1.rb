@@ -5,24 +5,26 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   union switch (int v)
+#   struct ClaimableBalanceEntryExtensionV1
+#   {
+#       union switch (int v)
 #       {
 #       case 0:
 #           void;
-#       case 1:
-#           ClaimableBalanceEntryExtensionV1 v1;
 #       }
+#       ext;
+#   
+#       uint32 flags; // see ClaimableBalanceFlags
+#   };
 #
 # ===========================================================================
 module Stellar
-  class ClaimableBalanceEntry
-    class Ext < XDR::Union
-      switch_on XDR::Int, :v
+  class ClaimableBalanceEntryExtensionV1 < XDR::Struct
+    include XDR::Namespace
 
-      switch 0
-      switch 1, :v1
+    autoload :Ext
 
-      attribute :v1, ClaimableBalanceEntryExtensionV1
-    end
+    attribute :ext,   Ext
+    attribute :flags, Uint32
   end
 end

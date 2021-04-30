@@ -14,8 +14,7 @@ require 'xdr'
 #       {
 #           AccountID accountID;
 #           SignerKey signerKey;
-#       }
-#       signer;
+#       } signer;
 #   };
 #
 # ===========================================================================
