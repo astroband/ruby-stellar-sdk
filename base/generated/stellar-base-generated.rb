@@ -47,7 +47,7 @@ module Stellar
   autoload :Signer
   autoload :AccountFlags
   MASK_ACCOUNT_FLAGS = 0x7
-  MASK_ACCOUNT_FLAGS_V16 = 0xF
+  MASK_ACCOUNT_FLAGS_V17 = 0xF
   MAX_SIGNERS = 20
   SponsorshipDescriptor = XDR::Option[AccountID]
   autoload :AccountEntryExtensionV2
@@ -56,7 +56,7 @@ module Stellar
   autoload :TrustLineFlags
   MASK_TRUSTLINE_FLAGS = 1
   MASK_TRUSTLINE_FLAGS_V13 = 3
-  MASK_TRUSTLINE_FLAGS_V16 = 7
+  MASK_TRUSTLINE_FLAGS_V17 = 7
   autoload :TrustLineEntry
   autoload :OfferEntryFlags
   MASK_OFFERENTRY_FLAGS = 1
