@@ -5,16 +5,14 @@ gem "stellar-sdk", path: "./sdk"
 # gem "xdr", github: "astroband/ruby-xdr"
 
 group :test do
+  gem "codecov"
   gem "rake"
   gem "rspec"
   gem "rspec-its"
+  gem "simplecov"
   gem "vcr"
   gem "yard"
   gem "webmock"
-
-  gem "codecov", require: false
-  gem "simplecov", "~> 0.21.2", require: false
-  gem "simplecov_json_formatter"
 end
 
 group :lint do
@@ -24,7 +22,7 @@ group :lint do
 end
 
 group :development do
-  gem "amazing_print"
+  gem "awesome_print"
   gem "break"
   gem "faraday"
   gem "faraday_middleware"

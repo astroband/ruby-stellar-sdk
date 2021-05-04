@@ -1,24 +1,15 @@
-if ENV.key?("CI")
-  require "codecov"
-  require "simplecov_json_formatter"
-
-  # This is a workaround for CodeClimate incompatibility with SimpleCov 0.18+. More info:
-  # - https://github.com/codeclimate/test-reporter/issues/413
-  # - https://github.com/simplecov-ruby/simplecov/pull/923
-  module SimpleCovJSONFormatter
-    class ResultExporter
-      def json_result
-        coverage = @result[:coverage].transform_values { |v| v[:lines] }
-        JSON.pretty_generate({SimpleCov.project_name => {coverage: coverage, timestamp: Time.now.to_i}})
-      end
-      private :json_result
-    end
+def start_simplecov
+  formatters = SimpleCov.formatters
+  if ENV.key?("CI") && Bundler.current_ruby.ruby_27?
+    require "codecov"
+    formatters << SimpleCov::Formatter::Codecov
   end
 
-  SimpleCov.formatters = [
-    SimpleCov::Formatter::JSONFormatter, # for CodeClimate test coverage
-    SimpleCov::Formatter::Codecov
-  ]
+  SimpleCov.formatters = formatters
+
+  SimpleCov.start do
+    enable_coverage(:branch)
+  end
 end
 
-SimpleCov.start
+start_simplecov if ENV.fetch("COVERAGE", "false") == "true"
