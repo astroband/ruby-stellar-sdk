@@ -1,0 +1,23 @@
+comment: false
+ignore:
+- "**/generated/"
+- "**/examples/"
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+        informational: true
+      stellar-base:
+        paths:
+        - "base/"
+      stellar-sdk:
+        paths:
+        - "sdk/"
+    patch:
+      default:
+        informational: true
+        threshold: 1%
+        paths:
+        - "*/lib/"

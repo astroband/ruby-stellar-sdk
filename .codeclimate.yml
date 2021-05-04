@@ -1,0 +1,15 @@
+version: "2"
+plugins:
+  bundler-audit:
+    enabled: false
+  editorconfig:
+    enabled: true
+  markdownlint:
+    enabled: true
+exclude_patterns:
+- "**/generated/"
+- "**/examples/"
+- "**/spec/"
+- "**/test/"
+- "**/tests/"
+- "**/vendor/"
