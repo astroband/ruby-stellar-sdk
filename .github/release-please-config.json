@@ -1,0 +1,14 @@
+{
+  "bootstrap-sha": "571cb1b71ac32484321041b64507edcd926fc4cb",
+  "release-type": "ruby",
+  "bump-minor-pre-major": true,
+  "packages": {
+    "base": {
+      "package-name": "stellar-base"
+    },
+
+    "sdk": {
+      "package-name": "stellar-sdk"
+    }
+  }
+}
