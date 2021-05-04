@@ -1,25 +1,25 @@
 # Changelog
 
 All notable changes to this project will be documented in this
-file. The format is based on [Keep a Changelog](http://keepachangelog.com/)
-and this project adheres to [Semantic Versioning](http://semver.org/).
+file. The format is based on [Keep a Changelog](https://keepachangelog.com/)
+and this project adheres to [Semantic Versioning](https://semver.org/).
 
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
-## [Unreleased](https://github.com/stellar/ruby-stellar-sdk/compare/v0.26.0...master)
+## [Unreleased](https://github.com/astroband/ruby-stellar-sdk/compare/v0.26.0...master)
 
-## [0.26.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.25.0...0.26.0) - 2021-02-05
+## [0.26.0](https://github.com/astroband/ruby-stellar-sdk/compare/v0.25.0...v0.26.0) - 2021-02-05
 - No changes
 
-## [0.25.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.24.0...v0.25.0) - 2020-10-30
+## [0.25.0](https://github.com/astroband/ruby-stellar-sdk/compare/v0.24.0...v0.25.0) - 2020-10-30
 ### Added
 - `MuxedAccount` implements `#to_keypair` conversion protocol
 - `MuxedAccount` correctly responds to `#address` with strkey encoded public key
 ### Fixed
 - `Transaction::V0#source_account` now properly returns `MuxedAccount` instead of raw bytes
 
-## [0.24.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.23.1...v0.24.0) - 2020-10-20
+## [0.24.0](https://github.com/astroband/ruby-stellar-sdk/compare/v0.23.1...v0.24.0) - 2020-10-20
 ### Added
 - Add conversion methods for KeyPair and Asset
 - Stellar Protocol 14 support
@@ -107,33 +107,33 @@ bumps.  A breaking change will get clearly notified in this log.
       - `Operation.revoke_sponsorship(account_id:, signer:)`
 
 
-## [0.23.1](https://github.com/stellar/ruby-stellar-sdk/compare/v0.23.0...v0.23.1) - 2020-06-18
+## [0.23.1](https://github.com/astroband/ruby-stellar-sdk/compare/v0.23.0...v0.23.1) - 2020-06-18
 ### Added
 - Transaction builder now builds V1 transactions
 - FeeBumpTransaction can wrap V0 transaction
 
-## [0.23.0](https://github.com/stellar/ruby-stellar-sdk/compare/v0.22.0...v0.23.0) - 2020-06-11
+## [0.23.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.22.0...v0.23.0) - 2020-06-11
 ### Added
 - Stellar Protocol 13 support
   - Fee-Bump transactions ([CAP-0015](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0015.md))
   - Multiplexed accounts ([CAP-0027](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0027.md))
   - Fine-Grained control on trustline authorization ([CAP-0018](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0018.md))
 
-## [0.22.0](https://github.com/stellar/ruby-stellar-base/compare/v0.21.0...v0.22.0) - 2020-03-26
+## [0.22.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.21.0...base-v0.22.0) - 2020-03-26
 ### Added
-- Add TransactionBuilder ([#54](https://github.com/stellar/ruby-stellar-base/issues/54))
+- Add TransactionBuilder ([#54](https://github.com/astroband/ruby-stellar-base/issues/54))
 
 ### Changed
-- Regenerate XDR files ([#57](https://github.com/stellar/ruby-stellar-base/issues/57))
-- Allow asset objects to be passed instead of list of parameters ([#59](https://github.com/stellar/ruby-stellar-base/issues/59))
+- Regenerate XDR files ([#57](https://github.com/astroband/ruby-stellar-base/issues/57))
+- Allow asset objects to be passed instead of list of parameters ([#59](https://github.com/astroband/ruby-stellar-base/issues/59))
 
-## [0.21.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.20.0...v0.21.0) - 2019-10-04
+## [0.21.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.20.0...base-v0.21.0) - 2019-10-04
 ### Changed
-- [Stellar Protocol 12 compatibility](https://github.com/bloom-solutions/ruby-stellar-base/pull/51).
+- [Stellar Protocol 12 compatibility](https://github.com/astroband/ruby-stellar-base/pull/51).
   - XDR changes for path payment
   - constant renames, which may cause breaking changes if referred to directly
 
-## [0.20.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.19.0...v0.20.0) - 2019-05-22
+## [0.20.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.19.0...base-v0.20.0) - 2019-05-22
 ### Added
 - Stellar Protocol 11 compatibility (#48)
   - XDR changes for [CAP-0006 Buy Offers](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0006.md)
@@ -144,11 +144,11 @@ bumps.  A breaking change will get clearly notified in this log.
 - Deprecate `manage_offer` and `create_passive_offer` factory methods in `Stellar::Transaction` and `Stellar::Operation`
 - Add an option to pass the exact stellar-core revision into `xdr:update` Rake task
 
-## [0.19.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.18.0...v0.19.0)
+## [0.19.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.18.0...base-v0.19.0)
 ### Changed
 - Loosen ActiveSupport to >= 5.0.0
 
-## [0.18.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.17.0...v0.18.0)
+## [0.18.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.17.0...base-v0.18.0)
 ### Added
 - Update XDR definitions for stellar-core v10.0.0 (introduces Liabilities and other changes to support asset-backed offers as per [CAP-0003 Specification](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0003.md#specification))
 - Add factories for ledger, transaction, operation.
@@ -156,11 +156,11 @@ bumps.  A breaking change will get clearly notified in this log.
 ### Changed
 - Use rbnacl instead of rbnacl-libsodium (the latter has been [deprecated](https://github.com/crypto-rb/rbnacl-libsodium/issues/29))
 
-## [0.17.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.16.0...v0.17.0)
+## [0.17.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.16.0...base-v0.17.0)
 ### Fixed
 - Rename `Stellar::SignerKey#onetime_signer` helper to `Stellar::SignerKey#hash_x`, add preimage validations
 
-## [0.16.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.15.0...v0.16.0)
+## [0.16.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.15.0...base-v0.16.0)
 ### Added
 - Create co-signers conveniently using helpers `ed25519(keypair)`, `preauthorized_transaction(tx)` and `onetime_signer(preimage)` from `Stellar::SignerKey` module
 - Merge two transactions with `Stellar::TransactionEnvelope#merge`
@@ -168,14 +168,14 @@ bumps.  A breaking change will get clearly notified in this log.
 ### Fixed
 - Source account overriding in Stellar::Transaction#to_operations
 
-## [0.15.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.14.0...v0.15.0)
+## [0.15.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.14.0...base-v0.15.0)
 ### Added
 - `Stellar::Operation.change_trust` can accept `Stellar::Asset` instance for `line`
 
 ### Fixed
 - Protect `Stellar::Operation.change_trust` against malicious arguments, in the event that developers pass this argument directly from user input
 
-## [0.14.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.13.0...v0.14.0)
+## [0.14.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.13.0...base-v0.14.0)
 
 ### Added
 - We now support the bump sequence operation with `Operation.bump_sequence`.
@@ -185,7 +185,7 @@ bumps.  A breaking change will get clearly notified in this log.
 - `Operation.change_trust` learned how to use a default for the `:limit` parameter
 - `StrKey` learned about new version bytes `pre_auth_tx` and `hash_x`
 
-## [0.13.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.12.0...v0.13.0)
+## [0.13.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.12.0...base-v0.13.0)
 
 ### Changed
 - Update XDR definitions for stellar-core 0.9.1 support
@@ -193,7 +193,7 @@ bumps.  A breaking change will get clearly notified in this log.
 ### Added
 - Added `#signer_key` helper to `KeyPair`
 
-## [0.12.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.11.0...v0.12.0)
+## [0.12.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.11.0...base-v0.12.0)
 
 ### Changed
 - Avoid modifying $LOAD_PATH to fix load order issues
@@ -203,7 +203,7 @@ bumps.  A breaking change will get clearly notified in this log.
 
 - BREAKING CHANGE: Removed support for JRuby.
 
-## [0.11.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.10.0...v0.11.0)
+## [0.11.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.10.0...base-v0.11.0)
 
 ### Added
 - Added support for `manage_data` operations
@@ -211,48 +211,48 @@ bumps.  A breaking change will get clearly notified in this log.
 ### Changed
 - `Stellar::Transaction#to_envelope` can now be used without arguments, returning a `Stellar::TransactionEnvelope` with zero signatures.
 
-## [0.10.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.9.0...v0.10.0)
+## [0.10.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.9.0...base-v0.10.0)
 
 - Added memo helpers to `Stellar::Transaction.for_account`, allowing any operation builder (such as `Stellar::Transaction.payment) to provide a custom memo using the `:memo` attribute.
 
-## [0.9.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.8.0...v0.9.0)
+## [0.9.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.8.0...base-v0.9.0)
 
 ### Changed
 - XDR Definitions have been updated to stellar-core commit eed89649c2060b8e9dacffe2cec4e8b258b32416
 
-## [0.8.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.7.0...v0.8.0)
+## [0.8.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.7.0...base-v0.8.0)
 
 ### Changed
 - BREAKING CHANGE:  The default network for this library is now the stellar test network.
   To enable this library for the production network use `Stellar.default_network = Stellar::Networks::PUBLIC`
   at the head of your script or in your configuration function.
 
-## [0.7.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.6.1...v0.7.0)
+## [0.7.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.6.1...base-v0.7.0)
 
 ### Changed
 
 - Bump xdr dependency to 1.0.0
 
-## [0.6.1](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.6.0...v0.6.1)
+## [0.6.1](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.6.0...base-v0.6.1)
 
 ### Changed
 
 - Update default fee for transactions to new minimum of 100 stroops
 
 
-## [0.6.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.5.0...v0.6.0)
+## [0.6.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.5.0...base-v0.6.0)
 
 ### Changed
 
 - Update to latest xdr (stellar-core commit ad22bccafbbc14a358f05a989f7b95714dc9d4c6)
 
-## [0.5.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.4.0...v0.5.0)
+## [0.5.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.4.0...base-v0.5.0)
 
 ### Changed
 
 - Update to latest xdr
 
-## [0.4.0](https://github.com/bloom-solutions/ruby-stellar-base/compare/v0.3.0...v0.4.0)
+## [0.4.0](https://github.com/astroband/ruby-stellar-sdk/compare/base-v0.3.0...base-v0.4.0)
 
 ### Changed
 - BREAKING CHANGE: "Amounts", that is, input parameters that represent a
