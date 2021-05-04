@@ -22,7 +22,7 @@ Also requires libsodium. Installable via `brew install libsodium` on OS X.
 
 ## Supported Ruby Versions
 
-Please see [travis.yml](.travis.yml) for what versions of ruby are currently tested by our continuous integration system.  Any ruby in that list is officially supported.
+Please see [CI Workflow](https://github.com/astroband/ruby-stellar-sdk/actions/workflows/ci.yml) for what versions of ruby are currently tested by our continuous integration system.  Any ruby in that list is officially supported.
 
 ### JRuby
 
@@ -32,7 +32,7 @@ It seems as though jruby is particularly slow when it comes to BigDecimal math; 
 
 [Examples are here](examples)
 
-In addition to the code generated from the XDR definition files (see [ruby-xdr](https://github.com/stellar/ruby-xdr) for example usage), this library also provides some stellar specific features.  Let's look at some of them.
+In addition to the code generated from the XDR definition files (see [ruby-xdr](https://github.com/astroband/ruby-xdr) for example usage), this library also provides some stellar specific features.  Let's look at some of them.
 
 We wrap rbnacl with `Stellar::KeyPair`, providing some stellar specific functionality as seen below:
 
@@ -84,4 +84,4 @@ The current integration of user-written code with auto-generated classes is to p
 
 ## Contributing
 
-Please [see CONTRIBUTING.md for details](CONTRIBUTING.md).
+Please [see CONTRIBUTING.md for details](../CONTRIBUTING.md).

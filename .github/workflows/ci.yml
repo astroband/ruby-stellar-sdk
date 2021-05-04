@@ -55,3 +55,13 @@ jobs:
       run: bin/rake lint:docs
     - name: Check for vulnerable dependencies with `bundle-audit`
       run: bin/rake lint:deps
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check markdown files for broken links
+      uses: justinbeckwith/linkinator-action@v1
+      with:
+        paths: '*.md, base/**/*.md, sdk/**/*.md'
+        verbosity: 'INFO'
+        skip: 'vendor/ https://github.com/astroband/ruby-*/compare/*'
