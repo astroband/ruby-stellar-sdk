@@ -1,4 +1,5 @@
 require "simplecov"
+require "break"
 
 require "rspec/its"
 
