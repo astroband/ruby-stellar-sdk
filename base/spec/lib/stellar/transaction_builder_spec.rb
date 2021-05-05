@@ -147,7 +147,7 @@ RSpec.describe Stellar::TransactionBuilder do
 
     it "returns self" do
       expect(builder.add_operation(
-        Stellar::Operation.bump_sequence({"bump_to": 1})
+        Stellar::Operation.bump_sequence({bump_to: 1})
       )).to be_an_instance_of(Stellar::TransactionBuilder)
     end
   end
@@ -155,14 +155,14 @@ RSpec.describe Stellar::TransactionBuilder do
   describe ".clear_operations" do
     it "can clear operations" do
       builder = builder.add_operation(
-        Stellar::Operation.bump_sequence({"bump_to": 1})
+        Stellar::Operation.bump_sequence({bump_to: 1})
       ).clear_operations
       expect(builder.operations).to eql([])
     end
 
     it "returns self" do
       expect(builder.add_operation(
-        Stellar::Operation.bump_sequence({"bump_to": 1})
+        Stellar::Operation.bump_sequence({bump_to: 1})
       ).clear_operations).to be_an_instance_of(Stellar::TransactionBuilder)
     end
   end
@@ -258,7 +258,7 @@ RSpec.describe Stellar::TransactionBuilder do
         time_bounds: Stellar::TimeBounds.new(min_time: "not", max_time: "integers")
       )
       expect {
-        builder.add_operation(Stellar::Operation.bump_sequence({"bump_to": 1})).build
+        builder.add_operation(Stellar::Operation.bump_sequence({bump_to: 1})).build
       }.to raise_error(
         RuntimeError, "TimeBounds.min_time and max_time must be Integers"
       )
@@ -271,28 +271,28 @@ RSpec.describe Stellar::TransactionBuilder do
         time_bounds: Stellar::TimeBounds.new(min_time: Time.now.to_i + 10, max_time: Time.now.to_i)
       )
       expect {
-        builder.add_operation(Stellar::Operation.bump_sequence({"bump_to": 1})).build
+        builder.add_operation(Stellar::Operation.bump_sequence({bump_to: 1})).build
       }.to raise_error(
         RuntimeError, "Timebounds.max_time must be greater than min_time"
       )
     end
 
     it "allows max_time to be zero" do
-      builder.add_operation(Stellar::Operation.bump_sequence({"bump_to": 1})).build
+      builder.add_operation(Stellar::Operation.bump_sequence({bump_to: 1})).build
       expect(builder.time_bounds.max_time).to eql(0)
     end
 
     it "updates sequence number by 1 per build" do
       builder.add_operation(
-        Stellar::Operation.bump_sequence({"bump_to": 1})
+        Stellar::Operation.bump_sequence({bump_to: 1})
       ).build
       expect(builder.sequence_number).to eql(2)
     end
 
     it "creates transaction successfully" do
-      bump_op = Stellar::Operation.bump_sequence({"bump_to": 1})
+      bump_op = Stellar::Operation.bump_sequence({bump_to: 1})
       builder.add_operation(
-        Stellar::Operation.bump_sequence({"bump_to": 1})
+        Stellar::Operation.bump_sequence({bump_to: 1})
       ).set_timeout(600).build
       expect(builder.operations).to eql([bump_op])
     end
@@ -305,26 +305,26 @@ RSpec.describe Stellar::TransactionBuilder do
         time_bounds: Stellar::TimeBounds.new(min_time: 0, max_time: first_max_time)
       )
       tx1 = builder.add_operation(
-        Stellar::Operation.bump_sequence({"bump_to": 1})
+        Stellar::Operation.bump_sequence({bump_to: 1})
       ).build
       expect(tx1.seq_num).to eql(1)
       expect(tx1.operations).to eql([
-        Stellar::Operation.bump_sequence({"bump_to": 1})
+        Stellar::Operation.bump_sequence({bump_to: 1})
       ])
       expect(tx1.time_bounds.max_time).to eql(first_max_time)
 
       tx2 = builder.clear_operations.add_operation(
-        Stellar::Operation.bump_sequence({"bump_to": 2})
+        Stellar::Operation.bump_sequence({bump_to: 2})
       ).set_timeout(0).build
       expect(tx2.seq_num).to eql(2)
       expect(tx2.operations).to eql([
-        Stellar::Operation.bump_sequence({"bump_to": 2})
+        Stellar::Operation.bump_sequence({bump_to: 2})
       ])
       expect(tx2.time_bounds.max_time).to eql(0)
 
       expect(builder.sequence_number).to eql(3)
       expect(builder.operations).to eql([
-        Stellar::Operation.bump_sequence({"bump_to": 2})
+        Stellar::Operation.bump_sequence({bump_to: 2})
       ])
     end
   end
@@ -400,7 +400,7 @@ RSpec.describe Stellar::TransactionBuilder do
     context "when inner tx is v0" do
       let(:inner_tx) do
         subject
-          .add_operation(Stellar::Operation.bump_sequence("bump_to": 5))
+          .add_operation(Stellar::Operation.bump_sequence(bump_to: 5))
           .build
           .to_v0
       end
