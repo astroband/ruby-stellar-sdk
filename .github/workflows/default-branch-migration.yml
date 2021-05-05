@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Migrate
-        uses: liyanchang/default-branch-migration@v1.0.1
+        uses: liyanchang/default-branch-migration@v1.0.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           previous_default: master
