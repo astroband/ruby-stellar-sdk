@@ -6,15 +6,24 @@ updates:
   directory: "/"
   schedule:
     interval: "daily"
+  commit-message:
+    prefix: "ci"
+    include: "scope"
 - package-ecosystem: "bundler"
   directory: "/"
   schedule:
     interval: "daily"
   versioning-strategy: "increase-if-necessary"
+  commit-message:
+    prefix: "chore"
+    include: "scope"
 - package-ecosystem: "bundler"
   directory: "/base"
   schedule:
     interval: "daily"
+  commit-message:
+    prefix: "chore"
+    include: "scope"
   allow:
   - dependency-type: "direct"
   labels:
@@ -24,6 +33,9 @@ updates:
   directory: "/sdk"
   schedule:
     interval: "daily"
+  commit-message:
+    prefix: "chore"
+    include: "scope"
   allow:
   - dependency-type: "direct"
   labels:
