@@ -3,7 +3,7 @@ name: release-please
 on:
   workflow_dispatch:
   push:
-    branches: [ main, "chore/release-workflow" ]
+    branches: [ main, "release-*" ]
 
 jobs:
   release-please:
@@ -15,13 +15,12 @@ jobs:
         command: manifest
         config-file: ".github/release-please-config.json"
         manifest-file: ".github/.release-please-manifest.json"
-        default-branch: main
-        token: ${{ github.token }}
 
     # The following steps only run when release was created
     - name: Checkout code if release was created
       if: ${{ steps.release.outputs.release_created }}
       uses: actions/checkout@v2
+
     - name: Setup Ruby
       if: ${{ steps.release.outputs.release_created }}
       uses: ruby/setup-ruby@v1
