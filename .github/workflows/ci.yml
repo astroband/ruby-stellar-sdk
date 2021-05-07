@@ -2,10 +2,10 @@ name: CI
 
 on:
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
     paths-ignore: [ '**/README.md', '**/CHANGELOG.md' ]
   push:
-    branches: [ main, master ]
+    branches: [ main ]
     paths-ignore: [ '**/README.md', '**/CHANGELOG.md' ]
 
 jobs:

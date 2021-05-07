@@ -16,8 +16,8 @@ ask contributors to follow so that we can merge your changes quickly.
 ## Making Changes
 
 * Create a topic branch from where you want to base your work.
-  * This is usually the master branch.
-  * Please avoid working directly on the `master` branch.
+  * This is usually the `main` branch.
+  * Please avoid working directly on the `main` branch.
 * Make sure you have added the necessary tests for your changes, and make sure all tests pass.
 
 ## Submitting Changes
@@ -35,14 +35,12 @@ business days. We may suggest some changes or improvements or alternatives.
 # Additional Resources
 
 * [Bug tracker (Github)](https://github.com/astroband/ruby-stellar-sdk/issues)
-* <a href="https://docs.google.com/forms/d/1g7EF6PERciwn7zfmfke5Sir2n10yddGGSXyZsq98tVY/viewform?usp=send_form">Contributor License Agreement</a>
-* #stellar-dev IRC channel on freenode.org and Slack chat on stellar-public.slack.com
 
 
 This document is inspired by:
 
 https://github.com/puppetlabs/puppet/blob/master/CONTRIBUTING.md
 
-https://github.com/thoughtbot/factory_girl_rails/blob/master/CONTRIBUTING.md
+https://github.com/thoughtbot/factory_bot_rails/blob/master/CONTRIBUTING.md
 
 https://github.com/rust-lang/rust/blob/master/CONTRIBUTING.md
