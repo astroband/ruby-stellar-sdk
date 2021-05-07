@@ -4,8 +4,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased](https://github.com/astroband/ruby-stellar-sdk/compare/v0.26.0...master)
-
 ## [0.26.0](https://github.com/astroband/ruby-stellar-sdk/compare/v0.25.0...v0.26.0) - 2021-02-05
 ### Changed
 - `Stellar::SEP10` is updated to comply with SEP10 v3.0.0 and v3.1.0

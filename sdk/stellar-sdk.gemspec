@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
     "bug_tracker_uri" => "#{spec.homepage}/issues",
     "changelog_uri" => "#{spec.homepage}/blob/v#{spec.version}/sdk/CHANGELOG.md",
     "documentation_uri" => "https://rubydoc.info/gems/#{spec.name}/#{spec.version}/",
-    "homepage_uri" => "#{spec.homepage}/tree/master/sdk",
+    "homepage_uri" => "#{spec.homepage}/tree/main/sdk",
     "source_code_uri" => "#{spec.homepage}/tree/v#{spec.version}/sdk"
   }
 
