@@ -1,3 +1,30 @@
+RSpec.shared_examples "XDR serializable" do
+  it "roundtrips" do
+    base64 = subject.to_xdr(:base64)
+    expect(described_class.from_xdr(base64, :base64)).to eq(subject)
+  end
+end
+
+RSpec.describe Stellar::Operation, ".create_account" do
+  let(:funder) { Stellar::KeyPair.random }
+  let(:destination) { Stellar::KeyPair.random }
+  let(:attrs) { {source_account: funder, destination: destination, starting_balance: 50} }
+
+  subject(:operation) { described_class.create_account(**attrs) }
+
+  it_behaves_like "XDR serializable"
+
+  it "accepts 0 as starting balance" do
+    attrs[:starting_balance] = 0
+    expect { operation.to_xdr(:base64) }.not_to raise_error
+  end
+
+  it "fails when starting balance is missing" do
+    attrs.delete(:starting_balance)
+    expect { operation.to_xdr(:base64) }.to raise_error(ArgumentError)
+  end
+end
+
 RSpec.describe Stellar::Operation, ".payment" do
   it "correctly translates the provided amount to the native representation" do
     op = Stellar::Operation.payment(destination: Stellar::KeyPair.random, amount: [:native, 20])
@@ -127,12 +154,45 @@ RSpec.describe Stellar::Operation, ".change_trust" do
   end
 end
 
+RSpec.describe Stellar::Operation, ".set_trust_line_flags" do
+  let(:trustor) { Stellar::KeyPair.random }
+  let(:asset) { Stellar::Asset.alphanum4("USD", Stellar::KeyPair.master) }
+  let(:flags) { {authorized: true, authorized_to_maintain_liabilities: true} }
+  let(:attrs) { {trustor: trustor, asset: asset, flags: flags} }
+
+  subject(:operation) { described_class.set_trust_line_flags(**attrs) }
+
+  it_behaves_like "XDR serializable"
+
+  {
+    [0, 7] => {authorized: false, authorized_to_maintain_liabilities: false, trustline_clawback_enabled: false},
+    [1, 6] => {authorized: true, authorized_to_maintain_liabilities: false, trustline_clawback_enabled: false},
+    [2, 5] => {authorized: false, authorized_to_maintain_liabilities: true, trustline_clawback_enabled: false},
+    [3, 4] => {authorized: true, authorized_to_maintain_liabilities: true, trustline_clawback_enabled: false},
+    [4, 3] => {authorized: false, authorized_to_maintain_liabilities: false, trustline_clawback_enabled: true},
+    [5, 2] => {authorized: true, authorized_to_maintain_liabilities: false, trustline_clawback_enabled: true},
+    [6, 1] => {authorized: false, authorized_to_maintain_liabilities: true, trustline_clawback_enabled: true},
+    [7, 0] => {authorized: true, authorized_to_maintain_liabilities: true, trustline_clawback_enabled: true},
+    [1, 0] => {authorized: true},
+    [0, 4] => {trustline_clawback_enabled: false}
+  }.each do |expected, flags|
+    context "when flags are #{flags}" do
+      let(:flags) { flags }
+
+      its("body.value.set_flags") { is_expected.to eq(expected[0]) }
+      its("body.value.clear_flags") { is_expected.to eq(expected[1]) }
+    end
+  end
+end
+
 RSpec.describe Stellar::Operation, ".allow_trust" do
   let(:issuer) { Stellar::KeyPair.from_address("GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7") }
   let(:trustor) { Stellar::KeyPair.random }
   let(:asset) { Stellar::Asset.alphanum4("USD", issuer) }
   let(:authorize) { :full }
   subject { Stellar::Operation.allow_trust(trustor: trustor, authorize: authorize, asset: asset) }
+
+  around { |ex| Stellar::Deprecation.silence(&ex) }
 
   it "produces valid Stellar::AllowTrustOp body" do
     expect { subject.to_xdr }.not_to raise_error
@@ -165,10 +225,37 @@ RSpec.describe Stellar::Operation, ".allow_trust" do
   end
 end
 
-RSpec.shared_examples "XDR serializable" do
-  it "roundtrips" do
-    base64 = subject.to_xdr(:base64)
-    expect(described_class.from_xdr(base64, :base64)).to eq(subject)
+RSpec.describe Stellar::Operation, ".manage_buy_offer" do
+  let(:buying_issuer) { Stellar::KeyPair.from_address("GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7") }
+  let(:buying_asset) { Stellar::Asset.alphanum4("USD", buying_issuer) }
+
+  let(:selling_issuer) { Stellar::KeyPair.master }
+  let(:selling_asset) { Stellar::Asset.alphanum4("EUR", selling_issuer) }
+
+  it "creates a ManageBuyOfferOp" do
+    op = Stellar::Operation.manage_buy_offer(buying: buying_asset, selling: selling_asset, amount: 50, price: 10)
+    expect(op.body.value).to be_an_instance_of(Stellar::ManageBuyOfferOp)
+    expect(op.body.value.buying).to eq(Stellar::Asset.alphanum4("USD", buying_issuer))
+    expect(op.body.value.selling).to eq(Stellar::Asset.alphanum4("EUR", selling_issuer))
+    expect(op.body.value.buy_amount).to eq(500000000)
+    expect(op.body.value.price.to_d).to eq(10)
+  end
+end
+
+RSpec.describe Stellar::Operation, ".manage_sell_offer" do
+  let(:buying_issuer) { Stellar::KeyPair.from_address("GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7") }
+  let(:buying_asset) { Stellar::Asset.alphanum4("USD", buying_issuer) }
+
+  let(:selling_issuer) { Stellar::KeyPair.master }
+  let(:selling_asset) { Stellar::Asset.alphanum4("EUR", selling_issuer) }
+
+  it "creates a ManageSellOfferOp" do
+    op = Stellar::Operation.manage_sell_offer(buying: buying_asset, selling: selling_asset, amount: 50, price: 10)
+    expect(op.body.value).to be_an_instance_of(Stellar::ManageSellOfferOp)
+    expect(op.body.value.buying).to eq(Stellar::Asset.alphanum4("USD", buying_issuer))
+    expect(op.body.value.selling).to eq(Stellar::Asset.alphanum4("EUR", selling_issuer))
+    expect(op.body.value.amount).to eq(500000000)
+    expect(op.body.value.price.to_d).to eq(10)
   end
 end
 
@@ -279,54 +366,78 @@ RSpec.describe Stellar::Operation do
     end
   end
 
-  describe ".create_account" do
-    before { attrs.merge!(destination: account, starting_balance: 50) }
-    subject(:operation) { described_class.create_account(**attrs) }
+  describe ".clawback" do
+    let(:asset) { Stellar::Asset.alphanum4("USD", account) }
+    let(:amount) { 1 }
+    let(:from) { Stellar::KeyPair.random }
+    let(:attrs) do
+      {
+        source_account: account,
+        from: from,
+        amount: [asset, amount]
+      }
+    end
+    subject(:operation) { described_class.clawback(**attrs) }
 
     it_behaves_like "XDR serializable"
 
-    it "accepts 0 as starting balance" do
-      attrs[:starting_balance] = 0
-      expect { operation.to_xdr(:base64) }.not_to raise_error
+    its("body.value") { is_expected.to be_a(Stellar::ClawbackOp) }
+    its("body.value.from") { is_expected.to eq(from.muxed_account) }
+    its("body.value.amount") { is_expected.to eq(amount * 10_000_000) }
+    its("body.switch.name") { is_expected.to eq("clawback") }
+
+    its("source_account") { is_expected.to eq(account.muxed_account) }
+
+    context "when amount is zero" do
+      let(:amount) { 0 }
+
+      it "raises an error" do
+        expect { operation }.to raise_error(ArgumentError, "Amount can not be zero")
+      end
     end
 
-    it "fails when starting balance is missing" do
-      attrs.delete(:starting_balance)
-      expect { operation.to_xdr(:base64) }.to raise_error(ArgumentError)
+    context "when amount is negative" do
+      let(:amount) { "-100" }
+
+      it "raises an error" do
+        expect { operation }.to raise_error(ArgumentError, "Negative amount is not allowed")
+      end
     end
   end
-end
 
-RSpec.describe Stellar::Operation, ".manage_buy_offer" do
-  let(:buying_issuer) { Stellar::KeyPair.from_address("GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7") }
-  let(:buying_asset) { Stellar::Asset.alphanum4("USD", buying_issuer) }
+  describe ".clawback_claimable_balance" do
+    let(:balance_id) do
+      # hex representation, taken from testnet Horizon
+      "00000000c15f7ff639f26e92d3924f46e040a8e85812534af9a2e8886cb6fbf821fdd6ed"
+    end
 
-  let(:selling_issuer) { Stellar::KeyPair.master }
-  let(:selling_asset) { Stellar::Asset.alphanum4("EUR", selling_issuer) }
+    let(:attrs) do
+      {
+        source_account: account,
+        balance_id: balance_id
+      }
+    end
+    subject(:operation) { described_class.clawback_claimable_balance(**attrs) }
 
-  it "creates a ManageBuyOfferOp" do
-    op = Stellar::Operation.manage_buy_offer(buying: buying_asset, selling: selling_asset, amount: 50, price: 10)
-    expect(op.body.value).to be_an_instance_of(Stellar::ManageBuyOfferOp)
-    expect(op.body.value.buying).to eq(Stellar::Asset.alphanum4("USD", buying_issuer))
-    expect(op.body.value.selling).to eq(Stellar::Asset.alphanum4("EUR", selling_issuer))
-    expect(op.body.value.buy_amount).to eq(500000000)
-    expect(op.body.value.price.to_d).to eq(10)
-  end
-end
+    it_behaves_like "XDR serializable"
 
-RSpec.describe Stellar::Operation, ".manage_sell_offer" do
-  let(:buying_issuer) { Stellar::KeyPair.from_address("GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7") }
-  let(:buying_asset) { Stellar::Asset.alphanum4("USD", buying_issuer) }
+    its("body.value") { is_expected.to be_a(Stellar::ClawbackClaimableBalanceOp) }
+    its("body.value.balance_id") { is_expected.to be_a(Stellar::ClaimableBalanceID) }
 
-  let(:selling_issuer) { Stellar::KeyPair.master }
-  let(:selling_asset) { Stellar::Asset.alphanum4("EUR", selling_issuer) }
+    it "sets balance_id properly" do
+      hex_balance_id = operation.body.value.balance_id.to_xdr(:hex)
 
-  it "creates a ManageSellOfferOp" do
-    op = Stellar::Operation.manage_sell_offer(buying: buying_asset, selling: selling_asset, amount: 50, price: 10)
-    expect(op.body.value).to be_an_instance_of(Stellar::ManageSellOfferOp)
-    expect(op.body.value.buying).to eq(Stellar::Asset.alphanum4("USD", buying_issuer))
-    expect(op.body.value.selling).to eq(Stellar::Asset.alphanum4("EUR", selling_issuer))
-    expect(op.body.value.amount).to eq(500000000)
-    expect(op.body.value.price.to_d).to eq(10)
+      expect(hex_balance_id).to eq(balance_id)
+    end
+
+    its("source_account") { is_expected.to eq(account.muxed_account) }
+
+    context "when invalid balance id is provided" do
+      let(:balance_id) { "someinvalidstring" }
+
+      it "raises error" do
+        expect { operation }.to raise_error(ArgumentError, "Claimable balance id '#{balance_id}' is invalid")
+      end
+    end
   end
 end

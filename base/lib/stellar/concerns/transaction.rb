@@ -19,7 +19,7 @@ module Stellar::Concerns
     end
 
     def merge(other)
-      cloned = Marshal.load Marshal.dump(self)
+      cloned = from_xdr(to_xdr)
       cloned.operations += other.to_operations
       cloned
     end
@@ -32,7 +32,9 @@ module Stellar::Concerns
     #
     # @return [Array<Operation>] the operations
     def to_operations
-      cloned = Marshal.load Marshal.dump(operations)
+      codec = XDR::VarArray[Stellar::Operation]
+      ops = respond_to?(:operations) ? operations : inner_tx.value.tx.operations
+      cloned = codec.from_xdr(codec.to_xdr(ops))
       cloned.each do |op|
         op.source_account ||= source_account
       end
