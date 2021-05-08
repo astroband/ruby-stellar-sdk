@@ -1,7 +1,10 @@
 require "stellar-base"
-require_relative "stellar/sdk/version"
 
 module Stellar
+  module SDK
+    VERSION = ::Stellar::VERSION
+  end
+
   autoload :Account
   autoload :Amount
   autoload :Client
