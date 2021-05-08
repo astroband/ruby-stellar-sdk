@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/stellar/sdk/version"
+require_relative "../base/lib/stellar/version"
 
 Gem::Specification.new do |spec|
   spec.name = "stellar-sdk"
-  spec.version = Stellar::SDK::VERSION
+  spec.version = Stellar::VERSION
   spec.authors = ["Scott Fleckenstein", "Sergey Nebolsin", "Timur Ramazanov"]
   spec.summary = "Stellar client library"
   spec.homepage = "https://github.com/stellar/ruby-stellar-sdk"
@@ -19,11 +19,10 @@ Gem::Specification.new do |spec|
     "bug_tracker_uri" => "#{spec.homepage}/issues",
     "changelog_uri" => "#{spec.homepage}/blob/v#{spec.version}/sdk/CHANGELOG.md",
     "documentation_uri" => "https://rubydoc.info/gems/#{spec.name}/#{spec.version}/",
+    "github_repo" => spec.homepage.sub("https", "ssh"),
     "homepage_uri" => "#{spec.homepage}/tree/main/sdk",
     "source_code_uri" => "#{spec.homepage}/tree/v#{spec.version}/sdk"
   }
-
-  spec.metadata["github_repo"] = "ssh://github.com/astroband/ruby-stellar-sdk"
 
   spec.required_ruby_version = ">= 2.5.0"
 
