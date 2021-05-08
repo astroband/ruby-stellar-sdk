@@ -71,4 +71,4 @@ jobs:
       with:
         paths: '*.md, base/**/*.md, sdk/**/*.md'
         verbosity: 'INFO'
-        skip: 'vendor/ https://github.com/astroband/ruby-*/compare/*'
+        skip: 'vendor/, astroband/ruby-stellar-sdk/compare'
