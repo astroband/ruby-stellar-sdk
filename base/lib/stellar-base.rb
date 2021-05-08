@@ -16,8 +16,7 @@ silence_warnings do
 end
 Stellar.load_all!
 
-require_relative "stellar/base/version"
-Stellar::VERSION = Stellar::Base::VERSION
+require_relative "stellar/version"
 
 Stellar::ONE = 1_0000000
 Stellar::Deprecation = ActiveSupport::Deprecation.new("next release", "stellar-base")

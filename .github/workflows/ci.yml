@@ -14,17 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: [3.0, 2.7, 2.6, 2.5, jruby, truffleruby, ruby-head]
-    env:
-      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-      COVERAGE: ${{ matrix.ruby == '2.7' }}
+        ruby: [3.0, 2.7, 2.6, 2.5, jruby, truffleruby, debug]
     runs-on: ubuntu-latest
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
+    - uses: actions/checkout@v2
     - name: Setup Ruby ${{ matrix.ruby }}
       uses: ruby/setup-ruby@v1
       with:
@@ -32,6 +26,19 @@ jobs:
         bundler-cache: true
     - name: Run specs
       run: bin/rake test
+
+  coverage:
+    if: "contains(github.event.commits[0].message, '[ci skip]') == false"
+    runs-on: ubuntu-latest
+    env:
+      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
+    - name: Generate coverage
+      run: bin/rake test:coverage
     - name: Upload code coverage data to CodeClimate
       uses: paambaati/codeclimate-action@v2.7.5
       with:
@@ -39,15 +46,15 @@ jobs:
           base/coverage/coverage.json:simplecov
           sdk/coverage/coverage.json:simplecov
         debug: true
-      if: success() && env.COVERAGE == 'true'
+      if: success()
       continue-on-error: true
+
   lint:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.7
         bundler-cache: true
     - name: Enforce codestyle with `standard`
       run: bin/rake lint:code
