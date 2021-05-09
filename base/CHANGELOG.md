@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
+## [0.27.0](https://github.com/astroband/ruby-stellar-sdk/compare/v0.26.0...v0.27.0) (2021-05-08)
+
+### Features
+
+* **protocol:** support Stellar protocol 17 ([#137](https://www.github.com/astroband/ruby-stellar-sdk/issues/137)) ([5fea84d](https://www.github.com/astroband/ruby-stellar-sdk/commit/5fea84d8c3b10b7afc00a10415e8fea01c25eec7))
+
 ## [0.26.0](https://github.com/astroband/ruby-stellar-sdk/compare/v0.25.0...v0.26.0) - 2021-02-05
 - No changes
 
