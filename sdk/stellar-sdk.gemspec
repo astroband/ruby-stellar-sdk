@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.version = Stellar::VERSION
   spec.authors = ["Scott Fleckenstein", "Sergey Nebolsin", "Timur Ramazanov"]
   spec.summary = "Stellar client library"
-  spec.homepage = "https://github.com/stellar/ruby-stellar-sdk"
+  spec.homepage = "https://github.com/astroband/ruby-stellar-sdk"
   spec.license = "Apache-2.0"
 
   spec.files = Dir["lib/**/*"]
