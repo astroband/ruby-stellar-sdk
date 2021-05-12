@@ -49,7 +49,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2.3.4
     - name: Analyze the licences with `fossa`
-      uses: fossa-contrib/fossa-action@v1
+      uses: fossa-contrib/fossa-action@v1.1.4
       with:
         fossa-api-key: ${{ secrets.FOSSA_API_KEY }}
         github-token: ${{ github.token }}
