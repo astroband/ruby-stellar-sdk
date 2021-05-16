@@ -1,4 +1,8 @@
 require "stellar-base"
+require_relative "stellar/account"
+
+Stellar::SdkDeprecation = ActiveSupport::Deprecation.new("next release", "stellar-sdk")
+require_relative "stellar/compat"
 
 module Stellar
   module SDK
@@ -8,6 +12,7 @@ module Stellar
   autoload :Account
   autoload :Amount
   autoload :Client
+  autoload :Federation
   autoload :SEP10
 
   module Horizon
