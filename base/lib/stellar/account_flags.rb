@@ -1,5 +1,5 @@
 module Stellar
-  class AccountFlags
+  class AccountFlags < StellarProtocol::AccountFlags
     #
     # Converts an array of Stellar::AccountFlags members into
     # an Integer suitable for use in a SetOptionsOp.

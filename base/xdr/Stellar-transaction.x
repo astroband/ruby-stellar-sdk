@@ -4,7 +4,7 @@
 
 %#include "xdr/Stellar-ledger-entries.h"
 
-namespace stellar
+namespace stellar_protocol
 {
 
 // Source or destination of a payment operation

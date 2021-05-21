@@ -3,7 +3,7 @@
 
 require 'xdr'
 
-module Stellar
+module StellarProtocol
   include XDR::Namespace
 
   Hash = XDR::Opaque[32]
@@ -25,7 +25,7 @@ module Stellar
   autoload :HmacSha256Key
   autoload :HmacSha256Mac
 end
-module Stellar
+module StellarProtocol
   include XDR::Namespace
 
   AccountID = PublicKey
@@ -77,7 +77,7 @@ module Stellar
   autoload :LedgerKey
   autoload :EnvelopeType
 end
-module Stellar
+module StellarProtocol
   include XDR::Namespace
 
   autoload :MuxedAccount
@@ -171,7 +171,7 @@ module Stellar
   autoload :InnerTransactionResultPair
   autoload :TransactionResult
 end
-module Stellar
+module StellarProtocol
   include XDR::Namespace
 
   UpgradeType = XDR::VarOpaque[128]
@@ -205,7 +205,7 @@ module Stellar
   autoload :LedgerCloseMetaV0
   autoload :LedgerCloseMeta
 end
-module Stellar
+module StellarProtocol
   include XDR::Namespace
 
   autoload :ErrorCode
@@ -230,7 +230,7 @@ module Stellar
   autoload :StellarMessage
   autoload :AuthenticatedMessage
 end
-module Stellar
+module StellarProtocol
   include XDR::Namespace
 
   Value = XDR::VarOpaque[]

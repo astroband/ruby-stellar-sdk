@@ -2,7 +2,7 @@
 // under the Apache License, Version 2.0. See the COPYING file at the root
 // of this distribution or at http://www.apache.org/licenses/LICENSE-2.0
 
-namespace stellar
+namespace stellar_protocol
 {
 
 typedef opaque Hash[32];
@@ -88,7 +88,7 @@ struct HmacSha256Mac
 
 %#include "xdr/Stellar-types.h"
 
-namespace stellar
+namespace stellar_protocol
 {
 
 typedef PublicKey AccountID;
@@ -586,7 +586,7 @@ enum EnvelopeType
 
 %#include "xdr/Stellar-ledger-entries.h"
 
-namespace stellar
+namespace stellar_protocol
 {
 
 // Source or destination of a payment operation
@@ -1982,7 +1982,7 @@ struct TransactionResult
 %#include "xdr/Stellar-SCP.h"
 %#include "xdr/Stellar-transaction.h"
 
-namespace stellar
+namespace stellar_protocol
 {
 
 typedef opaque UpgradeType<128>;
@@ -2322,7 +2322,7 @@ case 0:
 
 %#include "xdr/Stellar-ledger.h"
 
-namespace stellar
+namespace stellar_protocol
 {
 
 enum ErrorCode
@@ -2552,7 +2552,7 @@ case 0:
 
 %#include "xdr/Stellar-types.h"
 
-namespace stellar
+namespace stellar_protocol
 {
 
 typedef opaque Value<>;

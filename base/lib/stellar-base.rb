@@ -14,9 +14,14 @@ require_relative "stellar/ext/xdr"
 silence_warnings do
   require "stellar-base-generated"
 end
-Stellar.load_all!
+
+StellarProtocol.load_all!
 
 require_relative "stellar/version"
+
+def Stellar.const_missing(name)
+  "StellarProtocol::#{name}".constantize
+end
 
 Stellar::ONE = 1_0000000
 Stellar::Deprecation = ActiveSupport::Deprecation.new("next release", "stellar-base")

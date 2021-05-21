@@ -4,7 +4,7 @@
 
 %#include "xdr/Stellar-ledger.h"
 
-namespace stellar
+namespace stellar_protocol
 {
 
 enum ErrorCode

@@ -1,5 +1,5 @@
 module Stellar
-  class Transaction
+  class Transaction < StellarProtocol::Transaction
     include Stellar::Concerns::Transaction
 
     def to_v0

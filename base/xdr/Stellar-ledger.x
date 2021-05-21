@@ -5,7 +5,7 @@
 %#include "xdr/Stellar-SCP.h"
 %#include "xdr/Stellar-transaction.h"
 
-namespace stellar
+namespace stellar_protocol
 {
 
 typedef opaque UpgradeType<128>;

@@ -1,17 +1,27 @@
 RSpec.describe Stellar::AccountFlags do
-  subject { Stellar::AccountFlags }
-  let(:raw) { 3 }
-  let(:result) { subject.parse_mask raw }
-
-  it "parses correctly" do
-    expect(subject.parse_mask(1)).to eq([Stellar::AccountFlags.auth_required_flag])
-    expect(subject.parse_mask(2)).to eq([Stellar::AccountFlags.auth_revocable_flag])
-    expect(subject.parse_mask(3)).to eq([Stellar::AccountFlags.auth_required_flag, Stellar::AccountFlags.auth_revocable_flag])
+  describe ".parse_mask" do
+    it "parses correctly" do
+      expect(described_class.parse_mask(1)).to eq([
+        StellarProtocol::AccountFlags.auth_required_flag
+      ])
+      expect(described_class.parse_mask(2)).to eq([
+        StellarProtocol::AccountFlags.auth_revocable_flag
+      ])
+      expect(described_class.parse_mask(3)).to eq([
+        StellarProtocol::AccountFlags.auth_required_flag,
+        StellarProtocol::AccountFlags.auth_revocable_flag
+      ])
+    end
   end
 
-  it "makes correctly" do
-    expect(subject.make_mask([Stellar::AccountFlags.auth_required_flag])).to eq(1)
-    expect(subject.make_mask([Stellar::AccountFlags.auth_revocable_flag])).to eq(2)
-    expect(subject.make_mask([Stellar::AccountFlags.auth_required_flag, Stellar::AccountFlags.auth_revocable_flag])).to eq(3)
+  describe ".make_mask" do
+    it "makes correctly" do
+      expect(described_class.make_mask([StellarProtocol::AccountFlags.auth_required_flag])).to eq(1)
+      expect(described_class.make_mask([StellarProtocol::AccountFlags.auth_revocable_flag])).to eq(2)
+      expect(described_class.make_mask([
+        StellarProtocol::AccountFlags.auth_required_flag,
+        StellarProtocol::AccountFlags.auth_revocable_flag
+      ])).to eq(3)
+    end
   end
 end

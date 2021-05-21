@@ -1,0 +1,32 @@
+# This code was automatically generated using xdrgen
+# DO NOT EDIT or your changes may be overwritten
+
+require 'xdr'
+
+# === xdr source ============================================================
+#
+#   struct PathPaymentStrictReceiveOp
+#   {
+#       Asset sendAsset; // asset we pay with
+#       int64 sendMax;   // the maximum amount of sendAsset to
+#                        // send (excluding fees).
+#                        // The operation will fail if can't be met
+#   
+#       MuxedAccount destination; // recipient of the payment
+#       Asset destAsset;          // what they end up with
+#       int64 destAmount;         // amount they end up with
+#   
+#       Asset path<5>; // additional hops it must go through to get there
+#   };
+#
+# ===========================================================================
+module StellarProtocol
+  class PathPaymentStrictReceiveOp < XDR::Struct
+    attribute :send_asset,  Asset
+    attribute :send_max,    Int64
+    attribute :destination, MuxedAccount
+    attribute :dest_asset,  Asset
+    attribute :dest_amount, Int64
+    attribute :path,        XDR::VarArray[Asset, 5]
+  end
+end

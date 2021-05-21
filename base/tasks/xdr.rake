@@ -30,7 +30,14 @@ namespace :xdr do
   rule ".x", [:ref] => ["xdr"] do |t, args|
     args.with_defaults(ref: :master)
     core_file = github_client.contents("stellar/stellar-core", path: "src/#{t.name}", ref: args.ref)
-    IO.write(t.name, core_file.rels[:download].get.data)
+    content = core_file.rels[:download].get.data
+    IO.write(
+      t.name,
+      content.sub(
+        "namespace stellar",
+        "namespace stellar_protocol"
+      )
+    )
   end
 
   task :clean do

@@ -6,7 +6,7 @@ module Stellar
   # Represents claim predicate on Stellar network.
   #
   # @see https://developers.stellar.org/docs/glossary/claimable-balance/
-  class ClaimPredicate
+  class ClaimPredicate < StellarProtocol::ClaimPredicate
     module FactoryMethods
       # Constructs an `unconditional` claim predicate.
       #
@@ -14,7 +14,7 @@ module Stellar
       #
       # @return [ClaimPredicate] `unconditional` claim predicate
       def unconditional
-        ClaimPredicate.new(ClaimPredicateType::UNCONDITIONAL)
+        ClaimPredicate.new(StellarProtocol::ClaimPredicateType::UNCONDITIONAL)
       end
 
       # Constructs a `before_relative_time` claim predicate.
@@ -27,7 +27,7 @@ module Stellar
       #                                the ClaimableBalanceEntry was created.
       # @return [ClaimPredicate] `before_relative_time` claim predicate
       def before_relative_time(seconds)
-        ClaimPredicate.new(ClaimPredicateType::BEFORE_RELATIVE_TIME, Integer(seconds))
+        ClaimPredicate.new(StellarProtocol::ClaimPredicateType::BEFORE_RELATIVE_TIME, Integer(seconds))
       end
 
       # Constructs an `before_absolute_time` claim predicate.
@@ -41,7 +41,7 @@ module Stellar
       def before_absolute_time(timestamp)
         timestamp = timestamp.to_time if timestamp.respond_to?(:to_time)
 
-        ClaimPredicate.new(ClaimPredicateType::BEFORE_ABSOLUTE_TIME, Integer(timestamp))
+        ClaimPredicate.new(StellarProtocol::ClaimPredicateType::BEFORE_ABSOLUTE_TIME, Integer(timestamp))
       end
 
       # Constructs either relative or absolute time predicate based on the type of the input.
@@ -100,7 +100,7 @@ module Stellar
     # @return [ClaimPredicate] `and` claim predicate
     def and(other)
       raise TypeError, "no conversion from #{other.class.name} to ClaimPredicate" unless ClaimPredicate === other
-      ClaimPredicate.new(ClaimPredicateType::AND, [self, other])
+      ClaimPredicate.new(StellarProtocol::ClaimPredicateType::AND, [self, other])
     end
     alias_method :&, :and
 
@@ -113,7 +113,7 @@ module Stellar
     # @return [ClaimPredicate] `or` claim predicate
     def or(other)
       raise TypeError, "no conversion from #{other.class.name} to ClaimPredicate" unless ClaimPredicate === other
-      ClaimPredicate.new(ClaimPredicateType::OR, [self, other])
+      ClaimPredicate.new(StellarProtocol::ClaimPredicateType::OR, [self, other])
     end
     alias_method :|, :or
 
@@ -123,7 +123,7 @@ module Stellar
     #
     # @return [ClaimPredicate] `not` claim predicate
     def not
-      ClaimPredicate.new(ClaimPredicateType::NOT, self)
+      ClaimPredicate.new(StellarProtocol::ClaimPredicateType::NOT, self)
     end
     alias_method :~@, :not
 
@@ -144,17 +144,17 @@ module Stellar
       return false if claiming_at < created_at
 
       case switch
-      when ClaimPredicateType::UNCONDITIONAL
+      when StellarProtocol::ClaimPredicateType::UNCONDITIONAL
         true
-      when ClaimPredicateType::BEFORE_RELATIVE_TIME
+      when StellarProtocol::ClaimPredicateType::BEFORE_RELATIVE_TIME
         Integer(claiming_at) < Integer(created_at) + value
-      when ClaimPredicateType::BEFORE_ABSOLUTE_TIME
+      when StellarProtocol::ClaimPredicateType::BEFORE_ABSOLUTE_TIME
         Integer(claiming_at).to_i < value
-      when ClaimPredicateType::AND
+      when StellarProtocol::ClaimPredicateType::AND
         value[0].evaluate(created_at, claiming_at) && value[1].evaluate(created_at, claiming_at)
-      when ClaimPredicateType::OR
+      when StellarProtocol::ClaimPredicateType::OR
         value[0].evaluate(created_at, claiming_at) || value[1].evaluate(created_at, claiming_at)
-      when ClaimPredicateType::NOT
+      when StellarProtocol::ClaimPredicateType::NOT
         !value.evaluate(created_at, claiming_at)
       else
         raise ArgumentError, "evaluation is not implemented for #{switch.name} predicate"
@@ -163,25 +163,25 @@ module Stellar
 
     def describe
       case switch
-      when ClaimPredicateType::UNCONDITIONAL
+      when StellarProtocol::ClaimPredicateType::UNCONDITIONAL
         "always"
-      when ClaimPredicateType::BEFORE_RELATIVE_TIME
+      when StellarProtocol::ClaimPredicateType::BEFORE_RELATIVE_TIME
         dur = ActiveSupport::Duration.build(value)
         "less than #{dur.inspect} since creation"
-      when ClaimPredicateType::BEFORE_ABSOLUTE_TIME
+      when StellarProtocol::ClaimPredicateType::BEFORE_ABSOLUTE_TIME
         "before #{Time.at(value).to_formatted_s(:db)}"
-      when ClaimPredicateType::AND
+      when StellarProtocol::ClaimPredicateType::AND
         value.map(&:describe).join(" and ")
-      when ClaimPredicateType::OR
+      when StellarProtocol::ClaimPredicateType::OR
         "(" << value.map(&:describe).join(" or ") << ")"
-      when ClaimPredicateType::NOT
+      when StellarProtocol::ClaimPredicateType::NOT
         case value.switch
-        when ClaimPredicateType::UNCONDITIONAL
+        when StellarProtocol::ClaimPredicateType::UNCONDITIONAL
           "never"
-        when ClaimPredicateType::BEFORE_RELATIVE_TIME
+        when StellarProtocol::ClaimPredicateType::BEFORE_RELATIVE_TIME
           dur = ActiveSupport::Duration.build(value.value)
           "#{dur.inspect} or more since creation"
-        when ClaimPredicateType::BEFORE_ABSOLUTE_TIME
+        when StellarProtocol::ClaimPredicateType::BEFORE_ABSOLUTE_TIME
           "after #{Time.at(value.value).to_formatted_s(:db)}"
         else
           "not (#{value.describe})"
