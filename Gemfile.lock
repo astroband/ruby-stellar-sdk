@@ -35,7 +35,7 @@ GEM
     awesome_print (1.9.2)
     backports (3.21.0)
     base32 (0.3.4)
-    break (0.21.0)
+    break (0.30.0)
     bundler-audit (0.8.0)
       bundler (>= 1.2.0, < 3)
       thor (~> 1.0)
