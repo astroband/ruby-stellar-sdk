@@ -111,7 +111,7 @@ GEM
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
     parallel (1.20.1)
-    parser (3.0.1.1)
+    parser (3.0.2.0)
       ast (~> 2.4.1)
     polyglot (0.3.5)
     pry (0.14.1)
@@ -150,18 +150,18 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
-    rubocop (1.14.0)
+    rubocop (1.18.3)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 1.5.0, < 2.0)
+      rubocop-ast (>= 1.7.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.5.0)
+    rubocop-ast (1.7.0)
       parser (>= 3.0.1.1)
-    rubocop-performance (1.11.2)
+    rubocop-performance (1.11.4)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
     ruby-progressbar (1.11.0)
@@ -179,9 +179,9 @@ GEM
     slop (3.6.0)
     spoon (0.0.6)
       ffi
-    standard (1.1.1)
-      rubocop (= 1.14.0)
-      rubocop-performance (= 1.11.2)
+    standard (1.1.5)
+      rubocop (= 1.18.3)
+      rubocop-performance (= 1.11.4)
     thor (1.1.0)
     toml-rb (2.0.1)
       citrus (~> 3.0, > 3.0)
@@ -231,7 +231,7 @@ DEPENDENCIES
   rspec
   rspec-its
   simplecov
-  standard (= 1.1.1)
+  standard (= 1.1.5)
   stellar-base!
   stellar-sdk!
   vcr
