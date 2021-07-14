@@ -1,3 +1,4 @@
 class << Stellar::Account
-  deprecate deprecator: Stellar::SdkDeprecation, lookup: "Use `Stellar::Federation.lookup` method"
+  delegate :lookup, to: Stellar::Federation
+  deprecate deprecator: Stellar::Deprecation, lookup: "Use `Stellar::Federation.lookup` method"
 end

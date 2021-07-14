@@ -1,15 +1,10 @@
 require "stellar-base"
-require_relative "stellar/account"
-
-Stellar::SdkDeprecation = ActiveSupport::Deprecation.new("next release", "stellar-sdk")
-require_relative "stellar/compat"
 
 module Stellar
   module SDK
     VERSION = ::Stellar::VERSION
   end
 
-  autoload :Account
   autoload :Amount
   autoload :Client
   autoload :Federation
@@ -24,3 +19,5 @@ module Stellar
 
   autoload :TransactionPage
 end
+
+require_relative "stellar/compat"
