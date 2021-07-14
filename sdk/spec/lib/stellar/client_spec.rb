@@ -347,8 +347,7 @@ RSpec.describe Stellar::Client do
       end
 
       it "accepts a cursor to return less data", vcr: {record: :once, match_requests_on: [:method]} do
-        response = client.transactions(account: account,
-                                       cursor: cursor)
+        response = client.transactions(account: account, cursor: cursor)
         expect(response).to be_a(Stellar::TransactionPage)
       end
     end
