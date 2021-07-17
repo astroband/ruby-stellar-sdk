@@ -166,9 +166,9 @@ module Stellar
 
     def source_muxed_account
       if with_muxed_accounts?
-        @source_account.to_muxed
+        @source_account.muxed_account
       else
-        @source_account.to_ed25519
+        @source_account.base_account
       end
     end
 

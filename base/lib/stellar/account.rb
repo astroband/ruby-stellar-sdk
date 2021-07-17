@@ -13,19 +13,13 @@ module Stellar
     end
 
     def self.from_address(address)
-      case address[0]
-      when "G"
-        keypair = Stellar::KeyPair.from_address(address)
-        new(keypair)
-      when "M"
-        payload = Util::StrKey.check_decode(:muxed, address)
-        # for muxed accounts first 32 bytes of payload are raw public key
-        keypair = KeyPair.from_public_key(payload[0..31])
-        id = Uint64.from_xdr(payload[32..-1])
+      muxed_xdr = Util::StrKey.decode_muxed_account(address)
 
-        new(keypair, id)
+      if muxed_xdr.ed25519
+        new(KeyPair.from_public_key(muxed_xdr.ed25519))
       else
-        raise ArgumentError, "Unknown type of address: `#{address}`"
+        muxed_xdr = muxed_xdr.med25519!
+        new(KeyPair.from_public_key(muxed_xdr.ed25519), muxed_xdr.id)
       end
     end
 
@@ -43,13 +37,13 @@ module Stellar
       @id = id
     end
 
-    def to_muxed
-      med25519 = Stellar::MuxedAccount::Med25519.new(id: id, ed25519: keypair.raw_public_key)
-      Stellar::MuxedAccount.new(:key_type_muxed_ed25519, med25519)
+    def base_account
+      Stellar::MuxedAccount.ed25519(keypair.raw_public_key)
     end
 
-    def to_ed25519
-      Stellar::MuxedAccount.new(:key_type_ed25519, keypair.raw_public_key)
+    def muxed_account
+      return base_account unless id
+      Stellar::MuxedAccount.med25519(ed25519: keypair.raw_public_key, id: id)
     end
 
     def address(force_account_id: true)

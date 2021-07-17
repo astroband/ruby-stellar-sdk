@@ -43,31 +43,35 @@ RSpec.describe Stellar::Account do
     end
   end
 
-  describe "#to_muxed" do
-    let(:keypair) { Stellar::KeyPair.random }
+  describe "#muxed_account" do
+    let(:raw_key) { "\x00" * 32 }
+    let(:keypair) { Stellar::KeyPair.from_public_key(raw_key) }
     let(:id) { 15 }
-    subject { described_class.new(keypair, id).to_muxed }
+    subject { described_class.new(keypair, id).muxed_account }
 
     it { is_expected.to be_a(Stellar::MuxedAccount) }
-    its("switch.name") { is_expected.to eq("key_type_muxed_ed25519") }
+    its("arm") { is_expected.to eq(:med25519) }
     its("med25519.id") { is_expected.to eq(id) }
-    its("med25519.ed25519") { is_expected.to eq(keypair.raw_public_key) }
+    its("med25519.ed25519") { is_expected.to eq(raw_key) }
 
     context "when id is not set" do
-      subject { described_class.new(keypair).to_muxed }
+      subject { described_class.new(keypair).muxed_account }
 
-      its("med25519.id") { is_expected.to be_nil }
+      it { is_expected.to be_a(Stellar::MuxedAccount) }
+      its("arm") { is_expected.to eq(:ed25519) }
+      its("ed25519") { is_expected.to eq(raw_key) }
     end
   end
 
-  describe "#to_ed25519" do
-    let(:keypair) { Stellar::KeyPair.random }
+  describe "#base_account" do
+    let(:raw_key) { "\x00" * 32 }
+    let(:keypair) { Stellar::KeyPair.from_public_key(raw_key) }
     let(:id) { 15 }
-    subject { described_class.new(keypair, id).to_ed25519 }
+    subject { described_class.new(keypair, id).base_account }
 
     it { is_expected.to be_a(Stellar::MuxedAccount) }
-    its("switch.name") { is_expected.to eq("key_type_ed25519") }
-    its("ed25519") { is_expected.to eq(keypair.raw_public_key) }
+    its(:arm) { is_expected.to eq(:ed25519) }
+    its(:ed25519) { is_expected.to eq(raw_key) }
   end
 
   describe "#address" do
