@@ -8,7 +8,8 @@ module Stellar
         account_id: [6 << 3].pack("C"), # Base32-encodes to 'G...'
         seed: [18 << 3].pack("C"), # Base32-encodes to 'S...'
         pre_auth_tx: [19 << 3].pack("C"), # Base32-encodes to 'T...'
-        hash_x: [23 << 3].pack("C") # Base32-encodes to 'X...'
+        hash_x: [23 << 3].pack("C"), # Base32-encodes to 'X...'
+        muxed: [12 << 3].pack("C") # Base32-encodes to 'M...'
       }
 
       def self.check_encode(version, byte_str)
@@ -25,13 +26,11 @@ module Stellar
       # @param muxed_account [Stellar::MuxedAccount] account
       # @return [String] "G.."-like address
       def self.encode_muxed_account(muxed_account)
-        ed25519 = if muxed_account.switch == Stellar::CryptoKeyType.key_type_ed25519
-          muxed_account.ed25519!
+        if muxed_account.ed25519
+          check_encode(:account_id, muxed_account.ed25519)
         else
-          muxed_account.med25519!.ed25519
+          check_encode(:muxed, muxed_account.med25519!.ed25519 + [muxed_account.med25519!.id].pack("Q>"))
         end
-
-        check_encode(:account_id, ed25519)
       end
 
       # Returns a Stellar::MuxedAccount, forcing the ed25519 discriminant
@@ -39,7 +38,16 @@ module Stellar
       # @param strkey [String] address string to decode
       # @return [Stellar::MuxedAccount] MuxedAccount with ed25519 discriminant
       def self.decode_muxed_account(strkey)
-        Stellar::MuxedAccount.new(:key_type_ed25519, check_decode(:account_id, strkey))
+        case strkey
+        when /^G[0-9A-Z]{55}$/
+          ed25519 = check_decode(:account_id, strkey)
+          Stellar::MuxedAccount.ed25519(ed25519)
+        when /^M[0-9A-Z]{68}$/
+          payload = check_decode(:muxed, strkey)
+          Stellar::MuxedAccount.med25519(ed25519: payload[0, 32], id: payload[32, 8].unpack1("Q>"))
+        else
+          raise "cannot decode MuxedAccount from #{strkey}"
+        end
       end
 
       def self.check_decode(expected_version, str)

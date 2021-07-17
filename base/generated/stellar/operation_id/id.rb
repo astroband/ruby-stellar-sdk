@@ -7,7 +7,7 @@ require 'xdr'
 #
 #   struct
 #       {
-#           MuxedAccount sourceAccount;
+#           AccountID sourceAccount;
 #           SequenceNumber seqNum;
 #           uint32 opNum;
 #       }
@@ -16,7 +16,7 @@ require 'xdr'
 module Stellar
   class OperationID
     class Id < XDR::Struct
-      attribute :source_account, MuxedAccount
+      attribute :source_account, AccountID
       attribute :seq_num,        SequenceNumber
       attribute :op_num,         Uint32
     end
