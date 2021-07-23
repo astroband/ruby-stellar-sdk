@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require_relative "lib/stellar/sdk/version"
+require_relative "lib/stellar-horizon/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "stellar-sdk"
-  spec.version = Stellar::SDK::VERSION
-  spec.authors = ["Scott Fleckenstein", "Sergey Nebolsin", "Timur Ramazanov"]
-  spec.summary = "Stellar client library"
-  spec.homepage = "https://github.com/stellar/ruby-stellar-sdk/tree/master/sdk"
+  spec.name = "stellar-horizon"
+  spec.version = StellarHorizon::VERSION
+  spec.authors = ["Sergey Nebolsin", "Timur Ramazanov"]
+  spec.summary = "Stellar Horizon client library"
+  spec.homepage = "https://github.com/stellar/ruby-stellar-sdk/tree/master/horizon"
   spec.license = "Apache-2.0"
 
   spec.files = Dir["lib/**/*"]
@@ -18,17 +18,16 @@ Gem::Specification.new do |spec|
   spec.metadata = {
     "github_repo" => "ssh://github.com/astroband/ruby-stellar-sdk",
     "documentation_uri" => "https://rubydoc.info/gems/stellar-sdk/#{spec.version}/",
-    "changelog_uri" => "https://github.com/astroband/ruby-stellar-sdk/blob/v#{spec.version}/sdk/CHANGELOG.md",
-    "source_code_uri" => "https://github.com/astroband/ruby-stellar-sdk/tree/v#{spec.version}/sdk"
+    "changelog_uri" => "https://github.com/astroband/ruby-stellar-sdk/blob/v#{spec.version}/horizon/CHANGELOG.md",
+    "source_code_uri" => "https://github.com/astroband/ruby-stellar-sdk/tree/v#{spec.version}/horizon"
   }
 
   spec.required_ruby_version = ">= 2.5.0"
 
-  spec.add_dependency "stellar-base", spec.version
+  spec.add_dependency "stellar-sdk", spec.version
 
-  spec.add_dependency "activesupport", ">= 5.0.0", "< 7.0"
   spec.add_dependency "excon", "~> 0.85.0"
-  spec.add_dependency "hyperclient", "~> 2.0"
+  spec.add_dependency "hyperclient", "~> 1.0"
   spec.add_dependency "toml-rb", ">= 1.1.1", "< 3.0"
 
   spec.add_development_dependency "bundler", "~> 2.0"
