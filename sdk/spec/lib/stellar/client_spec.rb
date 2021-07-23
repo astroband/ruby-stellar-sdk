@@ -1,6 +1,8 @@
 RSpec.describe Stellar::Client do
   subject(:client) { Stellar::Client.default_testnet }
 
+  around { |ex| ActiveSupport::Deprecation.silence(&ex) }
+
   describe "headers" do
     let(:headers) { client.horizon.headers }
 

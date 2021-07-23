@@ -1,7 +1,8 @@
 require "stellar-sdk"
+require "stellar-horizon"
 
 account = Stellar::Account.from_seed("SBXH4SEH32PENMMB66P4TY6LXUIFMRVFUMX2LJC3P2STHICBJLNQJOH5")
-client = Stellar::Client.default_testnet
+client = Stellar::Horizon::Client.default_testnet
 
 # load the first page of transactions
 transactions = client.transactions({

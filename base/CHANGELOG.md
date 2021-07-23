@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
+## [Unreleased]
+
 ## [0.28.0](https://www.github.com/astroband/ruby-stellar-sdk/compare/v0.27.0...v0.28.0) (2021-07-17)
 
 ### Features

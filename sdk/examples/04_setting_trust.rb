@@ -1,6 +1,7 @@
 require "stellar-sdk"
+require "stellar-horizon"
 
-client = Stellar::Client.default_testnet
+client = Stellar::Horizon::Client.default_testnet
 
 # A fake issuer for BTC
 issuer = Stellar::KeyPair.from_seed("SALQBNNRCXWD32E4QKIXKXCMXCPJKWUP34EAK53SP6PNGAUVWSAM5IUQ")

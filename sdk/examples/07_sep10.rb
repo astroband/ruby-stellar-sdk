@@ -1,7 +1,8 @@
 require "stellar-sdk"
+require "stellar-horizon"
 require "hyperclient"
 
-$client = Stellar::Client.default_testnet
+$client = Stellar::Horizon::Client.default_testnet
 $client_master_kp = Stellar::KeyPair.random
 $client_signer_kp1 = Stellar::KeyPair.random
 $client_signer_kp2 = Stellar::KeyPair.random
