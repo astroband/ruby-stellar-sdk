@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - id: release
-      uses: google-github-actions/release-please-action@v2.28
+      uses: google-github-actions/release-please-action@v2.29
       with:
         release-type: ruby
         bump-minor-pre-major: true
