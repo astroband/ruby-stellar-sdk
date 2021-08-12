@@ -67,7 +67,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2.3.4
     - name: Check markdown files for broken links
-      uses: justinbeckwith/linkinator-action@v1.6.1
+      uses: justinbeckwith/linkinator-action@v1.6.2
       with:
         paths: '*.md, base/**/*.md, sdk/**/*.md'
         verbosity: 'INFO'
