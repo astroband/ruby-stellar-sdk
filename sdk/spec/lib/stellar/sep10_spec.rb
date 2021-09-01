@@ -59,26 +59,40 @@ RSpec.describe Stellar::SEP10 do
       expect(body.data_name).to eql("web_auth_domain")
       expect(body.data_value).to eql("auth.example.com")
     end
+
+    it "allows to set client domain" do
+      client_domain_account = Stellar::KeyPair.random
+      attrs[:client_domain_account] = client_domain_account
+      attrs[:client_domain] = "client.test"
+
+      expect(challenge.operations.size).to eql(2)
+
+      client_domain_check_operation = challenge.operations[1]
+      expect(client_domain_check_operation.source_account).to eq(client_domain_account.muxed_account)
+
+      body = client_domain_check_operation.body
+      expect(body.arm).to eql(:manage_data_op)
+      expect(body.data_name).to eql("client_domain")
+      expect(body.data_value).to eql("client.test")
+    end
   end
 
   describe "#read_challenge_tx" do
     let(:attrs) { {challenge_xdr: response_xdr, server: server} }
 
-    let(:extra_operation) {
+    let(:extra_operation) do
       Stellar::Operation.manage_data(source_account: server, name: "extra", value: "operation")
-    }
+    end
 
-    let(:invalid_operation) {
+    let(:invalid_operation) do
       Stellar::Operation.payment(source_account: server, destination: KeyPair(), amount: [:native, 20])
-    }
+    end
 
-    let(:auth_domain_operation) {
+    let(:auth_domain_operation) do
       Stellar::Operation.manage_data(source_account: server, name: "web_auth_domain", value: "wrong.example.com")
-    }
+    end
 
-    subject(:read_challenge) {
-      described_class.read_challenge_tx(**attrs)
-    }
+    subject(:read_challenge) { described_class.read_challenge_tx(**attrs) }
 
     it "returns the envelope and client public key if the transaction is valid" do
       expect(read_challenge).to eq([response, user.address])
@@ -96,33 +110,44 @@ RSpec.describe Stellar::SEP10 do
       expect(read_challenge).to eq([response, user.address])
     end
 
-    it "throws an error if transaction sequence number is different to zero" do
-      transaction.seq_num = 1
+    context "when transaction sequence number is different to zero" do
+      before { transaction.seq_num = 1 }
 
-      expect { read_challenge }.to raise_invalid("sequence number should be zero")
+      it "raises an error" do
+        expect { read_challenge }.to raise_invalid("sequence number should be zero")
+      end
     end
 
-    it "throws an error if transaction source account is different to server account id" do
-      attrs[:server] = KeyPair()
-      expect { read_challenge }.to raise_invalid("source account is not equal to the server's account")
+    context "when transaction source account is different to server account id" do
+      before { attrs[:server] = KeyPair() }
+
+      it "raises an error" do
+        expect { read_challenge }.to raise_invalid("source account is not equal to the server's account")
+      end
     end
 
-    it "throws an error if transaction doesn't contain any operation" do
-      transaction.operations.clear
+    context "when transaction doesn't contain any operation" do
+      before { transaction.operations.clear }
 
-      expect { read_challenge }.to raise_invalid("should contain at least one operation")
+      it "raises an error" do
+        expect { read_challenge }.to raise_invalid("should contain at least one operation")
+      end
     end
 
-    it "throws an error if operation does not contain the source account" do
-      transaction.operations.first.source_account = nil
+    context "when operation does not contain the source account" do
+      before { transaction.operations.first.source_account = nil }
 
-      expect { read_challenge }.to raise_invalid("operation should contain a source account")
+      it "raises an error" do
+        expect { read_challenge }.to raise_invalid("operation should contain a source account")
+      end
     end
 
-    it "throws an error if operation is not manage data" do
-      transaction.operations.replace([invalid_operation])
+    context "when operation is not manage data" do
+      before { transaction.operations.replace([invalid_operation]) }
 
-      expect { read_challenge }.to raise_invalid("first operation should be manageData")
+      it "raises an error" do
+        expect { read_challenge }.to raise_invalid("first operation should be manageData")
+      end
     end
 
     context "when `domain` is provided for check" do
@@ -341,6 +366,35 @@ RSpec.describe Stellar::SEP10 do
       signers.clear
 
       expect { verify_signers }.to raise_invalid("is not signed by the server")
+    end
+
+    context "when client domain was provided" do
+      let(:client_domain_account) { Stellar::KeyPair.random }
+      let(:options) do
+        {
+          client_domain: "client_test",
+          client_domain_account: client_domain_account
+        }
+      end
+
+      context "but transaction is not signed with client signature" do
+        it "raises an error" do
+          expect { verify_signers }.to raise_invalid("not signed by client domain account")
+        end
+      end
+
+      context "and transaction is signed with client signature" do
+        before { signers << client_domain_account }
+
+        it "returns expected signatures" do
+          expect(verify_signers).to contain_exactly(
+            user.address,
+            cosigner_a.address,
+            cosigner_b.address,
+            client_domain_account.address
+          )
+        end
+      end
     end
   end
 
