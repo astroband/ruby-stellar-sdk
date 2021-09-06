@@ -1,6 +1,7 @@
 require "stellar-sdk"
+require "stellar-horizon"
 
-client = Stellar::Client.default_testnet
+client = Stellar::Horizon::Client.default_testnet
 
 puts "Creating random sender..."
 from = Stellar::KeyPair.random

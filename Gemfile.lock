@@ -9,6 +9,15 @@ PATH
       xdr (>= 3.0.2, < 4.0)
 
 PATH
+  remote: horizon
+  specs:
+    stellar-horizon (0.28.0)
+      excon (>= 0.71.0, < 1.0)
+      hyperclient (>= 0.7.0, < 2.0)
+      stellar-sdk (= 0.28.0)
+      toml-rb (>= 1.1.1, < 3.0)
+
+PATH
   remote: sdk
   specs:
     stellar-sdk (0.28.0)
@@ -237,6 +246,7 @@ DEPENDENCIES
   simplecov
   standard
   stellar-base!
+  stellar-horizon!
   stellar-sdk!
   vcr
   webmock

@@ -44,6 +44,8 @@ module Stellar
 
     # @option options [String] :horizon The Horizon server URL.
     def initialize(options)
+      ActiveSupport::Deprecation.warn("`Stellar::Horizon` is deprecated and will be removed from `stellar-sdk` next relase. Use `stellar-horizon` gem for requesting Horizon API")
+
       @options = options
       @horizon = Hyperclient.new(options[:horizon]) { |client|
         client.faraday_block = lambda do |conn|

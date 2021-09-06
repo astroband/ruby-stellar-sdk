@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Deprecated
+* `Stellar::Horizon` class, in favour of new `stellar-horizon` gem
+
 ## [0.28.0](https://www.github.com/astroband/ruby-stellar-sdk/compare/v0.27.0...v0.28.0) (2021-07-17)
 
 ### Changed
