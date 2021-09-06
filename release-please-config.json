@@ -2,14 +2,19 @@
   "bootstrap-sha": "571cb1b71ac32484321041b64507edcd926fc4cb",
   "bump-minor-pre-major": true,
   "release-type": "ruby",
+  "default-branch": "exp/release-please-manifest",
   "packages": {
     "base": {
       "package-name": "stellar-base",
-      "version-file": "lib/stellar/base/version.rb"
+      "version-file": "lib/stellar/version.rb"
     },
     "sdk": {
       "package-name": "stellar-sdk",
-      "version-file": "lib/stellar/sdk/version.rb"
+      "version-file": "lib/stellar/version.rb"
+    },
+    "horizon": {
+      "package-name": "stellar-horizon",
+      "version-file": "lib/stellar/version.rb"
     }
   }
 }
