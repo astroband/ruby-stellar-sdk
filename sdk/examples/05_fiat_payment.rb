@@ -1,6 +1,7 @@
 require "stellar-sdk"
+require "stellar-horizon"
 
-client = Stellar::Client.default_testnet
+client = Stellar::Horizon::Client.default_testnet
 
 def post_transaction(client, envelope)
   client.horizon.transactions._post(tx: envelope)

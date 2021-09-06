@@ -1,4 +1,5 @@
 require "stellar-sdk"
+require "stellar-horizon"
 
 # Reference an account from a secret seed
 account = Stellar::Account.from_seed("SBXH4SEH32PENMMB66P4TY6LXUIFMRVFUMX2LJC3P2STHICBJLNQJOH5")
@@ -20,17 +21,17 @@ account = Stellar::Account.from_seed("SBXH4SEH32PENMMB66P4TY6LXUIFMRVFUMX2LJC3P2
 #
 
 # create a connection to the stellar network
-client = Stellar::Client.default_testnet
+client = Stellar::Horizon::Client.default_testnet
 
 # Further options
 #
 # Connect to the live network (when it is created)
 #
-#   client = Stellar::Client.default
+#   client = Stellar::Horizon::Client.default
 #
 # Connect to a specific horizon host
 #
-#   client = Stellar::Client.new(host: "127.0.0.1")
+#   client = Stellar::Horizon::Client.new(host: "127.0.0.1")
 
 # Get our friendly friendbot to
 # fund your new account

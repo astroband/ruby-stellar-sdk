@@ -12,10 +12,10 @@ task lint: %i[lint:all]
 
 task default: %i[test lint]
 
-rule(/^(base|sdk):.+$/) do |task|
+rule(/^(base|sdk|horizon):.+$/) do |task|
   gem_dir, task_name = task.name.split(":", 2)
   sh("cd #{gem_dir} && ../bin/rake #{task_name}")
 end
 
 desc "Build all gems"
-task build: %i[base:build sdk:build]
+task build: %i[base:build sdk:build horizon:build]

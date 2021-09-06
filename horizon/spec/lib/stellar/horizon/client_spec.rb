@@ -1,7 +1,5 @@
-RSpec.describe Stellar::Client do
-  subject(:client) { Stellar::Client.default_testnet }
-
-  around { |ex| ActiveSupport::Deprecation.silence(&ex) }
+RSpec.describe Stellar::Horizon::Client do
+  subject(:client) { described_class.default_testnet }
 
   describe "headers" do
     let(:headers) { client.horizon.headers }
@@ -16,7 +14,7 @@ RSpec.describe Stellar::Client do
     end
 
     it "has 'X-Client-Version'" do
-      expect(headers["X-Client-Version"]).to eq Stellar::VERSION
+      expect(headers["X-Client-Version"]).to eq Stellar::Horizon::VERSION
     end
   end
 
@@ -50,7 +48,7 @@ RSpec.describe Stellar::Client do
   end
 
   describe "#friendbot" do
-    let(:client) { Stellar::Client.default_testnet }
+    let(:client) { described_class.default_testnet }
     let(:account) { Stellar::Account.random }
 
     it("requests for XLM from a friendbot", {
@@ -93,7 +91,7 @@ RSpec.describe Stellar::Client do
 
   describe "#account_info" do
     let(:account) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
-    let(:client) { Stellar::Client.default_testnet }
+    let(:client) { described_class.default_testnet }
 
     it "returns the current details for the account", vcr: {record: :once, match_requests_on: [:method]} do
       response = client.account_info(account)
@@ -117,7 +115,7 @@ RSpec.describe Stellar::Client do
 
   describe "#account_merge" do
     let(:funder) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
-    let(:client) { Stellar::Client.default_testnet }
+    let(:client) { described_class.default_testnet }
     let(:source) { Stellar::Account.random }
     let(:destination) { Stellar::Account.random }
 
@@ -467,7 +465,7 @@ RSpec.describe Stellar::Client do
         client.submit_transaction(tx_envelope: envelope)
       }.to raise_error(
         an_instance_of(
-          Stellar::AccountRequiresMemoError
+          Stellar::Horizon::AccountRequiresMemoError
         ).and(
           having_attributes(
             message: "account requires memo",
@@ -520,7 +518,7 @@ RSpec.describe Stellar::Client do
         client.submit_transaction(tx_envelope: envelope)
       }.to raise_error(
         an_instance_of(
-          Stellar::AccountRequiresMemoError
+          Stellar::Horizon::AccountRequiresMemoError
         ).and(
           having_attributes(
             message: "account requires memo",
@@ -571,7 +569,7 @@ RSpec.describe Stellar::Client do
         client.check_memo_required(envelope)
       }.to raise_error(
         an_instance_of(
-          Stellar::AccountRequiresMemoError
+          Stellar::Horizon::AccountRequiresMemoError
         ).and(
           having_attributes(
             message: "account requires memo",
@@ -600,7 +598,7 @@ RSpec.describe Stellar::Client do
         client.check_memo_required(envelope)
       }.to raise_error(
         an_instance_of(
-          Stellar::AccountRequiresMemoError
+          Stellar::Horizon::AccountRequiresMemoError
         ).and(
           having_attributes(
             message: "account requires memo",
@@ -685,7 +683,7 @@ RSpec.describe Stellar::Client do
         envelope = fee_bump_tx.to_envelope(fee_source)
 
         expect { client.check_memo_required(envelope) }.to raise_error(
-          an_instance_of(Stellar::AccountRequiresMemoError).and(
+          an_instance_of(Stellar::Horizon::AccountRequiresMemoError).and(
             having_attributes(
               message: "account requires memo",
               account_id: memo_required_kp.muxed_account,

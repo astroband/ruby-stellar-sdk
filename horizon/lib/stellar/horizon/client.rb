@@ -2,7 +2,7 @@ require "hyperclient"
 require "active_support/core_ext/object/blank"
 require "securerandom"
 
-module Stellar
+module Stellar::Horizon
   class AccountRequiresMemoError < StandardError
     attr_reader :account_id, :operation_index
 
@@ -44,8 +44,6 @@ module Stellar
 
     # @option options [String] :horizon The Horizon server URL.
     def initialize(options)
-      ActiveSupport::Deprecation.warn("`Stellar::Horizon` is deprecated and will be removed from `stellar-sdk` next relase. Use `stellar-horizon` gem for requesting Horizon API")
-
       @options = options
       @horizon = Hyperclient.new(options[:horizon]) { |client|
         client.faraday_block = lambda do |conn|
@@ -58,7 +56,7 @@ module Stellar
         client.headers = {
           "Accept" => "application/hal+json,application/problem+json,application/json",
           "X-Client-Name" => "ruby-stellar-sdk",
-          "X-Client-Version" => VERSION
+          "X-Client-Version" => Stellar::Horizon::VERSION
         }
       }
     end
@@ -160,7 +158,7 @@ module Stellar
         @horizon.transactions(args)
       end
 
-      TransactionPage.new(resource)
+      Stellar::TransactionPage.new(resource)
     end
 
     # @param [Array(Symbol,String,Stellar::KeyPair|Stellar::Account)] asset
