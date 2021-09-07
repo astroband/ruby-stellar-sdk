@@ -211,7 +211,7 @@ GEM
     xdr (3.0.2)
       activemodel (>= 4.2, < 7.0)
       activesupport (>= 4.2, < 7.0)
-    xdrgen (0.1.0)
+    xdrgen (0.1.1)
       activesupport (~> 6)
       memoist (~> 0.11.0)
       slop (~> 3.4)
