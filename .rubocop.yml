@@ -6,6 +6,7 @@ inherit_gem:
 
 AllCops:
   Exclude:
+  - 'bin/**/*'
   - 'base/generated/**/*'
   - 'base/examples/**/*'
   - 'sdk/examples/**/*'

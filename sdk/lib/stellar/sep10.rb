@@ -64,6 +64,20 @@ module Stellar
         )
       end
 
+      if options[:client_domain].present?
+        if options[:client_domain_account].blank?
+          raise "`client_domain_account` is required, if `client_domain` is provided"
+        end
+
+        tb.add_operation(
+          Stellar::Operation.manage_data(
+            name: "client_domain",
+            value: options[:client_domain],
+            source_account: options[:client_domain_account]
+          )
+        )
+      end
+
       tb.build.to_envelope(server).to_xdr(:base64)
     end
 
@@ -125,16 +139,14 @@ module Stellar
 
       rest_ops.each do |op|
         body = op.body
+        op_params = body.value
 
         if body.arm != :manage_data_op
           raise InvalidSep10ChallengeError, "The transaction has operations that are not of type 'manageData'"
-        elsif op.source_account != server.muxed_account
+        elsif op.source_account != server.muxed_account && op_params.data_name != "client_domain"
           raise InvalidSep10ChallengeError, "The transaction has operations that are unrecognized"
-        else
-          op_params = body.value
-          if op_params.data_name == "web_auth_domain" && options.key?(:auth_domain) && op_params.data_value != options[:auth_domain]
-            raise InvalidSep10ChallengeError, "The transaction has 'manageData' operation with 'web_auth_domain' key and invalid value"
-          end
+        elsif op_params.data_name == "web_auth_domain" && options.key?(:auth_domain) && op_params.data_value != options[:auth_domain]
+          raise InvalidSep10ChallengeError, "The transaction has 'manageData' operation with 'web_auth_domain' key and invalid value"
         end
       end
 
@@ -210,6 +222,9 @@ module Stellar
       client_signers = signers.select { |s| s =~ /G[A-Z0-9]{55}/ && s != server.address }.to_set
       raise InvalidSep10ChallengeError, "at least one regular signer must be provided" if client_signers.empty?
 
+      client_domain_account_address = extract_client_domain_account(te.tx)
+      client_signers.add(client_domain_account_address) if client_domain_account_address.present?
+
       # verify all signatures in one pass
       client_signers.add(server.address)
       signers_found = verify_tx_signatures(tx_envelope: te, signers: client_signers)
@@ -227,6 +242,10 @@ module Stellar
       # Confirm all signatures were consumed by a signer.
       if signers_found.size != te.signatures.length - 1
         raise InvalidSep10ChallengeError, "Transaction has unrecognized signatures."
+      end
+
+      if client_domain_account_address.present? && !signers_found.include?(client_domain_account_address)
+        raise InvalidSep10ChallengeError, "Transaction not signed by client domain account."
       end
 
       signers_found
@@ -249,7 +268,7 @@ module Stellar
       to_keypair = Stellar::DSL.method(:KeyPair)
       keys_by_hint = signers.map(&to_keypair).index_by(&:signature_hint)
 
-      tx_envelope.signatures.each.with_object(Set.new) do |sig, result|
+      signatures.each_with_object(Set.new) do |sig, result|
         key = keys_by_hint.delete(sig.hint)
         result.add(key.address) if key&.verify(sig.signature, tx_hash)
       end
@@ -271,6 +290,17 @@ module Stellar
 
         keypair.verify(sig.signature, tx_hash)
       end
+    end
+
+    def self.extract_client_domain_account(transaction)
+      client_domain_account_op =
+        transaction
+          .operations
+          .find { |op| op.body.value.data_name == "client_domain" }
+
+      return if client_domain_account_op.blank?
+
+      Util::StrKey.encode_muxed_account(client_domain_account_op.source_account)
     end
   end
 end
