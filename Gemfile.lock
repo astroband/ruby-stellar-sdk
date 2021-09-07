@@ -79,7 +79,7 @@ GEM
     faraday-patron (1.0.0)
     faraday_hal_middleware (0.1.1)
       faraday_middleware (>= 0.9)
-    faraday_middleware (1.0.0)
+    faraday_middleware (1.1.0)
       faraday (~> 1.0)
     ffi (1.15.3)
     ffi (1.15.3-java)
