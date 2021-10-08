@@ -22,7 +22,7 @@ module Stellar
         when :data_name
           data(account_id: account_id, data_name: value.to_s)
         when :asset
-          trust_line(account_id: account_id, asset: Asset(value))
+          trust_line(account_id: account_id, asset: Asset(value).to_trust_line_asset)
         else
           raise ArgumentError, "unknown option #{field} (not in :asset, :offer_id, :data_name, :balance_id)"
         end

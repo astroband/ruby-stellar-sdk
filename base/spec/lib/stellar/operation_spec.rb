@@ -120,17 +120,16 @@ RSpec.describe Stellar::Operation, ".change_trust" do
   let(:asset) { Stellar::Asset.alphanum4("USD", issuer) }
 
   it "creates a ChangeTrustOp" do
-    op = Stellar::Operation.change_trust(line: Stellar::Asset.alphanum4("USD", issuer))
+    op = Stellar::Operation.change_trust(line: asset)
     expect(op.body.value).to be_an_instance_of(Stellar::ChangeTrustOp)
-    expect(op.body.value.line).to eq(Stellar::Asset.alphanum4("USD", issuer))
+    expect(op.body.value.line).to eq(asset.to_change_trust_asset)
     expect(op.body.value.limit).to eq(9223372036854775807)
   end
 
   it "creates a ChangeTrustOp with an asset" do
-    asset = Stellar::Asset.alphanum4("USD", issuer)
     op = Stellar::Operation.change_trust(line: asset, limit: 1234.75)
     expect(op.body.value).to be_an_instance_of(Stellar::ChangeTrustOp)
-    expect(op.body.value.line).to eq(Stellar::Asset.alphanum4("USD", issuer))
+    expect(op.body.value.line).to eq(asset.to_change_trust_asset)
     expect(op.body.value.limit).to eq(12347500000)
   end
 
@@ -141,9 +140,9 @@ RSpec.describe Stellar::Operation, ".change_trust" do
   end
 
   it "creates a ChangeTrustOp with limit" do
-    op = Stellar::Operation.change_trust(line: Stellar::Asset.alphanum4("USD", issuer), limit: 1234.75)
+    op = Stellar::Operation.change_trust(line: asset, limit: 1234.75)
     expect(op.body.value).to be_an_instance_of(Stellar::ChangeTrustOp)
-    expect(op.body.value.line).to eq(Stellar::Asset.alphanum4("USD", issuer))
+    expect(op.body.value.line).to eq(asset.to_change_trust_asset)
     expect(op.body.value.limit).to eq(12347500000)
   end
 

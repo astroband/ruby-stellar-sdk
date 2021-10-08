@@ -187,19 +187,19 @@ module Stellar
       # @return [Stellar::Operation] the built operation, containing a
       #                              Stellar::ChangeTrustOp body
       def change_trust(attributes = {})
-        line = attributes[:line]
-        unless line.is_a?(Asset)
-          unless Asset::TYPES.include?(line[0])
+        asset = attributes[:line]
+        unless asset.is_a?(Asset)
+          unless Asset::TYPES.include?(asset[0])
             fail ArgumentError, "must be one of #{Asset::TYPES}"
           end
-          line = Asset.send(*line)
+          asset = Asset.send(*asset)
         end
 
         limit = attributes.key?(:limit) ? interpret_amount(attributes[:limit]) : MAX_INT64
 
         raise ArgumentError, "Bad :limit #{limit}" unless limit.is_a?(Integer)
 
-        op = ChangeTrustOp.new(line: line, limit: limit)
+        op = ChangeTrustOp.new(line: asset.to_change_trust_asset, limit: limit)
 
         make(attributes.merge({
           body: [:change_trust, op]

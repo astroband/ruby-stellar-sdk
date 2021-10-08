@@ -30,6 +30,14 @@ module Stellar
       new(:asset_type_credit_alphanum12, an)
     end
 
+    def to_change_trust_asset
+      ChangeTrustAsset.new(switch, value)
+    end
+
+    def to_trust_line_asset
+      TrustLineAsset.new(switch, value)
+    end
+
     def to_s
       case switch
       when AssetType.asset_type_native
