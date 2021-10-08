@@ -8,7 +8,7 @@ require 'xdr'
 #   struct
 #       {
 #           AccountID accountID;
-#           Asset asset;
+#           TrustLineAsset asset;
 #       }
 #
 # ===========================================================================
@@ -16,7 +16,7 @@ module Stellar
   class LedgerKey
     class TrustLine < XDR::Struct
       attribute :account_id, AccountID
-      attribute :asset,      Asset
+      attribute :asset,      TrustLineAsset
     end
   end
 end

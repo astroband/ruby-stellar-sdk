@@ -15,7 +15,9 @@ require 'xdr'
 #                                       // source account does not require trust
 #       ALLOW_TRUST_TRUST_NOT_REQUIRED = -3,
 #       ALLOW_TRUST_CANT_REVOKE = -4,     // source account can't revoke trust,
-#       ALLOW_TRUST_SELF_NOT_ALLOWED = -5 // trusting self is not allowed
+#       ALLOW_TRUST_SELF_NOT_ALLOWED = -5, // trusting self is not allowed
+#       ALLOW_TRUST_LOW_RESERVE = -6 // claimable balances can't be created
+#                                    // on revoke due to low reserves
 #   };
 #
 # ===========================================================================
@@ -27,6 +29,7 @@ module Stellar
     member :allow_trust_trust_not_required, -3
     member :allow_trust_cant_revoke,        -4
     member :allow_trust_self_not_allowed,   -5
+    member :allow_trust_low_reserve,        -6
 
     seal
   end

@@ -5,18 +5,16 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct
-#       {
-#           AssetCode4 assetCode;
-#           AccountID issuer;
-#       }
+#   enum LiquidityPoolType
+#   {
+#       LIQUIDITY_POOL_CONSTANT_PRODUCT = 0
+#   };
 #
 # ===========================================================================
 module Stellar
-  class Asset
-    class AlphaNum4 < XDR::Struct
-      attribute :asset_code, AssetCode4
-      attribute :issuer,     AccountID
-    end
+  class LiquidityPoolType < XDR::Enum
+    member :liquidity_pool_constant_product, 0
+
+    seal
   end
 end

@@ -10,7 +10,7 @@ require 'xdr'
 #   case PATH_PAYMENT_STRICT_SEND_SUCCESS:
 #       struct
 #       {
-#           ClaimOfferAtom offers<>;
+#           ClaimAtom offers<>;
 #           SimplePaymentResult last;
 #       } success;
 #   case PATH_PAYMENT_STRICT_SEND_NO_ISSUER:

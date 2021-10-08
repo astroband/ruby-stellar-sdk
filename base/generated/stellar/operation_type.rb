@@ -28,7 +28,9 @@ require 'xdr'
 #       REVOKE_SPONSORSHIP = 18,
 #       CLAWBACK = 19,
 #       CLAWBACK_CLAIMABLE_BALANCE = 20,
-#       SET_TRUST_LINE_FLAGS = 21
+#       SET_TRUST_LINE_FLAGS = 21,
+#       LIQUIDITY_POOL_DEPOSIT = 22,
+#       LIQUIDITY_POOL_WITHDRAW = 23
 #   };
 #
 # ===========================================================================
@@ -56,6 +58,8 @@ module Stellar
     member :clawback,                         19
     member :clawback_claimable_balance,       20
     member :set_trust_line_flags,             21
+    member :liquidity_pool_deposit,           22
+    member :liquidity_pool_withdraw,          23
 
     seal
   end

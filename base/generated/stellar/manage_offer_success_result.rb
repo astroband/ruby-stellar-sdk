@@ -8,7 +8,7 @@ require 'xdr'
 #   struct ManageOfferSuccessResult
 #   {
 #       // offers that got claimed while creating this offer
-#       ClaimOfferAtom offersClaimed<>;
+#       ClaimAtom offersClaimed<>;
 #   
 #       union switch (ManageOfferEffect effect)
 #       {
@@ -28,7 +28,7 @@ module Stellar
 
     autoload :Offer
 
-    attribute :offers_claimed, XDR::VarArray[ClaimOfferAtom]
+    attribute :offers_claimed, XDR::VarArray[ClaimAtom]
     attribute :offer,          Offer
   end
 end

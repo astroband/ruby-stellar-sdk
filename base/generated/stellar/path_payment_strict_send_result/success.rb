@@ -7,7 +7,7 @@ require 'xdr'
 #
 #   struct
 #       {
-#           ClaimOfferAtom offers<>;
+#           ClaimAtom offers<>;
 #           SimplePaymentResult last;
 #       }
 #
@@ -15,7 +15,7 @@ require 'xdr'
 module Stellar
   class PathPaymentStrictSendResult
     class Success < XDR::Struct
-      attribute :offers, XDR::VarArray[ClaimOfferAtom]
+      attribute :offers, XDR::VarArray[ClaimAtom]
       attribute :last,   SimplePaymentResult
     end
   end

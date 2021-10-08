@@ -5,20 +5,20 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct
+#   union switch (int v)
 #       {
-#           AccountID sourceAccount;
-#           SequenceNumber seqNum;
-#           uint32 opNum;
+#       case 0:
+#           void;
 #       }
 #
 # ===========================================================================
 module Stellar
-  class OperationID
-    class Id < XDR::Struct
-      attribute :source_account, AccountID
-      attribute :seq_num,        SequenceNumber
-      attribute :op_num,         Uint32
+  class TrustLineEntryExtensionV2
+    class Ext < XDR::Union
+      switch_on XDR::Int, :v
+
+      switch 0
+
     end
   end
 end

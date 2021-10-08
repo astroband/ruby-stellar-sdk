@@ -7,10 +7,10 @@ require 'xdr'
 #
 #   struct TrustLineEntry
 #   {
-#       AccountID accountID; // account this trustline belongs to
-#       Asset asset;         // type of asset (with issuer)
-#       int64 balance;       // how much of this asset the user has.
-#                            // Asset defines the unit for this;
+#       AccountID accountID;  // account this trustline belongs to
+#       TrustLineAsset asset; // type of asset (with issuer)
+#       int64 balance;        // how much of this asset the user has.
+#                             // Asset defines the unit for this;
 #   
 #       int64 limit;  // balance cannot be above this
 #       uint32 flags; // see TrustLineFlags
@@ -29,6 +29,8 @@ require 'xdr'
 #               {
 #               case 0:
 #                   void;
+#               case 2:
+#                   TrustLineEntryExtensionV2 v2;
 #               }
 #               ext;
 #           } v1;
@@ -44,7 +46,7 @@ module Stellar
     autoload :Ext
 
     attribute :account_id, AccountID
-    attribute :asset,      Asset
+    attribute :asset,      TrustLineAsset
     attribute :balance,    Int64
     attribute :limit,      Int64
     attribute :flags,      Uint32

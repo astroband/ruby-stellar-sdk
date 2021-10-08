@@ -5,28 +5,26 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   union OperationID switch (EnvelopeType type)
+#   struct LedgerHeaderExtensionV1
 #   {
-#   case ENVELOPE_TYPE_OP_ID:
-#       struct
+#       uint32 flags; // LedgerHeaderFlags
+#   
+#       union switch (int v)
 #       {
-#           AccountID sourceAccount;
-#           SequenceNumber seqNum;
-#           uint32 opNum;
-#       } id;
+#       case 0:
+#           void;
+#       }
+#       ext;
 #   };
 #
 # ===========================================================================
 module Stellar
-  class OperationID < XDR::Union
+  class LedgerHeaderExtensionV1 < XDR::Struct
     include XDR::Namespace
 
-    autoload :Id
+    autoload :Ext
 
-    switch_on EnvelopeType, :type
-
-    switch :envelope_type_op_id, :id
-
-    attribute :id, Id
+    attribute :flags, Uint32
+    attribute :ext,   Ext
   end
 end

@@ -9,6 +9,8 @@ require 'xdr'
 #       {
 #       case 0:
 #           void;
+#       case 1:
+#           LedgerHeaderExtensionV1 v1;
 #       }
 #
 # ===========================================================================
@@ -18,7 +20,9 @@ module Stellar
       switch_on XDR::Int, :v
 
       switch 0
+      switch 1, :v1
 
+      attribute :v1, LedgerHeaderExtensionV1
     end
   end
 end
