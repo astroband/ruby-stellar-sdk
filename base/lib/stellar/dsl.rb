@@ -53,6 +53,9 @@ module Stellar
       case subject
       when Asset
         subject
+      when Array
+        raise TypeError, "Invalid asset type #{subject[0]}" unless [:native, :alphanum4, :alphanum12].include?(subject[0])
+        Asset.send(*subject)
       when nil, /^(XLM[-:])?native$/
         Asset.native
       when /^([0-9A-Z]{1,4})[-:](G[A-Z0-9]{55})$/

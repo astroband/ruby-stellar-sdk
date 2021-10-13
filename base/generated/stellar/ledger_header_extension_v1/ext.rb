@@ -5,18 +5,20 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct
+#   union switch (int v)
 #       {
-#           AssetCode12 assetCode;
-#           AccountID issuer;
+#       case 0:
+#           void;
 #       }
 #
 # ===========================================================================
 module Stellar
-  class Asset
-    class AlphaNum12 < XDR::Struct
-      attribute :asset_code, AssetCode12
-      attribute :issuer,     AccountID
+  class LedgerHeaderExtensionV1
+    class Ext < XDR::Union
+      switch_on XDR::Int, :v
+
+      switch 0
+
     end
   end
 end

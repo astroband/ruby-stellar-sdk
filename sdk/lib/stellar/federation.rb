@@ -1,4 +1,4 @@
-require "toml-rb"
+require "tomlrb"
 require "uri"
 require "faraday"
 require "json"
@@ -17,7 +17,7 @@ module Stellar
         raise InvalidStellarDomain, "Domain does not contain stellar.toml file"
       end
 
-      fed_server_url = TomlRB.parse(domain_req.body)["FEDERATION_SERVER"]
+      fed_server_url = Tomlrb.parse(domain_req.body)["FEDERATION_SERVER"]
       if fed_server_url.nil?
         raise InvalidStellarTOML, "Invalid Stellar TOML file"
       end

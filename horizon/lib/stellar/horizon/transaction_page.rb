@@ -1,4 +1,4 @@
-module Stellar
+module Stellar::Horizon
   class TransactionPage
     include Enumerable
 

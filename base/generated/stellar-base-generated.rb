@@ -35,10 +35,13 @@ module Stellar
   SequenceNumber = Int64
   TimePoint = Uint64
   DataValue = XDR::VarOpaque[64]
+  PoolID = Hash
   AssetCode4 = XDR::Opaque[4]
   AssetCode12 = XDR::Opaque[12]
   autoload :AssetType
   autoload :AssetCode
+  autoload :AlphaNum4
+  autoload :AlphaNum12
   autoload :Asset
   autoload :Price
   autoload :Liabilities
@@ -57,6 +60,9 @@ module Stellar
   MASK_TRUSTLINE_FLAGS = 1
   MASK_TRUSTLINE_FLAGS_V13 = 3
   MASK_TRUSTLINE_FLAGS_V17 = 7
+  autoload :LiquidityPoolType
+  autoload :TrustLineAsset
+  autoload :TrustLineEntryExtensionV2
   autoload :TrustLineEntry
   autoload :OfferEntryFlags
   MASK_OFFERENTRY_FLAGS = 1
@@ -72,6 +78,8 @@ module Stellar
   MASK_CLAIMABLE_BALANCE_FLAGS = 0x1
   autoload :ClaimableBalanceEntryExtensionV1
   autoload :ClaimableBalanceEntry
+  autoload :LiquidityPoolConstantProductParameters
+  autoload :LiquidityPoolEntry
   autoload :LedgerEntryExtensionV1
   autoload :LedgerEntry
   autoload :LedgerKey
@@ -80,6 +88,7 @@ end
 module Stellar
   include XDR::Namespace
 
+  autoload :LiquidityPoolParameters
   autoload :MuxedAccount
   autoload :DecoratedSignature
   autoload :OperationType
@@ -91,6 +100,7 @@ module Stellar
   autoload :ManageBuyOfferOp
   autoload :CreatePassiveSellOfferOp
   autoload :SetOptionsOp
+  autoload :ChangeTrustAsset
   autoload :ChangeTrustOp
   autoload :AllowTrustOp
   autoload :ManageDataOp
@@ -103,8 +113,11 @@ module Stellar
   autoload :ClawbackOp
   autoload :ClawbackClaimableBalanceOp
   autoload :SetTrustLineFlagsOp
+  LIQUIDITY_POOL_FEE_V18 = 30
+  autoload :LiquidityPoolDepositOp
+  autoload :LiquidityPoolWithdrawOp
   autoload :Operation
-  autoload :OperationID
+  autoload :HashIDPreimage
   autoload :MemoType
   autoload :Memo
   autoload :TimeBounds
@@ -117,7 +130,11 @@ module Stellar
   autoload :FeeBumpTransactionEnvelope
   autoload :TransactionEnvelope
   autoload :TransactionSignaturePayload
+  autoload :ClaimAtomType
+  autoload :ClaimOfferAtomV0
   autoload :ClaimOfferAtom
+  autoload :ClaimLiquidityAtom
+  autoload :ClaimAtom
   autoload :CreateAccountResultCode
   autoload :CreateAccountResult
   autoload :PaymentResultCode
@@ -164,6 +181,10 @@ module Stellar
   autoload :ClawbackClaimableBalanceResult
   autoload :SetTrustLineFlagsResultCode
   autoload :SetTrustLineFlagsResult
+  autoload :LiquidityPoolDepositResultCode
+  autoload :LiquidityPoolDepositResult
+  autoload :LiquidityPoolWithdrawResultCode
+  autoload :LiquidityPoolWithdrawResult
   autoload :OperationResultCode
   autoload :OperationResult
   autoload :TransactionResultCode
@@ -178,6 +199,9 @@ module Stellar
   autoload :StellarValueType
   autoload :LedgerCloseValueSignature
   autoload :StellarValue
+  MASK_LEDGER_HEADER_FLAGS = 0x7
+  autoload :LedgerHeaderFlags
+  autoload :LedgerHeaderExtensionV1
   autoload :LedgerHeader
   autoload :LedgerUpgradeType
   autoload :LedgerUpgrade

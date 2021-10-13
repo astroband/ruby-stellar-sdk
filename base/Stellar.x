@@ -98,6 +98,7 @@ typedef string string64<64>;
 typedef int64 SequenceNumber;
 typedef uint64 TimePoint;
 typedef opaque DataValue<64>;
+typedef Hash PoolID; // SHA256(LiquidityPoolParameters)
 
 // 1-4 alphanumeric characters right-padded with 0 bytes
 typedef opaque AssetCode4[4];
@@ -109,7 +110,8 @@ enum AssetType
 {
     ASSET_TYPE_NATIVE = 0,
     ASSET_TYPE_CREDIT_ALPHANUM4 = 1,
-    ASSET_TYPE_CREDIT_ALPHANUM12 = 2
+    ASSET_TYPE_CREDIT_ALPHANUM12 = 2,
+    ASSET_TYPE_POOL_SHARE = 3
 };
 
 union AssetCode switch (AssetType type)
@@ -123,24 +125,28 @@ case ASSET_TYPE_CREDIT_ALPHANUM12:
     // add other asset types here in the future
 };
 
+struct AlphaNum4
+{
+    AssetCode4 assetCode;
+    AccountID issuer;
+};
+
+struct AlphaNum12
+{
+    AssetCode12 assetCode;
+    AccountID issuer;
+};
+
 union Asset switch (AssetType type)
 {
 case ASSET_TYPE_NATIVE: // Not credit
     void;
 
 case ASSET_TYPE_CREDIT_ALPHANUM4:
-    struct
-    {
-        AssetCode4 assetCode;
-        AccountID issuer;
-    } alphaNum4;
+    AlphaNum4 alphaNum4;
 
 case ASSET_TYPE_CREDIT_ALPHANUM12:
-    struct
-    {
-        AssetCode12 assetCode;
-        AccountID issuer;
-    } alphaNum12;
+    AlphaNum12 alphaNum12;
 
     // add other asset types here in the future
 };
@@ -174,7 +180,8 @@ enum LedgerEntryType
     TRUSTLINE = 1,
     OFFER = 2,
     DATA = 3,
-    CLAIMABLE_BALANCE = 4
+    CLAIMABLE_BALANCE = 4,
+    LIQUIDITY_POOL = 5
 };
 
 struct Signer
@@ -298,12 +305,46 @@ const MASK_TRUSTLINE_FLAGS = 1;
 const MASK_TRUSTLINE_FLAGS_V13 = 3;
 const MASK_TRUSTLINE_FLAGS_V17 = 7;
 
+enum LiquidityPoolType
+{
+    LIQUIDITY_POOL_CONSTANT_PRODUCT = 0
+};
+
+union TrustLineAsset switch (AssetType type)
+{
+case ASSET_TYPE_NATIVE: // Not credit
+    void;
+
+case ASSET_TYPE_CREDIT_ALPHANUM4:
+    AlphaNum4 alphaNum4;
+
+case ASSET_TYPE_CREDIT_ALPHANUM12:
+    AlphaNum12 alphaNum12;
+
+case ASSET_TYPE_POOL_SHARE:
+    PoolID liquidityPoolID;
+
+    // add other asset types here in the future
+};
+
+struct TrustLineEntryExtensionV2
+{
+    int32 liquidityPoolUseCount;
+
+    union switch (int v)
+    {
+    case 0:
+        void;
+    }
+    ext;
+};
+
 struct TrustLineEntry
 {
-    AccountID accountID; // account this trustline belongs to
-    Asset asset;         // type of asset (with issuer)
-    int64 balance;       // how much of this asset the user has.
-                         // Asset defines the unit for this;
+    AccountID accountID;  // account this trustline belongs to
+    TrustLineAsset asset; // type of asset (with issuer)
+    int64 balance;        // how much of this asset the user has.
+                          // Asset defines the unit for this;
 
     int64 limit;  // balance cannot be above this
     uint32 flags; // see TrustLineFlags
@@ -322,6 +363,8 @@ struct TrustLineEntry
             {
             case 0:
                 void;
+            case 2:
+                TrustLineEntryExtensionV2 v2;
             }
             ext;
         } v1;
@@ -487,6 +530,33 @@ struct ClaimableBalanceEntry
     ext;
 };
 
+struct LiquidityPoolConstantProductParameters
+{
+    Asset assetA; // assetA < assetB
+    Asset assetB;
+    int32 fee;    // Fee is in basis points, so the actual rate is (fee/100)%
+};
+
+struct LiquidityPoolEntry
+{
+    PoolID liquidityPoolID;
+
+    union switch (LiquidityPoolType type)
+    {
+    case LIQUIDITY_POOL_CONSTANT_PRODUCT:
+        struct
+        {
+            LiquidityPoolConstantProductParameters params;
+
+            int64 reserveA;        // amount of A in the pool
+            int64 reserveB;        // amount of B in the pool
+            int64 totalPoolShares; // total number of pool shares issued
+            int64 poolSharesTrustLineCount; // number of trust lines for the associated pool shares
+        } constantProduct;
+    }
+    body;
+};
+
 struct LedgerEntryExtensionV1
 {
     SponsorshipDescriptor sponsoringID;
@@ -515,6 +585,8 @@ struct LedgerEntry
         DataEntry data;
     case CLAIMABLE_BALANCE:
         ClaimableBalanceEntry claimableBalance;
+    case LIQUIDITY_POOL:
+        LiquidityPoolEntry liquidityPool;
     }
     data;
 
@@ -541,7 +613,7 @@ case TRUSTLINE:
     struct
     {
         AccountID accountID;
-        Asset asset;
+        TrustLineAsset asset;
     } trustLine;
 
 case OFFER:
@@ -563,6 +635,12 @@ case CLAIMABLE_BALANCE:
     {
         ClaimableBalanceID balanceID;
     } claimableBalance;
+
+case LIQUIDITY_POOL:
+    struct
+    {
+        PoolID liquidityPoolID;
+    } liquidityPool;
 };
 
 // list of all envelope types used in the application
@@ -576,7 +654,8 @@ enum EnvelopeType
     ENVELOPE_TYPE_AUTH = 3,
     ENVELOPE_TYPE_SCPVALUE = 4,
     ENVELOPE_TYPE_TX_FEE_BUMP = 5,
-    ENVELOPE_TYPE_OP_ID = 6
+    ENVELOPE_TYPE_OP_ID = 6,
+    ENVELOPE_TYPE_POOL_REVOKE_OP_ID = 7
 };
 }
 
@@ -588,6 +667,12 @@ enum EnvelopeType
 
 namespace stellar
 {
+
+union LiquidityPoolParameters switch (LiquidityPoolType type)
+{
+case LIQUIDITY_POOL_CONSTANT_PRODUCT:
+    LiquidityPoolConstantProductParameters constantProduct;
+};
 
 // Source or destination of a payment operation
 union MuxedAccount switch (CryptoKeyType type)
@@ -631,7 +716,9 @@ enum OperationType
     REVOKE_SPONSORSHIP = 18,
     CLAWBACK = 19,
     CLAWBACK_CLAIMABLE_BALANCE = 20,
-    SET_TRUST_LINE_FLAGS = 21
+    SET_TRUST_LINE_FLAGS = 21,
+    LIQUIDITY_POOL_DEPOSIT = 22,
+    LIQUIDITY_POOL_WITHDRAW = 23
 };
 
 /* CreateAccount
@@ -794,6 +881,23 @@ struct SetOptionsOp
     Signer* signer;
 };
 
+union ChangeTrustAsset switch (AssetType type)
+{
+case ASSET_TYPE_NATIVE: // Not credit
+    void;
+
+case ASSET_TYPE_CREDIT_ALPHANUM4:
+    AlphaNum4 alphaNum4;
+
+case ASSET_TYPE_CREDIT_ALPHANUM12:
+    AlphaNum12 alphaNum12;
+
+case ASSET_TYPE_POOL_SHARE:
+    LiquidityPoolParameters liquidityPool;
+
+    // add other asset types here in the future
+};
+
 /* Creates, updates or deletes a trust line
 
     Threshold: med
@@ -803,7 +907,7 @@ struct SetOptionsOp
 */
 struct ChangeTrustOp
 {
-    Asset line;
+    ChangeTrustAsset line;
 
     // if limit is set to 0, deletes the trust line
     int64 limit;
@@ -991,6 +1095,37 @@ struct SetTrustLineFlagsOp
     uint32 setFlags;   // which flags to set
 };
 
+const LIQUIDITY_POOL_FEE_V18 = 30;
+
+/* Deposit assets into a liquidity pool
+
+    Threshold: med
+
+    Result: LiquidityPoolDepositResult
+*/
+struct LiquidityPoolDepositOp
+{
+    PoolID liquidityPoolID;
+    int64 maxAmountA;     // maximum amount of first asset to deposit
+    int64 maxAmountB;     // maximum amount of second asset to deposit
+    Price minPrice;       // minimum depositA/depositB
+    Price maxPrice;       // maximum depositA/depositB
+};
+
+/* Withdraw assets from a liquidity pool
+
+    Threshold: med
+
+    Result: LiquidityPoolWithdrawResult
+*/
+struct LiquidityPoolWithdrawOp
+{
+    PoolID liquidityPoolID;
+    int64 amount;         // amount of pool shares to withdraw
+    int64 minAmountA;     // minimum amount of first asset to withdraw
+    int64 minAmountB;     // minimum amount of second asset to withdraw
+};
+
 /* An operation is the lowest unit of work that a transaction does */
 struct Operation
 {
@@ -1045,11 +1180,15 @@ struct Operation
         ClawbackClaimableBalanceOp clawbackClaimableBalanceOp;
     case SET_TRUST_LINE_FLAGS:
         SetTrustLineFlagsOp setTrustLineFlagsOp;
+    case LIQUIDITY_POOL_DEPOSIT:
+        LiquidityPoolDepositOp liquidityPoolDepositOp;
+    case LIQUIDITY_POOL_WITHDRAW:
+        LiquidityPoolWithdrawOp liquidityPoolWithdrawOp;
     }
     body;
 };
 
-union OperationID switch (EnvelopeType type)
+union HashIDPreimage switch (EnvelopeType type)
 {
 case ENVELOPE_TYPE_OP_ID:
     struct
@@ -1057,7 +1196,16 @@ case ENVELOPE_TYPE_OP_ID:
         AccountID sourceAccount;
         SequenceNumber seqNum;
         uint32 opNum;
-    } id;
+    } operationID;
+case ENVELOPE_TYPE_POOL_REVOKE_OP_ID:
+    struct
+    {
+        AccountID sourceAccount;
+        SequenceNumber seqNum;
+        uint32 opNum;
+        PoolID liquidityPoolID;
+        Asset asset;
+    } revokeID;
 };
 
 enum MemoType
@@ -1217,7 +1365,33 @@ struct TransactionSignaturePayload
 
 /* Operation Results section */
 
-/* This result is used when offers are taken during an operation */
+enum ClaimAtomType
+{
+    CLAIM_ATOM_TYPE_V0 = 0,
+    CLAIM_ATOM_TYPE_ORDER_BOOK = 1,
+    CLAIM_ATOM_TYPE_LIQUIDITY_POOL = 2
+};
+
+// ClaimOfferAtomV0 is a ClaimOfferAtom with the AccountID discriminant stripped
+// off, leaving a raw ed25519 public key to identify the source account. This is
+// used for backwards compatibility starting from the protocol 17/18 boundary.
+// If an "old-style" ClaimOfferAtom is parsed with this XDR definition, it will
+// be parsed as a "new-style" ClaimAtom containing a ClaimOfferAtomV0.
+struct ClaimOfferAtomV0
+{
+    // emitted to identify the offer
+    uint256 sellerEd25519; // Account that owns the offer
+    int64 offerID;
+
+    // amount and asset taken from the owner
+    Asset assetSold;
+    int64 amountSold;
+
+    // amount and asset sent to the owner
+    Asset assetBought;
+    int64 amountBought;
+};
+
 struct ClaimOfferAtom
 {
     // emitted to identify the offer
@@ -1231,6 +1405,32 @@ struct ClaimOfferAtom
     // amount and asset sent to the owner
     Asset assetBought;
     int64 amountBought;
+};
+
+struct ClaimLiquidityAtom
+{
+    PoolID liquidityPoolID;
+
+    // amount and asset taken from the pool
+    Asset assetSold;
+    int64 amountSold;
+
+    // amount and asset sent to the pool
+    Asset assetBought;
+    int64 amountBought;
+};
+
+/* This result is used when offers are taken or liquidity is exchanged with a
+   liquidity pool during an operation
+*/
+union ClaimAtom switch (ClaimAtomType type)
+{
+case CLAIM_ATOM_TYPE_V0:
+    ClaimOfferAtomV0 v0;
+case CLAIM_ATOM_TYPE_ORDER_BOOK:
+    ClaimOfferAtom orderBook;
+case CLAIM_ATOM_TYPE_LIQUIDITY_POOL:
+    ClaimLiquidityAtom liquidityPool;
 };
 
 /******* CreateAccount Result ********/
@@ -1327,7 +1527,7 @@ union PathPaymentStrictReceiveResult switch (
 case PATH_PAYMENT_STRICT_RECEIVE_SUCCESS:
     struct
     {
-        ClaimOfferAtom offers<>;
+        ClaimAtom offers<>;
         SimplePaymentResult last;
     } success;
 case PATH_PAYMENT_STRICT_RECEIVE_NO_ISSUER:
@@ -1371,7 +1571,7 @@ union PathPaymentStrictSendResult switch (PathPaymentStrictSendResultCode code)
 case PATH_PAYMENT_STRICT_SEND_SUCCESS:
     struct
     {
-        ClaimOfferAtom offers<>;
+        ClaimAtom offers<>;
         SimplePaymentResult last;
     } success;
 case PATH_PAYMENT_STRICT_SEND_NO_ISSUER:
@@ -1419,7 +1619,7 @@ enum ManageOfferEffect
 struct ManageOfferSuccessResult
 {
     // offers that got claimed while creating this offer
-    ClaimOfferAtom offersClaimed<>;
+    ClaimAtom offersClaimed<>;
 
     union switch (ManageOfferEffect effect)
     {
@@ -1515,7 +1715,10 @@ enum ChangeTrustResultCode
                                      // cannot create with a limit of 0
     CHANGE_TRUST_LOW_RESERVE =
         -4, // not enough funds to create a new trust line,
-    CHANGE_TRUST_SELF_NOT_ALLOWED = -5 // trusting self is not allowed
+    CHANGE_TRUST_SELF_NOT_ALLOWED = -5, // trusting self is not allowed
+    CHANGE_TRUST_TRUST_LINE_MISSING = -6, // Asset trustline is missing for pool
+    CHANGE_TRUST_CANNOT_DELETE = -7, // Asset trustline is still referenced in a pool
+    CHANGE_TRUST_NOT_AUTH_MAINTAIN_LIABILITIES = -8 // Asset trustline is deauthorized
 };
 
 union ChangeTrustResult switch (ChangeTrustResultCode code)
@@ -1538,7 +1741,9 @@ enum AllowTrustResultCode
                                     // source account does not require trust
     ALLOW_TRUST_TRUST_NOT_REQUIRED = -3,
     ALLOW_TRUST_CANT_REVOKE = -4,     // source account can't revoke trust,
-    ALLOW_TRUST_SELF_NOT_ALLOWED = -5 // trusting self is not allowed
+    ALLOW_TRUST_SELF_NOT_ALLOWED = -5, // trusting self is not allowed
+    ALLOW_TRUST_LOW_RESERVE = -6 // claimable balances can't be created
+                                 // on revoke due to low reserves
 };
 
 union AllowTrustResult switch (AllowTrustResultCode code)
@@ -1734,7 +1939,8 @@ enum RevokeSponsorshipResultCode
     REVOKE_SPONSORSHIP_DOES_NOT_EXIST = -1,
     REVOKE_SPONSORSHIP_NOT_SPONSOR = -2,
     REVOKE_SPONSORSHIP_LOW_RESERVE = -3,
-    REVOKE_SPONSORSHIP_ONLY_TRANSFERABLE = -4
+    REVOKE_SPONSORSHIP_ONLY_TRANSFERABLE = -4,
+    REVOKE_SPONSORSHIP_MALFORMED = -5
 };
 
 union RevokeSponsorshipResult switch (RevokeSponsorshipResultCode code)
@@ -1800,12 +2006,71 @@ enum SetTrustLineFlagsResultCode
     SET_TRUST_LINE_FLAGS_MALFORMED = -1,
     SET_TRUST_LINE_FLAGS_NO_TRUST_LINE = -2,
     SET_TRUST_LINE_FLAGS_CANT_REVOKE = -3,
-    SET_TRUST_LINE_FLAGS_INVALID_STATE = -4
+    SET_TRUST_LINE_FLAGS_INVALID_STATE = -4,
+    SET_TRUST_LINE_FLAGS_LOW_RESERVE = -5 // claimable balances can't be created
+                                          // on revoke due to low reserves
 };
 
 union SetTrustLineFlagsResult switch (SetTrustLineFlagsResultCode code)
 {
 case SET_TRUST_LINE_FLAGS_SUCCESS:
+    void;
+default:
+    void;
+};
+
+/******* LiquidityPoolDeposit Result ********/
+
+enum LiquidityPoolDepositResultCode
+{
+    // codes considered as "success" for the operation
+    LIQUIDITY_POOL_DEPOSIT_SUCCESS = 0,
+
+    // codes considered as "failure" for the operation
+    LIQUIDITY_POOL_DEPOSIT_MALFORMED = -1,      // bad input
+    LIQUIDITY_POOL_DEPOSIT_NO_TRUST = -2,       // no trust line for one of the
+                                                // assets
+    LIQUIDITY_POOL_DEPOSIT_NOT_AUTHORIZED = -3, // not authorized for one of the
+                                                // assets
+    LIQUIDITY_POOL_DEPOSIT_UNDERFUNDED = -4,    // not enough balance for one of
+                                                // the assets
+    LIQUIDITY_POOL_DEPOSIT_LINE_FULL = -5,      // pool share trust line doesn't
+                                                // have sufficient limit
+    LIQUIDITY_POOL_DEPOSIT_BAD_PRICE = -6,      // deposit price outside bounds
+    LIQUIDITY_POOL_DEPOSIT_POOL_FULL = -7       // pool reserves are full
+};
+
+union LiquidityPoolDepositResult switch (
+    LiquidityPoolDepositResultCode code)
+{
+case LIQUIDITY_POOL_DEPOSIT_SUCCESS:
+    void;
+default:
+    void;
+};
+
+/******* LiquidityPoolWithdraw Result ********/
+
+enum LiquidityPoolWithdrawResultCode
+{
+    // codes considered as "success" for the operation
+    LIQUIDITY_POOL_WITHDRAW_SUCCESS = 0,
+
+    // codes considered as "failure" for the operation
+    LIQUIDITY_POOL_WITHDRAW_MALFORMED = -1,      // bad input
+    LIQUIDITY_POOL_WITHDRAW_NO_TRUST = -2,       // no trust line for one of the
+                                                 // assets
+    LIQUIDITY_POOL_WITHDRAW_UNDERFUNDED = -3,    // not enough balance of the
+                                                 // pool share
+    LIQUIDITY_POOL_WITHDRAW_LINE_FULL = -4,      // would go above limit for one
+                                                 // of the assets
+    LIQUIDITY_POOL_WITHDRAW_UNDER_MINIMUM = -5   // didn't withdraw enough
+};
+
+union LiquidityPoolWithdrawResult switch (
+    LiquidityPoolWithdrawResultCode code)
+{
+case LIQUIDITY_POOL_WITHDRAW_SUCCESS:
     void;
 default:
     void;
@@ -1873,6 +2138,10 @@ case opINNER:
         ClawbackClaimableBalanceResult clawbackClaimableBalanceResult;
     case SET_TRUST_LINE_FLAGS:
         SetTrustLineFlagsResult setTrustLineFlagsResult;
+    case LIQUIDITY_POOL_DEPOSIT:
+        LiquidityPoolDepositResult liquidityPoolDepositResult;
+    case LIQUIDITY_POOL_WITHDRAW:
+        LiquidityPoolWithdrawResult liquidityPoolWithdrawResult;
     }
     tr;
 default:
@@ -2024,6 +2293,27 @@ struct StellarValue
     ext;
 };
 
+const MASK_LEDGER_HEADER_FLAGS = 0x7;
+
+enum LedgerHeaderFlags
+{
+    DISABLE_LIQUIDITY_POOL_TRADING_FLAG = 0x1,
+    DISABLE_LIQUIDITY_POOL_DEPOSIT_FLAG = 0x2,
+    DISABLE_LIQUIDITY_POOL_WITHDRAWAL_FLAG = 0x4
+};
+
+struct LedgerHeaderExtensionV1
+{
+    uint32 flags; // LedgerHeaderFlags
+
+    union switch (int v)
+    {
+    case 0:
+        void;
+    }
+    ext;
+};
+
 /* The LedgerHeader is the highest level structure representing the
  * state of a ledger, cryptographically linked to previous ledgers.
  */
@@ -2061,6 +2351,8 @@ struct LedgerHeader
     {
     case 0:
         void;
+    case 1:
+        LedgerHeaderExtensionV1 v1;
     }
     ext;
 };
@@ -2075,7 +2367,8 @@ enum LedgerUpgradeType
     LEDGER_UPGRADE_VERSION = 1,
     LEDGER_UPGRADE_BASE_FEE = 2,
     LEDGER_UPGRADE_MAX_TX_SET_SIZE = 3,
-    LEDGER_UPGRADE_BASE_RESERVE = 4
+    LEDGER_UPGRADE_BASE_RESERVE = 4,
+    LEDGER_UPGRADE_FLAGS = 5
 };
 
 union LedgerUpgrade switch (LedgerUpgradeType type)
@@ -2088,6 +2381,8 @@ case LEDGER_UPGRADE_MAX_TX_SET_SIZE:
     uint32 newMaxTxSetSize; // update maxTxSetSize
 case LEDGER_UPGRADE_BASE_RESERVE:
     uint32 newBaseReserve; // update baseReserve
+case LEDGER_UPGRADE_FLAGS:
+    uint32 newFlags; // update flags
 };
 
 /* Entries used to define the bucket list */
@@ -2628,7 +2923,7 @@ struct SCPEnvelope
 struct SCPQuorumSet
 {
     uint32 threshold;
-    PublicKey validators<>;
+    NodeID validators<>;
     SCPQuorumSet innerSets<>;
 };
 }

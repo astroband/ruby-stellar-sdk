@@ -120,37 +120,36 @@ RSpec.describe Stellar::Operation, ".change_trust" do
   let(:asset) { Stellar::Asset.alphanum4("USD", issuer) }
 
   it "creates a ChangeTrustOp" do
-    op = Stellar::Operation.change_trust(line: Stellar::Asset.alphanum4("USD", issuer))
+    op = Stellar::Operation.change_trust(asset: asset)
     expect(op.body.value).to be_an_instance_of(Stellar::ChangeTrustOp)
-    expect(op.body.value.line).to eq(Stellar::Asset.alphanum4("USD", issuer))
+    expect(op.body.value.line).to eq(asset.to_change_trust_asset)
     expect(op.body.value.limit).to eq(9223372036854775807)
   end
 
   it "creates a ChangeTrustOp with an asset" do
-    asset = Stellar::Asset.alphanum4("USD", issuer)
-    op = Stellar::Operation.change_trust(line: asset, limit: 1234.75)
+    op = Stellar::Operation.change_trust(asset: asset, limit: 1234.75)
     expect(op.body.value).to be_an_instance_of(Stellar::ChangeTrustOp)
-    expect(op.body.value.line).to eq(Stellar::Asset.alphanum4("USD", issuer))
+    expect(op.body.value.line).to eq(asset.to_change_trust_asset)
     expect(op.body.value.limit).to eq(12347500000)
   end
 
   it "only allow sound `line` arguments" do
     expect {
-      Stellar::Operation.change_trust(line: [:harmful_call, "USD", issuer])
-    }.to raise_error(ArgumentError, "must be one of #{Stellar::Asset::TYPES}")
+      Stellar::Operation.change_trust(asset: [:harmful_call, "USD", issuer])
+    }.to raise_error(TypeError)
   end
 
   it "creates a ChangeTrustOp with limit" do
-    op = Stellar::Operation.change_trust(line: Stellar::Asset.alphanum4("USD", issuer), limit: 1234.75)
+    op = Stellar::Operation.change_trust(asset: asset, limit: 1234.75)
     expect(op.body.value).to be_an_instance_of(Stellar::ChangeTrustOp)
-    expect(op.body.value.line).to eq(Stellar::Asset.alphanum4("USD", issuer))
+    expect(op.body.value.line).to eq(asset.to_change_trust_asset)
     expect(op.body.value.limit).to eq(12347500000)
   end
 
   it "throws ArgumentError for incorrect limit argument" do
     expect {
-      Stellar::Operation.change_trust(line: Stellar::Asset.alphanum4("USD", issuer), limit: true)
-    }.to raise_error(ArgumentError)
+      Stellar::Operation.change_trust(asset: Stellar::Asset.alphanum4("USD", issuer), limit: true)
+    }.to raise_error(TypeError)
   end
 end
 
@@ -181,46 +180,6 @@ RSpec.describe Stellar::Operation, ".set_trust_line_flags" do
 
       its("body.value.set_flags") { is_expected.to eq(expected[0]) }
       its("body.value.clear_flags") { is_expected.to eq(expected[1]) }
-    end
-  end
-end
-
-RSpec.describe Stellar::Operation, ".allow_trust" do
-  let(:issuer) { Stellar::KeyPair.from_address("GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7") }
-  let(:trustor) { Stellar::KeyPair.random }
-  let(:asset) { Stellar::Asset.alphanum4("USD", issuer) }
-  let(:authorize) { :full }
-  subject { Stellar::Operation.allow_trust(trustor: trustor, authorize: authorize, asset: asset) }
-
-  around { |ex| Stellar::Deprecation.silence(&ex) }
-
-  it "produces valid Stellar::AllowTrustOp body" do
-    expect { subject.to_xdr }.not_to raise_error
-  end
-
-  describe "'authorize' parameter options" do
-    {
-      1 => [true, :full],
-      0 => [false, :none],
-      2 => [:maintain_liabilities]
-    }.each do |output, inputs|
-      inputs.each do |input|
-        context "when 'authorize' parameter is #{input}" do
-          let(:authorize) { input }
-
-          it "sets authorize to #{output}" do
-            expect(subject.body.value.authorize).to eq(output)
-          end
-        end
-      end
-    end
-
-    context "when 'authorize' is invalid" do
-      let(:authorize) { Stellar::TrustLineFlags.authorized_to_maintain_liabilities_flag.value + 1 }
-
-      it "raises an error" do
-        expect { subject }.to raise_error(ArgumentError)
-      end
     end
   end
 end
@@ -323,13 +282,6 @@ RSpec.describe Stellar::Operation do
         [:account, "Account"]
     end
 
-    context "with `data_name` param" do
-      subject { described_class.revoke_sponsorship(data_name: "My Data Key", **default_params) }
-      it_behaves_like "Revoke Sponsorship Op",
-        [:ledger_key, Stellar::LedgerKey],
-        [:data, "Data"]
-    end
-
     context "with `offer_id` param" do
       subject { described_class.revoke_sponsorship(offer_id: 1234567, **default_params) }
 
@@ -347,6 +299,15 @@ RSpec.describe Stellar::Operation do
         [:claimable_balance, "ClaimableBalance"]
     end
 
+    context "with `liquidity_pool_id` param" do
+      let(:liquidity_pool_id) { "dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7" }
+      subject { described_class.revoke_sponsorship(liquidity_pool_id: liquidity_pool_id, **default_params) }
+
+      it_behaves_like "Revoke Sponsorship Op",
+        [:ledger_key, Stellar::LedgerKey],
+        [:liquidity_pool, "LiquidityPool"]
+    end
+
     context "with `asset` param" do
       let(:asset) { "TEST-GDQLZTJBZT2KSDYWTS6TGCVSPNG6XXOLBMG3SXVFENASZTPKN4UPNAYV" }
       subject { described_class.revoke_sponsorship(asset: asset, **default_params) }
@@ -354,6 +315,13 @@ RSpec.describe Stellar::Operation do
       it_behaves_like "Revoke Sponsorship Op",
         [:ledger_key, Stellar::LedgerKey],
         [:trust_line, "TrustLine"]
+    end
+
+    context "with `data_name` param" do
+      subject { described_class.revoke_sponsorship(data_name: "My Data Key", **default_params) }
+      it_behaves_like "Revoke Sponsorship Op",
+        [:ledger_key, Stellar::LedgerKey],
+        [:data, "Data"]
     end
 
     context "with `signer` param" do

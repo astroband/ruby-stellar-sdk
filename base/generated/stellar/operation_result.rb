@@ -54,6 +54,10 @@ require 'xdr'
 #           ClawbackClaimableBalanceResult clawbackClaimableBalanceResult;
 #       case SET_TRUST_LINE_FLAGS:
 #           SetTrustLineFlagsResult setTrustLineFlagsResult;
+#       case LIQUIDITY_POOL_DEPOSIT:
+#           LiquidityPoolDepositResult liquidityPoolDepositResult;
+#       case LIQUIDITY_POOL_WITHDRAW:
+#           LiquidityPoolWithdrawResult liquidityPoolWithdrawResult;
 #       }
 #       tr;
 #   default:

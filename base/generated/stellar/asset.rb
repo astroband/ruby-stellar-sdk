@@ -11,18 +11,10 @@ require 'xdr'
 #       void;
 #   
 #   case ASSET_TYPE_CREDIT_ALPHANUM4:
-#       struct
-#       {
-#           AssetCode4 assetCode;
-#           AccountID issuer;
-#       } alphaNum4;
+#       AlphaNum4 alphaNum4;
 #   
 #   case ASSET_TYPE_CREDIT_ALPHANUM12:
-#       struct
-#       {
-#           AssetCode12 assetCode;
-#           AccountID issuer;
-#       } alphaNum12;
+#       AlphaNum12 alphaNum12;
 #   
 #       // add other asset types here in the future
 #   };
@@ -30,11 +22,6 @@ require 'xdr'
 # ===========================================================================
 module Stellar
   class Asset < XDR::Union
-    include XDR::Namespace
-
-    autoload :AlphaNum4
-    autoload :AlphaNum12
-
     switch_on AssetType, :type
 
     switch :asset_type_native

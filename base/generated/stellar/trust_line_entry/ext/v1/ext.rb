@@ -9,6 +9,8 @@ require 'xdr'
 #               {
 #               case 0:
 #                   void;
+#               case 2:
+#                   TrustLineEntryExtensionV2 v2;
 #               }
 #
 # ===========================================================================
@@ -20,7 +22,9 @@ module Stellar
           switch_on XDR::Int, :v
 
           switch 0
+          switch 2, :v2
 
+          attribute :v2, TrustLineEntryExtensionV2
         end
       end
     end

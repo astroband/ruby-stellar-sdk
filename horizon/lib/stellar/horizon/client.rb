@@ -147,7 +147,7 @@ module Stellar::Horizon
     # @option options [Stellar::Account] :account
     # @option options [Integer] :limit
     # @option options [Integer] :cursor
-    # @return [Stellar::TransactionPage]
+    # @return [TransactionPage]
     def transactions(options = {})
       args = options.slice(:limit, :cursor)
 
@@ -158,7 +158,7 @@ module Stellar::Horizon
         @horizon.transactions(args)
       end
 
-      Stellar::TransactionPage.new(resource)
+      TransactionPage.new(resource)
     end
 
     # @param [Array(Symbol,String,Stellar::KeyPair|Stellar::Account)] asset
@@ -178,7 +178,7 @@ module Stellar::Horizon
       op_args = {
         account: source.keypair,
         sequence: sequence,
-        line: asset
+        asset: asset
       }
       op_args[:limit] = limit unless limit.nil?
 
@@ -248,51 +248,6 @@ module Stellar::Horizon
           raise AccountRequiresMemoError.new("account requires memo", destination, idx)
         end
       end
-    end
-
-    # DEPRECATED: this function has been moved Stellar::SEP10.build_challenge_tx and
-    # will be removed in the next major version release.
-    #
-    # A wrapper function for Stellar::SEP10::build_challenge_tx.
-    #
-    # @param server [Stellar::KeyPair] Keypair for server's signing account.
-    # @param client [Stellar::KeyPair] Keypair for the account whishing to authenticate with the server.
-    # @param anchor_name [String] Anchor's name to be used in the manage_data key.
-    # @param timeout [Integer] Challenge duration (default to 5 minutes).
-    #
-    # @return [String] A base64 encoded string of the raw TransactionEnvelope xdr struct for the transaction.
-    def build_challenge_tx(server:, client:, anchor_name:, timeout: 300)
-      Stellar::SEP10.build_challenge_tx(
-        server: server, client: client, anchor_name: anchor_name, timeout: timeout
-      )
-    end
-
-    # DEPRECATED: this function has been moved to Stellar::SEP10::read_challenge_tx and
-    # will be removed in the next major version release.
-    #
-    # A wrapper function for Stellar::SEP10.verify_challenge_transaction
-    #
-    # @param challenge [String] SEP0010 transaction challenge in base64.
-    # @param server [Stellar::KeyPair] Stellar::KeyPair for server where the challenge was generated.
-    #
-    # @return [Boolean]
-    def verify_challenge_tx(challenge:, server:)
-      Stellar::SEP10.verify_challenge_tx(challenge_xdr: challenge, server: server)
-      true
-    end
-
-    # DEPRECATED: this function has been moved to Stellar::SEP10::verify_tx_signed_by and
-    # will be removed in the next major version release.
-    #
-    # @param transaction_envelope [Stellar::TransactionEnvelope]
-    # @param keypair [Stellar::KeyPair]
-    #
-    # @return [Boolean]
-    #
-    def verify_tx_signed_by(transaction_envelope:, keypair:)
-      Stellar::SEP10.verify_tx_signed_by(
-        tx_envelope: transaction_envelope, keypair: keypair
-      )
     end
   end
 end

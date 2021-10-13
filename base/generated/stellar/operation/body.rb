@@ -51,6 +51,10 @@ require 'xdr'
 #           ClawbackClaimableBalanceOp clawbackClaimableBalanceOp;
 #       case SET_TRUST_LINE_FLAGS:
 #           SetTrustLineFlagsOp setTrustLineFlagsOp;
+#       case LIQUIDITY_POOL_DEPOSIT:
+#           LiquidityPoolDepositOp liquidityPoolDepositOp;
+#       case LIQUIDITY_POOL_WITHDRAW:
+#           LiquidityPoolWithdrawOp liquidityPoolWithdrawOp;
 #       }
 #
 # ===========================================================================
@@ -81,6 +85,8 @@ module Stellar
       switch :clawback,                         :clawback_op
       switch :clawback_claimable_balance,       :clawback_claimable_balance_op
       switch :set_trust_line_flags,             :set_trust_line_flags_op
+      switch :liquidity_pool_deposit,           :liquidity_pool_deposit_op
+      switch :liquidity_pool_withdraw,          :liquidity_pool_withdraw_op
 
       attribute :create_account_op,                   CreateAccountOp
       attribute :payment_op,                          PaymentOp
@@ -102,6 +108,8 @@ module Stellar
       attribute :clawback_op,                         ClawbackOp
       attribute :clawback_claimable_balance_op,       ClawbackClaimableBalanceOp
       attribute :set_trust_line_flags_op,             SetTrustLineFlagsOp
+      attribute :liquidity_pool_deposit_op,           LiquidityPoolDepositOp
+      attribute :liquidity_pool_withdraw_op,          LiquidityPoolWithdrawOp
     end
   end
 end

@@ -25,8 +25,6 @@ end
 group :development do
   gem "awesome_print"
   gem "break"
-  gem "faraday"
-  gem "faraday_middleware"
   gem "gem-release", require: false
   gem "octokit"
   gem "pry"

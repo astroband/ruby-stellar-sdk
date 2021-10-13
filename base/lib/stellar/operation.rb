@@ -15,513 +15,160 @@ module Stellar
       # Construct a new Stellar::Operation from the provided
       # source account and body
       #
-      # @param [Hash] attributes the attributes to create the operation with
-      # @option attributes [Stellar::KeyPair] :source_account
-      # @option attributes [Stellar::Operation::Body] :body
+      # @param source_account [KeyPair, nil] the source account for the operation
+      # @param [(Symbol, XDR::Struct)] body a tuple containing operation type and operation object
       #
       # @return [Stellar::Operation] the built operation
-      def make(attributes = {})
-        source_account = attributes[:source_account]
+      def make(body:, source_account: nil)
+        raise ArgumentError, "Bad :source_account" if source_account && !source_account.is_a?(Stellar::KeyPair)
 
-        if source_account && !source_account.is_a?(Stellar::KeyPair)
-          raise ArgumentError, "Bad :source_account"
-        end
-
-        body = Stellar::Operation::Body.new(*attributes[:body])
+        body = Stellar::Operation::Body.new(*body)
 
         Stellar::Operation.new(
-          body: body,
-          source_account: source_account&.muxed_account
+          source_account: source_account&.muxed_account,
+          body: body
         )
       end
 
+      # Create Account operation builder
       #
-      # Helper method to create a valid PaymentOp, wrapped
-      # in the necessary XDR structs to be included within a
-      # transactions `operations` array.
+      # @param source_account [KeyPair, nil] the source account for the operation
+      # @param destination [KeyPair] the account to create
+      # @param starting_balance [String, Numeric] the amount to deposit to the newly created account
       #
-      # @see Stellar::Asset
-      #
-      # @param [Hash] attributes the attributes to create the operation with
-      # @option attributes [Stellar::KeyPair] :destination the receiver of the payment
-      # @option attributes [Array] :amount the amount to pay
-      # @return [Stellar::Operation] the built operation, containing a
-      #                              Stellar::PaymentOp body
-      def payment(attributes = {})
-        destination = attributes[:destination]
-        asset, amount = get_asset_amount(attributes[:amount])
-
-        raise ArgumentError unless destination.is_a?(KeyPair)
-
-        op = PaymentOp.new
-        op.asset = asset
-        op.amount = amount
-        op.destination = destination.muxed_account
-
-        make(attributes.merge({
-          body: [:payment, op]
-        }))
-      end
-
-      #
-      # Helper method to create a valid PathPaymentStrictReceiveOp, wrapped
-      # in the necessary XDR structs to be included within a
-      # transactions `operations` array.
-      #
-      # @deprecated Please use Operation.path_payment_strict_receive
-      #
-      # @see Stellar::Asset
-      #
-      # @param [Hash] attributes the attributes to create the operation with
-      # @option attributes [Stellar::KeyPair] :destination the receiver of the payment
-      # @option attributes [Array] :amount the destination asset and the amount to pay
-      # @option attributes [Array] :with the source asset and maximum allowed source amount to pay with
-      # @option attributes [Array<Stellar::Asset>] :path the payment path to use
-      #
-      # @return [Stellar::Operation] the built operation, containing a Stellar::PaymentOp body
-      #
-      def path_payment(attributes = {})
-        path_payment_strict_receive(attributes)
-      end
-
-      #
-      # Helper method to create a valid PathPaymentStrictReceiveOp, wrapped
-      # in the necessary XDR structs to be included within a
-      # transactions `operations` array.
-      #
-      # @see Stellar::Asset
-      #
-      # @param [Hash] attributes the attributes to create the operation with
-      # @option attributes [Stellar::KeyPair] :destination the receiver of the payment
-      # @option attributes [Array] :amount the destination asset and the amount to pay
-      # @option attributes [Array] :with the source asset and maximum allowed source amount to pay with
-      # @option attributes [Array<Stellar::Asset>] :path the payment path to use
-      #
-      # @return [Stellar::Operation] the built operation, containing a Stellar::PaymentOp body
-      #
-      def path_payment_strict_receive(attributes = {})
-        destination = attributes[:destination]
-        asset, amount = get_asset_amount(attributes[:amount])
-        send_asset, send_max = get_asset_amount(attributes[:with])
-        path = (attributes[:path] || []).map { |p|
-          p.is_a?(Array) ? Stellar::Asset.send(*p) : p
-        }
-
-        raise ArgumentError unless destination.is_a?(KeyPair)
-
-        op = PathPaymentStrictReceiveOp.new
-        op.send_asset = send_asset
-        op.send_max = send_max
-        op.destination = destination.muxed_account
-        op.dest_asset = asset
-        op.dest_amount = amount
-        op.path = path
-
-        make(attributes.merge({
-          body: [:path_payment_strict_receive, op]
-        }))
-      end
-
-      #
-      # Helper method to create a valid PathPaymentStrictSendOp, wrapped
-      # in the necessary XDR structs to be included within a
-      # transactions `operations` array.
-      #
-      # @see Stellar::Asset
-      #
-      # @param [Hash] attributes the attributes to create the operation with
-      # @option attributes [Stellar::KeyPair] :destination the receiver of the payment
-      # @option attributes [Array] :amount the destination asset and the minimum amount of destination asset to be received
-      # @option attributes [Array] :with the source asset and amount to pay with
-      # @option attributes [Array<Stellar::Asset>] :path the payment path to use
-      #
-      # @return [Stellar::Operation] the built operation, containing a Stellar::PaymentOp body
-      #
-      def path_payment_strict_send(attributes = {})
-        destination = attributes[:destination]
-        asset, dest_min = get_asset_amount(attributes[:amount])
-        send_asset, send_amount = get_asset_amount(attributes[:with])
-        path = (attributes[:path] || []).map { |p|
-          p.is_a?(Array) ? Stellar::Asset.send(*p) : p
-        }
-
-        raise ArgumentError unless destination.is_a?(KeyPair)
-
-        op = PathPaymentStrictSendOp.new
-        op.send_asset = send_asset
-        op.send_amount = send_amount
-        op.destination = destination.muxed_account
-        op.dest_asset = asset
-        op.dest_min = dest_min
-        op.path = path
-
-        make(attributes.merge({
-          body: [:path_payment_strict_send, op]
-        }))
-      end
-
-      def create_account(attributes = {})
-        destination = attributes[:destination]
-        starting_balance = interpret_amount(attributes[:starting_balance])
-
-        raise ArgumentError unless destination.is_a?(KeyPair)
-
-        op = CreateAccountOp.new
-        op.destination = destination.account_id
-        op.starting_balance = starting_balance
-
-        make(attributes.merge({
-          body: [:create_account, op]
-        }))
-      end
-
-      # Helper method to create a valid ChangeTrustOp, wrapped
-      # in the necessary XDR structs to be included within a
-      # transactions `operations` array.
-      #
-      # @param [Hash] attributes the attributes to create the operation with
-      # @option attributes [Stellar::Asset] :line the asset to trust
-      # @option attributes [Fixnum] :limit the maximum amount to trust, defaults to max int64,
-      #                                    if the limit is set to 0 it deletes the trustline.
-      #
-      # @return [Stellar::Operation] the built operation, containing a
-      #                              Stellar::ChangeTrustOp body
-      def change_trust(attributes = {})
-        line = attributes[:line]
-        unless line.is_a?(Asset)
-          unless Asset::TYPES.include?(line[0])
-            fail ArgumentError, "must be one of #{Asset::TYPES}"
-          end
-          line = Asset.send(*line)
-        end
-
-        limit = attributes.key?(:limit) ? interpret_amount(attributes[:limit]) : MAX_INT64
-
-        raise ArgumentError, "Bad :limit #{limit}" unless limit.is_a?(Integer)
-
-        op = ChangeTrustOp.new(line: line, limit: limit)
-
-        make(attributes.merge({
-          body: [:change_trust, op]
-        }))
-      end
-
-      # Helper method to create a valid CreateClaimableBalanceOp, ready to be used
-      # within a transactions `operations` array.
-      #
-      # @see Stellar::DSL::Claimant
-      # @see https://github.com/astroband/ruby-stellar-sdk/tree/master/base/examples/claimable_balances.rb
-      #
-      # @param asset [Asset] the asset to transfer to a claimable balance
-      # @param amount [Fixnum] the amount of `asset` to put into a claimable balance
-      # @param claimants [Array<Claimant>] accounts authorized to claim the balance in the future
-      #
-      # @return [Operation] the built operation
-      def create_claimable_balance(asset:, amount:, claimants:, **attributes)
-        op = CreateClaimableBalanceOp.new(asset: asset, amount: amount, claimants: claimants)
-
-        make(attributes.merge(body: [:create_claimable_balance, op]))
-      end
-
-      # Helper method to create a valid CreateClaimableBalanceOp, ready to be used
-      # within a transactions `operations` array.
-      #
-      # @see Stellar::DSL::Claimant
-      # @see https://github.com/astroband/ruby-stellar-sdk/tree/master/base/examples/claimable_balances.rb
-      #
-      # @param balance_id [ClaimableBalanceID] unique ID of claimable balance
-      #
-      # @return [Operation] the built operation, containing a Stellar::ChangeTrustOp body
-      def claim_claimable_balance(balance_id:, **attributes)
-        op = ClaimClaimableBalanceOp.new(balance_id: balance_id)
-
-        make(attributes.merge(body: [:claim_claimable_balance, op]))
-      end
-
-      def begin_sponsoring_future_reserves(sponsored:, **attributes)
-        op = BeginSponsoringFutureReservesOp.new(
-          sponsored_id: KeyPair(sponsored).account_id
+      # @return [Stellar::Operation] the built operation
+      def create_account(destination:, starting_balance:, source_account: nil)
+        op = CreateAccountOp.new(
+          destination: KeyPair(destination).account_id,
+          starting_balance: interpret_amount(starting_balance)
         )
 
-        make(attributes.merge(body: [:begin_sponsoring_future_reserves, op]))
+        make(source_account: source_account, body: [:create_account, op])
       end
 
-      def end_sponsoring_future_reserves(**attributes)
-        make(attributes.merge(body: [:end_sponsoring_future_reserves]))
-      end
-
-      # @param sponsored [#to_keypair] owner of sponsored entry
-      def revoke_sponsorship(sponsored:, **attributes)
-        key_fields = attributes.slice(:offer_id, :data_name, :balance_id, :asset, :signer)
-        raise ArgumentError, "conflicting attributes: #{key_fields.keys.join(", ")}" if key_fields.size > 1
-        account_id = KeyPair(sponsored).account_id
-        key, value = key_fields.first
-        op = if key == :signer
-          RevokeSponsorshipOp.signer(account_id: account_id, signer_key: SignerKey(value))
-        else
-          RevokeSponsorshipOp.ledger_key(LedgerKey.from(account_id: account_id, **key_fields))
-        end
-        make(attributes.merge(body: [:revoke_sponsorship, op]))
-      end
-
-      def manage_sell_offer(attributes = {})
-        buying = attributes[:buying]
-        if buying.is_a?(Array)
-          buying = Asset.send(*buying)
-        end
-        selling = attributes[:selling]
-        if selling.is_a?(Array)
-          selling = Asset.send(*selling)
-        end
-        amount = interpret_amount(attributes[:amount])
-        offer_id = attributes[:offer_id] || 0
-        price = interpret_price(attributes[:price])
-
-        op = ManageSellOfferOp.new({
-          buying: buying,
-          selling: selling,
-          amount: amount,
-          price: price,
-          offer_id: offer_id
-        })
-
-        make(attributes.merge({
-          body: [:manage_sell_offer, op]
-        }))
-      end
-
-      def manage_buy_offer(attributes = {})
-        buying = attributes[:buying]
-        if buying.is_a?(Array)
-          buying = Asset.send(*buying)
-        end
-        selling = attributes[:selling]
-        if selling.is_a?(Array)
-          selling = Asset.send(*selling)
-        end
-        amount = interpret_amount(attributes[:amount])
-        offer_id = attributes[:offer_id] || 0
-        price = interpret_price(attributes[:price])
-
-        op = ManageBuyOfferOp.new({
-          buying: buying,
-          selling: selling,
-          buy_amount: amount,
-          price: price,
-          offer_id: offer_id
-        })
-
-        make(attributes.merge({
-          body: [:manage_buy_offer, op]
-        }))
-      end
-
-      def create_passive_sell_offer(attributes = {})
-        buying = attributes[:buying]
-        if buying.is_a?(Array)
-          buying = Asset.send(*buying)
-        end
-        selling = attributes[:selling]
-        if selling.is_a?(Array)
-          selling = Asset.send(*selling)
-        end
-        amount = interpret_amount(attributes[:amount])
-        price = interpret_price(attributes[:price])
-
-        op = CreatePassiveSellOfferOp.new({
-          buying: buying,
-          selling: selling,
-          amount: amount,
-          price: price
-        })
-
-        make(attributes.merge({
-          body: [:create_passive_sell_offer, op]
-        }))
-      end
-
+      # Account Merge operation builder
       #
-      # Helper method to create a valid SetOptionsOp, wrapped
-      # in the necessary XDR structs to be included within a
-      # transactions `operations` array.
+      # @param [Stellar::KeyPair, nil] source_account the source account for the operation
+      # @param [Stellar::KeyPair] destination the account to merge into
       #
-      # @param [Hash] attributes the attributes to create the operation with
-      # @option attributes [Stellar::KeyPair] :inflation_dest
-      # @option attributes [Array<Stellar::AccountFlags>] :set flags to set
-      # @option attributes [Array<Stellar::AccountFlags>] :clear flags to clear
-      # @option attributes [String] :thresholds
-      # @option attributes [Stellar::Signer] :signer
-      #
-      # @return [Stellar::Operation] the built operation, containing a
-      #                              Stellar::SetOptionsOp body
-      def set_options(attributes = {})
-        op = SetOptionsOp.new
-        op.set_flags = Stellar::AccountFlags.make_mask attributes[:set]
-        op.clear_flags = Stellar::AccountFlags.make_mask attributes[:clear]
-        op.master_weight = attributes[:master_weight]
-        op.low_threshold = attributes[:low_threshold]
-        op.med_threshold = attributes[:med_threshold]
-        op.high_threshold = attributes[:high_threshold]
+      # @return [Stellar::Operation] the built operation
+      def account_merge(destination:, source_account: nil)
+        raise ArgumentError, "Bad destination" unless destination.is_a?(KeyPair)
 
-        op.signer = attributes[:signer]
-        op.home_domain = attributes[:home_domain]
-
-        inflation_dest = attributes[:inflation_dest]
-        if inflation_dest
-          raise ArgumentError, "Bad :inflation_dest" unless inflation_dest.is_a?(Stellar::KeyPair)
-          op.inflation_dest = inflation_dest.account_id
-        end
-
-        make(attributes.merge({
-          body: [:set_options, op]
-        }))
+        make(source_account: source_account, body: [:account_merge, destination.muxed_account])
       end
 
+      # Set Options operation builder.
+      #
+      # @param source_account [KeyPair, nil] the source account for the operation
+      # @param home_domain [String, nil\] the home domain of the account
+      # @param signer [Signer, nil] add, remove or adjust weight of the co-signer
+      # @param set [Array<AccountFlags>] flags to set
+      # @param clear [Array<AccountFlags>] flags to clear
+      # @param inflation_dest [KeyPair, nil] the inflation destination of the account
+      #
+      # @return [Stellar::Operation] the built operation
+      def set_options(set: [], clear: [], home_domain: nil, signer: nil, inflation_dest: nil, source_account: nil, **attributes)
+        raise ArgumentError, "Bad inflation_dest" if inflation_dest && !inflation_dest.is_a?(KeyPair)
+
+        op = SetOptionsOp.new(
+          set_flags: Stellar::AccountFlags.make_mask(set),
+          clear_flags: Stellar::AccountFlags.make_mask(clear),
+          master_weight: attributes[:master_weight],
+          low_threshold: attributes[:low_threshold],
+          med_threshold: attributes[:med_threshold],
+          high_threshold: attributes[:high_threshold],
+          signer: signer,
+          home_domain: home_domain,
+          inflation_dest: inflation_dest&.account_id
+        )
+
+        make(source_account: source_account, body: [:set_options, op])
+      end
+
+      # Bump Sequence operation builder
+      #
+      # @param [Stellar::KeyPair] source_account the source account for the operation
+      # @param [Integer] bump_to the target sequence number for the account
+      #
+      # @return [Stellar::Operation] the built operation
+      def bump_sequence(bump_to:, source_account: nil)
+        raise ArgumentError, ":bump_to too big" unless bump_to <= MAX_INT64
+
+        op = BumpSequenceOp.new(
+          bump_to: bump_to
+        )
+
+        make(source_account: source_account, body: [:bump_sequence, op])
+      end
+
+      # Manage Data operation builder
+      #
+      # @param [Stellar::KeyPair, nil] source_account the source account for the operation
+      # @param [String] name the name of the data entry
+      # @param [String, nil] value the value of the data entry (nil to remove the entry)
+      #
+      # @return [Stellar::Operation] the built operation
+      def manage_data(name:, value: nil, source_account: nil)
+        raise ArgumentError, "Invalid :name" unless name.is_a?(String)
+        raise ArgumentError, ":name too long" if name.bytesize > 64
+        raise ArgumentError, ":value too long" if value && value.bytesize > 64
+
+        op = ManageDataOp.new(
+          data_name: name,
+          data_value: value
+        )
+
+        make(source_account: source_account, body: [:manage_data, op])
+      end
+
+      # Change Trust operation builder
+      #
+      # @param source_account [KeyPair, nil] the source account for the operation
+      # @param asset [Asset] the asset to trust
+      # @param limit [String, Numeric] the maximum amount to trust, defaults to max int64 (0 deletes the trustline)
+      #
+      # @return [Stellar::Operation] the built operation
+      def change_trust(asset: nil, limit: nil, source_account: nil, **attrs)
+        if attrs.key?(:line) && !asset
+          Stellar::Deprecation.warn("`line` parameter is deprecated, use `asset` instead")
+          asset = attrs[:line]
+        end
+
+        op = ChangeTrustOp.new(
+          line: Asset(asset).to_change_trust_asset,
+          limit: limit ? interpret_amount(limit) : MAX_INT64
+        )
+
+        make(source_account: source_account, body: [:change_trust, op])
+      end
+
+      # Set Trustline Flags operation builder
+      #
+      # @param source_account [KeyPair, nil] the source account for the operation
       # @param asset [Stellar::Asset]
       # @param trustor [Stellar::KeyPair]
       # @param flags [{String, Symbol, Stellar::TrustLineFlags => true, false}] flags to to set or clear
-      # @param source_account [Stellar::KeyPair]  source account (default is `nil`, which will use the source account of transaction)
+      #
+      # @return [Stellar::Operation] the built operation
       def set_trust_line_flags(asset:, trustor:, flags: {}, source_account: nil)
-        op = Stellar::SetTrustLineFlagsOp.new
-        op.trustor = KeyPair(trustor).account_id
-        op.asset = Asset(asset)
-        op.attributes = Stellar::TrustLineFlags.set_clear_masks(flags)
-
-        make(
-          source_account: source_account,
-          body: [:set_trust_line_flags, op]
+        op = Stellar::SetTrustLineFlagsOp.new(
+          trustor: KeyPair(trustor).account_id,
+          asset: Asset(asset),
+          attributes: TrustLineFlags.set_clear_masks(flags)
         )
+
+        make(source_account: source_account, body: [:set_trust_line_flags, op])
       end
 
-      # DEPRECATED in favor of `set_trustline_flags`
+      # Clawback operation builder
       #
-      # Helper method to create a valid AllowTrustOp, wrapped
-      # in the necessary XDR structs to be included within a
-      # transactions `operations` array.
-      #
-      # @deprecated Use `set_trustline_flags` operation
-      #   See {https://github.com/stellar/stellar-protocol/blob/master/core/cap-0035.md#allow-trust-operation-1 CAP-35 description}
-      #   for more details
-      # @param [Hash] attributes the attributes to create the operation with
-      # @option attributes [Stellar::KeyPair] :trustor
-      # @option attributes [Stellar::Asset] :asset
-      # @option attributes [Symbol, Boolean] :authorize :full, maintain_liabilities or :none
-      #
-      # @return [Stellar::Operation] the built operation, containing a
-      #                              Stellar::AllowTrustOp body
-      def allow_trust(attributes = {})
-        op = AllowTrustOp.new
-
-        trustor = attributes[:trustor]
-        # we handle booleans here for the backward compatibility
-        authorize = attributes[:authorize].yield_self { |value| value == true ? :full : value }
-        asset = attributes[:asset]
-        if asset.is_a?(Array)
-          asset = Asset.send(*asset)
-        end
-
-        raise ArgumentError, "Bad :trustor" unless trustor.is_a?(Stellar::KeyPair)
-
-        allowed_flags = TRUST_LINE_FLAGS_MAPPING.slice(:full, :maintain_liabilities)
-
-        # we handle booleans here for the backward compatibility
-        op.authorize = if allowed_flags.key?(authorize)
-          allowed_flags[authorize].value
-        elsif [:none, false].include?(authorize)
-          0
-        else
-          raise ArgumentError, "Bad :authorize, supported values: :full, :maintain_liabilities, :none"
-        end
-
-        raise ArgumentError, "Bad :asset" unless asset.type == Stellar::AssetType.asset_type_credit_alphanum4
-
-        op.trustor = trustor.account_id
-        op.asset = AssetCode.new(:asset_type_credit_alphanum4, asset.code)
-
-        make(attributes.merge({
-          body: [:allow_trust, op]
-        }))
-      end
-
-      #
-      # Helper method to create an account merge operation
-      #
-      # @param [Hash] attributes the attributes to create the operation with
-      # @option attributes [Stellar::KeyPair]  :destination
+      # @param [Stellar::KeyPair] source_account the source account for the operation
+      # @param [String|Account|PublicKey|SignerKey|KeyPair] from the account to clawback from
+      # @param [(Asset, Numeric)] amount the amount of asset to subtract from the balance
       #
       # @return [Stellar::Operation] the built operation
-      def account_merge(attributes = {})
-        destination = attributes[:destination]
-
-        raise ArgumentError, "Bad :destination" unless destination.is_a?(KeyPair)
-
-        # TODO: add source_account support
-        make(attributes.merge({
-          body: [:account_merge, destination.muxed_account]
-        }))
-      end
-
-      #
-      # Helper method to create an inflation operation
-      #
-      # @param [Hash] attributes the attributes to create the operation with
-      # @option attributes [Integer]  :sequence
-      #
-      # @return [Stellar::Operation] the built operation
-      def inflation(attributes = {})
-        sequence = attributes[:sequence]
-
-        raise ArgumentError, "Bad :sequence #{sequence}" unless sequence.is_a?(Integer)
-
-        # TODO: add source_account support
-        make(attributes.merge({
-          body: [:inflation]
-        }))
-      end
-
-      #
-      # Helper method to create an manage data operation
-      #
-      # @param [Hash] attributes the attributes to create the operation with
-      # @option attributes [Integer]  :sequence
-      #
-      # @return [Stellar::Operation] the built operation
-      def manage_data(attributes = {})
-        op = ManageDataOp.new
-
-        name = attributes[:name]
-        value = attributes[:value]
-
-        raise ArgumentError, "Invalid :name" unless name.is_a?(String)
-        raise ArgumentError, ":name too long" unless name.bytesize <= 64
-
-        if value.present?
-          raise ArgumentError, ":value too long" unless value.bytesize <= 64
-        end
-
-        op.data_name = name
-        op.data_value = value
-
-        make(attributes.merge({
-          body: [:manage_data, op]
-        }))
-      end
-
-      def bump_sequence(attributes = {})
-        op = BumpSequenceOp.new
-
-        bump_to = attributes[:bump_to]
-
-        raise ArgumentError, ":bump_to too big" unless bump_to <= MAX_INT64
-
-        op.bump_to = bump_to
-
-        make(attributes.merge({
-          body: [:bump_sequence, op]
-        }))
-      end
-
-      def clawback(source_account:, from:, amount:)
+      def clawback(from:, amount:, source_account: nil)
         asset, amount = get_asset_amount(amount)
 
         if amount == 0
@@ -534,32 +181,306 @@ module Stellar
 
         op = ClawbackOp.new(
           amount: amount,
-          from: from.muxed_account,
+          from: KeyPair(from).muxed_account,
           asset: asset
         )
 
-        make({
-          source_account: source_account,
-          body: [:clawback, op]
-        })
+        make(source_account: source_account, body: [:clawback, op])
       end
 
-      # Helper method to create clawback claimable balance operation
+      # Create Claimable Balance operation builder.
       #
-      # @param [Stellar::KeyPair] source_account the attributes to create the operation with
-      # @param [String] balance_id `ClaimableBalanceID`, serialized in hex
+      # @see Stellar::DSL::Claimant
+      # @see https://github.com/astroband/ruby-stellar-sdk/tree/master/base/examples/claimable_balances.rb
+      #
+      # @param source_account [KeyPair, nil] the source account for the operation
+      # @param asset [Asset] the asset to transfer to a claimable balance
+      # @param amount [Fixnum] the amount of `asset` to put into a claimable balance
+      # @param claimants [Array<Claimant>] accounts authorized to claim the balance in the future
+      #
+      # @return [Operation] the built operation
+      def create_claimable_balance(asset:, amount:, claimants:, source_account: nil)
+        op = CreateClaimableBalanceOp.new(asset: asset, amount: amount, claimants: claimants)
+
+        make(source_account: source_account, body: [:create_claimable_balance, op])
+      end
+
+      # Helper method to create a valid CreateClaimableBalanceOp, ready to be used
+      # within a transactions `operations` array.
+      #
+      # @see Stellar::DSL::Claimant
+      # @see https://github.com/astroband/ruby-stellar-sdk/tree/master/base/examples/claimable_balances.rb
+      #
+      # @param source_account [KeyPair, nil] the source account for the operation
+      # @param balance_id [ClaimableBalanceID] unique ID of claimable balance
+      #
+      # @return [Operation] the built operation
+      def claim_claimable_balance(balance_id:, source_account: nil)
+        op = ClaimClaimableBalanceOp.new(balance_id: balance_id)
+
+        make(source_account: source_account, body: [:claim_claimable_balance, op])
+      end
+
+      # Clawback Claimable Balance operation builder
+      #
+      # @param [Stellar::KeyPair] source_account the source account for the operation
+      # @param [String] balance_id claimable balance ID as a hexadecimal string
       #
       # @return [Stellar::Operation] the built operation
-      def clawback_claimable_balance(source_account:, balance_id:)
+      def clawback_claimable_balance(balance_id:, source_account: nil)
         balance_id = Stellar::ClaimableBalanceID.from_xdr(balance_id, :hex)
         op = ClawbackClaimableBalanceOp.new(balance_id: balance_id)
 
-        make(
-          source_account: source_account,
-          body: [:clawback_claimable_balance, op]
-        )
+        make(source_account: source_account, body: [:clawback_claimable_balance, op])
       rescue XDR::ReadError
         raise ArgumentError, "Claimable balance id '#{balance_id}' is invalid"
+      end
+
+      # Payment Operation builder
+      #
+      # @param source_account [KeyPair, nil] the source account for the operation
+      # @param [Stellar::KeyPair] destination the receiver of the payment
+      # @param [(Asset, Numeric)] amount the amount to pay
+      #
+      # @return [Stellar::Operation] the built operation
+      def payment(destination:, amount:, source_account: nil)
+        raise ArgumentError unless destination.is_a?(KeyPair)
+        asset, amount = get_asset_amount(amount)
+
+        op = PaymentOp.new(
+          asset: asset,
+          amount: amount,
+          destination: destination.muxed_account
+        )
+
+        make(
+          source_account: source_account,
+          body: [:payment, op]
+        )
+      end
+
+      # Path Payment Strict Receive operation builder.
+      #
+      # @param source_account [KeyPair, nil] the source account for the operation
+      # @param destination [Stellar::KeyPair] the receiver of the payment
+      # @param amount [Array] the destination asset and the amount to pay
+      # @param with [Array] the source asset and maximum allowed source amount to pay with
+      # @param path [Array<Stellar::Asset>] the payment path to use
+      #
+      # @return [Stellar::Operation] the built operation
+      def path_payment_strict_receive(destination:, amount:, with:, path: [], source_account: nil)
+        raise ArgumentError unless destination.is_a?(KeyPair)
+
+        dest_asset, dest_amount = get_asset_amount(amount)
+        send_asset, send_max = get_asset_amount(with)
+
+        op = PathPaymentStrictReceiveOp.new(
+          destination: destination.muxed_account,
+          dest_asset: dest_asset,
+          dest_amount: dest_amount,
+          send_asset: send_asset,
+          send_max: send_max,
+          path: path.map { |p| Asset(p) }
+        )
+
+        make(source_account: source_account, body: [:path_payment_strict_receive, op])
+      end
+      alias_method :path_payment, :path_payment_strict_receive
+
+      # Path Payment Strict Receive operation builder.
+      #
+      # @param source_account [KeyPair, nil] the source account for the operation
+      # @param destination [Stellar::KeyPair] the receiver of the payment
+      # @param amount [Array] the destination asset and the minimum amount of destination asset to be received
+      # @param with [Array] the source asset and amount to pay with
+      # @param path [Array<Stellar::Asset>] the payment path to use
+      #
+      # @return [Stellar::Operation] the built operation
+      def path_payment_strict_send(destination:, amount:, with:, path: [], source_account: nil)
+        raise ArgumentError unless destination.is_a?(KeyPair)
+
+        dest_asset, dest_min = get_asset_amount(amount)
+        send_asset, send_amount = get_asset_amount(with)
+
+        op = PathPaymentStrictSendOp.new(
+          destination: destination.muxed_account,
+          send_asset: send_asset,
+          send_amount: send_amount,
+          dest_asset: dest_asset,
+          dest_min: dest_min,
+          path: path.map { |p| Asset(p) }
+        )
+
+        make(source_account: source_account, body: [:path_payment_strict_send, op])
+      end
+
+      # Manage Sell Offer operation builder
+      #
+      # @param source_account [KeyPair, nil] the source account for the operation
+      # @param selling [Asset] the asset to sell
+      # @param buying [Asset] the asset to buy
+      # @param amount [String, Numeric] the amount of asset to sell
+      # @param price [String, Numeric, Price] the price of the selling asset in terms of buying asset
+      # @param offer_id [Integer] the offer ID to modify (0 to create a new offer)
+      #
+      # @return [Operation] the built operation
+      def manage_sell_offer(selling:, buying:, amount:, price:, offer_id: 0, source_account: nil)
+        selling = Asset.send(*selling) if selling.is_a?(Array)
+        buying = Asset.send(*buying) if buying.is_a?(Array)
+
+        op = ManageSellOfferOp.new(
+          buying: buying,
+          selling: selling,
+          amount: interpret_amount(amount),
+          price: Price.from(price),
+          offer_id: offer_id
+        )
+
+        make(source_account: source_account, body: [:manage_sell_offer, op])
+      end
+
+      # Manage Buy Offer operation builder
+      #
+      # @param source_account [KeyPair, nil] the source account for the operation
+      # @param buying [Asset] the asset to buy
+      # @param selling [Asset] the asset to sell
+      # @param amount [String, Numeric] the amount of asset to buy
+      # @param price [String, Numeric, Price] the price of the buying asset in terms of the selling asset
+      # @param offer_id [Integer] the offer ID to modify (0 to create a new offer)
+      #
+      # @return [Operation] the built operation
+      def manage_buy_offer(buying:, selling:, amount:, price:, offer_id: 0, source_account: nil)
+        buying = Asset.send(*buying) if buying.is_a?(Array)
+        selling = Asset.send(*selling) if selling.is_a?(Array)
+
+        op = ManageBuyOfferOp.new(
+          buying: buying,
+          selling: selling,
+          buy_amount: interpret_amount(amount),
+          price: Price.from(price),
+          offer_id: offer_id
+        )
+
+        make(source_account: source_account, body: [:manage_buy_offer, op])
+      end
+
+      # Create Passive Sell Offer operation builder
+      #
+      # @param source_account [KeyPair, nil] the source account for the operation
+      # @param selling [Asset] the asset to sell
+      # @param buying [Asset] the asset to buy
+      # @param amount [String, Numeric] the amount of asset to sell
+      # @param price [String, Numeric, Price] the price of the selling asset in terms of buying asset
+      #
+      # @return [Operation] the built operation
+      def create_passive_sell_offer(selling:, buying:, amount:, price:, source_account: nil)
+        selling = Asset.send(*selling) if selling.is_a?(Array)
+        buying = Asset.send(*buying) if buying.is_a?(Array)
+
+        op = CreatePassiveSellOfferOp.new(
+          buying: buying,
+          selling: selling,
+          amount: interpret_amount(amount),
+          price: Price.from(price)
+        )
+
+        make(source_account: source_account, body: [:create_passive_sell_offer, op])
+      end
+
+      # Liquidity Pool Deposit operation builder
+      #
+      # @param [Stellar::KeyPair] source_account the source account for the operation
+      # @param [String] liquidity_pool_id the liquidity pool id as hexadecimal string
+      # @param [String, Numeric] max_amount_a the maximum amount of asset A to deposit
+      # @param [String, Numeric] max_amount_b the maximum amount of asset B to deposit
+      # @param [String, Numeric, Stellar::Price] min_price the minimum valid price of asset A in terms of asset B
+      # @param [String, Numeric, Stellar::Price] max_price the maximum valid price of asset A in terms of asset B
+      #
+      # @return [Stellar::Operation] the built operation
+      def liquidity_pool_deposit(liquidity_pool_id:, max_amount_a:, max_amount_b:, min_price:, max_price:, source_account: nil)
+        op = LiquidityPoolDepositOp.new(
+          liquidity_pool_id: PoolID.from_xdr(liquidity_pool_id, :hex),
+          max_amount_a: interpret_amount(max_amount_a),
+          max_amount_b: interpret_amount(max_amount_b),
+          min_price: Price.from(min_price),
+          max_price: Price.from(max_price)
+        )
+
+        make(source_account: source_account, body: [:liquidity_pool_deposit, op])
+      rescue XDR::ReadError
+        raise ArgumentError, "invalid liquidity pool ID '#{balance_id}'"
+      end
+
+      # Liquidity Pool Withdraw operation builder
+      #
+      # @param [Stellar::KeyPair] source_account the source account for the operation
+      # @param [String] liquidity_pool_id the liquidity pool id as hexadecimal string
+      # @param [String, Numeric] amount the number of pool shares to withdraw
+      # @param [String, Numeric] min_amount_a the minimum amount of asset A to withdraw
+      # @param [String, Numeric] min_amount_b the minimum amount of asset B to withdraw
+      #
+      # @return [Stellar::Operation] the built operation
+      def liquidity_pool_withdraw(liquidity_pool_id:, amount:, min_amount_a:, min_amount_b:, source_account: nil)
+        op = LiquidityPoolWithdrawOp.new(
+          liquidity_pool_id: PoolID.from_xdr(liquidity_pool_id, :hex),
+          amount: interpret_amount(amount),
+          min_amount_a: interpret_amount(min_amount_a),
+          min_amount_b: interpret_amount(min_amount_b)
+        )
+
+        make(source_account: source_account, body: [:liquidity_pool_withdraw, op])
+      rescue XDR::ReadError
+        raise ArgumentError, "invalid liquidity pool ID '#{balance_id}'"
+      end
+
+      # Begin Sponsoring Future Reserves operation builder
+      #
+      # @param source_account [KeyPair, nil] the source account for the operation
+      #
+      # @return [Operation] the built operation
+      def begin_sponsoring_future_reserves(sponsored:, source_account: nil)
+        op = BeginSponsoringFutureReservesOp.new(
+          sponsored_id: KeyPair(sponsored).account_id
+        )
+
+        make(source_account: source_account, body: [:begin_sponsoring_future_reserves, op])
+      end
+
+      # End Sponsoring Future Reserves operation builder
+      #
+      # @param source_account [KeyPair, nil] the source account for the operation
+      #
+      # @return [Operation] the built operation
+      def end_sponsoring_future_reserves(source_account: nil)
+        make(source_account: source_account, body: [:end_sponsoring_future_reserves])
+      end
+
+      # Revoke Sponsorship operation builder
+      #
+      # @param source_account [KeyPair, nil] the source account for the operation
+      # @param sponsored [#to_keypair] owner of sponsored entry
+      #
+      # @return [Operation] the built operation
+      def revoke_sponsorship(sponsored:, source_account: nil, **attributes)
+        key_fields = attributes.slice(:offer_id, :data_name, :balance_id, :liquidity_pool_id, :asset, :signer)
+        raise ArgumentError, "conflicting attributes: #{key_fields.keys.join(", ")}" if key_fields.size > 1
+        account_id = KeyPair(sponsored).account_id
+        key, value = key_fields.first
+        op = if key == :signer
+          RevokeSponsorshipOp.signer(account_id: account_id, signer_key: SignerKey(value))
+        else
+          RevokeSponsorshipOp.ledger_key(LedgerKey.from(account_id: account_id, **key_fields))
+        end
+        make(source_account: source_account, body: [:revoke_sponsorship, op])
+      end
+
+      # Inflation operation builder
+      #
+      # @param [Stellar::KeyPair, nil] source_account the source account for the operation
+      #
+      # @return [Stellar::Operation] the built operation
+      def inflation(source_account: nil)
+        make(source_account: source_account, body: [:inflation])
       end
 
       private
@@ -576,29 +497,10 @@ module Stellar
       end
 
       def interpret_amount(amount)
-        case amount
-        when String
-          (BigDecimal(amount) * Stellar::ONE).floor
-        when Integer
-          amount * Stellar::ONE
-        when Numeric
+        if amount.is_a?(Float)
           (amount * Stellar::ONE).floor
         else
-          raise ArgumentError, "Invalid amount type: #{amount.class}. Must be String or Numeric"
-        end
-      end
-
-      def interpret_price(price)
-        case price
-        when String
-          bd = BigDecimal(price)
-          Price.from_f(bd)
-        when Numeric
-          Price.from_f(price)
-        when Stellar::Price
-          price
-        else
-          raise ArgumentError, "Invalid price type: #{price.class}. Must be String, Numeric, or Stellar::Price"
+          (BigDecimal(amount) * Stellar::ONE).floor
         end
       end
     end

@@ -11,7 +11,7 @@ require 'xdr'
 #   case PATH_PAYMENT_STRICT_RECEIVE_SUCCESS:
 #       struct
 #       {
-#           ClaimOfferAtom offers<>;
+#           ClaimAtom offers<>;
 #           SimplePaymentResult last;
 #       } success;
 #   case PATH_PAYMENT_STRICT_RECEIVE_NO_ISSUER:

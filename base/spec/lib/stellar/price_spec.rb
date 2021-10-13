@@ -7,7 +7,7 @@ RSpec.describe Stellar::Price, "#from_f" do
   it "withstands a random smoke test" do
     iterations.times do |i|
       expected = random.rand
-      actual_p = subject.from_f(expected)
+      actual_p = subject.from(expected)
       actual = actual_p.to_f
 
       expect(actual).to be_within(0.0000001).of(expected)
@@ -18,7 +18,7 @@ RSpec.describe Stellar::Price, "#from_f" do
 
   it "works with bigdecimal" do
     expected = BigDecimal("2.93850088")
-    actual_p = subject.from_f(expected)
+    actual_p = subject.from(expected)
     actual = BigDecimal(actual_p.n) / BigDecimal(actual_p.d)
 
     expect(actual).to be_within(0.0000001).of(expected)

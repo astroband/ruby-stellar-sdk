@@ -13,6 +13,8 @@ require 'xdr'
 #               {
 #               case 0:
 #                   void;
+#               case 2:
+#                   TrustLineEntryExtensionV2 v2;
 #               }
 #               ext;
 #           }

@@ -11,11 +11,14 @@ module Stellar
       # It reduces the boilerplate, when you just need to
       # shoot a single operation in transaction
       def method_missing(method_name, *args, **kwargs)
-        unless Stellar::Operation.respond_to?(method_name)
-          return super
-        end
+        return super unless Operation.respond_to?(method_name)
 
-        op = Stellar::Operation.send(method_name, **kwargs)
+        op = Operation.send(
+          method_name,
+          **kwargs.except(
+            :source_account, :sequence_number, :base_fee, :time_bounds, :memo, :enable_muxed_accounts
+          )
+        )
 
         new(**kwargs).add_operation(op).build
       end

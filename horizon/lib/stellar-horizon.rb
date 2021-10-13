@@ -1,9 +1,13 @@
-require "stellar-sdk"
+require "stellar-base"
 
 module Stellar
   module Horizon
+    extend ActiveSupport::Autoload
+
     VERSION = ::Stellar::VERSION
 
-    autoload :Client, "#{__dir__}/stellar/horizon/client.rb"
+    autoload :Client
+    autoload :Problem
+    autoload :TransactionPage
   end
 end

@@ -11,7 +11,8 @@ require 'xdr'
 #       TRUSTLINE = 1,
 #       OFFER = 2,
 #       DATA = 3,
-#       CLAIMABLE_BALANCE = 4
+#       CLAIMABLE_BALANCE = 4,
+#       LIQUIDITY_POOL = 5
 #   };
 #
 # ===========================================================================
@@ -22,6 +23,7 @@ module Stellar
     member :offer,             2
     member :data,              3
     member :claimable_balance, 4
+    member :liquidity_pool,    5
 
     seal
   end

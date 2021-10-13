@@ -343,24 +343,24 @@ RSpec.describe Stellar::Horizon::Client do
 
       it "returns a list of transaction for an account", vcr: {record: :once, match_requests_on: [:method]} do
         response = client.transactions(account: account)
-        expect(response).to be_a(Stellar::TransactionPage)
+        expect(response).to be_a(Stellar::Horizon::TransactionPage)
       end
 
       it "accepts a cursor to return less data", vcr: {record: :once, match_requests_on: [:method]} do
         response = client.transactions(account: account, cursor: cursor)
-        expect(response).to be_a(Stellar::TransactionPage)
+        expect(response).to be_a(Stellar::Horizon::TransactionPage)
       end
     end
 
     context "all transactions" do
       it "returns a list of transactions", vcr: {record: :once, match_requests_on: [:method]} do
         response = client.transactions
-        expect(response).to be_a(Stellar::TransactionPage)
+        expect(response).to be_a(Stellar::Horizon::TransactionPage)
       end
 
       it "accepts a cursor to return less data", vcr: {record: :once, match_requests_on: [:method]} do
         response = client.transactions(cursor: cursor)
-        expect(response).to be_a(Stellar::TransactionPage)
+        expect(response).to be_a(Stellar::Horizon::TransactionPage)
       end
     end
   end
@@ -436,10 +436,10 @@ RSpec.describe Stellar::Horizon::Client do
         sequence_number: seq_num,
         memo: Stellar::Memo.new(:memo_text, "test memo")
       ).add_operation(
-        Stellar::Operation.payment({
+        Stellar::Operation.payment(
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
-        })
+        )
       ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
@@ -454,10 +454,10 @@ RSpec.describe Stellar::Horizon::Client do
         source_account: kp,
         sequence_number: seq_num
       ).add_operation(
-        Stellar::Operation.payment({
+        Stellar::Operation.payment(
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
-        })
+        )
       ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
@@ -485,12 +485,12 @@ RSpec.describe Stellar::Horizon::Client do
         sequence_number: seq_num,
         memo: Stellar::Memo.new(:memo_text, "test memo")
       ).add_operation(
-        Stellar::Operation.payment({
+        Stellar::Operation.payment(
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
-        })
+        )
       ).add_operation(
-        Stellar::Operation.bump_sequence({bump_to: seq_num + 2})
+        Stellar::Operation.bump_sequence(bump_to: seq_num + 2)
       ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
@@ -505,12 +505,12 @@ RSpec.describe Stellar::Horizon::Client do
         source_account: kp,
         sequence_number: seq_num
       ).add_operation(
-        Stellar::Operation.bump_sequence({bump_to: seq_num + 2})
+        Stellar::Operation.bump_sequence(bump_to: seq_num + 2)
       ).add_operation(
-        Stellar::Operation.payment({
+        Stellar::Operation.payment(
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
-        })
+        )
       ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
@@ -537,7 +537,7 @@ RSpec.describe Stellar::Horizon::Client do
         source_account: kp,
         sequence_number: seq_num
       ).add_operation(
-        Stellar::Operation.bump_sequence({bump_to: seq_num + 2})
+        Stellar::Operation.bump_sequence(bump_to: seq_num + 2)
       ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
@@ -558,10 +558,10 @@ RSpec.describe Stellar::Horizon::Client do
         source_account: kp,
         sequence_number: seq_num
       ).add_operation(
-        Stellar::Operation.payment({
+        Stellar::Operation.payment(
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
-        })
+        )
       ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
@@ -588,9 +588,9 @@ RSpec.describe Stellar::Horizon::Client do
         source_account: kp,
         sequence_number: seq_num
       ).add_operation(
-        Stellar::Operation.account_merge({
+        Stellar::Operation.account_merge(
           destination: memo_required_kp
-        })
+        )
       ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
@@ -618,14 +618,14 @@ RSpec.describe Stellar::Horizon::Client do
         sequence_number: seq_num,
         memo: Stellar::Memo.new(:memo_text, "test memo")
       ).add_operation(
-        Stellar::Operation.payment({
+        Stellar::Operation.payment(
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
-        })
+        )
       ).add_operation(
-        Stellar::Operation.account_merge({
+        Stellar::Operation.account_merge(
           destination: memo_required_kp
-        })
+        )
       ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
@@ -641,10 +641,10 @@ RSpec.describe Stellar::Horizon::Client do
         sequence_number: seq_num,
         memo: Stellar::Memo.new(:memo_text, "test memo")
       ).add_operation(
-        Stellar::Operation.payment({
+        Stellar::Operation.payment(
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
-        })
+        )
       ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 

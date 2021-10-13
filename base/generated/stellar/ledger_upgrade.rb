@@ -15,6 +15,8 @@ require 'xdr'
 #       uint32 newMaxTxSetSize; // update maxTxSetSize
 #   case LEDGER_UPGRADE_BASE_RESERVE:
 #       uint32 newBaseReserve; // update baseReserve
+#   case LEDGER_UPGRADE_FLAGS:
+#       uint32 newFlags; // update flags
 #   };
 #
 # ===========================================================================
@@ -26,10 +28,12 @@ module Stellar
     switch :ledger_upgrade_base_fee,        :new_base_fee
     switch :ledger_upgrade_max_tx_set_size, :new_max_tx_set_size
     switch :ledger_upgrade_base_reserve,    :new_base_reserve
+    switch :ledger_upgrade_flags,           :new_flags
 
     attribute :new_ledger_version,  Uint32
     attribute :new_base_fee,        Uint32
     attribute :new_max_tx_set_size, Uint32
     attribute :new_base_reserve,    Uint32
+    attribute :new_flags,           Uint32
   end
 end

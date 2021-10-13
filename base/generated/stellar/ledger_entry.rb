@@ -21,6 +21,8 @@ require 'xdr'
 #           DataEntry data;
 #       case CLAIMABLE_BALANCE:
 #           ClaimableBalanceEntry claimableBalance;
+#       case LIQUIDITY_POOL:
+#           LiquidityPoolEntry liquidityPool;
 #       }
 #       data;
 #   
