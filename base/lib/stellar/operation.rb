@@ -275,7 +275,7 @@ module Stellar
         end
         amount = interpret_amount(attributes[:amount])
         offer_id = attributes[:offer_id] || 0
-        price = interpret_price(attributes[:price])
+        price = Price.from(attributes[:price])
 
         op = ManageSellOfferOp.new({
           buying: buying,
@@ -301,7 +301,7 @@ module Stellar
         end
         amount = interpret_amount(attributes[:amount])
         offer_id = attributes[:offer_id] || 0
-        price = interpret_price(attributes[:price])
+        price = Price.from(attributes[:price])
 
         op = ManageBuyOfferOp.new({
           buying: buying,
@@ -326,7 +326,7 @@ module Stellar
           selling = Asset.send(*selling)
         end
         amount = interpret_amount(attributes[:amount])
-        price = interpret_price(attributes[:price])
+        price = Price.from(attributes[:price])
 
         op = CreatePassiveSellOfferOp.new({
           buying: buying,
@@ -562,6 +562,58 @@ module Stellar
         raise ArgumentError, "Claimable balance id '#{balance_id}' is invalid"
       end
 
+      # Liquidity Pool Deposit operation builder
+      #
+      # @param [Stellar::KeyPair] source_account the source account for the operation
+      # @param [String] liquidity_pool_id the liquidity pool id as hexadecimal string
+      # @param [String, Numeric] max_amount_a the maximum amount of asset A to deposit
+      # @param [String, Numeric] max_amount_b the maximum amount of asset B to deposit
+      # @param [String, Numeric, Stellar::Price] min_price the minimum valid price of asset A in terms of asset B
+      # @param [String, Numeric, Stellar::Price] max_price the maximum valid price of asset A in terms of asset B
+      #
+      # @return [Stellar::Operation] the built operation
+      def liquidity_pool_deposit(liquidity_pool_id:, max_amount_a:, max_amount_b:, min_price:, max_price:, source_account: nil)
+        op = LiquidityPoolDepositOp.new(
+          liquidity_pool_id: PoolID.from_xdr(liquidity_pool_id, :hex),
+          max_amount_a: interpret_amount(max_amount_a),
+          max_amount_b: interpret_amount(max_amount_b),
+          min_price: Price.from(min_price),
+          max_price: Price.from(max_price)
+        )
+
+        make(
+          source_account: source_account,
+          body: [:liquidity_pool_deposit, op]
+        )
+      rescue XDR::ReadError
+        raise ArgumentError, "invalid liquidity pool ID '#{balance_id}'"
+      end
+
+      # Liquidity Pool Withdraw operation builder
+      #
+      # @param [Stellar::KeyPair] source_account the source account for the operation
+      # @param [String] liquidity_pool_id the liquidity pool id as hexadecimal string
+      # @param [String, Numeric] amount the number of pool shares to withdraw
+      # @param [String, Numeric] min_amount_a the minimum amount of asset A to withdraw
+      # @param [String, Numeric] min_amount_b the minimum amount of asset B to withdraw
+      #
+      # @return [Stellar::Operation] the built operation
+      def liquidity_pool_withdraw(liquidity_pool_id:, amount:, min_amount_a:, min_amount_b:, source_account: nil)
+        op = LiquidityPoolWithdrawOp.new(
+          liquidity_pool_id: PoolID.from_xdr(liquidity_pool_id, :hex),
+          amount: interpret_amount(amount),
+          min_amount_a: interpret_amount(min_amount_a),
+          min_amount_b: interpret_amount(min_amount_b)
+        )
+
+        make(
+          source_account: source_account,
+          body: [:liquidity_pool_withdraw, op]
+        )
+      rescue XDR::ReadError
+        raise ArgumentError, "invalid liquidity pool ID '#{balance_id}'"
+      end
+
       private
 
       def get_asset_amount(values)
@@ -576,29 +628,10 @@ module Stellar
       end
 
       def interpret_amount(amount)
-        case amount
-        when String
-          (BigDecimal(amount) * Stellar::ONE).floor
-        when Integer
-          amount * Stellar::ONE
-        when Numeric
+        if amount.is_a?(Float)
           (amount * Stellar::ONE).floor
         else
-          raise ArgumentError, "Invalid amount type: #{amount.class}. Must be String or Numeric"
-        end
-      end
-
-      def interpret_price(price)
-        case price
-        when String
-          bd = BigDecimal(price)
-          Price.from_f(bd)
-        when Numeric
-          Price.from_f(price)
-        when Stellar::Price
-          price
-        else
-          raise ArgumentError, "Invalid price type: #{price.class}. Must be String, Numeric, or Stellar::Price"
+          (BigDecimal(amount) * Stellar::ONE).floor
         end
       end
     end
