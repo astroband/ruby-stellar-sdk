@@ -4,7 +4,7 @@ module Stellar
     # Converts an array of Stellar::AccountFlags members into
     # an Integer suitable for use in a SetOptionsOp.
     #
-    # @param flags [Array<Stellar::AccountFlags>] the flags to combine
+    # @param flags [Array<Stellar::AccountFlags>, nil] the flags to combine
     #
     # @return [Fixnum] the combined result
     def self.make_mask(flags = nil)

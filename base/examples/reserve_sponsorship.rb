@@ -33,7 +33,7 @@ tb = Stellar::TransactionBuilder.new(
 ).add_operation(
     Stellar::Operation.change_trust(
       source_account: new_account,
-      line: asset,
+      asset: asset,
       limit: 10000
     )
 ).add_operation(

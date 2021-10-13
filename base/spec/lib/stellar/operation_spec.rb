@@ -120,14 +120,14 @@ RSpec.describe Stellar::Operation, ".change_trust" do
   let(:asset) { Stellar::Asset.alphanum4("USD", issuer) }
 
   it "creates a ChangeTrustOp" do
-    op = Stellar::Operation.change_trust(line: asset)
+    op = Stellar::Operation.change_trust(asset: asset)
     expect(op.body.value).to be_an_instance_of(Stellar::ChangeTrustOp)
     expect(op.body.value.line).to eq(asset.to_change_trust_asset)
     expect(op.body.value.limit).to eq(9223372036854775807)
   end
 
   it "creates a ChangeTrustOp with an asset" do
-    op = Stellar::Operation.change_trust(line: asset, limit: 1234.75)
+    op = Stellar::Operation.change_trust(asset: asset, limit: 1234.75)
     expect(op.body.value).to be_an_instance_of(Stellar::ChangeTrustOp)
     expect(op.body.value.line).to eq(asset.to_change_trust_asset)
     expect(op.body.value.limit).to eq(12347500000)
@@ -135,12 +135,12 @@ RSpec.describe Stellar::Operation, ".change_trust" do
 
   it "only allow sound `line` arguments" do
     expect {
-      Stellar::Operation.change_trust(line: [:harmful_call, "USD", issuer])
-    }.to raise_error(ArgumentError, "must be one of #{Stellar::Asset::TYPES}")
+      Stellar::Operation.change_trust(asset: [:harmful_call, "USD", issuer])
+    }.to raise_error(TypeError)
   end
 
   it "creates a ChangeTrustOp with limit" do
-    op = Stellar::Operation.change_trust(line: asset, limit: 1234.75)
+    op = Stellar::Operation.change_trust(asset: asset, limit: 1234.75)
     expect(op.body.value).to be_an_instance_of(Stellar::ChangeTrustOp)
     expect(op.body.value.line).to eq(asset.to_change_trust_asset)
     expect(op.body.value.limit).to eq(12347500000)
@@ -148,8 +148,8 @@ RSpec.describe Stellar::Operation, ".change_trust" do
 
   it "throws ArgumentError for incorrect limit argument" do
     expect {
-      Stellar::Operation.change_trust(line: Stellar::Asset.alphanum4("USD", issuer), limit: true)
-    }.to raise_error(ArgumentError)
+      Stellar::Operation.change_trust(asset: Stellar::Asset.alphanum4("USD", issuer), limit: true)
+    }.to raise_error(TypeError)
   end
 end
 
@@ -180,46 +180,6 @@ RSpec.describe Stellar::Operation, ".set_trust_line_flags" do
 
       its("body.value.set_flags") { is_expected.to eq(expected[0]) }
       its("body.value.clear_flags") { is_expected.to eq(expected[1]) }
-    end
-  end
-end
-
-RSpec.describe Stellar::Operation, ".allow_trust" do
-  let(:issuer) { Stellar::KeyPair.from_address("GDGU5OAPHNPU5UCLE5RDJHG7PXZFQYWKCFOEXSXNMR6KRQRI5T6XXCD7") }
-  let(:trustor) { Stellar::KeyPair.random }
-  let(:asset) { Stellar::Asset.alphanum4("USD", issuer) }
-  let(:authorize) { :full }
-  subject { Stellar::Operation.allow_trust(trustor: trustor, authorize: authorize, asset: asset) }
-
-  around { |ex| Stellar::Deprecation.silence(&ex) }
-
-  it "produces valid Stellar::AllowTrustOp body" do
-    expect { subject.to_xdr }.not_to raise_error
-  end
-
-  describe "'authorize' parameter options" do
-    {
-      1 => [true, :full],
-      0 => [false, :none],
-      2 => [:maintain_liabilities]
-    }.each do |output, inputs|
-      inputs.each do |input|
-        context "when 'authorize' parameter is #{input}" do
-          let(:authorize) { input }
-
-          it "sets authorize to #{output}" do
-            expect(subject.body.value.authorize).to eq(output)
-          end
-        end
-      end
-    end
-
-    context "when 'authorize' is invalid" do
-      let(:authorize) { Stellar::TrustLineFlags.authorized_to_maintain_liabilities_flag.value + 1 }
-
-      it "raises an error" do
-        expect { subject }.to raise_error(ArgumentError)
-      end
     end
   end
 end

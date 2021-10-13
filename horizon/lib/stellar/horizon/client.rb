@@ -178,7 +178,7 @@ module Stellar::Horizon
       op_args = {
         account: source.keypair,
         sequence: sequence,
-        line: asset
+        asset: asset
       }
       op_args[:limit] = limit unless limit.nil?
 

@@ -438,10 +438,10 @@ RSpec.describe Stellar::Client do
         sequence_number: seq_num,
         memo: Stellar::Memo.new(:memo_text, "test memo")
       ).add_operation(
-        Stellar::Operation.payment({
+        Stellar::Operation.payment(
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
-        })
+        )
       ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
@@ -456,10 +456,10 @@ RSpec.describe Stellar::Client do
         source_account: kp,
         sequence_number: seq_num
       ).add_operation(
-        Stellar::Operation.payment({
+        Stellar::Operation.payment(
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
-        })
+        )
       ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
@@ -487,12 +487,12 @@ RSpec.describe Stellar::Client do
         sequence_number: seq_num,
         memo: Stellar::Memo.new(:memo_text, "test memo")
       ).add_operation(
-        Stellar::Operation.payment({
+        Stellar::Operation.payment(
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
-        })
+        )
       ).add_operation(
-        Stellar::Operation.bump_sequence({bump_to: seq_num + 2})
+        Stellar::Operation.bump_sequence(bump_to: seq_num + 2)
       ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
@@ -507,12 +507,12 @@ RSpec.describe Stellar::Client do
         source_account: kp,
         sequence_number: seq_num
       ).add_operation(
-        Stellar::Operation.bump_sequence({bump_to: seq_num + 2})
+        Stellar::Operation.bump_sequence(bump_to: seq_num + 2)
       ).add_operation(
-        Stellar::Operation.payment({
+        Stellar::Operation.payment(
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
-        })
+        )
       ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
@@ -539,7 +539,7 @@ RSpec.describe Stellar::Client do
         source_account: kp,
         sequence_number: seq_num
       ).add_operation(
-        Stellar::Operation.bump_sequence({bump_to: seq_num + 2})
+        Stellar::Operation.bump_sequence(bump_to: seq_num + 2)
       ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
@@ -560,10 +560,10 @@ RSpec.describe Stellar::Client do
         source_account: kp,
         sequence_number: seq_num
       ).add_operation(
-        Stellar::Operation.payment({
+        Stellar::Operation.payment(
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
-        })
+        )
       ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
@@ -590,9 +590,9 @@ RSpec.describe Stellar::Client do
         source_account: kp,
         sequence_number: seq_num
       ).add_operation(
-        Stellar::Operation.account_merge({
+        Stellar::Operation.account_merge(
           destination: memo_required_kp
-        })
+        )
       ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
@@ -620,14 +620,14 @@ RSpec.describe Stellar::Client do
         sequence_number: seq_num,
         memo: Stellar::Memo.new(:memo_text, "test memo")
       ).add_operation(
-        Stellar::Operation.payment({
+        Stellar::Operation.payment(
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
-        })
+        )
       ).add_operation(
-        Stellar::Operation.account_merge({
+        Stellar::Operation.account_merge(
           destination: memo_required_kp
-        })
+        )
       ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
@@ -643,10 +643,10 @@ RSpec.describe Stellar::Client do
         sequence_number: seq_num,
         memo: Stellar::Memo.new(:memo_text, "test memo")
       ).add_operation(
-        Stellar::Operation.payment({
+        Stellar::Operation.payment(
           destination: memo_required_kp,
           amount: [Stellar::Asset.native, 100]
-        })
+        )
       ).set_timeout(600).build
       envelope = tx.to_envelope(kp)
 
