@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
+## [0.30.0](https://www.github.com/astroband/ruby-stellar-sdk/compare/v0.29.0...v0.30.0) (2021-10-14)
+
+### Added
+* **protocol** support Stellar protocol 18 ([#202](https://www.github.com/astroband/ruby-stellar-sdk/issues/202)) ([3cd93dc](https://github.com/astroband/ruby-stellar-sdk/commit/3cd93dc107ab84b8d3abb10a63a6dca0887f9a4d))
+### Changed
+* `Stellar::Amount` class moved to `stellar-base` gem from `stellar-sdk`
+* `Stellar::Horizon::Problem` class moved to `stellar-horizon` gem
+* `toml-rb` gem is replaced with `tomlrb` gem to work around [segfaults in Ruby 3.0](https://github.com/mjackson/citrus/issues/60)
+
 ## [0.29.0](https://www.github.com/astroband/ruby-stellar-sdk/compare/v0.28.0...v0.29.0) (2021-09-07)
 - No changes
 
