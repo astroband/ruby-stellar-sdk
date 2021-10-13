@@ -12,6 +12,9 @@ coverage:
       stellar-base:
         paths:
         - "base/"
+      stellar-horizon:
+        paths:
+        - "horizon/"
       stellar-sdk:
         paths:
         - "sdk/"
