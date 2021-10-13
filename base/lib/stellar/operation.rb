@@ -61,7 +61,7 @@ module Stellar
       # Set Options operation builder.
       #
       # @param source_account [KeyPair, nil] the source account for the operation
-      # @param home_domain [String, nil] the home domain of the account
+      # @param home_domain [String, nil\] the home domain of the account
       # @param signer [Signer, nil] add, remove or adjust weight of the co-signer
       # @param set [Array<AccountFlags>] flags to set
       # @param clear [Array<AccountFlags>] flags to clear
@@ -462,7 +462,7 @@ module Stellar
       #
       # @return [Operation] the built operation
       def revoke_sponsorship(sponsored:, source_account: nil, **attributes)
-        key_fields = attributes.slice(:offer_id, :data_name, :balance_id, :asset, :signer)
+        key_fields = attributes.slice(:offer_id, :data_name, :balance_id, :liquidity_pool_id, :asset, :signer)
         raise ArgumentError, "conflicting attributes: #{key_fields.keys.join(", ")}" if key_fields.size > 1
         account_id = KeyPair(sponsored).account_id
         key, value = key_fields.first

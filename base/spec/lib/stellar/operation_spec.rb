@@ -282,13 +282,6 @@ RSpec.describe Stellar::Operation do
         [:account, "Account"]
     end
 
-    context "with `data_name` param" do
-      subject { described_class.revoke_sponsorship(data_name: "My Data Key", **default_params) }
-      it_behaves_like "Revoke Sponsorship Op",
-        [:ledger_key, Stellar::LedgerKey],
-        [:data, "Data"]
-    end
-
     context "with `offer_id` param" do
       subject { described_class.revoke_sponsorship(offer_id: 1234567, **default_params) }
 
@@ -306,6 +299,15 @@ RSpec.describe Stellar::Operation do
         [:claimable_balance, "ClaimableBalance"]
     end
 
+    context "with `liquidity_pool_id` param" do
+      let(:liquidity_pool_id) { "dd7b1ab831c273310ddbec6f97870aa83c2fbd78ce22aded37ecbf4f3380fac7" }
+      subject { described_class.revoke_sponsorship(liquidity_pool_id: liquidity_pool_id, **default_params) }
+
+      it_behaves_like "Revoke Sponsorship Op",
+        [:ledger_key, Stellar::LedgerKey],
+        [:liquidity_pool, "LiquidityPool"]
+    end
+
     context "with `asset` param" do
       let(:asset) { "TEST-GDQLZTJBZT2KSDYWTS6TGCVSPNG6XXOLBMG3SXVFENASZTPKN4UPNAYV" }
       subject { described_class.revoke_sponsorship(asset: asset, **default_params) }
@@ -313,6 +315,13 @@ RSpec.describe Stellar::Operation do
       it_behaves_like "Revoke Sponsorship Op",
         [:ledger_key, Stellar::LedgerKey],
         [:trust_line, "TrustLine"]
+    end
+
+    context "with `data_name` param" do
+      subject { described_class.revoke_sponsorship(data_name: "My Data Key", **default_params) }
+      it_behaves_like "Revoke Sponsorship Op",
+        [:ledger_key, Stellar::LedgerKey],
+        [:data, "Data"]
     end
 
     context "with `signer` param" do
