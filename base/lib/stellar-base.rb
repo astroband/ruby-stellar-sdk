@@ -25,6 +25,7 @@ Stellar::Deprecation = ActiveSupport::Deprecation.new("next release", "stellar-b
 
 require_relative "./stellar/account"
 require_relative "./stellar/account_flags"
+require_relative "./stellar/amount"
 require_relative "./stellar/asset"
 require_relative "./stellar/claim_predicate"
 require_relative "./stellar/key_pair"
