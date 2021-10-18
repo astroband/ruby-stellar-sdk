@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
     steps:
-    - uses: actions/checkout@v2.3.4
+    - uses: actions/checkout@v2.3.5
     - name: Setup Ruby ${{ matrix.ruby }}
       uses: ruby/setup-ruby@v1
       with:
@@ -33,7 +33,7 @@ jobs:
     env:
       CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
     steps:
-    - uses: actions/checkout@v2.3.4
+    - uses: actions/checkout@v2.3.5
     - uses: ruby/setup-ruby@v1
       with:
         bundler-cache: true
@@ -52,7 +52,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2.3.4
+    - uses: actions/checkout@v2.3.5
     - uses: ruby/setup-ruby@v1
       with:
         bundler-cache: true
@@ -65,7 +65,7 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2.3.4
+    - uses: actions/checkout@v2.3.5
     - name: Check markdown files for broken links
       uses: justinbeckwith/linkinator-action@v1.7.2
       with:
