@@ -45,11 +45,11 @@ module Stellar
       when AssetType.asset_type_credit_alphanum4
         anum = alpha_num4!
         issuer_address = Stellar::Convert.pk_to_address(anum.issuer)
-        "#{anum.asset_code}/#{issuer_address}"
+        "#{anum.asset_code.delete("\x00")}:#{issuer_address}"
       when AssetType.asset_type_credit_alphanum12
         anum = alpha_num12!
         issuer_address = Stellar::Convert.pk_to_address(anum.issuer)
-        "#{anum.asset_code}/#{issuer_address}"
+        "#{anum.asset_code.delete("\x00")}:#{issuer_address}"
       end
     end
 

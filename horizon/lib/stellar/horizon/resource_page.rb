@@ -1,6 +1,7 @@
 module Stellar::Horizon
-  class TransactionPage
+  class ResourcePage
     include Enumerable
+    include Stellar::DSL
 
     # @param [Hyperclient::Link] resource
     def initialize(resource)
@@ -8,18 +9,24 @@ module Stellar::Horizon
     end
 
     def each
-      @resource.records.each do |tx|
-        yield tx if block_given?
+      @resource.records.each do |record|
+        yield objectify(record) if block_given?
       end
     end
 
-    # @return [Stellar::TransactionPage]
+    # @return [Stellar::ResourcePage]
     def next_page
       self.class.new(@resource.next)
     end
 
     def next_page!
       @resource = @resource.next
+    end
+
+    private
+
+    def objectify(record)
+      record
     end
   end
 end

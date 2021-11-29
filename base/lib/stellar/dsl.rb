@@ -1,3 +1,5 @@
+require "date"
+
 module Stellar
   module DSL
     module_function
@@ -24,6 +26,19 @@ module Stellar
           destination: KeyPair(destination).account_id,
           predicate: ClaimPredicate(&block)
         )
+      )
+    end
+
+    def ClaimableBalance(id:, claimants: [], asset:, amount:)
+      Stellar::ClaimableBalanceEntry.new(
+        balance_id: id,
+        asset: Asset(asset),
+        amount: amount,
+        claimants: claimants.map do |claimant|
+          Claimant(claimant[:destination]) do
+            parse(claimant[:predicate])
+          end
+        end
       )
     end
 
@@ -58,9 +73,9 @@ module Stellar
         Asset.send(*subject)
       when nil, /^(XLM[-:])?native$/
         Asset.native
-      when /^([0-9A-Z]{1,4})[-:](G[A-Z0-9]{55})$/
+      when /^([0-9a-zA-Z]{1,4})[-:](G[A-Z0-9]{55})$/
         Asset.alphanum4($1, KeyPair($2))
-      when /^([0-9A-Z]{5,12})[-:](G[A-Z0-9]{55})$/
+      when /^([0-9a-zA-Z]{5,12})[-:](G[A-Z0-9]{55})$/
         Asset.alphanum12($1, KeyPair($2))
       else
         raise TypeError, "Cannot convert #{subject.inspect} to Stellar::Asset"

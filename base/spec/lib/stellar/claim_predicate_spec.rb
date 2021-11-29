@@ -1,4 +1,29 @@
 RSpec.describe Stellar::ClaimPredicate do
+  def self.specify_claim(created_at:, claimable_at:, not_claimable_at:)
+    created_at = created_at.to_time
+    subject(:evaluate) { predicate.method(:evaluate) }
+
+    context "with claim created at #{created_at.to_formatted_s(:db)}" do
+      let(:created) { created_at.to_time }
+
+      Array(claimable_at).each do |claimed|
+        claimed = created_at + claimed if claimed.is_a?(ActiveSupport::Duration)
+
+        it "evaluates to true at #{claimed.to_time.to_formatted_s(:db)}" do
+          expect(evaluate.call(created, claimed)).to be_truthy
+        end
+      end
+
+      Array(not_claimable_at).each do |claimed|
+        claimed = created_at + claimed if claimed.is_a?(ActiveSupport::Duration)
+
+        it "evaluates to false at #{claimed.to_time.to_formatted_s(:db)}" do
+          expect(evaluate.call(created, claimed)).to be_falsey
+        end
+      end
+    end
+  end
+
   describe ".unconditional" do
     subject { described_class.unconditional }
 
@@ -31,6 +56,60 @@ RSpec.describe Stellar::ClaimPredicate do
     context "with incorrect args" do
       let(:duration) { "abc" }
       specify { expect { predicate }.to raise_error(ArgumentError) }
+    end
+  end
+
+  describe ".parse" do
+    context "unconditional" do
+      let(:predicate) { { "unconditional" => true } }
+      subject { described_class.parse(predicate) }
+
+      it { is_expected.to be_a(Stellar::ClaimPredicate) }
+      its(:type) { is_expected.to be(Stellar::ClaimPredicateType::UNCONDITIONAL) }
+    end
+
+    context "abs before" do
+      let(:timestamp) { "2022-11-16T00:00:00Z" }
+      let(:predicate) { { "abs_before" => timestamp } }
+      subject { described_class.parse(predicate) }
+
+      it { is_expected.to be_a(Stellar::ClaimPredicate) }
+      its(:type) { is_expected.to be(Stellar::ClaimPredicateType::BEFORE_ABSOLUTE_TIME) }
+      its(:abs_before) { is_expected.to be(DateTime.parse(timestamp).to_i) }
+    end
+
+    context "rel before" do
+      let(:predicate) { { "rel_before" => "3600" } }
+      subject { described_class.parse(predicate) }
+
+      it { is_expected.to be_a(Stellar::ClaimPredicate) }
+      its(:type) { is_expected.to be(Stellar::ClaimPredicateType::BEFORE_RELATIVE_TIME) }
+      its(:rel_before) { is_expected.to be(3600) }
+    end
+
+    context "complex case" do
+      let(:predicate) do
+        described_class.parse({
+          "and" => [
+            { "not" => { "abs_before" => "2021-09-17T09:59:34Z" } },
+            { "abs_before" => "2021-10-17T09:59:34Z" }
+          ]
+        })
+      end
+
+      specify_claim(
+        created_at: "2021-09-18 09:00:00",
+        claimable_at: [
+          "2021-09-20 09:00:00 +0000",
+          "2021-10-10 09:24:20 +0000",
+          "2021-10-17 09:59:33 +0000"
+        ],
+        not_claimable_at: [
+          -2.days,
+          +2.months,
+          "2021-10-17 12:59:34",
+        ]
+      )
     end
   end
 
@@ -76,31 +155,6 @@ RSpec.describe Stellar::ClaimPredicate do
   describe "#evaluate" do
     let(:predicate) { described_class.unconditional }
 
-    def self.specify_claim(created_at:, claimable_at:, not_claimable_at:)
-      created_at = created_at.to_time
-      subject(:evaluate) { predicate.method(:evaluate) }
-
-      context "with claim created at #{created_at.to_formatted_s(:db)}" do
-        let(:created) { created_at.to_time }
-
-        Array(claimable_at).each do |claimed|
-          claimed = created_at + claimed if claimed.is_a?(ActiveSupport::Duration)
-
-          it "evaluates to true at #{claimed.to_time.to_formatted_s(:db)}" do
-            expect(evaluate.call(created, claimed)).to be_truthy
-          end
-        end
-
-        Array(not_claimable_at).each do |claimed|
-          claimed = created_at + claimed if claimed.is_a?(ActiveSupport::Duration)
-
-          it "evaluates to false at #{claimed.to_time.to_formatted_s(:db)}" do
-            expect(evaluate.call(created, claimed)).to be_falsey
-          end
-        end
-      end
-    end
-
     context "before_relative_time(1.hour)" do
       let(:predicate) { described_class.before_relative_time(1.hour) }
 
@@ -118,7 +172,7 @@ RSpec.describe Stellar::ClaimPredicate do
       )
     end
 
-    context "before_relative_time(1.hour)" do
+    context "before_absolute_time" do
       let(:predicate) { described_class.before_absolute_time("2020-10-22") }
 
       specify_claim(

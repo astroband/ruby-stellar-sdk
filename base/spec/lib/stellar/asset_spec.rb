@@ -41,3 +41,11 @@ RSpec.describe Stellar::Asset, "#code" do
     expect { Stellar::Asset.native.code }.to raise_error(RuntimeError)
   end
 end
+
+RSpec.describe Stellar::Asset, "#to_s" do
+  it "returns text representation of asset" do
+    a = Stellar::Asset.alphanum4("XXX", KeyPair("GCGQMVO4AOOQ3BQHGUGT52Y3XOMME6DPEB6QQDX44MC466FMDW2QTMRE"))
+
+    expect(a.to_s).to eq("XXX:GCGQMVO4AOOQ3BQHGUGT52Y3XOMME6DPEB6QQDX44MC466FMDW2QTMRE")
+  end
+end
