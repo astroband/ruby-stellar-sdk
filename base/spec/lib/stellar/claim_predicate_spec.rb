@@ -61,7 +61,7 @@ RSpec.describe Stellar::ClaimPredicate do
 
   describe ".parse" do
     context "unconditional" do
-      let(:predicate) { { "unconditional" => true } }
+      let(:predicate) { {"unconditional" => true} }
       subject { described_class.parse(predicate) }
 
       it { is_expected.to be_a(Stellar::ClaimPredicate) }
@@ -70,7 +70,7 @@ RSpec.describe Stellar::ClaimPredicate do
 
     context "abs before" do
       let(:timestamp) { "2022-11-16T00:00:00Z" }
-      let(:predicate) { { "abs_before" => timestamp } }
+      let(:predicate) { {"abs_before" => timestamp} }
       subject { described_class.parse(predicate) }
 
       it { is_expected.to be_a(Stellar::ClaimPredicate) }
@@ -79,7 +79,7 @@ RSpec.describe Stellar::ClaimPredicate do
     end
 
     context "rel before" do
-      let(:predicate) { { "rel_before" => "3600" } }
+      let(:predicate) { {"rel_before" => "3600"} }
       subject { described_class.parse(predicate) }
 
       it { is_expected.to be_a(Stellar::ClaimPredicate) }
@@ -91,8 +91,8 @@ RSpec.describe Stellar::ClaimPredicate do
       let(:predicate) do
         described_class.parse({
           "and" => [
-            { "not" => { "abs_before" => "2021-09-17T09:59:34Z" } },
-            { "abs_before" => "2021-10-17T09:59:34Z" }
+            {"not" => {"abs_before" => "2021-09-17T09:59:34Z"}},
+            {"abs_before" => "2021-10-17T09:59:34Z"}
           ]
         })
       end
@@ -107,7 +107,7 @@ RSpec.describe Stellar::ClaimPredicate do
         not_claimable_at: [
           -2.days,
           +2.months,
-          "2021-10-17 12:59:34",
+          "2021-10-17 12:59:34"
         ]
       )
     end

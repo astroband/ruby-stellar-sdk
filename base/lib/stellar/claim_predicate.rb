@@ -1,7 +1,7 @@
 # frozen_string_literals: true
 require "active_support/core_ext/integer/time"
 require "active_support/core_ext/string/conversions"
-require "active_support/core_ext/hash/indifferent_access.rb"
+require "active_support/core_ext/hash/indifferent_access"
 
 module Stellar
   # Represents claim predicate on Stellar network.
@@ -102,7 +102,7 @@ module Stellar
 
         method, args = object.to_a.first
 
-        if %w(and or).include?(method)
+        if %w[and or].include?(method)
           unless args.is_a?(Array)
             raise ArgumentError, "invalid arguments #{args} for predicate '#{method}'"
           end
@@ -111,7 +111,7 @@ module Stellar
         else
           callable_method = {
             "abs_before" => :before_absolute_time,
-            "rel_before" => :before_relative_time,
+            "rel_before" => :before_relative_time
           }[method]
 
           if callable_method.blank?

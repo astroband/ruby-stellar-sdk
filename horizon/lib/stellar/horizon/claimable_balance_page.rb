@@ -3,7 +3,7 @@ module Stellar::Horizon
     private
 
     def objectify(record)
-      attributes = %i(id claimants asset amount)
+      attributes = %i[id claimants asset amount]
       hash = record.to_hash.deep_symbolize_keys.slice(*attributes)
       ClaimableBalance(**hash)
     end

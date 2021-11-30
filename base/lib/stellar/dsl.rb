@@ -29,7 +29,7 @@ module Stellar
       )
     end
 
-    def ClaimableBalance(id:, claimants: [], asset:, amount:)
+    def ClaimableBalance(id:, asset:, amount:, claimants: [])
       Stellar::ClaimableBalanceEntry.new(
         balance_id: id,
         asset: Asset(asset),
