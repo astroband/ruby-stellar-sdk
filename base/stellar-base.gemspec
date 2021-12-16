@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = ">= 2.5.0"
 
-  spec.add_dependency "activesupport", ">= 5.0.0", "< 7.0"
+  spec.add_dependency "activesupport", ">= 5.0.0", "< 8.0"
   spec.add_dependency "base32", ">= 0.3.0", "< 1.0"
   spec.add_dependency "digest-crc", ">= 0.5.0", "< 1.0"
   spec.add_dependency "rbnacl", ">= 6.0.0", "< 8.0"
