@@ -2,14 +2,9 @@ RSpec.describe Stellar::TransactionBuilder do
   let(:base_fee) { 100 }
   let(:key_pair) { Stellar::KeyPair.random }
   let(:source_account) { key_pair }
-  let(:enable_muxed_accounts) { false }
 
   subject(:builder) do
-    described_class.new(
-      source_account: source_account,
-      sequence_number: 1,
-      enable_muxed_accounts: enable_muxed_accounts
-    )
+    described_class.new(source_account: source_account, sequence_number: 1)
   end
 
   describe ".initialize" do
@@ -45,6 +40,7 @@ RSpec.describe Stellar::TransactionBuilder do
         ArgumentError, "Bad :base_fee"
       )
     end
+
     it "bad memo" do
       expect {
         described_class.new(
@@ -317,15 +313,16 @@ RSpec.describe Stellar::TransactionBuilder do
       ])
     end
 
-    it "sets tx's source account to muxed account without id" do
-      tx = builder.build
+    context "when source account does not have id" do
+      it "sets tx's source account to muxed account without id" do
+        tx = builder.build
 
-      expect(tx.source_account.switch.name).to eq("key_type_ed25519")
-      expect(tx.source_account.ed25519).to eq(key_pair.raw_public_key)
+        expect(tx.source_account.switch.name).to eq("key_type_ed25519")
+        expect(tx.source_account.ed25519).to eq(key_pair.raw_public_key)
+      end
     end
 
-    context "when muxed accounts are enabled" do
-      let(:enable_muxed_accounts) { true }
+    context "when source account has id" do
       let(:account_id) { 15 }
       let(:source_account) { Stellar::Account.new(key_pair, account_id) }
 

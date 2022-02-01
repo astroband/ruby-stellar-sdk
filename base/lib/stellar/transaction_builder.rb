@@ -16,7 +16,7 @@ module Stellar
         op = Operation.send(
           method_name,
           **kwargs.except(
-            :source_account, :sequence_number, :base_fee, :time_bounds, :memo, :enable_muxed_accounts
+            :source_account, :sequence_number, :base_fee, :time_bounds, :memo
           )
         )
 
@@ -34,7 +34,6 @@ module Stellar
       base_fee: 100,
       time_bounds: nil,
       memo: nil,
-      enable_muxed_accounts: false,
       **_ # ignore any additional parameters without errors
     )
       raise ArgumentError, "Bad :sequence_number" unless sequence_number.is_a?(Integer) && sequence_number >= 0
@@ -45,7 +44,6 @@ module Stellar
       @sequence_number = sequence_number
       @base_fee = base_fee
       @time_bounds = time_bounds
-      @enable_muxed_accounts = enable_muxed_accounts
 
       set_timeout(0) if time_bounds.nil?
 
@@ -63,7 +61,7 @@ module Stellar
       end
 
       attrs = {
-        source_account: source_muxed_account,
+        source_account: @source_account.muxed_account,
         fee: @base_fee * @operations.length,
         seq_num: @sequence_number,
         time_bounds: @time_bounds,
@@ -94,7 +92,7 @@ module Stellar
       end
 
       Stellar::FeeBumpTransaction.new(
-        fee_source: source_muxed_account,
+        fee_source: @source_account.muxed_account,
         fee: @base_fee * (inner_ops.length + 1),
         inner_tx: Stellar::FeeBumpTransaction::InnerTx.new(:envelope_type_tx, inner_txe.v1!),
         ext: Stellar::FeeBumpTransaction::Ext.new(0)
@@ -165,18 +163,6 @@ module Stellar
       else
         raise ArgumentError, "Bad :memo"
       end
-    end
-
-    def source_muxed_account
-      if with_muxed_accounts?
-        @source_account.muxed_account
-      else
-        @source_account.base_account
-      end
-    end
-
-    def with_muxed_accounts?
-      @enable_muxed_accounts
     end
   end
 end
