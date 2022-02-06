@@ -11,7 +11,7 @@ group :test do
   gem "rspec"
   gem "rspec-its"
   gem "simplecov"
-  gem "vcr"
+  gem "vcr", github: "vcr/vcr" # use head version for Ruby 3.1 compat
   gem "yard"
   gem "webmock"
 end
