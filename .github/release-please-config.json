@@ -7,6 +7,10 @@
       "package-name": "stellar-base",
       "version-file": "lib/stellar/base/version.rb"
     },
+    "horizon": {
+      "package-name": "stellar-horizon",
+      "version-file": ""
+    },
     "sdk": {
       "package-name": "stellar-sdk",
       "version-file": "lib/stellar/sdk/version.rb"

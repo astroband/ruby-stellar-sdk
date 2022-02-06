@@ -30,6 +30,18 @@ updates:
   - "dependencies"
   - "stellar-base"
 - package-ecosystem: "bundler"
+  directory: "/horizon"
+  schedule:
+    interval: "daily"
+  commit-message:
+    prefix: "chore"
+    include: "scope"
+  allow:
+  - dependency-type: "direct"
+  labels:
+  - "dependencies"
+  - "stellar-horizon"
+- package-ecosystem: "bundler"
   directory: "/sdk"
   schedule:
     interval: "daily"
