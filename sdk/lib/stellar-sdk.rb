@@ -7,7 +7,6 @@ module Stellar
   end
   Client = Horizon::Client
 
-  autoload :Amount
   autoload :Federation
   autoload :SEP10
 end

@@ -30,8 +30,4 @@ Gem::Specification.new do |spec|
   spec.add_dependency "faraday", ">= 1.6.0", "< 2.0"
   spec.add_dependency "faraday_middleware", ">= 1.1.0", "< 2.0"
   spec.add_dependency "hyperclient", ">= 0.7.0", "< 2.0"
-
-  spec.add_development_dependency "bundler", "~> 2.0"
-  spec.add_development_dependency "rake", "~> 13"
-  spec.add_development_dependency "rspec", "~> 3.9"
 end
