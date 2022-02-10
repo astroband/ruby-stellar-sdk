@@ -4,6 +4,10 @@ module Stellar
   class SEP10
     include Stellar::DSL
 
+    # We use a small grace period for the challenge transaction time bounds
+    # to compensate possible clock drift on client's machine
+    GRACE_PERIOD = 5.minutes
+
     # Helper method to create a valid {SEP0010}[https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0010.md]
     # challenge transaction which you can use for Stellar Web Authentication.
     #
@@ -157,7 +161,7 @@ module Stellar
       time_bounds = transaction.time_bounds
       now = Time.now.to_i
 
-      if time_bounds.blank? || !now.between?(time_bounds.min_time, time_bounds.max_time)
+      if time_bounds.blank? || !now.between?(time_bounds.min_time - GRACE_PERIOD, time_bounds.max_time + GRACE_PERIOD)
         raise InvalidSep10ChallengeError, "The transaction has expired"
       end
 
