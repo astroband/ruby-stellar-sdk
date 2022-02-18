@@ -3,7 +3,7 @@ source "https://rubygems.org"
 gem "stellar-base", path: "./base"
 gem "stellar-sdk", path: "./sdk"
 gem "stellar-horizon", path: "./horizon"
-# gem "xdr", github: "astroband/ruby-xdr"
+# gem "xdr", github: "astroband/ruby-xdr", branch: "main"
 
 group :test do
   gem "codecov"
