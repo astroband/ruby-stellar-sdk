@@ -191,12 +191,10 @@ RSpec.describe Stellar::SEP10 do
       end
 
       it "uses 5 minutes grace period for validation" do
-        now = Time.now.to_i
-
-        transaction.time_bounds = Stellar::TimeBounds.new(min_time: now + 1.minute, max_time: now + 2.minutes)
+        transaction.time_bounds = Stellar::TimeBounds.new(min_time: 1.minute.from_now.to_i, max_time: 2.minutes.from_now.to_i)
         expect { read_challenge }.not_to raise_error
 
-        transaction.time_bounds = Stellar::TimeBounds.new(min_time: now - 2.minutes, max_time: now - 1.minute)
+        transaction.time_bounds = Stellar::TimeBounds.new(min_time: 2.minutes.ago.to_i, max_time: 1.minute.ago.to_i)
         expect { read_challenge }.not_to raise_error
       end
 
@@ -210,8 +208,7 @@ RSpec.describe Stellar::SEP10 do
 
       context "when challenge is in the future beyond grace period" do
         it "throws an error" do
-          now = Time.now.to_i
-          transaction.time_bounds = Stellar::TimeBounds.new(min_time: now + 6.minutes, max_time: now + 7.minutes)
+          transaction.time_bounds = Stellar::TimeBounds.new(min_time: 6.minutes.from_now.to_i, max_time: 7.minutes.from_now.to_i)
 
           expect { read_challenge }.to raise_invalid("has expired")
         end
