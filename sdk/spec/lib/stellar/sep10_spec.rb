@@ -181,23 +181,38 @@ RSpec.describe Stellar::SEP10 do
       expect { read_challenge }.to raise_invalid("is not signed by the server")
     end
 
-    it "throws an error if transaction does not contain timeBounds" do
-      transaction.time_bounds = nil
+    describe "transaction time bounds" do
+      context "when transaction does not contain timeBounds" do
+        before { transaction.time_bounds = nil }
 
-      expect { read_challenge }.to raise_invalid("has expired")
-    end
+        it "throws an error" do
+          expect { read_challenge }.to raise_invalid("has expired")
+        end
+      end
 
-    it "throws an error if challenge is expired" do
-      transaction.time_bounds = Stellar::TimeBounds.new(min_time: 0, max_time: 5)
+      it "uses 5 minutes grace period for validation" do
+        transaction.time_bounds = Stellar::TimeBounds.new(min_time: 1.minute.from_now.to_i, max_time: 2.minutes.from_now.to_i)
+        expect { read_challenge }.not_to raise_error
 
-      expect { read_challenge }.to raise_invalid("has expired")
-    end
+        transaction.time_bounds = Stellar::TimeBounds.new(min_time: 2.minutes.ago.to_i, max_time: 1.minute.ago.to_i)
+        expect { read_challenge }.not_to raise_error
+      end
 
-    it "throws an error if challenge is in the future" do
-      now = Time.now.to_i
-      transaction.time_bounds = Stellar::TimeBounds.new(min_time: now + 100, max_time: now + 500)
+      context "when challenge is expired beyond grace period" do
+        before { transaction.time_bounds = Stellar::TimeBounds.new(min_time: 0, max_time: 5) }
 
-      expect { read_challenge }.to raise_invalid("has expired")
+        it "throws an error if challenge is expired" do
+          expect { read_challenge }.to raise_invalid("has expired")
+        end
+      end
+
+      context "when challenge is in the future beyond grace period" do
+        it "throws an error" do
+          transaction.time_bounds = Stellar::TimeBounds.new(min_time: 6.minutes.from_now.to_i, max_time: 7.minutes.from_now.to_i)
+
+          expect { read_challenge }.to raise_invalid("has expired")
+        end
+      end
     end
 
     it "throws an error if provided auth domain is wrong" do
