@@ -102,16 +102,34 @@ RSpec.describe "path payment operations" do
 end
 
 RSpec.describe Stellar::Operation, ".manage_data" do
-  it "works" do
-    op = Stellar::Operation.manage_data(name: "my name", value: "hello")
-    expect(op.body.manage_data_op!.data_name).to eql("my name")
-    expect(op.body.manage_data_op!.data_value).to eql("hello")
-    expect { op.to_xdr }.to_not raise_error
+  let(:attrs) { {name: "my name", value: "hello"} }
+  subject(:op) { Stellar::Operation.manage_data(**attrs) }
 
-    op = Stellar::Operation.manage_data(name: "my name")
-    expect(op.body.manage_data_op!.data_name).to eql("my name")
-    expect(op.body.manage_data_op!.data_value).to be_nil
-    expect { op.to_xdr }.to_not raise_error
+  it_behaves_like "XDR serializable"
+
+  it "works" do
+    expect(op.body.manage_data_op!.data_name).to eq("my name")
+    expect(op.body.manage_data_op!.data_value).to eq("hello")
+  end
+
+  context "with empty value" do
+    let(:attrs) { {name: "my name", value: ""} }
+
+    it_behaves_like "XDR serializable"
+
+    it "works" do
+      expect(op.body.manage_data_op!.data_value).to eq("")
+    end
+  end
+
+  context "without value" do
+    let(:attrs) { {name: "my name"} }
+
+    it_behaves_like "XDR serializable"
+
+    it "works" do
+      expect(op.body.manage_data_op!.data_value).to be_nil
+    end
   end
 end
 
