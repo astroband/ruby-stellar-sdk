@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
+## [0.31.0](https://github.com/astroband/ruby-stellar-sdk/compare/v0.30.0...v0.31.0) (2022-02-20)
+
+### ⚠ BREAKING CHANGES
+* unconditionally use muxed accounts in tx builder (#250)
+
+### Features
+* unconditionally use muxed accounts in tx builder ([#250](https://github.com/astroband/ruby-stellar-sdk/issues/250)) ([8537fa7](https://github.com/astroband/ruby-stellar-sdk/commit/8537fa7a0520816c895a5cec93b7c27de86de172))
+
+### Bug Fixes
+* correctly serialize manage data op with empty value ([#258](https://github.com/astroband/ruby-stellar-sdk/issues/258)) ([dea0bac](https://github.com/astroband/ruby-stellar-sdk/commit/dea0bac129fc7e886c0ef42cd5eff5c3e150917f))
+
 ## [0.30.0](https://www.github.com/astroband/ruby-stellar-sdk/compare/v0.29.0...v0.30.0) (2021-10-14)
 
 ### Added

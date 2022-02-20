@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
+## [0.31.0](https://github.com/astroband/ruby-stellar-sdk/compare/v0.30.0...v0.31.0) (2022-02-20)
+* No changes
+
 ## [0.30.0](https://github.com/astroband/ruby-stellar-sdk/compare/v0.29.0...v0.30.0) (2021-10-14)
 ### Added
 * `Stellar::Horizon::Problem` class moved to `stellar-horizon` gem from `stellar-sdk`
