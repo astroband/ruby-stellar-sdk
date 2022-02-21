@@ -5,28 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.30.0](https://www.github.com/astroband/ruby-stellar-sdk/compare/v0.29.0...v0.30.0) (2021-10-14)
+## [0.31.0](https://github.com/astroband/ruby-stellar-sdk/compare/v0.30.0...v0.31.0) (2022-02-20)
+### Features
+- `Stellar::SEP10` uses 5 minutes grace period for challenge tx ([#256](https://github.com/astroband/ruby-stellar-sdk/issues/256)) ([0d02663](https://github.com/astroband/ruby-stellar-sdk/commit/0d02663ff41a878f5c4d373f31988313e6ee4f46))
 
-### Added
-* `stellar-sdk` now depends on `stellar-horizon`
-### Changed
-* `Stellar::Amount` class moved to `stellar-base` gem
-* `Stellar::Horizon::Problem` class moved to `stellar-horizon` gem
-* `Stellar::TransactionPage` is now `Stellar::Horizon::TransactionPage` in `stellar-horizon` gem
-* `toml-rb` gem is replaced with `tomlrb` gem to work around [segfaults in Ruby 3.0](https://github.com/mjackson/citrus/issues/60)
+## [0.30.0](https://www.github.com/astroband/ruby-stellar-sdk/compare/v0.29.0...v0.30.0) (2021-10-14)
+### Features
+- `stellar-sdk` now depends on `stellar-horizon`
+### Refactoring
+- `Stellar::Amount` class moved to `stellar-base` gem
+- `Stellar::Horizon::Problem` class moved to `stellar-horizon` gem
+- `Stellar::TransactionPage` is now `Stellar::Horizon::TransactionPage` in `stellar-horizon` gem
+- `toml-rb` gem is replaced with `tomlrb` gem to work around [segfaults in Ruby 3.0](https://github.com/mjackson/citrus/issues/60)
 
 ## [0.29.0](https://www.github.com/astroband/ruby-stellar-sdk/compare/v0.28.0...v0.29.0) (2021-09-07)
-
-### Added
-* support for client domain in SEP-10
-### Deprecated
-* `Stellar::Client` class is marked as deprecated in favour of new `stellar-horizon` gem
+### Deprecations
+- `Stellar::Client` class is marked as deprecated in favour of new `stellar-horizon` gem
+### Features
+- support for client domain in SEP-10
 
 ## [0.28.0](https://www.github.com/astroband/ruby-stellar-sdk/compare/v0.27.0...v0.28.0) (2021-07-17)
-
-### Changed
-* `Stellar::Account` class is now part of `stellar-base` gem
-* `Stellar::Account.lookup` is deprecated, use `Stellar::Federation.lookup` instead
+### Deprecations
+- `Stellar::Account.lookup` is deprecated, use `Stellar::Federation.lookup` instead
+### Refactoring
+- `Stellar::Account` class is now part of `stellar-base` gem
 
 ## [0.27.0](https://github.com/astroband/ruby-stellar-sdk/compare/v0.26.0...v0.27.0) (2021-05-08)
 - No changes
