@@ -5,18 +5,14 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   enum OfferEntryFlags
+#   struct SendMore
 #   {
-#       // an offer with this flag will not act on and take a reverse offer of equal
-#       // price
-#       PASSIVE_FLAG = 1
+#       uint32 numMessages;
 #   };
 #
 # ===========================================================================
 module Stellar
-  class OfferEntryFlags < XDR::Enum
-    member :passive_flag, 1
-
-    seal
+  class SendMore < XDR::Struct
+    attribute :num_messages, Uint32
   end
 end

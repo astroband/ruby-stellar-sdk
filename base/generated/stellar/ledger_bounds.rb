@@ -5,18 +5,16 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   enum OfferEntryFlags
+#   struct LedgerBounds
 #   {
-#       // an offer with this flag will not act on and take a reverse offer of equal
-#       // price
-#       PASSIVE_FLAG = 1
+#       uint32 minLedger;
+#       uint32 maxLedger; // 0 here means no maxLedger
 #   };
 #
 # ===========================================================================
 module Stellar
-  class OfferEntryFlags < XDR::Enum
-    member :passive_flag, 1
-
-    seal
+  class LedgerBounds < XDR::Struct
+    attribute :min_ledger, Uint32
+    attribute :max_ledger, Uint32
   end
 end

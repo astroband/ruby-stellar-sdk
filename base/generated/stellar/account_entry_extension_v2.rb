@@ -15,6 +15,8 @@ require 'xdr'
 #       {
 #       case 0:
 #           void;
+#       case 3:
+#           AccountEntryExtensionV3 v3;
 #       }
 #       ext;
 #   };

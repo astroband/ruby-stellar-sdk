@@ -43,6 +43,8 @@ require 'xdr'
 #       SCPEnvelope envelope;
 #   case GET_SCP_STATE:
 #       uint32 getSCPLedgerSeq; // ledger seq requested ; if 0, requests the latest
+#   case SEND_MORE:
+#       SendMore sendMoreMessage;
 #   };
 #
 # ===========================================================================
@@ -65,6 +67,7 @@ module Stellar
     switch :scp_quorumset,     :q_set
     switch :scp_message,       :envelope
     switch :get_scp_state,     :get_scp_ledger_seq
+    switch :send_more,         :send_more_message
 
     attribute :error,                          Error
     attribute :hello,                          Hello
@@ -80,5 +83,6 @@ module Stellar
     attribute :q_set,                          SCPQuorumSet
     attribute :envelope,                       SCPEnvelope
     attribute :get_scp_ledger_seq,             Uint32
+    attribute :send_more_message,              SendMore
   end
 end

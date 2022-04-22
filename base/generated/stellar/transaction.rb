@@ -16,8 +16,8 @@ require 'xdr'
 #       // sequence number to consume in the account
 #       SequenceNumber seqNum;
 #   
-#       // validity range (inclusive) for the last ledger close time
-#       TimeBounds* timeBounds;
+#       // validity conditions
+#       Preconditions cond;
 #   
 #       Memo memo;
 #   
@@ -42,7 +42,7 @@ module Stellar
     attribute :source_account, MuxedAccount
     attribute :fee,            Uint32
     attribute :seq_num,        SequenceNumber
-    attribute :time_bounds,    XDR::Option[TimeBounds]
+    attribute :cond,           Preconditions
     attribute :memo,           Memo
     attribute :operations,     XDR::VarArray[Operation, MAX_OPS_PER_TX]
     attribute :ext,            Ext
