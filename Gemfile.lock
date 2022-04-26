@@ -1,9 +1,3 @@
-GIT
-  remote: https://github.com/vcr/vcr.git
-  revision: 8ced6c96e01737a418cd270e0382a8c2c6d85f7f
-  specs:
-    vcr (6.0.0)
-
 PATH
   remote: base
   specs:
@@ -135,8 +129,8 @@ GEM
     octokit (4.22.0)
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
-    parallel (1.21.0)
-    parser (3.1.0.0)
+    parallel (1.22.1)
+    parser (3.1.2.0)
       ast (~> 2.4.1)
     polyglot (0.3.5)
     pry (0.14.1)
@@ -157,7 +151,7 @@ GEM
       ffi (~> 1.0)
     rbnacl (7.1.1)
       ffi
-    regexp_parser (2.2.1)
+    regexp_parser (2.3.1)
     rexml (3.2.5)
     rspec (3.11.0)
       rspec-core (~> 3.11.0)
@@ -175,18 +169,18 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
     rspec-support (3.11.0)
-    rubocop (1.25.1)
+    rubocop (1.28.2)
       parallel (~> 1.10)
       parser (>= 3.1.0.0)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 1.15.1, < 2.0)
+      rubocop-ast (>= 1.17.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.15.2)
-      parser (>= 3.0.1.1)
-    rubocop-performance (1.13.2)
+    rubocop-ast (1.17.0)
+      parser (>= 3.1.1.0)
+    rubocop-performance (1.13.3)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
     ruby-progressbar (1.11.0)
@@ -204,9 +198,9 @@ GEM
     slop (3.6.0)
     spoon (0.0.6)
       ffi
-    standard (1.7.2)
-      rubocop (= 1.25.1)
-      rubocop-performance (= 1.13.2)
+    standard (1.11.0)
+      rubocop (= 1.28.2)
+      rubocop-performance (= 1.13.3)
     thor (1.2.1)
     tomlrb (2.0.1)
     treetop (1.5.3)
@@ -214,6 +208,7 @@ GEM
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.1.0)
+    vcr (6.0.0)
     webmock (3.14.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
@@ -258,7 +253,7 @@ DEPENDENCIES
   stellar-base!
   stellar-horizon!
   stellar-sdk!
-  vcr!
+  vcr
   webmock
   xdrgen
   yard
