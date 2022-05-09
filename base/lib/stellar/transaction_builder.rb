@@ -212,18 +212,13 @@ module Stellar
         raise ArgumentError, "extra_signers must be an array of strings"
       end
 
-      if (extra_signers.size > 2)
+      if extra_signers.size > 2
         raise ArgumentError, "extra_signers cannot be longer than 2 elements"
       end
 
       @extra_signers = extra_signers.clone
 
       self
-    end
-
-    def memo=(memo)
-      set_memo(memo)
-      memo
     end
 
     def set_memo(memo)
@@ -258,7 +253,7 @@ module Stellar
     private
 
     def has_v2_preconditions?
-      not (
+      !(
         @ledger_bounds.nil? &&
         @min_account_sequence.nil? &&
         @min_account_sequence_age.nil? &&
