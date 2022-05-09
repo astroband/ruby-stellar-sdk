@@ -15,7 +15,7 @@ module Stellar
         operations: operations,
         fee: fee,
         memo: memo,
-        time_bounds: time_bounds,
+        time_bounds: cond.v2&.time_bounds || cond.time_bounds,
         ext: ext
       )
     end

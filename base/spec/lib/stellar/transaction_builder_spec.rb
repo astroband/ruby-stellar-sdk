@@ -296,7 +296,7 @@ RSpec.describe Stellar::TransactionBuilder do
       expect(tx1.operations).to eql([
         Stellar::Operation.bump_sequence(bump_to: 1)
       ])
-      expect(tx1.time_bounds.max_time).to eql(first_max_time)
+      expect(tx1.cond.time_bounds.max_time).to eql(first_max_time)
 
       tx2 = builder.clear_operations.add_operation(
         Stellar::Operation.bump_sequence(bump_to: 2)
@@ -305,7 +305,7 @@ RSpec.describe Stellar::TransactionBuilder do
       expect(tx2.operations).to eql([
         Stellar::Operation.bump_sequence(bump_to: 2)
       ])
-      expect(tx2.time_bounds.max_time).to eql(0)
+      expect(tx2.cond.time_bounds.max_time).to eql(0)
 
       expect(builder.sequence_number).to eql(3)
       expect(builder.operations).to eql([
