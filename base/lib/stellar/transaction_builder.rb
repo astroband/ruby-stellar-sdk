@@ -2,7 +2,18 @@ module Stellar
   class TransactionBuilder
     include Stellar::DSL
 
-    attr_reader :source_account, :sequence_number, :base_fee, :time_bounds, :memo, :operations
+    attr_reader :source_account, :sequence_number, :base_fee,
+      :time_bounds, :memo, :operations, :ledger_bounds
+
+    # If you want to prepare a transaction which will be valid only while the
+    # account sequence number is
+    #
+    #     min_account_sequence <= source_account_sequence < tx.seq_num
+    #
+    # you can set min_account_sequence attribute
+    #
+    # Note that after execution the account's sequence number is always raised to `tx.seq_num`
+    attr_accessor :min_account_sequence
 
     class << self
       # This enable user to call shortcut methods, like
@@ -33,7 +44,12 @@ module Stellar
       sequence_number:,
       base_fee: 100,
       time_bounds: nil,
+      ledger_bounds: nil,
       memo: nil,
+      min_account_sequence: nil,
+      min_account_sequence_age: nil,
+      min_account_sequence_ledger_gap: nil,
+      extra_signers: [],
       **_ # ignore any additional parameters without errors
     )
       raise ArgumentError, "Bad :sequence_number" unless sequence_number.is_a?(Integer) && sequence_number >= 0
@@ -44,6 +60,11 @@ module Stellar
       @sequence_number = sequence_number
       @base_fee = base_fee
       @time_bounds = time_bounds
+      @ledger_bounds = ledger_bounds
+      @min_account_sequence = min_account_sequence
+      @min_account_sequence_age = min_account_sequence_age
+      @min_account_sequence_ledger_gap = min_account_sequence_ledger_gap
+      @extra_signers = extra_signers.clone
 
       set_timeout(0) if time_bounds.nil?
 
@@ -64,9 +85,9 @@ module Stellar
         source_account: @source_account.muxed_account,
         fee: @base_fee * @operations.length,
         seq_num: @sequence_number,
-        time_bounds: @time_bounds,
         memo: @memo,
         operations: @operations,
+        cond: build_preconditions,
         ext: Stellar::Transaction::Ext.new(0)
       }
 
@@ -136,6 +157,75 @@ module Stellar
       self
     end
 
+    # If you want to prepare a transaction which will only be valid within some
+    # range of ledgers, you can set a `ledger_bounds` precondition.
+    def set_ledger_bounds(min_ledger, max_ledger)
+      if min_ledger < 0
+        raise ArgumentError, "min_ledger cannot be negative"
+      end
+
+      if max_ledger < 0
+        raise ArgumentError, "max_ledger cannot be negative"
+      end
+
+      if max_ledger > 0 && min_ledger > max_ledger
+        raise ArgumentError, "min_ledger cannot be greater than max_ledger"
+      end
+
+      @ledger_bounds = Stellar::LedgerBounds.new(
+        min_ledger: min_ledger,
+        max_ledger: max_ledger
+      )
+
+      self
+    end
+
+    # For the transaction to be valid, the current ledger time must be at least
+    # `min_account_sequence_age` greater than source account's `sequence_time`
+    def min_account_sequence_age=(duration_in_seconds)
+      unless duration_in_seconds.is_a?(Integer)
+        raise ArgumentError, "min_account_sequence_age must be a number"
+      end
+
+      if duration_in_seconds < 0
+        raise ArgumentError, "min_account_sequence_age cannot be negative"
+      end
+
+      @min_account_sequence_age = duration_in_seconds
+    end
+
+    # For the transaction to be valid, the current ledger number must be at least
+    # `minAccountSequenceLedgerGap` greater than sourceAccount's ledger sequence.
+    def min_account_sequence_ledger_gap=(gap)
+      if gap < 0
+        raise ArgumentError, "min_account_sequence_ledger_gap cannot be negative"
+      end
+
+      @min_account_sequence_ledger_gap = gap
+    end
+
+    # For the transaction to be valid, there must be a signature corresponding to
+    # every Signer in this array, even if the signature is not otherwise required
+    # by the sourceAccount or operations
+    def set_extra_signers(extra_signers)
+      unless extra_signers.is_a?(Array)
+        raise ArgumentError, "extra_signers must be an array of strings"
+      end
+
+      if (extra_signers.size > 2)
+        raise ArgumentError, "extra_signers cannot be longer than 2 elements"
+      end
+
+      @extra_signers = extra_signers.clone
+
+      self
+    end
+
+    def memo=(memo)
+      set_memo(memo)
+      memo
+    end
+
     def set_memo(memo)
       @memo = make_memo(memo)
       self
@@ -163,6 +253,34 @@ module Stellar
       else
         raise ArgumentError, "Bad :memo"
       end
+    end
+
+    private
+
+    def has_v2_preconditions?
+      not (
+        @ledger_bounds.nil? &&
+        @min_account_sequence.nil? &&
+        @min_account_sequence_age.nil? &&
+        @extra_signers.empty? &&
+        @min_account_sequence_ledger_gap.nil?
+      )
+    end
+
+    def build_preconditions
+      return Stellar::Preconditions.new(:precond_time, @time_bounds) unless has_v2_preconditions?
+
+      Stellar::Preconditions.new(
+        :v2,
+        Stellar::PreconditionsV2.new(
+          time_bounds: @time_bounds,
+          ledger_bounds: @ledger_bounds,
+          min_seq_num: @min_account_sequence,
+          min_seq_age: @min_account_sequence_age,
+          min_seq_ledger_gap: @min_account_sequence_ledger_gap,
+          extra_signers: @extra_signers.map { |signer| SignerKey(signer) }
+        )
+      )
     end
   end
 end
