@@ -26,7 +26,7 @@ RSpec.describe Stellar::SEP10 do
       expect(challenge.operations.size).to eql(1)
       expect(challenge.source_account).to eql(server.muxed_account)
 
-      time_bounds = challenge.time_bounds
+      time_bounds = challenge.cond.time_bounds
       expect(time_bounds.max_time - time_bounds.min_time).to eql(300)
 
       operation = challenge.operations.first
@@ -42,7 +42,7 @@ RSpec.describe Stellar::SEP10 do
     it "allows to customize challenge timeout" do
       attrs[:timeout] = 600
 
-      time_bounds = challenge.time_bounds
+      time_bounds = challenge.cond.time_bounds
       expect(time_bounds.max_time - time_bounds.min_time).to eql(600)
     end
 
@@ -183,7 +183,7 @@ RSpec.describe Stellar::SEP10 do
 
     describe "transaction time bounds" do
       context "when transaction does not contain timeBounds" do
-        before { transaction.time_bounds = nil }
+        before { transaction.cond = Stellar::Preconditions.new(:precond_none) }
 
         it "throws an error" do
           expect { read_challenge }.to raise_invalid("has expired")
@@ -191,15 +191,32 @@ RSpec.describe Stellar::SEP10 do
       end
 
       it "uses 5 minutes grace period for validation" do
-        transaction.time_bounds = Stellar::TimeBounds.new(min_time: 1.minute.from_now.to_i, max_time: 2.minutes.from_now.to_i)
+        transaction.cond = Stellar::Preconditions.new(
+          :precond_time,
+          Stellar::TimeBounds.new(
+            min_time: 1.minute.from_now.to_i,
+            max_time: 2.minutes.from_now.to_i
+          )
+        )
         expect { read_challenge }.not_to raise_error
 
-        transaction.time_bounds = Stellar::TimeBounds.new(min_time: 2.minutes.ago.to_i, max_time: 1.minute.ago.to_i)
+        transaction.cond = Stellar::Preconditions.new(
+          :precond_time,
+          Stellar::TimeBounds.new(
+            min_time: 2.minutes.ago.to_i,
+            max_time: 1.minute.ago.to_i
+          )
+        )
         expect { read_challenge }.not_to raise_error
       end
 
       context "when challenge is expired beyond grace period" do
-        before { transaction.time_bounds = Stellar::TimeBounds.new(min_time: 0, max_time: 5) }
+        before do
+          transaction.cond = Stellar::Preconditions.new(
+            :precond_time,
+            Stellar::TimeBounds.new(min_time: 0, max_time: 5)
+          )
+        end
 
         it "throws an error if challenge is expired" do
           expect { read_challenge }.to raise_invalid("has expired")
@@ -208,7 +225,13 @@ RSpec.describe Stellar::SEP10 do
 
       context "when challenge is in the future beyond grace period" do
         it "throws an error" do
-          transaction.time_bounds = Stellar::TimeBounds.new(min_time: 6.minutes.from_now.to_i, max_time: 7.minutes.from_now.to_i)
+          transaction.cond = Stellar::Preconditions.new(
+            :precond_time,
+            Stellar::TimeBounds.new(
+              min_time: 6.minutes.from_now.to_i,
+              max_time: 7.minutes.from_now.to_i
+            )
+          )
 
           expect { read_challenge }.to raise_invalid("has expired")
         end
