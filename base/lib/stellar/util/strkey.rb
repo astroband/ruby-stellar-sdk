@@ -9,7 +9,8 @@ module Stellar
         seed: [18 << 3].pack("C"), # Base32-encodes to 'S...'
         pre_auth_tx: [19 << 3].pack("C"), # Base32-encodes to 'T...'
         hash_x: [23 << 3].pack("C"), # Base32-encodes to 'X...'
-        muxed: [12 << 3].pack("C") # Base32-encodes to 'M...'
+        muxed: [12 << 3].pack("C"), # Base32-encodes to 'M...'
+        signed_payload: [15 << 3].pack("C") # Base32-encodes to 'P...'
       }
 
       def self.check_encode(version, byte_str)
@@ -48,6 +49,19 @@ module Stellar
         else
           raise "cannot decode MuxedAccount from #{strkey}"
         end
+      end
+
+      # @param payload [Stellar::SignerKey::Ed25519SignedPayload]
+      # @return [String] "P.."-like address
+      def self.encode_signed_payload(payload)
+        check_encode(:signed_payload, payload.to_xdr)
+      end
+
+      # @param strkey [String] address string to decode
+      # @return [Stellar::SignerKey::Ed25519SignedPayload]
+      def self.decode_signed_payload(strkey)
+        raw = check_decode(:signed_payload, strkey)
+        Stellar::SignerKey::Ed25519SignedPayload.from_xdr(raw, :raw)
       end
 
       def self.check_decode(expected_version, str)
