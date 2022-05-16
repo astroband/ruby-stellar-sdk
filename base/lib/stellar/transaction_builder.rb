@@ -266,7 +266,7 @@ module Stellar
       return Stellar::Preconditions.new(:precond_time, @time_bounds) unless has_v2_preconditions?
 
       Stellar::Preconditions.new(
-        :v2,
+        :precond_v2,
         Stellar::PreconditionsV2.new(
           time_bounds: @time_bounds,
           ledger_bounds: @ledger_bounds,
