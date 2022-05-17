@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 As this project is pre 1.0, breaking changes may happen for minor version
 bumps.  A breaking change will get clearly notified in this log.
 
+## [0.32.0](https://github.com/astroband/ruby-stellar-sdk/compare/v0.31.0...v0.32.0) (2022-05-17)
+
+### Added
+* **protocol** support Stellar protocol 19 ([#265](https://github.com/astroband/ruby-stellar-sdk/issues/265)) ([fead030](https://github.com/astroband/ruby-stellar-sdk/commit/fead030fdf6159cc184d5337a0f6f14fa61de963))
+
 ## [0.31.0](https://github.com/astroband/ruby-stellar-sdk/compare/v0.30.0...v0.31.0) (2022-02-20)
 
 ### ⚠ BREAKING CHANGES

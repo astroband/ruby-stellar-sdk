@@ -11,11 +11,7 @@ group :test do
   gem "rspec"
   gem "rspec-its"
   gem "simplecov"
-  if RUBY_VERSION >= "3.1"
-    gem "vcr", github: "vcr/vcr" # use head version for Ruby 3.1 compat
-  else
-    gem "vcr"
-  end
+  gem "vcr"
   gem "yard"
   gem "webmock"
 end
