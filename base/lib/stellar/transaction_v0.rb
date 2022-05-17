@@ -3,7 +3,11 @@ module Stellar
     include Stellar::Concerns::Transaction
 
     def to_v1
-      Transaction.new(**attributes.except(:source_account_ed25519), source_account: source_account)
+      Transaction.new(
+        **attributes.except(:source_account_ed25519, :time_bounds),
+        cond: Stellar::Preconditions.new(:precond_time, time_bounds),
+        source_account: source_account
+      )
     end
 
     def to_envelope(*key_pairs)

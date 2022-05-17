@@ -5,24 +5,20 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   union switch (int v)
+#   struct
 #       {
-#       case 0:
-#           void;
-#       case 3:
-#           AccountEntryExtensionV3 v3;
+#           /* Public key that must sign the payload. */
+#           uint256 ed25519;
+#           /* Payload to be raw signed by ed25519. */
+#           opaque payload<64>;
 #       }
 #
 # ===========================================================================
 module Stellar
-  class AccountEntryExtensionV2
-    class Ext < XDR::Union
-      switch_on XDR::Int, :v
-
-      switch 0
-      switch 3, :v3
-
-      attribute :v3, AccountEntryExtensionV3
+  class SignerKey
+    class Ed25519SignedPayload < XDR::Struct
+      attribute :ed25519, Uint256
+      attribute :payload, XDR::VarOpaque[64]
     end
   end
 end

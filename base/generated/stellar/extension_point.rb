@@ -5,21 +5,18 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   union LiquidityPoolWithdrawResult switch (LiquidityPoolWithdrawResultCode code)
+#   union ExtensionPoint switch (int v)
 #   {
-#   case LIQUIDITY_POOL_WITHDRAW_SUCCESS:
-#       void;
-#   default:
+#   case 0:
 #       void;
 #   };
 #
 # ===========================================================================
 module Stellar
-  class LiquidityPoolWithdrawResult < XDR::Union
-    switch_on LiquidityPoolWithdrawResultCode, :code
+  class ExtensionPoint < XDR::Union
+    switch_on XDR::Int, :v
 
-    switch :liquidity_pool_withdraw_success
-    switch :default
+    switch 0
 
   end
 end

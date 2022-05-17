@@ -1,15 +1,16 @@
 RSpec.describe Stellar::Transaction do
   subject do
-    Stellar::Transaction.new({
+    Stellar::Transaction.new(
       source_account: Stellar::MuxedAccount.new(:key_type_ed25519, "\x00" * 32),
       fee: 10,
       seq_num: 1,
       memo: Stellar::Memo.new(:memo_none),
       ext: Stellar::Transaction::Ext.new(0),
+      cond: Stellar::Preconditions.new(:precond_none),
       operations: [
         Stellar::Operation.new(body: Stellar::Operation::Body.new(:inflation))
       ]
-    })
+    )
   end
   let(:key_pair) { Stellar::KeyPair.random }
 

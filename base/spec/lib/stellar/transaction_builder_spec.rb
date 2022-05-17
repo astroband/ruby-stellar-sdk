@@ -119,6 +119,38 @@ RSpec.describe Stellar::TransactionBuilder do
     end
   end
 
+  describe "setting preconditions" do
+    context "when extra signers are given" do
+      let(:extra_signers) do
+        [Stellar::KeyPair.random, Stellar::KeyPair.random]
+      end
+
+      subject(:conditions) do
+        described_class.new(
+          source_account: Stellar::KeyPair.random,
+          sequence_number: 1,
+          extra_signers: extra_signers
+        ).build.cond
+      end
+
+      its(:arm) { is_expected.to be(:v2) }
+      its(:v2) { is_expected.to be_a(Stellar::PreconditionsV2) }
+
+      it "sets extra signers properly" do
+        expect(conditions.v2.extra_signers.size).to eq(2)
+
+        signer1 = conditions.v2.extra_signers[0]
+        signer2 = conditions.v2.extra_signers[1]
+
+        expect(signer1).to be_a(Stellar::SignerKey)
+        expect(signer2).to be_a(Stellar::SignerKey)
+
+        expect(signer1.ed25519).to eq(extra_signers[0].raw_public_key)
+        expect(signer2.ed25519).to eq(extra_signers[1].raw_public_key)
+      end
+    end
+  end
+
   describe ".add_operation" do
     it "bad operation" do
       expect {
@@ -296,7 +328,7 @@ RSpec.describe Stellar::TransactionBuilder do
       expect(tx1.operations).to eql([
         Stellar::Operation.bump_sequence(bump_to: 1)
       ])
-      expect(tx1.time_bounds.max_time).to eql(first_max_time)
+      expect(tx1.cond.time_bounds.max_time).to eql(first_max_time)
 
       tx2 = builder.clear_operations.add_operation(
         Stellar::Operation.bump_sequence(bump_to: 2)
@@ -305,7 +337,7 @@ RSpec.describe Stellar::TransactionBuilder do
       expect(tx2.operations).to eql([
         Stellar::Operation.bump_sequence(bump_to: 2)
       ])
-      expect(tx2.time_bounds.max_time).to eql(0)
+      expect(tx2.cond.time_bounds.max_time).to eql(0)
 
       expect(builder.sequence_number).to eql(3)
       expect(builder.operations).to eql([

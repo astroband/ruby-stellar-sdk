@@ -8,10 +8,10 @@ require 'xdr'
 #   struct LiquidityPoolDepositOp
 #   {
 #       PoolID liquidityPoolID;
-#       int64 maxAmountA;     // maximum amount of first asset to deposit
-#       int64 maxAmountB;     // maximum amount of second asset to deposit
-#       Price minPrice;       // minimum depositA/depositB
-#       Price maxPrice;       // maximum depositA/depositB
+#       int64 maxAmountA; // maximum amount of first asset to deposit
+#       int64 maxAmountB; // maximum amount of second asset to deposit
+#       Price minPrice;   // minimum depositA/depositB
+#       Price maxPrice;   // maximum depositA/depositB
 #   };
 #
 # ===========================================================================

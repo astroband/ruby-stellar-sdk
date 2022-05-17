@@ -9,15 +9,17 @@ require 'xdr'
 #   {
 #       SIGNER_KEY_TYPE_ED25519 = KEY_TYPE_ED25519,
 #       SIGNER_KEY_TYPE_PRE_AUTH_TX = KEY_TYPE_PRE_AUTH_TX,
-#       SIGNER_KEY_TYPE_HASH_X = KEY_TYPE_HASH_X
+#       SIGNER_KEY_TYPE_HASH_X = KEY_TYPE_HASH_X,
+#       SIGNER_KEY_TYPE_ED25519_SIGNED_PAYLOAD = KEY_TYPE_ED25519_SIGNED_PAYLOAD
 #   };
 #
 # ===========================================================================
 module Stellar
   class SignerKeyType < XDR::Enum
-    member :signer_key_type_ed25519,     0
-    member :signer_key_type_pre_auth_tx, 1
-    member :signer_key_type_hash_x,      2
+    member :signer_key_type_ed25519,                0
+    member :signer_key_type_pre_auth_tx,            1
+    member :signer_key_type_hash_x,                 2
+    member :signer_key_type_ed25519_signed_payload, 3
 
     seal
   end

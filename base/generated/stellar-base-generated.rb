@@ -12,6 +12,7 @@ module Stellar
   Int32 = XDR::Int
   Uint64 = XDR::UnsignedHyper
   Int64 = XDR::Hyper
+  autoload :ExtensionPoint
   autoload :CryptoKeyType
   autoload :PublicKeyType
   autoload :SignerKeyType
@@ -34,6 +35,7 @@ module Stellar
   String64 = XDR::String[64]
   SequenceNumber = Int64
   TimePoint = Uint64
+  Duration = Uint64
   DataValue = XDR::VarOpaque[64]
   PoolID = Hash
   AssetCode4 = XDR::Opaque[4]
@@ -53,6 +55,7 @@ module Stellar
   MASK_ACCOUNT_FLAGS_V17 = 0xF
   MAX_SIGNERS = 20
   SponsorshipDescriptor = XDR::Option[AccountID]
+  autoload :AccountEntryExtensionV3
   autoload :AccountEntryExtensionV2
   autoload :AccountEntryExtensionV1
   autoload :AccountEntry
@@ -121,6 +124,10 @@ module Stellar
   autoload :MemoType
   autoload :Memo
   autoload :TimeBounds
+  autoload :LedgerBounds
+  autoload :PreconditionsV2
+  autoload :PreconditionType
+  autoload :Preconditions
   MAX_OPS_PER_TX = 100
   autoload :TransactionV0
   autoload :TransactionV0Envelope
@@ -234,6 +241,7 @@ module Stellar
 
   autoload :ErrorCode
   autoload :Error
+  autoload :SendMore
   autoload :AuthCert
   autoload :Hello
   autoload :Auth

@@ -5,17 +5,19 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   enum OfferEntryFlags
+#   enum PreconditionType
 #   {
-#       // an offer with this flag will not act on and take a reverse offer of equal
-#       // price
-#       PASSIVE_FLAG = 1
+#       PRECOND_NONE = 0,
+#       PRECOND_TIME = 1,
+#       PRECOND_V2 = 2
 #   };
 #
 # ===========================================================================
 module Stellar
-  class OfferEntryFlags < XDR::Enum
-    member :passive_flag, 1
+  class PreconditionType < XDR::Enum
+    member :precond_none, 0
+    member :precond_time, 1
+    member :precond_v2,   2
 
     seal
   end

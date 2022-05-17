@@ -93,4 +93,58 @@ RSpec.describe Stellar::Util::StrKey do
       its(:ed25519) { is_expected.to eq(raw_key) }
     end
   end
+
+  describe "#decode_signed_payload" do
+    subject(:decoded) { described_class.decode_signed_payload(strkey) }
+
+    let(:address) { "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ" }
+    let(:raw_key) { decode(:account_id, address) }
+
+    context "with valid 32-byte payload" do
+      let(:strkey) { "PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAQACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6IBZGM" }
+      let(:hex_payload) { "0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20" }
+
+      it { is_expected.to be_a(Stellar::SignerKey::Ed25519SignedPayload) }
+      its(:payload) { is_expected.to eq([hex_payload].pack("H*")) }
+      its(:ed25519) { is_expected.to eq(raw_key) }
+    end
+
+    context "with valid 29-byte payload" do
+      let(:strkey) { "PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAOQCAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUAAAAFGBU" }
+      let(:hex_payload) { "0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d" }
+
+      it { is_expected.to be_a(Stellar::SignerKey::Ed25519SignedPayload) }
+      its(:payload) { is_expected.to eq([hex_payload].pack("H*")) }
+      its(:ed25519) { is_expected.to eq(raw_key) }
+    end
+  end
+
+  describe "#encode_signed_payload" do
+    let(:ed25519) do
+      decode(:account_id, "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ")
+    end
+    let(:payload) { Stellar::SignerKey::Ed25519SignedPayload.new(ed25519: ed25519, payload: raw_payload) }
+
+    context "when 32-byte payload is given" do
+      let(:raw_payload) do
+        ["0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20"].pack("H*")
+      end
+
+      it "encodes payload as P... address" do
+        strkey = subject.encode_signed_payload(payload)
+        expect(strkey).to eq("PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAQACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6IBZGM")
+      end
+    end
+
+    context "when 29-byte payload is given" do
+      let(:raw_payload) do
+        ["0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d"].pack("H*")
+      end
+
+      it "encodes payload as P... address" do
+        strkey = subject.encode_signed_payload(payload)
+        expect(strkey).to eq("PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAOQCAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUAAAAFGBU")
+      end
+    end
+  end
 end

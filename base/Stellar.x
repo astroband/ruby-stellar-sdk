@@ -14,11 +14,21 @@ typedef int int32;
 typedef unsigned hyper uint64;
 typedef hyper int64;
 
+// An ExtensionPoint is always marshaled as a 32-bit 0 value.  At a
+// later point, it can be replaced by a different union so as to
+// extend a structure.
+union ExtensionPoint switch (int v)
+{
+case 0:
+    void;
+};
+
 enum CryptoKeyType
 {
     KEY_TYPE_ED25519 = 0,
     KEY_TYPE_PRE_AUTH_TX = 1,
     KEY_TYPE_HASH_X = 2,
+    KEY_TYPE_ED25519_SIGNED_PAYLOAD = 3,
     // MUXED enum values for supported type are derived from the enum values
     // above by ORing them with 0x100
     KEY_TYPE_MUXED_ED25519 = 0x100
@@ -33,7 +43,8 @@ enum SignerKeyType
 {
     SIGNER_KEY_TYPE_ED25519 = KEY_TYPE_ED25519,
     SIGNER_KEY_TYPE_PRE_AUTH_TX = KEY_TYPE_PRE_AUTH_TX,
-    SIGNER_KEY_TYPE_HASH_X = KEY_TYPE_HASH_X
+    SIGNER_KEY_TYPE_HASH_X = KEY_TYPE_HASH_X,
+    SIGNER_KEY_TYPE_ED25519_SIGNED_PAYLOAD = KEY_TYPE_ED25519_SIGNED_PAYLOAD
 };
 
 union PublicKey switch (PublicKeyType type)
@@ -52,6 +63,14 @@ case SIGNER_KEY_TYPE_PRE_AUTH_TX:
 case SIGNER_KEY_TYPE_HASH_X:
     /* Hash of random 256 bit preimage X */
     uint256 hashX;
+case SIGNER_KEY_TYPE_ED25519_SIGNED_PAYLOAD:
+    struct
+    {
+        /* Public key that must sign the payload. */
+        uint256 ed25519;
+        /* Payload to be raw signed by ed25519. */
+        opaque payload<64>;
+    } ed25519SignedPayload;
 };
 
 // variable size as the size depends on the signature scheme used
@@ -97,6 +116,7 @@ typedef string string32<32>;
 typedef string string64<64>;
 typedef int64 SequenceNumber;
 typedef uint64 TimePoint;
+typedef uint64 Duration;
 typedef opaque DataValue<64>;
 typedef Hash PoolID; // SHA256(LiquidityPoolParameters)
 
@@ -217,6 +237,19 @@ const MAX_SIGNERS = 20;
 
 typedef AccountID* SponsorshipDescriptor;
 
+struct AccountEntryExtensionV3
+{
+    // We can use this to add more fields, or because it is first, to
+    // change AccountEntryExtensionV3 into a union.
+    ExtensionPoint ext;
+
+    // Ledger number at which `seqNum` took on its present value.
+    uint32 seqLedger;
+
+    // Time at which `seqNum` took on its present value.
+    TimePoint seqTime;
+};
+
 struct AccountEntryExtensionV2
 {
     uint32 numSponsored;
@@ -227,6 +260,8 @@ struct AccountEntryExtensionV2
     {
     case 0:
         void;
+    case 3:
+        AccountEntryExtensionV3 v3;
     }
     ext;
 };
@@ -374,7 +409,8 @@ struct TrustLineEntry
 
 enum OfferEntryFlags
 {
-    // issuer has authorized account to perform transactions with its credit
+    // an offer with this flag will not act on and take a reverse offer of equal
+    // price
     PASSIVE_FLAG = 1
 };
 
@@ -534,7 +570,7 @@ struct LiquidityPoolConstantProductParameters
 {
     Asset assetA; // assetA < assetB
     Asset assetB;
-    int32 fee;    // Fee is in basis points, so the actual rate is (fee/100)%
+    int32 fee; // Fee is in basis points, so the actual rate is (fee/100)%
 };
 
 struct LiquidityPoolEntry
@@ -551,7 +587,8 @@ struct LiquidityPoolEntry
             int64 reserveA;        // amount of A in the pool
             int64 reserveB;        // amount of B in the pool
             int64 totalPoolShares; // total number of pool shares issued
-            int64 poolSharesTrustLineCount; // number of trust lines for the associated pool shares
+            int64 poolSharesTrustLineCount; // number of trust lines for the
+                                            // associated pool shares
         } constantProduct;
     }
     body;
@@ -1106,10 +1143,10 @@ const LIQUIDITY_POOL_FEE_V18 = 30;
 struct LiquidityPoolDepositOp
 {
     PoolID liquidityPoolID;
-    int64 maxAmountA;     // maximum amount of first asset to deposit
-    int64 maxAmountB;     // maximum amount of second asset to deposit
-    Price minPrice;       // minimum depositA/depositB
-    Price maxPrice;       // maximum depositA/depositB
+    int64 maxAmountA; // maximum amount of first asset to deposit
+    int64 maxAmountB; // maximum amount of second asset to deposit
+    Price minPrice;   // minimum depositA/depositB
+    Price maxPrice;   // maximum depositA/depositB
 };
 
 /* Withdraw assets from a liquidity pool
@@ -1121,9 +1158,9 @@ struct LiquidityPoolDepositOp
 struct LiquidityPoolWithdrawOp
 {
     PoolID liquidityPoolID;
-    int64 amount;         // amount of pool shares to withdraw
-    int64 minAmountA;     // minimum amount of first asset to withdraw
-    int64 minAmountB;     // minimum amount of second asset to withdraw
+    int64 amount;     // amount of pool shares to withdraw
+    int64 minAmountA; // minimum amount of first asset to withdraw
+    int64 minAmountB; // minimum amount of second asset to withdraw
 };
 
 /* An operation is the lowest unit of work that a transaction does */
@@ -1237,6 +1274,62 @@ struct TimeBounds
     TimePoint maxTime; // 0 here means no maxTime
 };
 
+struct LedgerBounds
+{
+    uint32 minLedger;
+    uint32 maxLedger; // 0 here means no maxLedger
+};
+
+struct PreconditionsV2
+{
+    TimeBounds* timeBounds;
+
+    // Transaction only valid for ledger numbers n such that
+    // minLedger <= n < maxLedger (if maxLedger == 0, then
+    // only minLedger is checked)
+    LedgerBounds* ledgerBounds;
+
+    // If NULL, only valid when sourceAccount's sequence number
+    // is seqNum - 1.  Otherwise, valid when sourceAccount's
+    // sequence number n satisfies minSeqNum <= n < tx.seqNum.
+    // Note that after execution the account's sequence number
+    // is always raised to tx.seqNum, and a transaction is not
+    // valid if tx.seqNum is too high to ensure replay protection.
+    SequenceNumber* minSeqNum;
+
+    // For the transaction to be valid, the current ledger time must
+    // be at least minSeqAge greater than sourceAccount's seqTime.
+    Duration minSeqAge;
+
+    // For the transaction to be valid, the current ledger number
+    // must be at least minSeqLedgerGap greater than sourceAccount's
+    // seqLedger.
+    uint32 minSeqLedgerGap;
+
+    // For the transaction to be valid, there must be a signature
+    // corresponding to every Signer in this array, even if the
+    // signature is not otherwise required by the sourceAccount or
+    // operations.
+    SignerKey extraSigners<2>;
+};
+
+enum PreconditionType
+{
+    PRECOND_NONE = 0,
+    PRECOND_TIME = 1,
+    PRECOND_V2 = 2
+};
+
+union Preconditions switch (PreconditionType type)
+{
+case PRECOND_NONE:
+    void;
+case PRECOND_TIME:
+    TimeBounds timeBounds;
+case PRECOND_V2:
+    PreconditionsV2 v2;
+};
+
 // maximum number of operations per transaction
 const MAX_OPS_PER_TX = 100;
 
@@ -1288,8 +1381,8 @@ struct Transaction
     // sequence number to consume in the account
     SequenceNumber seqNum;
 
-    // validity range (inclusive) for the last ledger close time
-    TimeBounds* timeBounds;
+    // validity conditions
+    Preconditions cond;
 
     Memo memo;
 
@@ -1715,10 +1808,12 @@ enum ChangeTrustResultCode
                                      // cannot create with a limit of 0
     CHANGE_TRUST_LOW_RESERVE =
         -4, // not enough funds to create a new trust line,
-    CHANGE_TRUST_SELF_NOT_ALLOWED = -5, // trusting self is not allowed
+    CHANGE_TRUST_SELF_NOT_ALLOWED = -5,   // trusting self is not allowed
     CHANGE_TRUST_TRUST_LINE_MISSING = -6, // Asset trustline is missing for pool
-    CHANGE_TRUST_CANNOT_DELETE = -7, // Asset trustline is still referenced in a pool
-    CHANGE_TRUST_NOT_AUTH_MAINTAIN_LIABILITIES = -8 // Asset trustline is deauthorized
+    CHANGE_TRUST_CANNOT_DELETE =
+        -7, // Asset trustline is still referenced in a pool
+    CHANGE_TRUST_NOT_AUTH_MAINTAIN_LIABILITIES =
+        -8 // Asset trustline is deauthorized
 };
 
 union ChangeTrustResult switch (ChangeTrustResultCode code)
@@ -1740,10 +1835,10 @@ enum AllowTrustResultCode
     ALLOW_TRUST_NO_TRUST_LINE = -2, // trustor does not have a trustline
                                     // source account does not require trust
     ALLOW_TRUST_TRUST_NOT_REQUIRED = -3,
-    ALLOW_TRUST_CANT_REVOKE = -4,     // source account can't revoke trust,
+    ALLOW_TRUST_CANT_REVOKE = -4,      // source account can't revoke trust,
     ALLOW_TRUST_SELF_NOT_ALLOWED = -5, // trusting self is not allowed
-    ALLOW_TRUST_LOW_RESERVE = -6 // claimable balances can't be created
-                                 // on revoke due to low reserves
+    ALLOW_TRUST_LOW_RESERVE = -6       // claimable balances can't be created
+                                       // on revoke due to low reserves
 };
 
 union AllowTrustResult switch (AllowTrustResultCode code)
@@ -2040,8 +2135,7 @@ enum LiquidityPoolDepositResultCode
     LIQUIDITY_POOL_DEPOSIT_POOL_FULL = -7       // pool reserves are full
 };
 
-union LiquidityPoolDepositResult switch (
-    LiquidityPoolDepositResultCode code)
+union LiquidityPoolDepositResult switch (LiquidityPoolDepositResultCode code)
 {
 case LIQUIDITY_POOL_DEPOSIT_SUCCESS:
     void;
@@ -2057,18 +2151,17 @@ enum LiquidityPoolWithdrawResultCode
     LIQUIDITY_POOL_WITHDRAW_SUCCESS = 0,
 
     // codes considered as "failure" for the operation
-    LIQUIDITY_POOL_WITHDRAW_MALFORMED = -1,      // bad input
-    LIQUIDITY_POOL_WITHDRAW_NO_TRUST = -2,       // no trust line for one of the
-                                                 // assets
-    LIQUIDITY_POOL_WITHDRAW_UNDERFUNDED = -3,    // not enough balance of the
-                                                 // pool share
-    LIQUIDITY_POOL_WITHDRAW_LINE_FULL = -4,      // would go above limit for one
-                                                 // of the assets
-    LIQUIDITY_POOL_WITHDRAW_UNDER_MINIMUM = -5   // didn't withdraw enough
+    LIQUIDITY_POOL_WITHDRAW_MALFORMED = -1,    // bad input
+    LIQUIDITY_POOL_WITHDRAW_NO_TRUST = -2,     // no trust line for one of the
+                                               // assets
+    LIQUIDITY_POOL_WITHDRAW_UNDERFUNDED = -3,  // not enough balance of the
+                                               // pool share
+    LIQUIDITY_POOL_WITHDRAW_LINE_FULL = -4,    // would go above limit for one
+                                               // of the assets
+    LIQUIDITY_POOL_WITHDRAW_UNDER_MINIMUM = -5 // didn't withdraw enough
 };
 
-union LiquidityPoolWithdrawResult switch (
-    LiquidityPoolWithdrawResultCode code)
+union LiquidityPoolWithdrawResult switch (LiquidityPoolWithdrawResultCode code)
 {
 case LIQUIDITY_POOL_WITHDRAW_SUCCESS:
     void;
@@ -2169,7 +2262,10 @@ enum TransactionResultCode
 
     txNOT_SUPPORTED = -12,         // transaction type not supported
     txFEE_BUMP_INNER_FAILED = -13, // fee bump inner transaction failed
-    txBAD_SPONSORSHIP = -14        // sponsorship not confirmed
+    txBAD_SPONSORSHIP = -14,       // sponsorship not confirmed
+    txBAD_MIN_SEQ_AGE_OR_GAP =
+        -15, // minSeqAge or minSeqLedgerGap conditions not met
+    txMALFORMED = -16 // precondition is invalid
 };
 
 // InnerTransactionResult must be binary compatible with TransactionResult
@@ -2198,6 +2294,8 @@ struct InnerTransactionResult
     case txNOT_SUPPORTED:
     // txFEE_BUMP_INNER_FAILED is not included
     case txBAD_SPONSORSHIP:
+    case txBAD_MIN_SEQ_AGE_OR_GAP:
+    case txMALFORMED:
         void;
     }
     result;
@@ -2635,6 +2733,11 @@ struct Error
     string msg<100>;
 };
 
+struct SendMore
+{
+    uint32 numMessages;
+};
+
 struct AuthCert
 {
     Curve25519Public pubkey;
@@ -2706,7 +2809,9 @@ enum MessageType
     HELLO = 13,
 
     SURVEY_REQUEST = 14,
-    SURVEY_RESPONSE = 15
+    SURVEY_RESPONSE = 15,
+
+    SEND_MORE = 16
 };
 
 struct DontHave
@@ -2827,6 +2932,8 @@ case SCP_MESSAGE:
     SCPEnvelope envelope;
 case GET_SCP_STATE:
     uint32 getSCPLedgerSeq; // ledger seq requested ; if 0, requests the latest
+case SEND_MORE:
+    SendMore sendMoreMessage;
 };
 
 union AuthenticatedMessage switch (uint32 v)

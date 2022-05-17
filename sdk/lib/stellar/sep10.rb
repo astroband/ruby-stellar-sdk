@@ -158,7 +158,7 @@ module Stellar
         raise InvalidSep10ChallengeError, "The transaction is not signed by the server"
       end
 
-      time_bounds = transaction.time_bounds
+      time_bounds = transaction.cond.time_bounds
       now = Time.now.to_i
 
       if time_bounds.blank? || !now.between?(time_bounds.min_time - GRACE_PERIOD, time_bounds.max_time + GRACE_PERIOD)

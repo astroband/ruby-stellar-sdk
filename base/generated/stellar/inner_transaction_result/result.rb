@@ -24,6 +24,8 @@ require 'xdr'
 #       case txNOT_SUPPORTED:
 #       // txFEE_BUMP_INNER_FAILED is not included
 #       case txBAD_SPONSORSHIP:
+#       case txBAD_MIN_SEQ_AGE_OR_GAP:
+#       case txMALFORMED:
 #           void;
 #       }
 #
@@ -33,8 +35,8 @@ module Stellar
     class Result < XDR::Union
       switch_on TransactionResultCode, :code
 
-      switch :tx_success,            :results
-      switch :tx_failed,             :results
+      switch :tx_success,              :results
+      switch :tx_failed,               :results
       switch :tx_too_early
       switch :tx_too_late
       switch :tx_missing_operation
@@ -47,6 +49,8 @@ module Stellar
       switch :tx_internal_error
       switch :tx_not_supported
       switch :tx_bad_sponsorship
+      switch :tx_bad_min_seq_age_or_gap
+      switch :tx_malformed
 
       attribute :results, XDR::VarArray[OperationResult]
     end
