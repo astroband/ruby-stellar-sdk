@@ -1,6 +1,6 @@
 def start_simplecov
   formatters = SimpleCov.formatters
-  if ENV.key?("CI") && Bundler.current_ruby.ruby_27?
+  if ENV.key?("CI")
     require "codecov"
     formatters << SimpleCov::Formatter::Codecov
   end

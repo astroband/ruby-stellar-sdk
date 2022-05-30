@@ -2,6 +2,7 @@
 
 require "standard/rake"
 require "bundler/audit/task"
+
 Bundler::Audit::Task.new
 
 ##
