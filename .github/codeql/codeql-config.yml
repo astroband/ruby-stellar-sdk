@@ -1,0 +1,5 @@
+name: "Stellar Ruby SDK CodeQL Config"
+
+paths-ignore:
+# causes parsing err0r
+- base/lib/stellar/claim_predicate.rb

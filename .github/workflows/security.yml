@@ -6,23 +6,41 @@ on:
     branches: [ main ]
   schedule:
   - cron: '43 0 * * 4'
+  workflow_dispatch: {}
 
 jobs:
-  semgrep:
-    name: Scan with Semgrep
+  codeql:
+    name: Scan with CodeQL
     runs-on: ubuntu-latest
-    # Skip any PR created by dependabot to avoid permission issues
-    if: (github.actor != 'dependabot[bot]')
+    permissions:
+      security-events: write
     steps:
     - uses: actions/checkout@v3
-    - name: Run Semgrep
-      uses: returntocorp/semgrep-action@v1
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
       with:
-        generateSarif: "1"
-        auditOn: push
-        publishToken: ${{ secrets.SEMGREP_APP_TOKEN }}
+        languages: ruby
+        config-file: .github/codeql/codeql-config.yml
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v2
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
+
+  semgrep:
+    name: Scan with Semgrep
+    # Skip any PR created by dependabot to avoid permission issues
+    if: (github.actor != 'dependabot[bot]')
+    runs-on: ubuntu-latest
+    container:
+      image: returntocorp/semgrep
+    steps:
+    - uses: actions/checkout@v3
+    - name: Semgrep Scan
+      run: semgrep scan --config=auto --sarif --output=semgrep.sarif
+      env:
+        SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
     - name: Upload result to GitHub Code Scanning
-      uses: github/codeql-action/upload-sarif@v1
+      uses: github/codeql-action/upload-sarif@v2
       with:
         sarif_file: semgrep.sarif
       if: always()
@@ -42,7 +60,7 @@ jobs:
       with:
         args: --sarif-file-output=snyk.sarif
     - name: Upload result to GitHub Code Scanning
-      uses: github/codeql-action/upload-sarif@v1
+      uses: github/codeql-action/upload-sarif@v2
       with:
         sarif_file: snyk.sarif
       if: always()
