@@ -30,6 +30,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "stellar-horizon", spec.version
 
   spec.add_dependency "activesupport", ">= 5.0.0", "< 8.0"
-  spec.add_dependency "faraday", ">= 1.6.0", "< 2.0"
+  spec.add_dependency "faraday", ">= 1.6.0", "< 3.0"
   spec.add_dependency "tomlrb", ">= 2.0.1", "< 3.0"
 end

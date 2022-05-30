@@ -14,7 +14,7 @@ jobs:
     # Skip any PR created by dependabot to avoid permission issues
     if: (github.actor != 'dependabot[bot]')
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Run Semgrep
       uses: returntocorp/semgrep-action@v1
       with:
@@ -33,7 +33,7 @@ jobs:
     # Skip any PR created by dependabot to avoid permission issues
     if: (github.actor != 'dependabot[bot]')
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/ruby@master
       continue-on-error: true
@@ -51,7 +51,7 @@ jobs:
     name: Check licenses with Fossa
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Analyze the licences with Fossa
       uses: fossas/fossa-action@main
       with:

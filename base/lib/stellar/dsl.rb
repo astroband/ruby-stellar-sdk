@@ -93,8 +93,8 @@ module Stellar
     end
 
     # Provides conversion from different input types into the SignerKey to use in ManageData operation.
-    # @param input [String|zStellar::Account|Stellar::PublicKey|Stellar::SignerKey|Stellar::Keypair] subject.
-    # @return [Stellar::SignerKey] Stellar::Keypair instance.
+    # @param input [String|Stellar::Account|Stellar::PublicKey|Stellar::SignerKey|Stellar::Keypair] subject.
+    # @return [Stellar::SignerKey] Stellar::SignerKey instance.
     def SignerKey(input = nil)
       case input
       when Transaction
