@@ -42,7 +42,7 @@ jobs:
     - name: Generate coverage
       run: bin/rake test:coverage
     - name: Upload code coverage data to CodeClimate
-      uses: paambaati/codeclimate-action@v3.0.0
+      uses: paambaati/codeclimate-action@v3.1.0
       with:
         coverageLocations: |
           base/coverage/coverage.json:simplecov
