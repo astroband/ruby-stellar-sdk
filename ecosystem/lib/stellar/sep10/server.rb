@@ -2,7 +2,11 @@ module Stellar
   module Ecosystem
     module SEP10
       class Server
-        def self.build_challenge_tx(server:, client:, domain: nil, timeout: 300, **options)
+        def initialize(keypair:)
+          @keypair = keypair
+        end
+
+        def build_challenge(client:, domain: nil, timeout: 300, **options)
           if domain.blank? && options.key?(:anchor_name)
             ActiveSupport::Deprecation.new("next release", "stellar-sdk").warn <<~MSG
               SEP-10 v2.0.0 requires usage of service home domain instead of anchor name in the challenge transaction.
@@ -14,7 +18,7 @@ module Stellar
           end
 
           Challenge.new(
-            server: server,
+            server: @keypair,
             client: client,
             domain: domain,
             timeout: timeout,
