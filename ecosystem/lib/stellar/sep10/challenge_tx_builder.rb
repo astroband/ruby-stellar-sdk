@@ -46,7 +46,7 @@ module Stellar
               min_time: now,
               max_time: now + timeout
             )
-         end
+          end
         end
 
         def main_operation

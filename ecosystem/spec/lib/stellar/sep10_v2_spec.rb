@@ -17,7 +17,7 @@ RSpec.describe "SEP10" do
     let(:attrs) { {server: server, client: user, domain: domain} }
 
     subject(:challenge_tx) do
-      challenge = Stellar::Ecosystem::SEP10::Challenge.build(**attrs) 
+      challenge = Stellar::Ecosystem::SEP10::Challenge.build(**attrs)
       challenge.to_envelope.tx
     end
 

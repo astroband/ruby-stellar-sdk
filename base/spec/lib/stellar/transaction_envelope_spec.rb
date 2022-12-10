@@ -96,16 +96,16 @@ RSpec.describe Stellar::TransactionEnvelope do
       envelope.signed_by?(keypair)
     end
 
-    context 'when envelope is signed by keypair' do
+    context "when envelope is signed by keypair" do
       let(:signers) { [keypair] }
-      
-      it { is_expected.to be_truthy } 
+
+      it { is_expected.to be_truthy }
     end
 
-    context 'when envelope is not signed by keypair' do
+    context "when envelope is not signed by keypair" do
       let(:signers) { [] }
 
-      it { is_expected.to be_falsey } 
+      it { is_expected.to be_falsey }
     end
   end
 end

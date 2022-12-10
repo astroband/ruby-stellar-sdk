@@ -26,7 +26,7 @@ module Stellar
         end
 
         def initialize(envelope:, server:)
-          @envelope = envelope 
+          @envelope = envelope
           @tx = envelope.tx
           @server = server
         end
