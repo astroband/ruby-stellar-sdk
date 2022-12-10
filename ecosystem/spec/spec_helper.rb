@@ -1,8 +1,15 @@
-# frozen_string_literal: true
+require "simplecov"
+require "break"
 
-require "stellar/ecosystem"
+require "rspec/its"
+
+require_relative "../lib/stellar-ecosystem"
 
 RSpec.configure do |config|
+  config.include Stellar::DSL
+  config.filter_run_when_matching focus: true
+  config.run_all_when_everything_filtered = true
+
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"
 

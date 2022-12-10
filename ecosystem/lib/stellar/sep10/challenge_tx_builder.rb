@@ -3,7 +3,7 @@ module Stellar
     module SEP10
       class ChallengeTxBuilder
         def self.build(server:, client:, domain: nil, timeout: 300, **options)
-          new(server: server, client: client, domain: domain, timeout: timeout, options).build
+          new(server: server, client: client, domain: domain, timeout: timeout, **options).build
         end
 
         def initialize(server:, client:, domain: nil, timeout: 300, **options)
@@ -50,6 +50,7 @@ module Stellar
         end
 
         def main_operation
+          puts client.address
           Stellar::Operation.manage_data(
             name: "#{domain} auth",
             value: SecureRandom.base64(48),

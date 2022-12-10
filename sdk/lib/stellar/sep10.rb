@@ -235,7 +235,7 @@ module Stellar
 
       # ensure server signed transaction and remove it
       unless signers_found.delete?(server.address)
-        raise InvalidSep10ChallengeError, "Transaction not signed by server: #{server.address}"
+        raise InvalidSep10ChallengeError, "Transaction not signed by server: #{keypair}"
       end
 
       # Confirm we matched signatures to the client signers.

@@ -88,4 +88,24 @@ RSpec.describe Stellar::TransactionEnvelope do
     subject { envelope.hash }
     it { is_expected.to eq(Digest::SHA256.digest(envelope.tx.signature_base)) }
   end
+
+  describe "#signed_by?" do
+    let(:keypair) { KeyPair() }
+
+    subject(:signed_by) do
+      envelope.signed_by?(keypair)
+    end
+
+    context 'when envelope is signed by keypair' do
+      let(:signers) { [keypair] }
+      
+      it { is_expected.to be_truthy } 
+    end
+
+    context 'when envelope is not signed by keypair' do
+      let(:signers) { [] }
+
+      it { is_expected.to be_falsey } 
+    end
+  end
 end
