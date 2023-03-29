@@ -62,7 +62,7 @@ module Stellar
       #
       # @return [ClaimPredicate] `before_relative_time` or `before_absolute_time` claim predicate.
       def before(time)
-        ActiveSupport::Duration === time ? before_relative_time(time.to_i) : before_absolute_time(time)
+        (ActiveSupport::Duration === time) ? before_relative_time(time.to_i) : before_absolute_time(time)
       end
 
       # Constructs a negated predicate from either relative or absolute time based on the type of the input.
