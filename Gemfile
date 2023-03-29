@@ -4,6 +4,7 @@ gem "stellar-base", path: "./base"
 gem "stellar-sdk", path: "./sdk"
 gem "stellar-horizon", path: "./horizon"
 # gem "xdr", github: "astroband/ruby-xdr", branch: "main"
+# gem "xdrgen" # , path: "../xdrgen"
 
 group :test do
   gem "codecov"
@@ -30,7 +31,6 @@ group :development do
   gem "pry"
   gem "pry-doc"
   gem "netrc"
-  gem "xdrgen"
 end
 
 group :guard, optional: true do
