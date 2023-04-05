@@ -1,6 +1,7 @@
 require "simplecov"
-require "break"
+SimpleCov.command_name "spec:base"
 
+require "break"
 require "rspec/its"
 
 require_relative "../lib/stellar-base"

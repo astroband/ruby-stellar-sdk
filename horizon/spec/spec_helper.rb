@@ -1,4 +1,5 @@
 require "simplecov"
+SimpleCov.command_name "spec:horizon"
 
 require "rspec/its"
 
