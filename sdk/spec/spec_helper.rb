@@ -1,6 +1,7 @@
 require "simplecov"
-require "break"
+SimpleCov.command_name "spec:sdk"
 
+require "break"
 require "rspec/its"
 
 require_relative "../lib/stellar-sdk"

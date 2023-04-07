@@ -12,6 +12,7 @@ group :test do
   gem "rspec"
   gem "rspec-its"
   gem "simplecov"
+  gem "simplecov-lcov"
   gem "vcr"
   gem "yard"
   gem "webmock"
