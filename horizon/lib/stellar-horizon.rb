@@ -8,6 +8,7 @@ module Stellar
 
     autoload :Client
     autoload :Problem
-    autoload :TransactionPage
+    autoload :ResourcePage
+    autoload :ClaimableBalancePage
   end
 end

@@ -1,0 +1,247 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://horizon-testnet.stellar.org/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v1.8.0
+      Accept:
+      - application/hal+json,application/problem+json,application/json
+      X-Client-Name:
+      - ruby-stellar-sdk
+      X-Client-Version:
+      - 0.30.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 29 Nov 2021 18:01:52 GMT
+      Content-Type:
+      - application/hal+json; charset=utf-8
+      Connection:
+      - keep-alive
+      Cache-Control:
+      - no-cache, no-store, max-age=0
+      Content-Disposition:
+      - inline
+      Vary:
+      - Origin
+      X-Ratelimit-Limit:
+      - '101'
+      X-Ratelimit-Remaining:
+      - '100'
+      X-Ratelimit-Reset:
+      - '1'
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+          "_links": {
+            "account": {
+              "href": "https://horizon-testnet.stellar.org/accounts/{account_id}",
+              "templated": true
+            },
+            "accounts": {
+              "href": "https://horizon-testnet.stellar.org/accounts{?signer,sponsor,asset,liquidity_pool,cursor,limit,order}",
+              "templated": true
+            },
+            "account_transactions": {
+              "href": "https://horizon-testnet.stellar.org/accounts/{account_id}/transactions{?cursor,limit,order}",
+              "templated": true
+            },
+            "claimable_balances": {
+              "href": "https://horizon-testnet.stellar.org/claimable_balances{?asset,claimant,sponsor}",
+              "templated": true
+            },
+            "assets": {
+              "href": "https://horizon-testnet.stellar.org/assets{?asset_code,asset_issuer,cursor,limit,order}",
+              "templated": true
+            },
+            "effects": {
+              "href": "https://horizon-testnet.stellar.org/effects{?cursor,limit,order}",
+              "templated": true
+            },
+            "fee_stats": {
+              "href": "https://horizon-testnet.stellar.org/fee_stats"
+            },
+            "friendbot": {
+              "href": "https://friendbot.stellar.org/{?addr}",
+              "templated": true
+            },
+            "ledger": {
+              "href": "https://horizon-testnet.stellar.org/ledger/{sequence}",
+              "templated": true
+            },
+            "ledgers": {
+              "href": "https://horizon-testnet.stellar.org/ledgers{?cursor,limit,order}",
+              "templated": true
+            },
+            "liquidity_pools": {
+              "href": "https://horizon-testnet.stellar.org/liquidity_pools?{?reserves,account}",
+              "templated": true
+            },
+            "offer": {
+              "href": "https://horizon-testnet.stellar.org/offers/{offer_id}",
+              "templated": true
+            },
+            "offers": {
+              "href": "https://horizon-testnet.stellar.org/offers{?selling,buying,seller,sponsor,cursor,limit,order}",
+              "templated": true
+            },
+            "operation": {
+              "href": "https://horizon-testnet.stellar.org/operations/{id}",
+              "templated": true
+            },
+            "operations": {
+              "href": "https://horizon-testnet.stellar.org/operations{?cursor,limit,order,include_failed}",
+              "templated": true
+            },
+            "order_book": {
+              "href": "https://horizon-testnet.stellar.org/order_book{?selling_asset_type,selling_asset_code,selling_asset_issuer,buying_asset_type,buying_asset_code,buying_asset_issuer,limit}",
+              "templated": true
+            },
+            "payments": {
+              "href": "https://horizon-testnet.stellar.org/payments{?cursor,limit,order,include_failed}",
+              "templated": true
+            },
+            "self": {
+              "href": "https://horizon-testnet.stellar.org/"
+            },
+            "strict_receive_paths": {
+              "href": "https://horizon-testnet.stellar.org/paths/strict-receive{?source_assets,source_account,destination_account,destination_asset_type,destination_asset_issuer,destination_asset_code,destination_amount}",
+              "templated": true
+            },
+            "strict_send_paths": {
+              "href": "https://horizon-testnet.stellar.org/paths/strict-send{?destination_account,destination_assets,source_asset_type,source_asset_issuer,source_asset_code,source_amount}",
+              "templated": true
+            },
+            "trade_aggregations": {
+              "href": "https://horizon-testnet.stellar.org/trade_aggregations?base_asset_type={base_asset_type}\u0026base_asset_code={base_asset_code}\u0026base_asset_issuer={base_asset_issuer}\u0026counter_asset_type={counter_asset_type}\u0026counter_asset_code={counter_asset_code}\u0026counter_asset_issuer={counter_asset_issuer}",
+              "templated": true
+            },
+            "trades": {
+              "href": "https://horizon-testnet.stellar.org/trades?base_asset_type={base_asset_type}\u0026base_asset_code={base_asset_code}\u0026base_asset_issuer={base_asset_issuer}\u0026counter_asset_type={counter_asset_type}\u0026counter_asset_code={counter_asset_code}\u0026counter_asset_issuer={counter_asset_issuer}",
+              "templated": true
+            },
+            "transaction": {
+              "href": "https://horizon-testnet.stellar.org/transactions/{hash}",
+              "templated": true
+            },
+            "transactions": {
+              "href": "https://horizon-testnet.stellar.org/transactions{?cursor,limit,order}",
+              "templated": true
+            }
+          },
+          "horizon_version": "2.11.0-07dcbb1e43d9ee991461e1284af1d11dcae645d7",
+          "core_version": "stellar-core 18.1.0 (dc5f5a392098b82bd9453a2aa4259e7af600ad9d)",
+          "ingest_latest_ledger": 1238985,
+          "history_latest_ledger": 1238985,
+          "history_latest_ledger_closed_at": "2021-11-29T18:01:51Z",
+          "history_elder_ledger": 2,
+          "core_latest_ledger": 1238985,
+          "network_passphrase": "Test SDF Network ; September 2015",
+          "current_protocol_version": 18,
+          "core_supported_protocol_version": 18
+        }
+  recorded_at: Mon, 29 Nov 2021 18:01:52 GMT
+- request:
+    method: get
+    uri: https://horizon-testnet.stellar.org/claimable_balances?claimant=GAEWLPWMXYCVSHJR7ONIP7IBCWFLVB27P43YKLSNLBDMEW4WBAXKVCV3
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v1.8.0
+      Accept:
+      - application/hal+json,application/problem+json,application/json
+      X-Client-Name:
+      - ruby-stellar-sdk
+      X-Client-Version:
+      - 0.30.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 29 Nov 2021 18:01:53 GMT
+      Content-Type:
+      - application/hal+json; charset=utf-8
+      Connection:
+      - keep-alive
+      Cache-Control:
+      - no-cache, no-store, max-age=0
+      Content-Disposition:
+      - inline
+      Latest-Ledger:
+      - '1238985'
+      Vary:
+      - Origin
+      X-Ratelimit-Limit:
+      - '101'
+      X-Ratelimit-Remaining:
+      - '100'
+      X-Ratelimit-Reset:
+      - '1'
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+          "_links": {
+            "self": {
+              "href": "https://horizon-testnet.stellar.org/claimable_balances?claimant=GAEWLPWMXYCVSHJR7ONIP7IBCWFLVB27P43YKLSNLBDMEW4WBAXKVCV3&;cursor=&limit=10&order=asc"
+            },
+            "next": {
+              "href": "https://horizon-testnet.stellar.org/claimable_balances?claimant=GAEWLPWMXYCVSHJR7ONIP7IBCWFLVB27P43YKLSNLBDMEW4WBAXKVCV3&;cursor=4776-000000004c251ddca2bc4dddf22ca8548a45ea977a11e301b748e89f45d08903bb74dd49&limit=10&order=asc"
+            },
+            "prev": {
+              "href": "https://horizon-testnet.stellar.org/claimable_balances?claimant=GAEWLPWMXYCVSHJR7ONIP7IBCWFLVB27P43YKLSNLBDMEW4WBAXKVCV3&;cursor=4776-000000004c251ddca2bc4dddf22ca8548a45ea977a11e301b748e89f45d08903bb74dd49&limit=10&order=desc"
+            }
+          },
+          "_embedded": {
+            "records": [
+              {
+                "_links": {
+                  "self": {
+                    "href": "https://horizon-testnet.stellar.org/claimable_balances/000000004c251ddca2bc4dddf22ca8548a45ea977a11e301b748e89f45d08903bb74dd49"
+                  },
+                  "transactions": {
+                    "href": "https://horizon-testnet.stellar.org/claimable_balances/000000004c251ddca2bc4dddf22ca8548a45ea977a11e301b748e89f45d08903bb74dd49/transactions{?cursor,limit,order}",
+                    "templated": true
+                  },
+                  "operations": {
+                    "href": "https://horizon-testnet.stellar.org/claimable_balances/000000004c251ddca2bc4dddf22ca8548a45ea977a11e301b748e89f45d08903bb74dd49/operations{?cursor,limit,order}",
+                    "templated": true
+                  }
+                },
+                "id": "000000004c251ddca2bc4dddf22ca8548a45ea977a11e301b748e89f45d08903bb74dd49",
+                "asset": "native",
+                "amount": "0.0000001",
+                "sponsor": "GAEWLPWMXYCVSHJR7ONIP7IBCWFLVB27P43YKLSNLBDMEW4WBAXKVCV3",
+                "last_modified_ledger": 4776,
+                "last_modified_time": "2021-09-15T16:11:26Z",
+                "claimants": [
+                  {
+                    "destination": "GAEWLPWMXYCVSHJR7ONIP7IBCWFLVB27P43YKLSNLBDMEW4WBAXKVCV3",
+                    "predicate": {
+                      "unconditional": true
+                    }
+                  }
+                ],
+                "flags": {
+                  "clawback_enabled": false
+                },
+                "paging_token": "4776-000000004c251ddca2bc4dddf22ca8548a45ea977a11e301b748e89f45d08903bb74dd49"
+              }
+            ]
+          }
+        }
+  recorded_at: Mon, 29 Nov 2021 18:01:53 GMT
+recorded_with: VCR 6.0.0

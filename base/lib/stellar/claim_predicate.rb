@@ -1,6 +1,7 @@
 # frozen_string_literals: true
 require "active_support/core_ext/integer/time"
 require "active_support/core_ext/string/conversions"
+require "active_support/core_ext/hash/indifferent_access"
 
 module Stellar
   # Represents claim predicate on Stellar network.
@@ -72,6 +73,53 @@ module Stellar
       # @return (see #before)
       def after(time)
         ~before(time)
+      end
+
+      # Compose a predicate from json-like hash.
+      # Useful for parsing Horizon output
+      #
+      # @example:
+      #   ClaimPredicate.parse(
+      #     "and" => [
+      #       { "not" => { "abs_before" => "2021-09-17T09:59:34Z" } },
+      #       { "abs_before" => "2021-10-17T09:59:34Z" }
+      #     ]
+      #   )
+      #
+      # @param object [Hash] see example for the format
+      # @return [ClaimPredicate]
+      def parse(object)
+        object = object.with_indifferent_access
+
+        # binding.irb
+        if object["unconditional"]
+          return unconditional
+        end
+
+        if object["not"]
+          return parse(object["not"]).not
+        end
+
+        method, args = object.to_a.first
+
+        if %w[and or].include?(method)
+          unless args.is_a?(Array)
+            raise ArgumentError, "invalid arguments #{args} for predicate '#{method}'"
+          end
+
+          parse(args[0]).public_send(method, parse(args[1]))
+        else
+          callable_method = {
+            "abs_before" => :before_absolute_time,
+            "rel_before" => :before_relative_time
+          }[method]
+
+          if callable_method.blank?
+            raise ArgumentError, "Unknown predicate '#{method}'"
+          end
+
+          public_send(callable_method, args)
+        end
       end
 
       # Compose a complex predicate by calling DSL methods from the block.

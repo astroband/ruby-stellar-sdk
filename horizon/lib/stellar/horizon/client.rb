@@ -1,5 +1,6 @@
 require "hyperclient"
 require "active_support/core_ext/object/blank"
+require "active_support/core_ext/hash/keys"
 require "securerandom"
 
 module Stellar::Horizon
@@ -14,6 +15,8 @@ module Stellar::Horizon
   end
 
   class Client
+    include Stellar::DSL
+
     DEFAULT_FEE = 100
 
     HORIZON_LOCALHOST_URL = "http://127.0.0.1:8000"
@@ -45,7 +48,7 @@ module Stellar::Horizon
     # @option options [String] :horizon The Horizon server URL.
     def initialize(options)
       @options = options
-      @horizon = Hyperclient.new(options[:horizon]) { |client|
+      @horizon = Hyperclient.new(options[:horizon]) do |client|
         client.faraday_block = lambda do |conn|
           conn.use Faraday::Response::RaiseError
           conn.use FaradayMiddleware::FollowRedirects
@@ -58,7 +61,7 @@ module Stellar::Horizon
           "X-Client-Name" => "ruby-stellar-sdk",
           "X-Client-Version" => Stellar::Horizon::VERSION
         }
-      }
+      end
     end
 
     # @param [Stellar::Account|String] account_or_address
@@ -115,6 +118,20 @@ module Stellar::Horizon
       submit_transaction(tx_envelope: envelope)
     end
 
+    # Requests /claimable_balances endpoint with given parameters
+    #
+    # @param [Stellar::Asset|String] asset
+    # @param [Stellar::Account|String] claimant
+    # @param [Stellar::Account|String] sponsor
+    def claimable_balances(asset: nil, claimant: nil, sponsor: nil)
+      resource = @horizon.claimable_balances(
+        asset: asset.presence && Asset(asset).to_s,
+        claimant: claimant.presence && Account(claimant).address,
+        sponsor: sponsor.presence && Account(sponsor).address
+      )
+      Stellar::Horizon::ClaimableBalancePage.new(resource)
+    end
+
     # @option options [Stellar::Account] :from The source account
     # @option options [Stellar::Account] :to The destination account
     # @option options [Stellar::Amount] :amount The amount to send
@@ -147,18 +164,18 @@ module Stellar::Horizon
     # @option options [Stellar::Account] :account
     # @option options [Integer] :limit
     # @option options [Integer] :cursor
-    # @return [TransactionPage]
+    # @return [ResourcePage]
     def transactions(options = {})
       args = options.slice(:limit, :cursor)
 
       resource = if options[:account]
-        args = args.merge(account_id: options[:account].address)
+        args = args.merge(account_id: Account(options[:account]).address)
         @horizon.account_transactions(args)
       else
         @horizon.transactions(args)
       end
 
-      TransactionPage.new(resource)
+      Stellar::Horizon::ResourcePage.new(resource)
     end
 
     # @param [Array(Symbol,String,Stellar::KeyPair|Stellar::Account)] asset

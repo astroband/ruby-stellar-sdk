@@ -89,6 +89,60 @@ RSpec.describe Stellar::Horizon::Client do
     end
   end
 
+  describe "#claimable_balances" do
+    context "with default parameters" do
+      it "fetches claimable balances", :vcr do
+        balances = client.claimable_balances
+
+        expect(balances).to be_an_instance_of(Stellar::Horizon::ClaimableBalancePage)
+        expect(balances).to all(be_an_instance_of(Stellar::ClaimableBalanceEntry))
+        expect(balances.entries.size).to eq(10)
+
+        balance = balances.first
+
+        expect(balance.balance_id).to eq("000000004c251ddca2bc4dddf22ca8548a45ea977a11e301b748e89f45d08903bb74dd49")
+        expect(balance.asset).to eq(Stellar::Asset.native)
+        expect(balance.amount).to eq("0.0000001")
+        expect(balance.claimants.size).to eq(1)
+
+        claimant = balance.claimants.first
+        expect(Account(claimant.destination).address).to eq("GAEWLPWMXYCVSHJR7ONIP7IBCWFLVB27P43YKLSNLBDMEW4WBAXKVCV3")
+        expect(claimant.predicate.type).to eq(Stellar::ClaimPredicateType::UNCONDITIONAL)
+      end
+    end
+
+    context "with asset set" do
+      let(:asset) { "XXX:GCGQMVO4AOOQ3BQHGUGT52Y3XOMME6DPEB6QQDX44MC466FMDW2QTMRE" }
+
+      it "fetches only balances with given asset", :vcr do
+        balances = client.claimable_balances(asset: asset)
+        expect(balances.entries.map { |b| b.asset.to_s }).to all(eq(asset))
+      end
+    end
+
+    context "with claimant set" do
+      let(:claimant) { "GAEWLPWMXYCVSHJR7ONIP7IBCWFLVB27P43YKLSNLBDMEW4WBAXKVCV3" }
+
+      it "fetches only balances with given claimant", :vcr do
+        balances = client.claimable_balances(claimant: claimant)
+        claimants = balances.entries.flat_map(&:claimants).map { |c| Account(c.destination).address }
+
+        expect(claimants.uniq).to eq([claimant])
+      end
+    end
+
+    context "with sponsor set" do
+      let(:sponsor) { "GDCMAMQQEF762HKWOILEVRTMC36UXC32LXV3XK4QI4POYQ5SUWZAVFSR" }
+
+      it "fetches only balances with given sponsor", :vcr do
+        balances = client.claimable_balances(sponsor: sponsor)
+
+        expect(balances.entries.size).to eq(1)
+        expect(balances.first.balance_id).to eq("000000006c08443899e3e5d3a4c0c93881dc70c4a35c93a4d35bf8bbfd4dd57770b58365")
+      end
+    end
+  end
+
   describe "#account_info" do
     let(:account) { Stellar::Account.from_seed(CONFIG[:source_seed]) }
     let(:client) { described_class.default_testnet }
@@ -343,24 +397,24 @@ RSpec.describe Stellar::Horizon::Client do
 
       it "returns a list of transaction for an account", vcr: {record: :once, match_requests_on: [:method]} do
         response = client.transactions(account: account)
-        expect(response).to be_a(Stellar::Horizon::TransactionPage)
+        expect(response).to be_a(Stellar::Horizon::ResourcePage)
       end
 
       it "accepts a cursor to return less data", vcr: {record: :once, match_requests_on: [:method]} do
         response = client.transactions(account: account, cursor: cursor)
-        expect(response).to be_a(Stellar::Horizon::TransactionPage)
+        expect(response).to be_a(Stellar::Horizon::ResourcePage)
       end
     end
 
     context "all transactions" do
       it "returns a list of transactions", vcr: {record: :once, match_requests_on: [:method]} do
         response = client.transactions
-        expect(response).to be_a(Stellar::Horizon::TransactionPage)
+        expect(response).to be_a(Stellar::Horizon::ResourcePage)
       end
 
       it "accepts a cursor to return less data", vcr: {record: :once, match_requests_on: [:method]} do
         response = client.transactions(cursor: cursor)
-        expect(response).to be_a(Stellar::Horizon::TransactionPage)
+        expect(response).to be_a(Stellar::Horizon::ResourcePage)
       end
     end
   end
