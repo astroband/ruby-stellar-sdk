@@ -46,7 +46,7 @@ jobs:
       with:
         file: coverage/lcov.info
     - name: Upload code coverage data to CodeClimate
-      uses: paambaati/codeclimate-action@v3.2.0
+      uses: paambaati/codeclimate-action@v4.0.0
       with:
         coverageLocations: |
           base/coverage/coverage.json:simplecov
