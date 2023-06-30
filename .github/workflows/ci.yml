@@ -60,7 +60,13 @@ jobs:
         debug: true
       if: success()
       continue-on-error: true
-
+    - name: Upload code coverage data to Codacy
+      uses: codacy/codacy-coverage-reporter-action@v1
+      with:
+        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        coverage-reports: coverage/lcov.info
+      if: success()
+      continue-on-error: true
   lint:
     runs-on: ubuntu-latest
     steps:
