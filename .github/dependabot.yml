@@ -3,53 +3,25 @@
 version: 2
 updates:
 - package-ecosystem: "github-actions"
+  # Check for updates to GitHub Actions every week
   directory: "/"
   schedule:
-    interval: "daily"
+    interval: "weekly"
   commit-message:
-    prefix: "ci"
-    include: "scope"
+    prefix: "chore(ci)"
 - package-ecosystem: "bundler"
+  # Check for for ruby deps update daily
   directory: "/"
   schedule:
     interval: "daily"
   versioning-strategy: "increase-if-necessary"
-  commit-message:
-    prefix: "chore"
-    include: "scope"
-- package-ecosystem: "bundler"
-  directory: "/base"
-  schedule:
-    interval: "daily"
-  commit-message:
-    prefix: "chore"
-    include: "scope"
   allow:
-  - dependency-type: "direct"
-  labels:
-  - "dependencies"
-  - "stellar-base"
-- package-ecosystem: "bundler"
-  directory: "/horizon"
-  schedule:
-    interval: "daily"
+    - dependency-type: "direct"
   commit-message:
-    prefix: "chore"
-    include: "scope"
-  allow:
-  - dependency-type: "direct"
-  labels:
-  - "dependencies"
-  - "stellar-horizon"
-- package-ecosystem: "bundler"
-  directory: "/sdk"
-  schedule:
-    interval: "daily"
-  commit-message:
-    prefix: "chore"
-    include: "scope"
-  allow:
-  - dependency-type: "direct"
-  labels:
-  - "dependencies"
-  - "stellar-sdk"
+    prefix: "chore(deps)"
+    prefix-development: "core(dev-deps)"
+  groups:
+    deps:
+      dependency-type: "production"
+    dev-deps:
+      dependency-type: "development"
