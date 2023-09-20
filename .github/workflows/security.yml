@@ -22,7 +22,7 @@ jobs:
         language: [ 'ruby' ]
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
       with:
@@ -45,7 +45,7 @@ jobs:
     steps:
       # Checkout the repository to the GitHub Actions runner
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Execute Codacy Analysis CLI and generate a SARIF output with the security issues identified during the analysis
       - name: Run Codacy Analysis CLI
@@ -76,7 +76,7 @@ jobs:
       image: returntocorp/semgrep
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Semgrep Scan
       run: semgrep scan --config=auto --sarif --output=semgrep.sarif
       env:
@@ -94,7 +94,7 @@ jobs:
     if: (github.actor != 'dependabot[bot]')
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/ruby@master
       continue-on-error: true
@@ -113,7 +113,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Analyze the licences with Fossa
       uses: fossas/fossa-action@main
       with:
