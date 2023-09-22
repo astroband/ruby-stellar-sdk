@@ -1,6 +1,6 @@
 # Stellar SDK for Ruby: XDR and Low Level Abstractions
 [![stellar-base](https://badge.fury.io/rb/stellar-base.svg)](https://badge.fury.io/rb/stellar-base)
-[![Test](https://github.com/astroband/ruby-stellar-sdk/workflows/Test/badge.svg)](https://github.com/astroband/ruby-stellar-sdk/actions?query=branch%3Amaster)
+[![CI](https://github.com/astroband/ruby-stellar-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/astroband/ruby-stellar-sdk/actions/workflows/ci.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/dadfcd9396aba493cb93/maintainability)](https://codeclimate.com/github/astroband/ruby-stellar-sdk/maintainability)
 
 The stellar-base library is the lowest-level stellar helper library.  It consists of classes

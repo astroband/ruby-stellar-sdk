@@ -1,6 +1,6 @@
 # Stellar SDK for Ruby: Horizon Integration and Higher Level Abstractions
 [![stellar-sdk](https://badge.fury.io/rb/stellar-sdk.svg)](https://badge.fury.io/rb/stellar-sdk)
-[![Test](https://github.com/astroband/ruby-stellar-sdk/workflows/Test/badge.svg)](https://github.com/astroband/ruby-stellar-sdk/actions?query=branch%3Amain)
+[![CI](https://github.com/astroband/ruby-stellar-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/astroband/ruby-stellar-sdk/actions/workflows/ci.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/dadfcd9396aba493cb93/maintainability)](https://codeclimate.com/github/astroband/ruby-stellar-sdk/maintainability)
 
 This library helps you to integrate your application into the [Stellar network](http://stellar.org).

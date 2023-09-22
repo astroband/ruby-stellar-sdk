@@ -1,4 +1,5 @@
 require "simplecov-lcov"
+require "simplecov-tailwindcss"
 
 SimpleCov::Formatter::LcovFormatter.config do |c|
   c.report_with_single_file = true
@@ -6,18 +7,14 @@ SimpleCov::Formatter::LcovFormatter.config do |c|
 end
 
 def start_simplecov
-  formatters = SimpleCov.formatters
-
-  if ENV.key?("CI")
-    require "codecov"
-
-    formatters << SimpleCov::Formatter::LcovFormatter
-    formatters << SimpleCov::Formatter::Codecov
+  SimpleCov.formatter = if ENV.key?("CI")
+    SimpleCov::Formatter::LcovFormatter
+  else
+    SimpleCov::Formatter::TailwindFormatter
   end
 
-  SimpleCov.formatters = formatters
-
   SimpleCov.start do
+    enable_coverage_for_eval if coverage_for_eval_supported?
     enable_coverage(:branch)
   end
 end

@@ -7,12 +7,12 @@ gem "stellar-horizon", path: "./horizon"
 # gem "xdrgen" # , path: "../xdrgen"
 
 group :test do
-  gem "codecov"
   gem "rake"
   gem "rspec"
   gem "rspec-its"
-  gem "simplecov"
-  gem "simplecov-lcov"
+  gem "simplecov", require: false
+  gem "simplecov-lcov", require: false
+  gem "simplecov-tailwindcss", require: false
   gem "vcr"
   gem "yard"
   gem "webmock"
