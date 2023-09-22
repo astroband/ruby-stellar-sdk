@@ -19,7 +19,12 @@ namespace :test do
   end
 
   desc "Generate code coverage for all projects"
-  task coverage: %i[coverage:base coverage:sdk coverage:horizon]
+  task coverage: %i[coverage:base coverage:sdk coverage:horizon] do
+    ENV["COVERAGE"] = "true"
+    require "simplecov"
+
+    SimpleCov.collate Dir["*/coverage/.resultset.json"]
+  end
 
   task all: %i[spec]
 end

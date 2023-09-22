@@ -152,7 +152,7 @@ module Stellar
         @time_bounds = Stellar::TimeBounds.new(min_time: 0, max_time: nil)
       end
 
-      @time_bounds.max_time = timeout == 0 ? timeout : Time.now.to_i + timeout
+      @time_bounds.max_time = (timeout == 0) ? timeout : Time.now.to_i + timeout
 
       self
     end

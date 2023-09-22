@@ -4,13 +4,15 @@ gem "stellar-base", path: "./base"
 gem "stellar-sdk", path: "./sdk"
 gem "stellar-horizon", path: "./horizon"
 # gem "xdr", github: "astroband/ruby-xdr", branch: "main"
+# gem "xdrgen" # , path: "../xdrgen"
 
 group :test do
-  gem "codecov"
   gem "rake"
   gem "rspec"
   gem "rspec-its"
-  gem "simplecov"
+  gem "simplecov", require: false
+  gem "simplecov-lcov", require: false
+  gem "simplecov-tailwindcss", require: false
   gem "vcr"
   gem "yard"
   gem "webmock"
@@ -30,7 +32,6 @@ group :development do
   gem "pry"
   gem "pry-doc"
   gem "netrc"
-  gem "xdrgen"
 end
 
 group :guard, optional: true do
