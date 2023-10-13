@@ -48,15 +48,14 @@ jobs:
       uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
+        files: coverage/lcov.info
         verbose: true
       if: success()
       continue-on-error: true
     - name: Upload code coverage data to CodeClimate
       uses: paambaati/codeclimate-action@v5
       with:
-        coverageLocations: |
-          base/coverage/coverage.json:simplecov
-          sdk/coverage/coverage.json:simplecov
+        coverageLocations: coverage/coverage.json:simplecov
         debug: true
       if: success()
       continue-on-error: true

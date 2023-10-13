@@ -13,6 +13,8 @@ group :test do
   gem "simplecov", require: false
   gem "simplecov-lcov", require: false
   gem "simplecov-tailwindcss", require: false
+  gem "simplecov_json_formatter", require: false
+  gem "simplecov-cobertura", require: false
   gem "vcr"
   gem "yard"
   gem "webmock"

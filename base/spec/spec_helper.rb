@@ -6,9 +6,7 @@ require "rspec/its"
 
 require_relative "../lib/stellar-base"
 
-require_relative "support/matchers/be_strkey"
-require_relative "support/matchers/eq_bytes"
-require_relative "support/matchers/have_length"
+require_relative "support/matchers"
 
 RSpec.configure do |config|
   config.include Stellar::DSL
