@@ -1,5 +1,5 @@
+require "simplecov_json_formatter"
 require "simplecov-lcov"
-require "simplecov-tailwindcss"
 
 SimpleCov::Formatter::LcovFormatter.config do |c|
   c.report_with_single_file = true
@@ -7,15 +7,33 @@ SimpleCov::Formatter::LcovFormatter.config do |c|
 end
 
 def start_simplecov
-  SimpleCov.formatter = if ENV.key?("CI")
-    SimpleCov::Formatter::LcovFormatter
-  else
-    SimpleCov::Formatter::TailwindFormatter
+  formatters = [
+    SimpleCov::Formatter::LcovFormatter,
+    SimpleCov::Formatter::JSONFormatter
+  ]
+
+  unless ENV.key?("CI")
+    require "simplecov-cobertura"
+    require "simplecov-tailwindcss"
+
+    formatters << SimpleCov::Formatter::CoberturaFormatter
+    formatters << SimpleCov::Formatter::TailwindFormatter
   end
+
+  SimpleCov.formatters = formatters
 
   SimpleCov.start do
     enable_coverage_for_eval if coverage_for_eval_supported?
     enable_coverage(:branch)
+
+    track_files "**/*.rb"
+
+    # add_filter "examples/"
+    # add_filter "spec/"
+
+    add_group "Base", "base"
+    add_group "Horizon", "horizon"
+    add_group "SDK", "sdk"
   end
 end
 

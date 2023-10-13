@@ -1,7 +1,5 @@
 module Stellar
   class Account
-    delegate :address, to: :keypair
-
     def self.random
       keypair = Stellar::KeyPair.random
       new(keypair)
@@ -37,6 +35,10 @@ module Stellar
       @id = id
     end
 
+    def account_id
+      Stellar::AccountID.ed25519(keypair.raw_public_key)
+    end
+
     def base_account
       Stellar::MuxedAccount.ed25519(keypair.raw_public_key)
     end
@@ -54,6 +56,14 @@ module Stellar
 
     def to_keypair
       keypair
+    end
+
+    def ==(other)
+      other.is_a?(Account) && other.keypair == keypair && other.id == id
+    end
+
+    def hash
+      [keypair, id].hash
     end
   end
 end

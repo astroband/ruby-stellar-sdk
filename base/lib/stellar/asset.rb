@@ -11,10 +11,11 @@ module Stellar
     #
     # @return [Stellar::Asset::AlphaNum4] asset4 representation
     def self.alphanum4(code, issuer)
-      issuer = issuer.to_keypair if issuer.respond_to?(:to_keypair)
-      raise ArgumentError, "Bad :issuer" unless issuer.is_a?(KeyPair)
-      code = normalize_code(code, 4)
-      an = AlphaNum4.new({asset_code: code, issuer: issuer.account_id})
+      an = AlphaNum4.new({
+        asset_code: normalize_code(code, 4),
+        issuer: normalize_issuer(issuer)
+      })
+
       new(:asset_type_credit_alphanum4, an)
     end
 
@@ -23,10 +24,11 @@ module Stellar
     #
     # @return [Stellar::Asset::AlphaNum4] asset4 representation
     def self.alphanum12(code, issuer)
-      issuer = issuer.to_keypair if issuer.respond_to?(:to_keypair)
-      raise ArgumentError, "Bad :issuer" unless issuer.is_a?(KeyPair)
-      code = normalize_code(code, 12)
-      an = AlphaNum12.new({asset_code: code, issuer: issuer.account_id})
+      an = AlphaNum12.new({
+        asset_code: normalize_code(code, 12),
+        issuer: normalize_issuer(issuer)
+      })
+
       new(:asset_type_credit_alphanum12, an)
     end
 
@@ -84,6 +86,13 @@ module Stellar
       raise ArgumentError, "Invalid asset code: #{code}, must be <= #{length} bytes" if code.length > length
 
       code.ljust(length, "\x00")
+    end
+
+    def self.normalize_issuer(issuer)
+      issuer = issuer.account_id if issuer.respond_to?(:account_id)
+      return issuer if issuer.is_a?(AccountID)
+
+      raise ArgumentError, "bad issuer '#{issuer.inspect}'"
     end
   end
 end

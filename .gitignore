@@ -1,4 +1,6 @@
 .bundle/
+.vscode
+.fleet
 .yardoc
 .rspec_status
 _yardoc/
@@ -13,4 +15,3 @@ vendor/bundle
 *.o
 *.a
 mkmf.log
-.vscode
