@@ -10,7 +10,7 @@ require 'xdr'
 #   {
 #   case END_SPONSORING_FUTURE_RESERVES_SUCCESS:
 #       void;
-#   default:
+#   case END_SPONSORING_FUTURE_RESERVES_NOT_SPONSORED:
 #       void;
 #   };
 #
@@ -20,7 +20,7 @@ module Stellar
     switch_on EndSponsoringFutureReservesResultCode, :code
 
     switch :end_sponsoring_future_reserves_success
-    switch :default
+    switch :end_sponsoring_future_reserves_not_sponsored
 
   end
 end

@@ -62,6 +62,12 @@ require 'xdr'
 #           LiquidityPoolDepositOp liquidityPoolDepositOp;
 #       case LIQUIDITY_POOL_WITHDRAW:
 #           LiquidityPoolWithdrawOp liquidityPoolWithdrawOp;
+#       case INVOKE_HOST_FUNCTION:
+#           InvokeHostFunctionOp invokeHostFunctionOp;
+#       case BUMP_FOOTPRINT_EXPIRATION:
+#           BumpFootprintExpirationOp bumpFootprintExpirationOp;
+#       case RESTORE_FOOTPRINT:
+#           RestoreFootprintOp restoreFootprintOp;
 #       }
 #       body;
 #   };

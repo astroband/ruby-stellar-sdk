@@ -30,7 +30,10 @@ require 'xdr'
 #       CLAWBACK_CLAIMABLE_BALANCE = 20,
 #       SET_TRUST_LINE_FLAGS = 21,
 #       LIQUIDITY_POOL_DEPOSIT = 22,
-#       LIQUIDITY_POOL_WITHDRAW = 23
+#       LIQUIDITY_POOL_WITHDRAW = 23,
+#       INVOKE_HOST_FUNCTION = 24,
+#       BUMP_FOOTPRINT_EXPIRATION = 25,
+#       RESTORE_FOOTPRINT = 26
 #   };
 #
 # ===========================================================================
@@ -60,6 +63,9 @@ module Stellar
     member :set_trust_line_flags,             21
     member :liquidity_pool_deposit,           22
     member :liquidity_pool_withdraw,          23
+    member :invoke_host_function,             24
+    member :bump_footprint_expiration,        25
+    member :restore_footprint,                26
 
     seal
   end

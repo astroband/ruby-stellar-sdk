@@ -45,6 +45,29 @@ require 'xdr'
 #       {
 #           PoolID liquidityPoolID;
 #       } liquidityPool;
+#   case CONTRACT_DATA:
+#       struct
+#       {
+#           SCAddress contract;
+#           SCVal key;
+#           ContractDataDurability durability;
+#       } contractData;
+#   case CONTRACT_CODE:
+#       struct
+#       {
+#           Hash hash;
+#       } contractCode;
+#   case CONFIG_SETTING:
+#       struct
+#       {
+#           ConfigSettingID configSettingID;
+#       } configSetting;
+#   case EXPIRATION:
+#       struct
+#       {
+#           // Hash of the LedgerKey that is associated with this ExpirationEntry
+#           Hash keyHash;
+#       } expiration;
 #   };
 #
 # ===========================================================================
@@ -58,6 +81,10 @@ module Stellar
     autoload :Data
     autoload :ClaimableBalance
     autoload :LiquidityPool
+    autoload :ContractData
+    autoload :ContractCode
+    autoload :ConfigSetting
+    autoload :Expiration
 
     switch_on LedgerEntryType, :type
 
@@ -67,6 +94,10 @@ module Stellar
     switch :data,              :data
     switch :claimable_balance, :claimable_balance
     switch :liquidity_pool,    :liquidity_pool
+    switch :contract_data,     :contract_data
+    switch :contract_code,     :contract_code
+    switch :config_setting,    :config_setting
+    switch :expiration,        :expiration
 
     attribute :account,           Account
     attribute :trust_line,        TrustLine
@@ -74,5 +105,9 @@ module Stellar
     attribute :data,              Data
     attribute :claimable_balance, ClaimableBalance
     attribute :liquidity_pool,    LiquidityPool
+    attribute :contract_data,     ContractData
+    attribute :contract_code,     ContractCode
+    attribute :config_setting,    ConfigSetting
+    attribute :expiration,        Expiration
   end
 end

@@ -12,7 +12,11 @@ require 'xdr'
 #       OFFER = 2,
 #       DATA = 3,
 #       CLAIMABLE_BALANCE = 4,
-#       LIQUIDITY_POOL = 5
+#       LIQUIDITY_POOL = 5,
+#       CONTRACT_DATA = 6,
+#       CONTRACT_CODE = 7,
+#       CONFIG_SETTING = 8,
+#       EXPIRATION = 9
 #   };
 #
 # ===========================================================================
@@ -24,6 +28,10 @@ module Stellar
     member :data,              3
     member :claimable_balance, 4
     member :liquidity_pool,    5
+    member :contract_data,     6
+    member :contract_code,     7
+    member :config_setting,    8
+    member :expiration,        9
 
     seal
   end

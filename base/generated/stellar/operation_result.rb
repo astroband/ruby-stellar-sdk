@@ -58,9 +58,20 @@ require 'xdr'
 #           LiquidityPoolDepositResult liquidityPoolDepositResult;
 #       case LIQUIDITY_POOL_WITHDRAW:
 #           LiquidityPoolWithdrawResult liquidityPoolWithdrawResult;
+#       case INVOKE_HOST_FUNCTION:
+#           InvokeHostFunctionResult invokeHostFunctionResult;
+#       case BUMP_FOOTPRINT_EXPIRATION:
+#           BumpFootprintExpirationResult bumpFootprintExpirationResult;
+#       case RESTORE_FOOTPRINT:
+#           RestoreFootprintResult restoreFootprintResult;
 #       }
 #       tr;
-#   default:
+#   case opBAD_AUTH:
+#   case opNO_ACCOUNT:
+#   case opNOT_SUPPORTED:
+#   case opTOO_MANY_SUBENTRIES:
+#   case opEXCEEDED_WORK_LIMIT:
+#   case opTOO_MANY_SPONSORING:
 #       void;
 #   };
 #
@@ -73,8 +84,13 @@ module Stellar
 
     switch_on OperationResultCode, :code
 
-    switch :op_inner, :tr
-    switch :default
+    switch :op_inner,             :tr
+    switch :op_bad_auth
+    switch :op_no_account
+    switch :op_not_supported
+    switch :op_too_many_subentries
+    switch :op_exceeded_work_limit
+    switch :op_too_many_sponsoring
 
     attribute :tr, Tr
   end

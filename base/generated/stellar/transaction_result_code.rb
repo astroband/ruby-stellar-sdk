@@ -24,12 +24,12 @@ require 'xdr'
 #       txBAD_AUTH_EXTRA = -10,      // unused signatures attached to transaction
 #       txINTERNAL_ERROR = -11,      // an unknown error occurred
 #   
-#       txNOT_SUPPORTED = -12,         // transaction type not supported
-#       txFEE_BUMP_INNER_FAILED = -13, // fee bump inner transaction failed
-#       txBAD_SPONSORSHIP = -14,       // sponsorship not confirmed
-#       txBAD_MIN_SEQ_AGE_OR_GAP =
-#           -15, // minSeqAge or minSeqLedgerGap conditions not met
-#       txMALFORMED = -16 // precondition is invalid
+#       txNOT_SUPPORTED = -12,          // transaction type not supported
+#       txFEE_BUMP_INNER_FAILED = -13,  // fee bump inner transaction failed
+#       txBAD_SPONSORSHIP = -14,        // sponsorship not confirmed
+#       txBAD_MIN_SEQ_AGE_OR_GAP = -15, // minSeqAge or minSeqLedgerGap conditions not met
+#       txMALFORMED = -16,              // precondition is invalid
+#       txSOROBAN_INVALID = -17         // soroban-specific preconditions were not met
 #   };
 #
 # ===========================================================================
@@ -53,6 +53,7 @@ module Stellar
     member :tx_bad_sponsorship,        -14
     member :tx_bad_min_seq_age_or_gap, -15
     member :tx_malformed,              -16
+    member :tx_soroban_invalid,        -17
 
     seal
   end
