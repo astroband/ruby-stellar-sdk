@@ -2,6 +2,7 @@ require "bigdecimal"
 
 module Stellar
   class Operation
+    MAX_UINT32 = 2**32 - 1
     MAX_INT64 = 2**63 - 1
     TRUST_LINE_FLAGS_MAPPING = {
       full: Stellar::TrustLineFlags.authorized_flag,
@@ -481,6 +482,38 @@ module Stellar
       # @return [Stellar::Operation] the built operation
       def inflation(source_account: nil)
         make(source_account: source_account, body: [:inflation])
+      end
+
+      # Bump footprint expiration operation builder.
+      #
+      # @param source_account [KeyPair, nil] the source account for the operation
+      # @param ledgers_to_expire [Integer, #to_i] the number of ledgers to expire (uint32)
+      #
+      # @return [Operation] the built operation
+      def bump_footprint_expiration(ledgers_to_expire:, source_account: nil)
+        ledgers_to_expire = ledgers_to_expire.to_i
+        raise ArgumentError, ":ledgers_to_expire must be positive" if ledgers_to_expire < 0
+        raise ArgumentError, ":ledgers_to_expire is too big" unless ledgers_to_expire <= MAX_UINT32
+
+        op = BumpFootprintExpirationOp.new(
+          ledgers_to_expire: ledgers_to_expire,
+          ext: Stellar::ExtensionPoint.new(0)
+        )
+
+        make(source_account: source_account, body: [:bump_footprint_expiration, op])
+      end
+
+      # Restore footprint operation builder.
+      #
+      # @param source_account [KeyPair, nil] the source account for the operation
+      #
+      # @return [Operation] the built operation
+      def restore_footprint(source_account: nil)
+        op = RestoreFootprintOp.new(
+          ext: Stellar::ExtensionPoint.new(0)
+        )
+
+        make(source_account: source_account, body: [:restore_footprint, op])
       end
 
       private
