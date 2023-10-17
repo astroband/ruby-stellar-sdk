@@ -7,9 +7,9 @@ require 'xdr'
 #
 #   struct PersistedSCPStateV0
 #   {
-#   	SCPEnvelope scpEnvelopes<>;
-#   	SCPQuorumSet quorumSets<>;
-#   	StoredTransactionSet txSets<>;
+#     SCPEnvelope scpEnvelopes<>;
+#     SCPQuorumSet quorumSets<>;
+#     StoredTransactionSet txSets<>;
 #   };
 #
 # ===========================================================================

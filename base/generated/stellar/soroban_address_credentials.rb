@@ -9,7 +9,7 @@ require 'xdr'
 #   {
 #       SCAddress address;
 #       int64 nonce;
-#       uint32 signatureExpirationLedger;    
+#       uint32 signatureExpirationLedger;
 #       SCVal signature;
 #   };
 #

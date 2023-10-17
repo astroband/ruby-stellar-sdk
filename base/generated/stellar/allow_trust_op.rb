@@ -9,7 +9,7 @@ require 'xdr'
 #   {
 #       AccountID trustor;
 #       AssetCode asset;
-#   
+#
 #       // One of 0, AUTHORIZED_FLAG, or AUTHORIZED_TO_MAINTAIN_LIABILITIES_FLAG
 #       uint32 authorize;
 #   };

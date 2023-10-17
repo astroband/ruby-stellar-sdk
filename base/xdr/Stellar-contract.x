@@ -63,7 +63,7 @@ enum SCValType
     SCV_ADDRESS = 18,
 
     // The following are the internal SCVal variants that are not
-    // exposed to the contracts. 
+    // exposed to the contracts.
     SCV_CONTRACT_INSTANCE = 19,
 
     // SCV_LEDGER_KEY_CONTRACT_INSTANCE and SCV_LEDGER_KEY_NONCE are unique

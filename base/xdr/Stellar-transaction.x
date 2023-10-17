@@ -484,7 +484,7 @@ enum ContractIDPreimageType
     CONTRACT_ID_PREIMAGE_FROM_ADDRESS = 0,
     CONTRACT_ID_PREIMAGE_FROM_ASSET = 1
 };
- 
+
 union ContractIDPreimage switch (ContractIDPreimageType type)
 {
 case CONTRACT_ID_PREIMAGE_FROM_ADDRESS:
@@ -543,7 +543,7 @@ struct SorobanAddressCredentials
 {
     SCAddress address;
     int64 nonce;
-    uint32 signatureExpirationLedger;    
+    uint32 signatureExpirationLedger;
     SCVal signature;
 };
 
@@ -563,7 +563,7 @@ case SOROBAN_CREDENTIALS_ADDRESS:
 
 /* Unit of authorization data for Soroban.
 
-   Represents an authorization for executing the tree of authorized contract 
+   Represents an authorization for executing the tree of authorized contract
    and/or host function calls by the user defined by `credentials`.
 */
 struct SorobanAuthorizationEntry
@@ -688,7 +688,7 @@ case ENVELOPE_TYPE_POOL_REVOKE_OP_ID:
     struct
     {
         AccountID sourceAccount;
-        SequenceNumber seqNum; 
+        SequenceNumber seqNum;
         uint32 opNum;
         PoolID liquidityPoolID;
         Asset asset;
@@ -804,11 +804,11 @@ struct LedgerFootprint
 // Resource limits for a Soroban transaction.
 // The transaction will fail if it exceeds any of these limits.
 struct SorobanResources
-{   
+{
     // The ledger footprint of the transaction.
     LedgerFootprint footprint;
     // The maximum number of instructions this transaction can use
-    uint32 instructions; 
+    uint32 instructions;
 
     // The maximum number of bytes this transaction can read from ledger
     uint32 readBytes;

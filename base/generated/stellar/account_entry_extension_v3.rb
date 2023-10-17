@@ -10,10 +10,10 @@ require 'xdr'
 #       // We can use this to add more fields, or because it is first, to
 #       // change AccountEntryExtensionV3 into a union.
 #       ExtensionPoint ext;
-#   
+#
 #       // Ledger number at which `seqNum` took on its present value.
 #       uint32 seqLedger;
-#   
+#
 #       // Time at which `seqNum` took on its present value.
 #       TimePoint seqTime;
 #   };

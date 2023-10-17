@@ -7,7 +7,7 @@ require 'xdr'
 #
 #   enum AccountFlags
 #   { // masks for each flag
-#   
+#
 #       // Flags set on issuer accounts
 #       // TrustLines are created with authorized set to "false" requiring
 #       // the issuer to set it for each TrustLine

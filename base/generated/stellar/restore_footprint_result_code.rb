@@ -9,7 +9,7 @@ require 'xdr'
 #   {
 #       // codes considered as "success" for the operation
 #       RESTORE_FOOTPRINT_SUCCESS = 0,
-#   
+#
 #       // codes considered as "failure" for the operation
 #       RESTORE_FOOTPRINT_MALFORMED = -1,
 #       RESTORE_FOOTPRINT_RESOURCE_LIMIT_EXCEEDED = -2,

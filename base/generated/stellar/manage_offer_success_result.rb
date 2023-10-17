@@ -9,7 +9,7 @@ require 'xdr'
 #   {
 #       // offers that got claimed while creating this offer
 #       ClaimAtom offersClaimed<>;
-#   
+#
 #       union switch (ManageOfferEffect effect)
 #       {
 #       case MANAGE_OFFER_CREATED:

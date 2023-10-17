@@ -8,7 +8,7 @@ require 'xdr'
 #   struct LedgerEntry
 #   {
 #       uint32 lastModifiedLedgerSeq; // ledger the LedgerEntry was last changed
-#   
+#
 #       union switch (LedgerEntryType type)
 #       {
 #       case ACCOUNT:
@@ -33,7 +33,7 @@ require 'xdr'
 #           ExpirationEntry expiration;
 #       }
 #       data;
-#   
+#
 #       // reserved for future use
 #       union switch (int v)
 #       {

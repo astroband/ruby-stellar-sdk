@@ -11,7 +11,7 @@ require 'xdr'
 #       uint32 ledgerMaxTxsSizeBytes;
 #       // Maximum size in bytes for a transaction
 #       uint32 txMaxSizeBytes;
-#   
+#
 #       // Fee for 1 KB of transaction size
 #       int64 feeTxSize1KB;
 #   };

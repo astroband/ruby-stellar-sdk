@@ -170,7 +170,7 @@ enum SCValType
     SCV_ADDRESS = 18,
 
     // The following are the internal SCVal variants that are not
-    // exposed to the contracts. 
+    // exposed to the contracts.
     SCV_CONTRACT_INSTANCE = 19,
 
     // SCV_LEDGER_KEY_CONTRACT_INSTANCE and SCV_LEDGER_KEY_NONCE are unique
@@ -444,7 +444,7 @@ struct ConfigSettingContractLedgerCostV0
     int64 bucketListTargetSizeBytes;
     // Fee per 1KB write when the bucket list is empty
     int64 writeFee1KBBucketListLow;
-    // Fee per 1KB write when the bucket list has reached `bucketListTargetSizeBytes` 
+    // Fee per 1KB write when the bucket list has reached `bucketListTargetSizeBytes`
     int64 writeFee1KBBucketListHigh;
     // Write fee multiplier for any additional data past the first `bucketListTargetSizeBytes`
     uint32 bucketListWriteFeeGrowthFactor;
@@ -493,7 +493,7 @@ enum ContractCostType {
     // Cost of a host function dispatch, not including the actual work done by
     // the function nor the cost of VM invocation machinary
     DispatchHostFunction = 5,
-    // Cost of visiting a host object from the host object storage. Exists to 
+    // Cost of visiting a host object from the host object storage. Exists to
     // make sure some baseline cost coverage, i.e. repeatly visiting objects
     // by the guest will always incur some charges.
     VisitObject = 6,
@@ -2076,7 +2076,7 @@ enum ContractIDPreimageType
     CONTRACT_ID_PREIMAGE_FROM_ADDRESS = 0,
     CONTRACT_ID_PREIMAGE_FROM_ASSET = 1
 };
- 
+
 union ContractIDPreimage switch (ContractIDPreimageType type)
 {
 case CONTRACT_ID_PREIMAGE_FROM_ADDRESS:
@@ -2135,7 +2135,7 @@ struct SorobanAddressCredentials
 {
     SCAddress address;
     int64 nonce;
-    uint32 signatureExpirationLedger;    
+    uint32 signatureExpirationLedger;
     SCVal signature;
 };
 
@@ -2155,7 +2155,7 @@ case SOROBAN_CREDENTIALS_ADDRESS:
 
 /* Unit of authorization data for Soroban.
 
-   Represents an authorization for executing the tree of authorized contract 
+   Represents an authorization for executing the tree of authorized contract
    and/or host function calls by the user defined by `credentials`.
 */
 struct SorobanAuthorizationEntry
@@ -2280,7 +2280,7 @@ case ENVELOPE_TYPE_POOL_REVOKE_OP_ID:
     struct
     {
         AccountID sourceAccount;
-        SequenceNumber seqNum; 
+        SequenceNumber seqNum;
         uint32 opNum;
         PoolID liquidityPoolID;
         Asset asset;
@@ -2396,11 +2396,11 @@ struct LedgerFootprint
 // Resource limits for a Soroban transaction.
 // The transaction will fail if it exceeds any of these limits.
 struct SorobanResources
-{   
+{
     // The ledger footprint of the transaction.
     LedgerFootprint footprint;
     // The maximum number of instructions this transaction can use
-    uint32 instructions; 
+    uint32 instructions;
 
     // The maximum number of bytes this transaction can read from ledger
     uint32 readBytes;
@@ -4041,7 +4041,7 @@ struct DiagnosticEvent
     ContractEvent event;
 };
 
-struct SorobanTransactionMeta 
+struct SorobanTransactionMeta
 {
     ExtensionPoint ext;
 
@@ -4064,11 +4064,11 @@ struct TransactionMetaV3
     OperationMeta operations<>;          // meta for each operation
     LedgerEntryChanges txChangesAfter;   // tx level changes after operations are
                                          // applied if any
-    SorobanTransactionMeta* sorobanMeta; // Soroban-specific meta (only for 
+    SorobanTransactionMeta* sorobanMeta; // Soroban-specific meta (only for
                                          // Soroban transactions).
 };
 
-// This is in Stellar-ledger.x to due to a circular dependency 
+// This is in Stellar-ledger.x to due to a circular dependency
 struct InvokeHostFunctionSuccessPreImage
 {
     SCVal returnValue;
@@ -4591,30 +4591,30 @@ namespace stellar
 union StoredTransactionSet switch (int v)
 {
 case 0:
-	TransactionSet txSet;
+  TransactionSet txSet;
 case 1:
-	GeneralizedTransactionSet generalizedTxSet;
+  GeneralizedTransactionSet generalizedTxSet;
 };
 
 struct PersistedSCPStateV0
 {
-	SCPEnvelope scpEnvelopes<>;
-	SCPQuorumSet quorumSets<>;
-	StoredTransactionSet txSets<>;
+  SCPEnvelope scpEnvelopes<>;
+  SCPQuorumSet quorumSets<>;
+  StoredTransactionSet txSets<>;
 };
 
 struct PersistedSCPStateV1
 {
-	// Tx sets are saved separately
-	SCPEnvelope scpEnvelopes<>;
-	SCPQuorumSet quorumSets<>;
+  // Tx sets are saved separately
+  SCPEnvelope scpEnvelopes<>;
+  SCPQuorumSet quorumSets<>;
 };
 
 union PersistedSCPState switch (int v)
 {
 case 0:
-	PersistedSCPStateV0 v0;
+  PersistedSCPStateV0 v0;
 case 1:
-	PersistedSCPStateV1 v1;
+  PersistedSCPStateV1 v1;
 };
 }

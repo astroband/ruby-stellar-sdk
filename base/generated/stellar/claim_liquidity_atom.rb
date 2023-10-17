@@ -8,11 +8,11 @@ require 'xdr'
 #   struct ClaimLiquidityAtom
 #   {
 #       PoolID liquidityPoolID;
-#   
+#
 #       // amount and asset taken from the pool
 #       Asset assetSold;
 #       int64 amountSold;
-#   
+#
 #       // amount and asset sent to the pool
 #       Asset assetBought;
 #       int64 amountBought;

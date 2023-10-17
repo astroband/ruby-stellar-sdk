@@ -400,7 +400,7 @@ struct DiagnosticEvent
     ContractEvent event;
 };
 
-struct SorobanTransactionMeta 
+struct SorobanTransactionMeta
 {
     ExtensionPoint ext;
 
@@ -423,11 +423,11 @@ struct TransactionMetaV3
     OperationMeta operations<>;          // meta for each operation
     LedgerEntryChanges txChangesAfter;   // tx level changes after operations are
                                          // applied if any
-    SorobanTransactionMeta* sorobanMeta; // Soroban-specific meta (only for 
+    SorobanTransactionMeta* sorobanMeta; // Soroban-specific meta (only for
                                          // Soroban transactions).
 };
 
-// This is in Stellar-ledger.x to due to a circular dependency 
+// This is in Stellar-ledger.x to due to a circular dependency
 struct InvokeHostFunctionSuccessPreImage
 {
     SCVal returnValue;

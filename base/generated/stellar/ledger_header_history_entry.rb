@@ -9,7 +9,7 @@ require 'xdr'
 #   {
 #       Hash hash;
 #       LedgerHeader header;
-#   
+#
 #       // reserved for future use
 #       union switch (int v)
 #       {

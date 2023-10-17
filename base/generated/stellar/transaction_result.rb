@@ -8,7 +8,7 @@ require 'xdr'
 #   struct TransactionResult
 #   {
 #       int64 feeCharged; // actual fee charged for the transaction
-#   
+#
 #       union switch (TransactionResultCode code)
 #       {
 #       case txFEE_BUMP_INNER_SUCCESS:
@@ -36,7 +36,7 @@ require 'xdr'
 #           void;
 #       }
 #       result;
-#   
+#
 #       // reserved for future use
 #       union switch (int v)
 #       {

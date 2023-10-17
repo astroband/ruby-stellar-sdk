@@ -8,13 +8,13 @@ require 'xdr'
 #   struct TransactionMetaV3
 #   {
 #       ExtensionPoint ext;
-#   
+#
 #       LedgerEntryChanges txChangesBefore;  // tx level changes before operations
 #                                            // are applied if any
 #       OperationMeta operations<>;          // meta for each operation
 #       LedgerEntryChanges txChangesAfter;   // tx level changes after operations are
 #                                            // applied if any
-#       SorobanTransactionMeta* sorobanMeta; // Soroban-specific meta (only for 
+#       SorobanTransactionMeta* sorobanMeta; // Soroban-specific meta (only for
 #                                            // Soroban transactions).
 #   };
 #

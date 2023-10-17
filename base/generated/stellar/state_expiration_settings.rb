@@ -9,20 +9,20 @@ require 'xdr'
 #       uint32 maxEntryExpiration;
 #       uint32 minTempEntryExpiration;
 #       uint32 minPersistentEntryExpiration;
-#   
+#
 #       // rent_fee = wfee_rate_average / rent_rate_denominator_for_type
 #       int64 persistentRentRateDenominator;
 #       int64 tempRentRateDenominator;
-#   
+#
 #       // max number of entries that emit expiration meta in a single ledger
 #       uint32 maxEntriesToExpire;
-#   
+#
 #       // Number of snapshots to use when calculating average BucketList size
 #       uint32 bucketListSizeWindowSampleSize;
-#   
+#
 #       // Maximum number of bytes that we scan for eviction per ledger
 #       uint64 evictionScanSize;
-#   
+#
 #       // Lowest BucketList level to be scanned to evict entries
 #       uint32 startingEvictionScanLevel;
 #   };

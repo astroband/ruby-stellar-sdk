@@ -54,7 +54,7 @@ struct ConfigSettingContractLedgerCostV0
     int64 bucketListTargetSizeBytes;
     // Fee per 1KB write when the bucket list is empty
     int64 writeFee1KBBucketListLow;
-    // Fee per 1KB write when the bucket list has reached `bucketListTargetSizeBytes` 
+    // Fee per 1KB write when the bucket list has reached `bucketListTargetSizeBytes`
     int64 writeFee1KBBucketListHigh;
     // Write fee multiplier for any additional data past the first `bucketListTargetSizeBytes`
     uint32 bucketListWriteFeeGrowthFactor;
@@ -103,7 +103,7 @@ enum ContractCostType {
     // Cost of a host function dispatch, not including the actual work done by
     // the function nor the cost of VM invocation machinary
     DispatchHostFunction = 5,
-    // Cost of visiting a host object from the host object storage. Exists to 
+    // Cost of visiting a host object from the host object storage. Exists to
     // make sure some baseline cost coverage, i.e. repeatly visiting objects
     // by the guest will always incur some charges.
     VisitObject = 6,

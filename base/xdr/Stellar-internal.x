@@ -12,30 +12,30 @@ namespace stellar
 union StoredTransactionSet switch (int v)
 {
 case 0:
-	TransactionSet txSet;
+  TransactionSet txSet;
 case 1:
-	GeneralizedTransactionSet generalizedTxSet;
+  GeneralizedTransactionSet generalizedTxSet;
 };
 
 struct PersistedSCPStateV0
 {
-	SCPEnvelope scpEnvelopes<>;
-	SCPQuorumSet quorumSets<>;
-	StoredTransactionSet txSets<>;
+  SCPEnvelope scpEnvelopes<>;
+  SCPQuorumSet quorumSets<>;
+  StoredTransactionSet txSets<>;
 };
 
 struct PersistedSCPStateV1
 {
-	// Tx sets are saved separately
-	SCPEnvelope scpEnvelopes<>;
-	SCPQuorumSet quorumSets<>;
+  // Tx sets are saved separately
+  SCPEnvelope scpEnvelopes<>;
+  SCPQuorumSet quorumSets<>;
 };
 
 union PersistedSCPState switch (int v)
 {
 case 0:
-	PersistedSCPStateV0 v0;
+  PersistedSCPStateV0 v0;
 case 1:
-	PersistedSCPStateV1 v1;
+  PersistedSCPStateV1 v1;
 };
 }

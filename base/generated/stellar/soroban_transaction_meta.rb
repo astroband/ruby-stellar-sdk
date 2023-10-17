@@ -5,14 +5,14 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct SorobanTransactionMeta 
+#   struct SorobanTransactionMeta
 #   {
 #       ExtensionPoint ext;
-#   
+#
 #       ContractEvent events<>;             // custom events populated by the
 #                                           // contracts themselves.
 #       SCVal returnValue;                  // return value of the host fn invocation
-#   
+#
 #       // Diagnostics events that are not hashed.
 #       // This will contain all contract and diagnostic events. Even ones
 #       // that were emitted in a failed contract call.

@@ -9,20 +9,20 @@ require 'xdr'
 #   {
 #       // account used to run the transaction
 #       MuxedAccount sourceAccount;
-#   
+#
 #       // the fee the sourceAccount will pay
 #       uint32 fee;
-#   
+#
 #       // sequence number to consume in the account
 #       SequenceNumber seqNum;
-#   
+#
 #       // validity conditions
 #       Preconditions cond;
-#   
+#
 #       Memo memo;
-#   
+#
 #       Operation operations<MAX_OPS_PER_TX>;
-#   
+#
 #       // reserved for future use
 #       union switch (int v)
 #       {
