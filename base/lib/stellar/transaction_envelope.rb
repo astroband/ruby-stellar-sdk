@@ -26,6 +26,14 @@ module Stellar
       end
     end
 
+    def signed_by?(keypair)
+      signatures.any? do |sig|
+        next if sig.hint != keypair.signature_hint
+
+        keypair.verify(sig.signature, tx.hash)
+      end
+    end
+
     def merge(other)
       merged_tx = tx.merge(other.tx)
       merged_tx.signatures = [signatures, other.signatures]
