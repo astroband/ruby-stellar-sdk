@@ -44,6 +44,14 @@ jobs:
         debug: true
       if: success()
       continue-on-error: true
+    - name: Upload code coverage report to Coveralls Beta
+      uses: coverallsapp/github-action@v2
+      with:
+        file: coverage/lcov.info
+        coveralls-endpoint: https://beta.coveralls.io
+        debug: true
+      if: success()
+      continue-on-error: true
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
