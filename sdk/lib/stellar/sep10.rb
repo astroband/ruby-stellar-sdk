@@ -8,7 +8,7 @@ module Stellar
     # to compensate possible clock drift on client's machine
     GRACE_PERIOD = 5.minutes
 
-    # Helper method to create a valid {SEP0010}[https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0010.md]
+    # Helper method to create a valid [SEP-10](https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0010.md)
     # challenge transaction which you can use for Stellar Web Authentication.
     #
     # @example
@@ -23,7 +23,7 @@ module Stellar
     #
     # @return [String] A base64 encoded string of the raw TransactionEnvelope xdr struct for the transaction.
     #
-    # @see {SEP0010: Stellar Web Authentication}[https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0010.md]
+    # @see https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0010.md SEP0010: Stellar Web Authentication
     def self.build_challenge_tx(server:, client:, domain: nil, timeout: 300, **options)
       if domain.blank? && options.key?(:anchor_name)
         ActiveSupport::Deprecation.new("next release", "stellar-sdk").warn <<~MSG

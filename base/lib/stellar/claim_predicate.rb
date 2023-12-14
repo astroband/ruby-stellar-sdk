@@ -39,9 +39,10 @@ module Stellar
       #
       # @return [ClaimPredicate] `before_absolute_time` claim predicate.
       def before_absolute_time(timestamp)
-        timestamp = timestamp.to_time if timestamp.respond_to?(:to_time)
+        ts = timestamp.respond_to?(:to_time) ? timestamp.to_time : timestamp
+        raise ArgumentError, "'#{timestamp}' is not a valid timestamp" if timestamp && ts.nil?
 
-        ClaimPredicate.new(ClaimPredicateType::BEFORE_ABSOLUTE_TIME, Integer(timestamp))
+        ClaimPredicate.new(ClaimPredicateType::BEFORE_ABSOLUTE_TIME, Integer(ts))
       end
 
       # Constructs either relative or absolute time predicate based on the type of the input.
@@ -82,7 +83,7 @@ module Stellar
       #   }
       #
       # @yieldreturn [ClaimPredicate|nil]
-      # @return [ClaimPredicate] `not(before_relative_time)` or `not(before_absolute_time)` claim predicate.
+      # @return [ClaimPredicate] the result of executing the block in context of ClaimPredicate
       def compose(&block)
         result = instance_eval(&block)
         result.nil? ? unconditional : result

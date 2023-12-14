@@ -1,3 +1,4 @@
+require "simplecov_json_formatter"
 require "simplecov-lcov"
 
 SimpleCov::Formatter::LcovFormatter.config do |c|
@@ -6,19 +7,33 @@ SimpleCov::Formatter::LcovFormatter.config do |c|
 end
 
 def start_simplecov
-  formatters = SimpleCov.formatters
+  formatters = [
+    SimpleCov::Formatter::LcovFormatter,
+    SimpleCov::Formatter::JSONFormatter
+  ]
 
-  if ENV.key?("CI")
-    require "codecov"
+  unless ENV.key?("CI")
+    require "simplecov-cobertura"
+    require "simplecov-tailwindcss"
 
-    formatters << SimpleCov::Formatter::LcovFormatter
-    formatters << SimpleCov::Formatter::Codecov
+    formatters << SimpleCov::Formatter::CoberturaFormatter
+    formatters << SimpleCov::Formatter::TailwindFormatter
   end
 
   SimpleCov.formatters = formatters
 
   SimpleCov.start do
+    enable_coverage_for_eval if coverage_for_eval_supported?
     enable_coverage(:branch)
+
+    track_files "**/*.rb"
+
+    # add_filter "examples/"
+    # add_filter "spec/"
+
+    add_group "Base", "base"
+    add_group "Horizon", "horizon"
+    add_group "SDK", "sdk"
   end
 end
 

@@ -27,26 +27,29 @@ module Stellar
       )
     end
 
+    # Converts subject to a Stellar::Account.
+    #
+    # @param [Asset, String, nil] subject
+    # @return [Stellar::Account] instance of the Stellar::Asset
+    # @raise [TypeError] if subject cannot be converted to Stellar::Asset
     def Account(subject = nil)
       case subject
       when Account
         subject
-      when /^M[A-Z0-9]{68}$/
+      when /^G[A-Z0-9]{55}$/, /^M[A-Z0-9]{68}$/
         Account.from_address(subject.to_str)
       when nil
         Account.random
       else
-        begin
-          keypair = KeyPair(subject)
-
-          Account.new(keypair)
-        rescue TypeError
-          raise TypeError, "Cannot convert #{subject.inspect} to Stellar::Account"
-        end
+        Account.new(KeyPair(subject))
       end
+    rescue
+      raise TypeError, "Cannot convert #{subject.inspect} to Stellar::Account"
     end
 
-    # @param [Asset, String, nil] subject
+    # Converts subject to a Stellar::Asset.
+    #
+    # @param subject [Stellar::Asset, Array, String, nil]
     # @return [Stellar::Asset] instance of the Stellar::Asset
     # @raise [TypeError] if subject cannot be converted to Stellar::Asset
     def Asset(subject = nil)
@@ -59,16 +62,17 @@ module Stellar
       when nil, /^(XLM[-:])?native$/
         Asset.native
       when /^([0-9A-Z]{1,4})[-:](G[A-Z0-9]{55})$/
-        Asset.alphanum4($1, KeyPair($2))
+        Asset.alphanum4($1, Account($2))
       when /^([0-9A-Z]{5,12})[-:](G[A-Z0-9]{55})$/
-        Asset.alphanum12($1, KeyPair($2))
+        Asset.alphanum12($1, Account($2))
       else
         raise TypeError, "Cannot convert #{subject.inspect} to Stellar::Asset"
       end
     end
 
-    # Generates Stellar::Keypair from subject, use Stellar::Client.to_keypair as shortcut.
-    # @param subject [String|Stellar::Account|Stellar::PublicKey|Stellar::SignerKey|Stellar::Keypair] subject.
+    # Converts subject to a Stellar::KeyPair.
+    #
+    # @param subject [String, Stellar::Account, Stellar::PublicKey, Stellar::SignerKey, Stellar::Keypair] subject.
     # @return [Stellar::Keypair] Stellar::Keypair instance.
     # @raise [TypeError] if subject cannot be converted to Stellar::KeyPair
     def KeyPair(subject = nil)
@@ -88,12 +92,13 @@ module Stellar
       when nil
         KeyPair.random
       else
-        raise TypeError, "cannot convert #{subject.inspect} to Stellar::KeyPair"
+        raise TypeError, "Cannot convert #{subject.inspect} to Stellar::KeyPair"
       end
     end
 
     # Provides conversion from different input types into the SignerKey to use in ManageData operation.
-    # @param input [String|Stellar::Account|Stellar::PublicKey|Stellar::SignerKey|Stellar::Keypair] subject.
+    #
+    # @param input [String, Stellar::Account, Stellar::PublicKey, Stellar::SignerKey, Stellar::Keypair] subject.
     # @return [Stellar::SignerKey] Stellar::SignerKey instance.
     def SignerKey(input = nil)
       case input

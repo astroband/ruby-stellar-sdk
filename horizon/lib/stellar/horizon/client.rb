@@ -16,11 +16,12 @@ module Stellar::Horizon
   class Client
     DEFAULT_FEE = 100
 
-    HORIZON_LOCALHOST_URL = "http://127.0.0.1:8000"
-    HORIZON_MAINNET_URL = "https://horizon.stellar.org"
-    HORIZON_TESTNET_URL = "https://horizon-testnet.stellar.org"
-    HORIZON_PUBLIC_NODE_URL = "https://horizon.publicnode.org"
-    HORIZON_LOBSTR_URL = "https://horizon.stellar.lobstr.co"
+    HORIZON_LOCALHOST_URL = "http://127.0.0.1:8000".freeze
+    HORIZON_MAINNET_URL = "https://horizon.stellar.org".freeze
+    HORIZON_TESTNET_URL = "https://horizon-testnet.stellar.org".freeze
+    HORIZON_PUBLIC_NODE_URL = "https://horizon.publicnode.org".freeze
+    HORIZON_LOBSTR_URL = "https://horizon.stellar.lobstr.co".freeze
+
     FRIENDBOT_URL = "https://friendbot.stellar.org".freeze
 
     def self.default(options = {})

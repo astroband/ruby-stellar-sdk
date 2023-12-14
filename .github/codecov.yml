@@ -2,6 +2,17 @@ comment: false
 ignore:
 - "**/generated/"
 - "**/examples/"
+- "**/spec/*"
+flags:
+  stellar-base:
+    paths:
+      - base/
+  stellar-horizon:
+    paths:
+      - horizon/
+  stellar-sdk:
+    paths:
+      - sdk/
 coverage:
   status:
     project:
@@ -9,15 +20,19 @@ coverage:
         target: auto
         threshold: 1%
         informational: true
+        flags:
+          - stellar-base
+          - stellar-horizon
+          - stellar-sdk
       stellar-base:
-        paths:
-        - "base/"
+        flags:
+          - stellar-base
       stellar-horizon:
-        paths:
-        - "horizon/"
+        flags:
+          - stellar-horizon
       stellar-sdk:
-        paths:
-        - "sdk/"
+        flags:
+          - stellar-sdk
     patch:
       default:
         informational: true

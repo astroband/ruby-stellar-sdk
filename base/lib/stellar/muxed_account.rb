@@ -12,5 +12,9 @@ module Stellar
     def address
       to_keypair.address
     end
+
+    def account_id
+      to_keypair.account_id
+    end
   end
 end

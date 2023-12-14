@@ -122,5 +122,13 @@ module Stellar
     def to_keypair
       self
     end
+
+    def ==(other)
+      other.is_a?(KeyPair) && other.rbnacl_verify_key == @public_key && other.rbnacl_signing_key == @secret_key
+    end
+
+    def hash
+      [public_key, secret_key].hash
+    end
   end
 end

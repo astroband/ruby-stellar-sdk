@@ -7,7 +7,6 @@ module Stellar
     VERSION = ::Stellar::VERSION
 
     autoload :Client
-    autoload :Problem
     autoload :TransactionPage
   end
 end

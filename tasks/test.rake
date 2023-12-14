@@ -23,9 +23,7 @@ namespace :test do
     ENV["COVERAGE"] = "true"
     require "simplecov"
 
-    SimpleCov.collate Dir["*/coverage/.resultset.json"] do
-      formatter SimpleCov::Formatter::LcovFormatter
-    end
+    SimpleCov.collate Dir["*/coverage/.resultset.json"]
   end
 
   task all: %i[spec]
