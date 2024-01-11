@@ -39,8 +39,6 @@ business days. We may suggest some changes or improvements or alternatives.
 
 This document is inspired by:
 
-https://github.com/puppetlabs/puppet/blob/master/CONTRIBUTING.md
-
 https://github.com/thoughtbot/factory_bot_rails/blob/master/CONTRIBUTING.md
 
 https://github.com/rust-lang/rust/blob/master/CONTRIBUTING.md
