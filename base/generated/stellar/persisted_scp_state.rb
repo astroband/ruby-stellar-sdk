@@ -8,9 +8,9 @@ require 'xdr'
 #   union PersistedSCPState switch (int v)
 #   {
 #   case 0:
-#     PersistedSCPStateV0 v0;
+#   	PersistedSCPStateV0 v0;
 #   case 1:
-#     PersistedSCPStateV1 v1;
+#   	PersistedSCPStateV1 v1;
 #   };
 #
 # ===========================================================================

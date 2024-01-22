@@ -8,7 +8,7 @@ require 'xdr'
 #   struct LedgerEntry
 #   {
 #       uint32 lastModifiedLedgerSeq; // ledger the LedgerEntry was last changed
-#
+#   
 #       union switch (LedgerEntryType type)
 #       {
 #       case ACCOUNT:
@@ -29,11 +29,11 @@ require 'xdr'
 #           ContractCodeEntry contractCode;
 #       case CONFIG_SETTING:
 #           ConfigSettingEntry configSetting;
-#       case EXPIRATION:
-#           ExpirationEntry expiration;
+#       case TTL:
+#           TTLEntry ttl;
 #       }
 #       data;
-#
+#   
 #       // reserved for future use
 #       union switch (int v)
 #       {

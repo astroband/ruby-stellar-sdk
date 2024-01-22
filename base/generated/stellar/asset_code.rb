@@ -9,10 +9,10 @@ require 'xdr'
 #   {
 #   case ASSET_TYPE_CREDIT_ALPHANUM4:
 #       AssetCode4 assetCode4;
-#
+#   
 #   case ASSET_TYPE_CREDIT_ALPHANUM12:
 #       AssetCode12 assetCode12;
-#
+#   
 #       // add other asset types here in the future
 #   };
 #

@@ -9,7 +9,7 @@ require 'xdr'
 #   {
 #       // codes considered as "success" for the operation
 #       CLAWBACK_SUCCESS = 0,
-#
+#   
 #       // codes considered as "failure" for the operation
 #       CLAWBACK_MALFORMED = -1,
 #       CLAWBACK_NOT_CLAWBACK_ENABLED = -2,

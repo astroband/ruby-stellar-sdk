@@ -13,7 +13,7 @@ require 'xdr'
 #           struct
 #           {
 #               Liabilities liabilities;
-#
+#   
 #               union switch (int v)
 #               {
 #               case 0:

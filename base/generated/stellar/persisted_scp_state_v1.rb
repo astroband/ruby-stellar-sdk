@@ -7,9 +7,9 @@ require 'xdr'
 #
 #   struct PersistedSCPStateV1
 #   {
-#     // Tx sets are saved separately
-#     SCPEnvelope scpEnvelopes<>;
-#     SCPQuorumSet quorumSets<>;
+#   	// Tx sets are saved separately
+#   	SCPEnvelope scpEnvelopes<>;
+#   	SCPQuorumSet quorumSets<>;
 #   };
 #
 # ===========================================================================

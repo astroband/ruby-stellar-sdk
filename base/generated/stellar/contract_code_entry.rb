@@ -7,7 +7,7 @@ require 'xdr'
 #
 #   struct ContractCodeEntry {
 #       ExtensionPoint ext;
-#
+#   
 #       Hash hash;
 #       opaque code<>;
 #   };

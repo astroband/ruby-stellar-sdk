@@ -13,7 +13,7 @@ require 'xdr'
 #           void;
 #       }
 #       ext;
-#
+#   
 #       uint32 flags; // see ClaimableBalanceFlags
 #   };
 #

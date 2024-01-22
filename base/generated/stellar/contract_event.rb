@@ -10,10 +10,10 @@ require 'xdr'
 #       // We can use this to add more fields, or because it
 #       // is first, to change ContractEvent into a union.
 #       ExtensionPoint ext;
-#
+#   
 #       Hash* contractID;
 #       ContractEventType type;
-#
+#   
 #       union switch (int v)
 #       {
 #       case 0:

@@ -16,7 +16,7 @@ require 'xdr'
 #       CONTRACT_DATA = 6,
 #       CONTRACT_CODE = 7,
 #       CONFIG_SETTING = 8,
-#       EXPIRATION = 9
+#       TTL = 9
 #   };
 #
 # ===========================================================================
@@ -31,7 +31,7 @@ module Stellar
     member :contract_data,     6
     member :contract_code,     7
     member :config_setting,    8
-    member :expiration,        9
+    member :ttl,               9
 
     seal
   end

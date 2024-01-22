@@ -12,7 +12,7 @@ require 'xdr'
 #   case INVOKE_HOST_FUNCTION_MALFORMED:
 #   case INVOKE_HOST_FUNCTION_TRAPPED:
 #   case INVOKE_HOST_FUNCTION_RESOURCE_LIMIT_EXCEEDED:
-#   case INVOKE_HOST_FUNCTION_ENTRY_EXPIRED:
+#   case INVOKE_HOST_FUNCTION_ENTRY_ARCHIVED:
 #   case INVOKE_HOST_FUNCTION_INSUFFICIENT_REFUNDABLE_FEE:
 #       void;
 #   };
@@ -26,7 +26,7 @@ module Stellar
     switch :invoke_host_function_malformed
     switch :invoke_host_function_trapped
     switch :invoke_host_function_resource_limit_exceeded
-    switch :invoke_host_function_entry_expired
+    switch :invoke_host_function_entry_archived
     switch :invoke_host_function_insufficient_refundable_fee
 
     attribute :success, Hash

@@ -11,7 +11,7 @@ require 'xdr'
 #       // if not set, the runtime defaults to "sourceAccount" specified at
 #       // the transaction level
 #       MuxedAccount* sourceAccount;
-#
+#   
 #       union switch (OperationType type)
 #       {
 #       case CREATE_ACCOUNT:
@@ -64,8 +64,8 @@ require 'xdr'
 #           LiquidityPoolWithdrawOp liquidityPoolWithdrawOp;
 #       case INVOKE_HOST_FUNCTION:
 #           InvokeHostFunctionOp invokeHostFunctionOp;
-#       case BUMP_FOOTPRINT_EXPIRATION:
-#           BumpFootprintExpirationOp bumpFootprintExpirationOp;
+#       case EXTEND_FOOTPRINT_TTL:
+#           ExtendFootprintTTLOp extendFootprintTTLOp;
 #       case RESTORE_FOOTPRINT:
 #           RestoreFootprintOp restoreFootprintOp;
 #       }

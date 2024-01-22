@@ -57,8 +57,8 @@ require 'xdr'
 #           LiquidityPoolWithdrawResult liquidityPoolWithdrawResult;
 #       case INVOKE_HOST_FUNCTION:
 #           InvokeHostFunctionResult invokeHostFunctionResult;
-#       case BUMP_FOOTPRINT_EXPIRATION:
-#           BumpFootprintExpirationResult bumpFootprintExpirationResult;
+#       case EXTEND_FOOTPRINT_TTL:
+#           ExtendFootprintTTLResult extendFootprintTTLResult;
 #       case RESTORE_FOOTPRINT:
 #           RestoreFootprintResult restoreFootprintResult;
 #       }
@@ -94,7 +94,7 @@ module Stellar
       switch :liquidity_pool_deposit,           :liquidity_pool_deposit_result
       switch :liquidity_pool_withdraw,          :liquidity_pool_withdraw_result
       switch :invoke_host_function,             :invoke_host_function_result
-      switch :bump_footprint_expiration,        :bump_footprint_expiration_result
+      switch :extend_footprint_ttl,             :extend_footprint_ttl_result
       switch :restore_footprint,                :restore_footprint_result
 
       attribute :create_account_result,                   CreateAccountResult
@@ -122,7 +122,7 @@ module Stellar
       attribute :liquidity_pool_deposit_result,           LiquidityPoolDepositResult
       attribute :liquidity_pool_withdraw_result,          LiquidityPoolWithdrawResult
       attribute :invoke_host_function_result,             InvokeHostFunctionResult
-      attribute :bump_footprint_expiration_result,        BumpFootprintExpirationResult
+      attribute :extend_footprint_ttl_result,             ExtendFootprintTTLResult
       attribute :restore_footprint_result,                RestoreFootprintResult
     end
   end

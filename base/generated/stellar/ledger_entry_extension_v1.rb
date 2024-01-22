@@ -8,7 +8,7 @@ require 'xdr'
 #   struct LedgerEntryExtensionV1
 #   {
 #       SponsorshipDescriptor sponsoringID;
-#
+#   
 #       union switch (int v)
 #       {
 #       case 0:

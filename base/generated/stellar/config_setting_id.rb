@@ -17,7 +17,7 @@ require 'xdr'
 #       CONFIG_SETTING_CONTRACT_COST_PARAMS_MEMORY_BYTES = 7,
 #       CONFIG_SETTING_CONTRACT_DATA_KEY_SIZE_BYTES = 8,
 #       CONFIG_SETTING_CONTRACT_DATA_ENTRY_SIZE_BYTES = 9,
-#       CONFIG_SETTING_STATE_EXPIRATION = 10,
+#       CONFIG_SETTING_STATE_ARCHIVAL = 10,
 #       CONFIG_SETTING_CONTRACT_EXECUTION_LANES = 11,
 #       CONFIG_SETTING_BUCKETLIST_SIZE_WINDOW = 12,
 #       CONFIG_SETTING_EVICTION_ITERATOR = 13
@@ -36,7 +36,7 @@ module Stellar
     member :config_setting_contract_cost_params_memory_bytes,     7
     member :config_setting_contract_data_key_size_bytes,          8
     member :config_setting_contract_data_entry_size_bytes,        9
-    member :config_setting_state_expiration,                      10
+    member :config_setting_state_archival,                        10
     member :config_setting_contract_execution_lanes,              11
     member :config_setting_bucketlist_size_window,                12
     member :config_setting_eviction_iterator,                     13

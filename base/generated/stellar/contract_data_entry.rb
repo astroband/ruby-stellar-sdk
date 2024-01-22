@@ -7,7 +7,7 @@ require 'xdr'
 #
 #   struct ContractDataEntry {
 #       ExtensionPoint ext;
-#
+#   
 #       SCAddress contract;
 #       SCVal key;
 #       ContractDataDurability durability;

@@ -9,7 +9,7 @@ require 'xdr'
 #   {
 #       // codes considered as "success" for the operation
 #       LIQUIDITY_POOL_WITHDRAW_SUCCESS = 0,
-#
+#   
 #       // codes considered as "failure" for the operation
 #       LIQUIDITY_POOL_WITHDRAW_MALFORMED = -1,    // bad input
 #       LIQUIDITY_POOL_WITHDRAW_NO_TRUST = -2,     // no trust line for one of the

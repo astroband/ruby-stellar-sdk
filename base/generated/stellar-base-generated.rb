@@ -67,7 +67,7 @@ module Stellar
   autoload :ConfigSettingContractBandwidthV0
   autoload :ContractCostType
   autoload :ContractCostParamEntry
-  autoload :StateExpirationSettings
+  autoload :StateArchivalSettings
   autoload :EvictionIterator
   CONTRACT_COST_COUNT_LIMIT = 1024
   ContractCostParams = XDR::VarArray[ContractCostParamEntry, CONTRACT_COST_COUNT_LIMIT]
@@ -173,7 +173,7 @@ module Stellar
   autoload :ContractDataDurability
   autoload :ContractDataEntry
   autoload :ContractCodeEntry
-  autoload :ExpirationEntry
+  autoload :TTLEntry
   autoload :LedgerEntryExtensionV1
   autoload :LedgerEntry
   autoload :LedgerKey
@@ -225,7 +225,7 @@ module Stellar
   autoload :SorobanCredentials
   autoload :SorobanAuthorizationEntry
   autoload :InvokeHostFunctionOp
-  autoload :BumpFootprintExpirationOp
+  autoload :ExtendFootprintTTLOp
   autoload :RestoreFootprintOp
   autoload :Operation
   autoload :HashIDPreimage
@@ -304,8 +304,8 @@ module Stellar
   autoload :LiquidityPoolWithdrawResult
   autoload :InvokeHostFunctionResultCode
   autoload :InvokeHostFunctionResult
-  autoload :BumpFootprintExpirationResultCode
-  autoload :BumpFootprintExpirationResult
+  autoload :ExtendFootprintTTLResultCode
+  autoload :ExtendFootprintTTLResult
   autoload :RestoreFootprintResultCode
   autoload :RestoreFootprintResult
   autoload :OperationResultCode
@@ -364,7 +364,6 @@ module Stellar
   autoload :UpgradeEntryMeta
   autoload :LedgerCloseMetaV0
   autoload :LedgerCloseMetaV1
-  autoload :LedgerCloseMetaV2
   autoload :LedgerCloseMeta
 end
 module Stellar
@@ -418,6 +417,7 @@ module Stellar
   include XDR::Namespace
 
   autoload :StoredTransactionSet
+  autoload :StoredDebugTransactionSet
   autoload :PersistedSCPStateV0
   autoload :PersistedSCPStateV1
   autoload :PersistedSCPState

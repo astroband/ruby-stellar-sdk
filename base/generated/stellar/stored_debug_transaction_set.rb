@@ -5,16 +5,18 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct BumpFootprintExpirationOp
+#   struct StoredDebugTransactionSet
 #   {
-#       ExtensionPoint ext;
-#       uint32 ledgersToExpire;
+#   	StoredTransactionSet txSet;
+#   	uint32 ledgerSeq;
+#   	StellarValue scpValue;
 #   };
 #
 # ===========================================================================
 module Stellar
-  class BumpFootprintExpirationOp < XDR::Struct
-    attribute :ext,               ExtensionPoint
-    attribute :ledgers_to_expire, Uint32
+  class StoredDebugTransactionSet < XDR::Struct
+    attribute :tx_set,     StoredTransactionSet
+    attribute :ledger_seq, Uint32
+    attribute :scp_value,  StellarValue
   end
 end

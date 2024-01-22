@@ -63,7 +63,7 @@ enum OperationType
     LIQUIDITY_POOL_DEPOSIT = 22,
     LIQUIDITY_POOL_WITHDRAW = 23,
     INVOKE_HOST_FUNCTION = 24,
-    BUMP_FOOTPRINT_EXPIRATION = 25,
+    EXTEND_FOOTPRINT_TTL = 25,
     RESTORE_FOOTPRINT = 26
 };
 
@@ -484,7 +484,7 @@ enum ContractIDPreimageType
     CONTRACT_ID_PREIMAGE_FROM_ADDRESS = 0,
     CONTRACT_ID_PREIMAGE_FROM_ASSET = 1
 };
-
+ 
 union ContractIDPreimage switch (ContractIDPreimageType type)
 {
 case CONTRACT_ID_PREIMAGE_FROM_ADDRESS:
@@ -543,7 +543,7 @@ struct SorobanAddressCredentials
 {
     SCAddress address;
     int64 nonce;
-    uint32 signatureExpirationLedger;
+    uint32 signatureExpirationLedger;    
     SCVal signature;
 };
 
@@ -563,7 +563,7 @@ case SOROBAN_CREDENTIALS_ADDRESS:
 
 /* Unit of authorization data for Soroban.
 
-   Represents an authorization for executing the tree of authorized contract
+   Represents an authorization for executing the tree of authorized contract 
    and/or host function calls by the user defined by `credentials`.
 */
 struct SorobanAuthorizationEntry
@@ -585,19 +585,19 @@ struct InvokeHostFunctionOp
     SorobanAuthorizationEntry auth<>;
 };
 
-/* Bump the expiration ledger of the entries specified in the readOnly footprint
-   so they'll expire at least ledgersToExpire ledgers from lcl.
+/* Extend the TTL of the entries specified in the readOnly footprint
+   so they will live at least extendTo ledgers from lcl.
 
     Threshold: med
-    Result: BumpFootprintExpirationResult
+    Result: ExtendFootprintTTLResult
 */
-struct BumpFootprintExpirationOp
+struct ExtendFootprintTTLOp
 {
     ExtensionPoint ext;
-    uint32 ledgersToExpire;
+    uint32 extendTo;
 };
 
-/* Restore the expired or evicted entries specified in the readWrite footprint.
+/* Restore the archived entries specified in the readWrite footprint.
 
     Threshold: med
     Result: RestoreFootprintOp
@@ -667,8 +667,8 @@ struct Operation
         LiquidityPoolWithdrawOp liquidityPoolWithdrawOp;
     case INVOKE_HOST_FUNCTION:
         InvokeHostFunctionOp invokeHostFunctionOp;
-    case BUMP_FOOTPRINT_EXPIRATION:
-        BumpFootprintExpirationOp bumpFootprintExpirationOp;
+    case EXTEND_FOOTPRINT_TTL:
+        ExtendFootprintTTLOp extendFootprintTTLOp;
     case RESTORE_FOOTPRINT:
         RestoreFootprintOp restoreFootprintOp;
     }
@@ -688,7 +688,7 @@ case ENVELOPE_TYPE_POOL_REVOKE_OP_ID:
     struct
     {
         AccountID sourceAccount;
-        SequenceNumber seqNum;
+        SequenceNumber seqNum; 
         uint32 opNum;
         PoolID liquidityPoolID;
         Asset asset;
@@ -804,11 +804,11 @@ struct LedgerFootprint
 // Resource limits for a Soroban transaction.
 // The transaction will fail if it exceeds any of these limits.
 struct SorobanResources
-{
+{   
     // The ledger footprint of the transaction.
     LedgerFootprint footprint;
     // The maximum number of instructions this transaction can use
-    uint32 instructions;
+    uint32 instructions; 
 
     // The maximum number of bytes this transaction can read from ledger
     uint32 readBytes;
@@ -821,8 +821,16 @@ struct SorobanTransactionData
 {
     ExtensionPoint ext;
     SorobanResources resources;
-    // Portion of transaction `fee` allocated to refundable fees.
-    int64 refundableFee;
+    // Amount of the transaction `fee` allocated to the Soroban resource fees.
+    // The fraction of `resourceFee` corresponding to `resources` specified 
+    // above is *not* refundable (i.e. fees for instructions, ledger I/O), as
+    // well as fees for the transaction size.
+    // The remaining part of the fee is refundable and the charged value is
+    // based on the actual consumption of refundable resources (events, ledger
+    // rent bumps).
+    // The `inclusionFee` used for prioritization of the transaction is defined
+    // as `tx.fee - resourceFee`.
+    int64 resourceFee;
 };
 
 // TransactionV0 is a transaction with the AccountID discriminant stripped off,
@@ -1789,7 +1797,7 @@ enum InvokeHostFunctionResultCode
     INVOKE_HOST_FUNCTION_MALFORMED = -1,
     INVOKE_HOST_FUNCTION_TRAPPED = -2,
     INVOKE_HOST_FUNCTION_RESOURCE_LIMIT_EXCEEDED = -3,
-    INVOKE_HOST_FUNCTION_ENTRY_EXPIRED = -4,
+    INVOKE_HOST_FUNCTION_ENTRY_ARCHIVED = -4,
     INVOKE_HOST_FUNCTION_INSUFFICIENT_REFUNDABLE_FEE = -5
 };
 
@@ -1800,29 +1808,29 @@ case INVOKE_HOST_FUNCTION_SUCCESS:
 case INVOKE_HOST_FUNCTION_MALFORMED:
 case INVOKE_HOST_FUNCTION_TRAPPED:
 case INVOKE_HOST_FUNCTION_RESOURCE_LIMIT_EXCEEDED:
-case INVOKE_HOST_FUNCTION_ENTRY_EXPIRED:
+case INVOKE_HOST_FUNCTION_ENTRY_ARCHIVED:
 case INVOKE_HOST_FUNCTION_INSUFFICIENT_REFUNDABLE_FEE:
     void;
 };
 
-enum BumpFootprintExpirationResultCode
+enum ExtendFootprintTTLResultCode
 {
     // codes considered as "success" for the operation
-    BUMP_FOOTPRINT_EXPIRATION_SUCCESS = 0,
+    EXTEND_FOOTPRINT_TTL_SUCCESS = 0,
 
     // codes considered as "failure" for the operation
-    BUMP_FOOTPRINT_EXPIRATION_MALFORMED = -1,
-    BUMP_FOOTPRINT_EXPIRATION_RESOURCE_LIMIT_EXCEEDED = -2,
-    BUMP_FOOTPRINT_EXPIRATION_INSUFFICIENT_REFUNDABLE_FEE = -3
+    EXTEND_FOOTPRINT_TTL_MALFORMED = -1,
+    EXTEND_FOOTPRINT_TTL_RESOURCE_LIMIT_EXCEEDED = -2,
+    EXTEND_FOOTPRINT_TTL_INSUFFICIENT_REFUNDABLE_FEE = -3
 };
 
-union BumpFootprintExpirationResult switch (BumpFootprintExpirationResultCode code)
+union ExtendFootprintTTLResult switch (ExtendFootprintTTLResultCode code)
 {
-case BUMP_FOOTPRINT_EXPIRATION_SUCCESS:
+case EXTEND_FOOTPRINT_TTL_SUCCESS:
     void;
-case BUMP_FOOTPRINT_EXPIRATION_MALFORMED:
-case BUMP_FOOTPRINT_EXPIRATION_RESOURCE_LIMIT_EXCEEDED:
-case BUMP_FOOTPRINT_EXPIRATION_INSUFFICIENT_REFUNDABLE_FEE:
+case EXTEND_FOOTPRINT_TTL_MALFORMED:
+case EXTEND_FOOTPRINT_TTL_RESOURCE_LIMIT_EXCEEDED:
+case EXTEND_FOOTPRINT_TTL_INSUFFICIENT_REFUNDABLE_FEE:
     void;
 };
 
@@ -1915,8 +1923,8 @@ case opINNER:
         LiquidityPoolWithdrawResult liquidityPoolWithdrawResult;
     case INVOKE_HOST_FUNCTION:
         InvokeHostFunctionResult invokeHostFunctionResult;
-    case BUMP_FOOTPRINT_EXPIRATION:
-        BumpFootprintExpirationResult bumpFootprintExpirationResult;
+    case EXTEND_FOOTPRINT_TTL:
+        ExtendFootprintTTLResult extendFootprintTTLResult;
     case RESTORE_FOOTPRINT:
         RestoreFootprintResult restoreFootprintResult;
     }

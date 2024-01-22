@@ -10,7 +10,7 @@ require 'xdr'
 #   case LIVEENTRY:
 #   case INITENTRY:
 #       LedgerEntry liveEntry;
-#
+#   
 #   case DEADENTRY:
 #       LedgerKey deadEntry;
 #   case METAENTRY:

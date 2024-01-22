@@ -5,17 +5,16 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct
-#       {
-#           // Hash of the LedgerKey that is associated with this ExpirationEntry
-#           Hash keyHash;
-#       }
+#   struct ExtendFootprintTTLOp
+#   {
+#       ExtensionPoint ext;
+#       uint32 extendTo;
+#   };
 #
 # ===========================================================================
 module Stellar
-  class LedgerKey
-    class Expiration < XDR::Struct
-      attribute :key_hash, Hash
-    end
+  class ExtendFootprintTTLOp < XDR::Struct
+    attribute :ext,       ExtensionPoint
+    attribute :extend_to, Uint32
   end
 end

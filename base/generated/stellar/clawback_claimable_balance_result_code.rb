@@ -9,7 +9,7 @@ require 'xdr'
 #   {
 #       // codes considered as "success" for the operation
 #       CLAWBACK_CLAIMABLE_BALANCE_SUCCESS = 0,
-#
+#   
 #       // codes considered as "failure" for the operation
 #       CLAWBACK_CLAIMABLE_BALANCE_DOES_NOT_EXIST = -1,
 #       CLAWBACK_CLAIMABLE_BALANCE_NOT_ISSUER = -2,

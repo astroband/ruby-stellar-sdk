@@ -27,8 +27,8 @@ require 'xdr'
 #       uint32 contractDataKeySizeBytes;
 #   case CONFIG_SETTING_CONTRACT_DATA_ENTRY_SIZE_BYTES:
 #       uint32 contractDataEntrySizeBytes;
-#   case CONFIG_SETTING_STATE_EXPIRATION:
-#       StateExpirationSettings stateExpirationSettings;
+#   case CONFIG_SETTING_STATE_ARCHIVAL:
+#       StateArchivalSettings stateArchivalSettings;
 #   case CONFIG_SETTING_CONTRACT_EXECUTION_LANES:
 #       ConfigSettingContractExecutionLanesV0 contractExecutionLanes;
 #   case CONFIG_SETTING_BUCKETLIST_SIZE_WINDOW:
@@ -52,7 +52,7 @@ module Stellar
     switch :config_setting_contract_cost_params_memory_bytes,     :contract_cost_params_mem_bytes
     switch :config_setting_contract_data_key_size_bytes,          :contract_data_key_size_bytes
     switch :config_setting_contract_data_entry_size_bytes,        :contract_data_entry_size_bytes
-    switch :config_setting_state_expiration,                      :state_expiration_settings
+    switch :config_setting_state_archival,                        :state_archival_settings
     switch :config_setting_contract_execution_lanes,              :contract_execution_lanes
     switch :config_setting_bucketlist_size_window,                :bucket_list_size_window
     switch :config_setting_eviction_iterator,                     :eviction_iterator
@@ -67,7 +67,7 @@ module Stellar
     attribute :contract_cost_params_mem_bytes, ContractCostParams
     attribute :contract_data_key_size_bytes,   Uint32
     attribute :contract_data_entry_size_bytes, Uint32
-    attribute :state_expiration_settings,      StateExpirationSettings
+    attribute :state_archival_settings,        StateArchivalSettings
     attribute :contract_execution_lanes,       ConfigSettingContractExecutionLanesV0
     attribute :bucket_list_size_window,        XDR::VarArray[Uint64]
     attribute :eviction_iterator,              EvictionIterator

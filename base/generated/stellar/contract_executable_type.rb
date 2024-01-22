@@ -8,14 +8,14 @@ require 'xdr'
 #   enum ContractExecutableType
 #   {
 #       CONTRACT_EXECUTABLE_WASM = 0,
-#       CONTRACT_EXECUTABLE_TOKEN = 1
+#       CONTRACT_EXECUTABLE_STELLAR_ASSET = 1
 #   };
 #
 # ===========================================================================
 module Stellar
   class ContractExecutableType < XDR::Enum
-    member :contract_executable_wasm,  0
-    member :contract_executable_token, 1
+    member :contract_executable_wasm,          0
+    member :contract_executable_stellar_asset, 1
 
     seal
   end

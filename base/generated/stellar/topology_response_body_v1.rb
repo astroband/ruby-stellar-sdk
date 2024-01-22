@@ -9,10 +9,10 @@ require 'xdr'
 #   {
 #       PeerStatList inboundPeers;
 #       PeerStatList outboundPeers;
-#
+#   
 #       uint32 totalInboundPeerCount;
 #       uint32 totalOutboundPeerCount;
-#
+#   
 #       uint32 maxInboundPeerCount;
 #       uint32 maxOutboundPeerCount;
 #   };

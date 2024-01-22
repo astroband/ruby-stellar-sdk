@@ -5,18 +5,17 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct ChangeTrustOp
-#   {
-#       ChangeTrustAsset line;
-#   
-#       // if limit is set to 0, deletes the trust line
-#       int64 limit;
-#   };
+#   struct
+#       {
+#           // Hash of the LedgerKey that is associated with this TTLEntry
+#           Hash keyHash;
+#       }
 #
 # ===========================================================================
 module Stellar
-  class ChangeTrustOp < XDR::Struct
-    attribute :line,  ChangeTrustAsset
-    attribute :limit, Int64
+  class LedgerKey
+    class Ttl < XDR::Struct
+      attribute :key_hash, Hash
+    end
   end
 end

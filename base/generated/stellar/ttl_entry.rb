@@ -5,16 +5,16 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct ExpirationEntry {
-#       // Hash of the LedgerKey that is associated with this ExpirationEntry
+#   struct TTLEntry {
+#       // Hash of the LedgerKey that is associated with this TTLEntry
 #       Hash keyHash;
-#       uint32 expirationLedgerSeq;
+#       uint32 liveUntilLedgerSeq;
 #   };
 #
 # ===========================================================================
 module Stellar
-  class ExpirationEntry < XDR::Struct
+  class TTLEntry < XDR::Struct
     attribute :key_hash,              Hash
-    attribute :expiration_ledger_seq, Uint32
+    attribute :live_until_ledger_seq, Uint32
   end
 end

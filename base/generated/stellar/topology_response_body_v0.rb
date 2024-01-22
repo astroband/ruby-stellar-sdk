@@ -9,7 +9,7 @@ require 'xdr'
 #   {
 #       PeerStatList inboundPeers;
 #       PeerStatList outboundPeers;
-#
+#   
 #       uint32 totalInboundPeerCount;
 #       uint32 totalOutboundPeerCount;
 #   };

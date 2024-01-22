@@ -9,16 +9,16 @@ require 'xdr'
 #   {
 #       // Unique identifier for this ClaimableBalanceEntry
 #       ClaimableBalanceID balanceID;
-#
+#   
 #       // List of claimants with associated predicate
 #       Claimant claimants<10>;
-#
+#   
 #       // Any asset including native
 #       Asset asset;
-#
+#   
 #       // Amount of asset
 #       int64 amount;
-#
+#   
 #       // reserved for future use
 #       union switch (int v)
 #       {

@@ -60,8 +60,8 @@ require 'xdr'
 #           LiquidityPoolWithdrawResult liquidityPoolWithdrawResult;
 #       case INVOKE_HOST_FUNCTION:
 #           InvokeHostFunctionResult invokeHostFunctionResult;
-#       case BUMP_FOOTPRINT_EXPIRATION:
-#           BumpFootprintExpirationResult bumpFootprintExpirationResult;
+#       case EXTEND_FOOTPRINT_TTL:
+#           ExtendFootprintTTLResult extendFootprintTTLResult;
 #       case RESTORE_FOOTPRINT:
 #           RestoreFootprintResult restoreFootprintResult;
 #       }

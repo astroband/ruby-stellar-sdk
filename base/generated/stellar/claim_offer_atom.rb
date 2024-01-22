@@ -10,11 +10,11 @@ require 'xdr'
 #       // emitted to identify the offer
 #       AccountID sellerID; // Account that owns the offer
 #       int64 offerID;
-#
+#   
 #       // amount and asset taken from the owner
 #       Asset assetSold;
 #       int64 amountSold;
-#
+#   
 #       // amount and asset sent to the owner
 #       Asset assetBought;
 #       int64 amountBought;

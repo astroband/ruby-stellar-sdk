@@ -9,7 +9,7 @@ require 'xdr'
 #   {
 #       uint32 ledgerSeq;
 #       TransactionSet txSet;
-#
+#   
 #       // when v != 0, txSet must be empty
 #       union switch (int v)
 #       {

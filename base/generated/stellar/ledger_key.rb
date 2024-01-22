@@ -12,34 +12,34 @@ require 'xdr'
 #       {
 #           AccountID accountID;
 #       } account;
-#
+#   
 #   case TRUSTLINE:
 #       struct
 #       {
 #           AccountID accountID;
 #           TrustLineAsset asset;
 #       } trustLine;
-#
+#   
 #   case OFFER:
 #       struct
 #       {
 #           AccountID sellerID;
 #           int64 offerID;
 #       } offer;
-#
+#   
 #   case DATA:
 #       struct
 #       {
 #           AccountID accountID;
 #           string64 dataName;
 #       } data;
-#
+#   
 #   case CLAIMABLE_BALANCE:
 #       struct
 #       {
 #           ClaimableBalanceID balanceID;
 #       } claimableBalance;
-#
+#   
 #   case LIQUIDITY_POOL:
 #       struct
 #       {
@@ -62,12 +62,12 @@ require 'xdr'
 #       {
 #           ConfigSettingID configSettingID;
 #       } configSetting;
-#   case EXPIRATION:
+#   case TTL:
 #       struct
 #       {
-#           // Hash of the LedgerKey that is associated with this ExpirationEntry
+#           // Hash of the LedgerKey that is associated with this TTLEntry
 #           Hash keyHash;
-#       } expiration;
+#       } ttl;
 #   };
 #
 # ===========================================================================
@@ -84,7 +84,7 @@ module Stellar
     autoload :ContractData
     autoload :ContractCode
     autoload :ConfigSetting
-    autoload :Expiration
+    autoload :Ttl
 
     switch_on LedgerEntryType, :type
 
@@ -97,7 +97,7 @@ module Stellar
     switch :contract_data,     :contract_data
     switch :contract_code,     :contract_code
     switch :config_setting,    :config_setting
-    switch :expiration,        :expiration
+    switch :ttl,               :ttl
 
     attribute :account,           Account
     attribute :trust_line,        TrustLine
@@ -108,6 +108,6 @@ module Stellar
     attribute :contract_data,     ContractData
     attribute :contract_code,     ContractCode
     attribute :config_setting,    ConfigSetting
-    attribute :expiration,        Expiration
+    attribute :ttl,               Ttl
   end
 end

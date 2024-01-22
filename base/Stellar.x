@@ -170,7 +170,7 @@ enum SCValType
     SCV_ADDRESS = 18,
 
     // The following are the internal SCVal variants that are not
-    // exposed to the contracts.
+    // exposed to the contracts. 
     SCV_CONTRACT_INSTANCE = 19,
 
     // SCV_LEDGER_KEY_CONTRACT_INSTANCE and SCV_LEDGER_KEY_NONCE are unique
@@ -272,14 +272,14 @@ struct Int256Parts {
 enum ContractExecutableType
 {
     CONTRACT_EXECUTABLE_WASM = 0,
-    CONTRACT_EXECUTABLE_TOKEN = 1
+    CONTRACT_EXECUTABLE_STELLAR_ASSET = 1
 };
 
 union ContractExecutable switch (ContractExecutableType type)
 {
 case CONTRACT_EXECUTABLE_WASM:
     Hash wasm_hash;
-case CONTRACT_EXECUTABLE_TOKEN:
+case CONTRACT_EXECUTABLE_STELLAR_ASSET:
     void;
 };
 
@@ -444,7 +444,7 @@ struct ConfigSettingContractLedgerCostV0
     int64 bucketListTargetSizeBytes;
     // Fee per 1KB write when the bucket list is empty
     int64 writeFee1KBBucketListLow;
-    // Fee per 1KB write when the bucket list has reached `bucketListTargetSizeBytes`
+    // Fee per 1KB write when the bucket list has reached `bucketListTargetSizeBytes` 
     int64 writeFee1KBBucketListHigh;
     // Write fee multiplier for any additional data past the first `bucketListTargetSizeBytes`
     uint32 bucketListWriteFeeGrowthFactor;
@@ -482,64 +482,54 @@ struct ConfigSettingContractBandwidthV0
 enum ContractCostType {
     // Cost of running 1 wasm instruction
     WasmInsnExec = 0,
-    // Cost of growing wasm linear memory by 1 page
-    WasmMemAlloc = 1,
-    // Cost of allocating a chuck of host memory (in bytes)
-    HostMemAlloc = 2,
-    // Cost of copying a chuck of bytes into a pre-allocated host memory
-    HostMemCpy = 3,
-    // Cost of comparing two slices of host memory
-    HostMemCmp = 4,
+    // Cost of allocating a slice of memory (in bytes)
+    MemAlloc = 1,
+    // Cost of copying a slice of bytes into a pre-allocated memory
+    MemCpy = 2,
+    // Cost of comparing two slices of memory
+    MemCmp = 3,
     // Cost of a host function dispatch, not including the actual work done by
     // the function nor the cost of VM invocation machinary
-    DispatchHostFunction = 5,
-    // Cost of visiting a host object from the host object storage. Exists to
+    DispatchHostFunction = 4,
+    // Cost of visiting a host object from the host object storage. Exists to 
     // make sure some baseline cost coverage, i.e. repeatly visiting objects
     // by the guest will always incur some charges.
-    VisitObject = 6,
+    VisitObject = 5,
     // Cost of serializing an xdr object to bytes
-    ValSer = 7,
+    ValSer = 6,
     // Cost of deserializing an xdr object from bytes
-    ValDeser = 8,
+    ValDeser = 7,
     // Cost of computing the sha256 hash from bytes
-    ComputeSha256Hash = 9,
+    ComputeSha256Hash = 8,
     // Cost of computing the ed25519 pubkey from bytes
-    ComputeEd25519PubKey = 10,
-    // Cost of accessing an entry in a Map.
-    MapEntry = 11,
-    // Cost of accessing an entry in a Vec
-    VecEntry = 12,
+    ComputeEd25519PubKey = 9,
     // Cost of verifying ed25519 signature of a payload.
-    VerifyEd25519Sig = 13,
-    // Cost of reading a slice of vm linear memory
-    VmMemRead = 14,
-    // Cost of writing to a slice of vm linear memory
-    VmMemWrite = 15,
+    VerifyEd25519Sig = 10,
     // Cost of instantiation a VM from wasm bytes code.
-    VmInstantiation = 16,
+    VmInstantiation = 11,
     // Cost of instantiation a VM from a cached state.
-    VmCachedInstantiation = 17,
+    VmCachedInstantiation = 12,
     // Cost of invoking a function on the VM. If the function is a host function,
     // additional cost will be covered by `DispatchHostFunction`.
-    InvokeVmFunction = 18,
+    InvokeVmFunction = 13,
     // Cost of computing a keccak256 hash from bytes.
-    ComputeKeccak256Hash = 19,
-    // Cost of computing an ECDSA secp256k1 pubkey from bytes.
-    ComputeEcdsaSecp256k1Key = 20,
+    ComputeKeccak256Hash = 14,
     // Cost of computing an ECDSA secp256k1 signature from bytes.
-    ComputeEcdsaSecp256k1Sig = 21,
+    ComputeEcdsaSecp256k1Sig = 15,
     // Cost of recovering an ECDSA secp256k1 key from a signature.
-    RecoverEcdsaSecp256k1Key = 22,
+    RecoverEcdsaSecp256k1Key = 16,
     // Cost of int256 addition (`+`) and subtraction (`-`) operations
-    Int256AddSub = 23,
+    Int256AddSub = 17,
     // Cost of int256 multiplication (`*`) operation
-    Int256Mul = 24,
+    Int256Mul = 18,
     // Cost of int256 division (`/`) operation
-    Int256Div = 25,
+    Int256Div = 19,
     // Cost of int256 power (`exp`) operation
-    Int256Pow = 26,
+    Int256Pow = 20,
     // Cost of int256 shift (`shl`, `shr`) operation
-    Int256Shift = 27
+    Int256Shift = 21,
+    // Cost of drawing random bytes using a ChaCha20 PRNG
+    ChaCha20DrawBytes = 22
 };
 
 struct ContractCostParamEntry {
@@ -550,17 +540,17 @@ struct ContractCostParamEntry {
     int64 linearTerm;
 };
 
-struct StateExpirationSettings {
-    uint32 maxEntryExpiration;
-    uint32 minTempEntryExpiration;
-    uint32 minPersistentEntryExpiration;
+struct StateArchivalSettings {
+    uint32 maxEntryTTL;
+    uint32 minTemporaryTTL;
+    uint32 minPersistentTTL;
 
     // rent_fee = wfee_rate_average / rent_rate_denominator_for_type
     int64 persistentRentRateDenominator;
     int64 tempRentRateDenominator;
 
-    // max number of entries that emit expiration meta in a single ledger
-    uint32 maxEntriesToExpire;
+    // max number of entries that emit archival meta in a single ledger
+    uint32 maxEntriesToArchive;
 
     // Number of snapshots to use when calculating average BucketList size
     uint32 bucketListSizeWindowSampleSize;
@@ -596,7 +586,7 @@ enum ConfigSettingID
     CONFIG_SETTING_CONTRACT_COST_PARAMS_MEMORY_BYTES = 7,
     CONFIG_SETTING_CONTRACT_DATA_KEY_SIZE_BYTES = 8,
     CONFIG_SETTING_CONTRACT_DATA_ENTRY_SIZE_BYTES = 9,
-    CONFIG_SETTING_STATE_EXPIRATION = 10,
+    CONFIG_SETTING_STATE_ARCHIVAL = 10,
     CONFIG_SETTING_CONTRACT_EXECUTION_LANES = 11,
     CONFIG_SETTING_BUCKETLIST_SIZE_WINDOW = 12,
     CONFIG_SETTING_EVICTION_ITERATOR = 13
@@ -624,8 +614,8 @@ case CONFIG_SETTING_CONTRACT_DATA_KEY_SIZE_BYTES:
     uint32 contractDataKeySizeBytes;
 case CONFIG_SETTING_CONTRACT_DATA_ENTRY_SIZE_BYTES:
     uint32 contractDataEntrySizeBytes;
-case CONFIG_SETTING_STATE_EXPIRATION:
-    StateExpirationSettings stateExpirationSettings;
+case CONFIG_SETTING_STATE_ARCHIVAL:
+    StateArchivalSettings stateArchivalSettings;
 case CONFIG_SETTING_CONTRACT_EXECUTION_LANES:
     ConfigSettingContractExecutionLanesV0 contractExecutionLanes;
 case CONFIG_SETTING_BUCKETLIST_SIZE_WINDOW:
@@ -1035,7 +1025,7 @@ enum LedgerEntryType
     CONTRACT_DATA = 6,
     CONTRACT_CODE = 7,
     CONFIG_SETTING = 8,
-    EXPIRATION = 9
+    TTL = 9
 };
 
 struct Signer
@@ -1449,10 +1439,10 @@ struct ContractCodeEntry {
     opaque code<>;
 };
 
-struct ExpirationEntry {
-    // Hash of the LedgerKey that is associated with this ExpirationEntry
+struct TTLEntry {
+    // Hash of the LedgerKey that is associated with this TTLEntry
     Hash keyHash;
-    uint32 expirationLedgerSeq;
+    uint32 liveUntilLedgerSeq;
 };
 
 struct LedgerEntryExtensionV1
@@ -1491,8 +1481,8 @@ struct LedgerEntry
         ContractCodeEntry contractCode;
     case CONFIG_SETTING:
         ConfigSettingEntry configSetting;
-    case EXPIRATION:
-        ExpirationEntry expiration;
+    case TTL:
+        TTLEntry ttl;
     }
     data;
 
@@ -1564,12 +1554,12 @@ case CONFIG_SETTING:
     {
         ConfigSettingID configSettingID;
     } configSetting;
-case EXPIRATION:
+case TTL:
     struct
     {
-        // Hash of the LedgerKey that is associated with this ExpirationEntry
+        // Hash of the LedgerKey that is associated with this TTLEntry
         Hash keyHash;
-    } expiration;
+    } ttl;
 };
 
 // list of all envelope types used in the application
@@ -1655,7 +1645,7 @@ enum OperationType
     LIQUIDITY_POOL_DEPOSIT = 22,
     LIQUIDITY_POOL_WITHDRAW = 23,
     INVOKE_HOST_FUNCTION = 24,
-    BUMP_FOOTPRINT_EXPIRATION = 25,
+    EXTEND_FOOTPRINT_TTL = 25,
     RESTORE_FOOTPRINT = 26
 };
 
@@ -2076,7 +2066,7 @@ enum ContractIDPreimageType
     CONTRACT_ID_PREIMAGE_FROM_ADDRESS = 0,
     CONTRACT_ID_PREIMAGE_FROM_ASSET = 1
 };
-
+ 
 union ContractIDPreimage switch (ContractIDPreimageType type)
 {
 case CONTRACT_ID_PREIMAGE_FROM_ADDRESS:
@@ -2135,7 +2125,7 @@ struct SorobanAddressCredentials
 {
     SCAddress address;
     int64 nonce;
-    uint32 signatureExpirationLedger;
+    uint32 signatureExpirationLedger;    
     SCVal signature;
 };
 
@@ -2155,7 +2145,7 @@ case SOROBAN_CREDENTIALS_ADDRESS:
 
 /* Unit of authorization data for Soroban.
 
-   Represents an authorization for executing the tree of authorized contract
+   Represents an authorization for executing the tree of authorized contract 
    and/or host function calls by the user defined by `credentials`.
 */
 struct SorobanAuthorizationEntry
@@ -2177,19 +2167,19 @@ struct InvokeHostFunctionOp
     SorobanAuthorizationEntry auth<>;
 };
 
-/* Bump the expiration ledger of the entries specified in the readOnly footprint
-   so they'll expire at least ledgersToExpire ledgers from lcl.
+/* Extend the TTL of the entries specified in the readOnly footprint
+   so they will live at least extendTo ledgers from lcl.
 
     Threshold: med
-    Result: BumpFootprintExpirationResult
+    Result: ExtendFootprintTTLResult
 */
-struct BumpFootprintExpirationOp
+struct ExtendFootprintTTLOp
 {
     ExtensionPoint ext;
-    uint32 ledgersToExpire;
+    uint32 extendTo;
 };
 
-/* Restore the expired or evicted entries specified in the readWrite footprint.
+/* Restore the archived entries specified in the readWrite footprint.
 
     Threshold: med
     Result: RestoreFootprintOp
@@ -2259,8 +2249,8 @@ struct Operation
         LiquidityPoolWithdrawOp liquidityPoolWithdrawOp;
     case INVOKE_HOST_FUNCTION:
         InvokeHostFunctionOp invokeHostFunctionOp;
-    case BUMP_FOOTPRINT_EXPIRATION:
-        BumpFootprintExpirationOp bumpFootprintExpirationOp;
+    case EXTEND_FOOTPRINT_TTL:
+        ExtendFootprintTTLOp extendFootprintTTLOp;
     case RESTORE_FOOTPRINT:
         RestoreFootprintOp restoreFootprintOp;
     }
@@ -2280,7 +2270,7 @@ case ENVELOPE_TYPE_POOL_REVOKE_OP_ID:
     struct
     {
         AccountID sourceAccount;
-        SequenceNumber seqNum;
+        SequenceNumber seqNum; 
         uint32 opNum;
         PoolID liquidityPoolID;
         Asset asset;
@@ -2396,11 +2386,11 @@ struct LedgerFootprint
 // Resource limits for a Soroban transaction.
 // The transaction will fail if it exceeds any of these limits.
 struct SorobanResources
-{
+{   
     // The ledger footprint of the transaction.
     LedgerFootprint footprint;
     // The maximum number of instructions this transaction can use
-    uint32 instructions;
+    uint32 instructions; 
 
     // The maximum number of bytes this transaction can read from ledger
     uint32 readBytes;
@@ -2413,8 +2403,16 @@ struct SorobanTransactionData
 {
     ExtensionPoint ext;
     SorobanResources resources;
-    // Portion of transaction `fee` allocated to refundable fees.
-    int64 refundableFee;
+    // Amount of the transaction `fee` allocated to the Soroban resource fees.
+    // The fraction of `resourceFee` corresponding to `resources` specified 
+    // above is *not* refundable (i.e. fees for instructions, ledger I/O), as
+    // well as fees for the transaction size.
+    // The remaining part of the fee is refundable and the charged value is
+    // based on the actual consumption of refundable resources (events, ledger
+    // rent bumps).
+    // The `inclusionFee` used for prioritization of the transaction is defined
+    // as `tx.fee - resourceFee`.
+    int64 resourceFee;
 };
 
 // TransactionV0 is a transaction with the AccountID discriminant stripped off,
@@ -3381,7 +3379,7 @@ enum InvokeHostFunctionResultCode
     INVOKE_HOST_FUNCTION_MALFORMED = -1,
     INVOKE_HOST_FUNCTION_TRAPPED = -2,
     INVOKE_HOST_FUNCTION_RESOURCE_LIMIT_EXCEEDED = -3,
-    INVOKE_HOST_FUNCTION_ENTRY_EXPIRED = -4,
+    INVOKE_HOST_FUNCTION_ENTRY_ARCHIVED = -4,
     INVOKE_HOST_FUNCTION_INSUFFICIENT_REFUNDABLE_FEE = -5
 };
 
@@ -3392,29 +3390,29 @@ case INVOKE_HOST_FUNCTION_SUCCESS:
 case INVOKE_HOST_FUNCTION_MALFORMED:
 case INVOKE_HOST_FUNCTION_TRAPPED:
 case INVOKE_HOST_FUNCTION_RESOURCE_LIMIT_EXCEEDED:
-case INVOKE_HOST_FUNCTION_ENTRY_EXPIRED:
+case INVOKE_HOST_FUNCTION_ENTRY_ARCHIVED:
 case INVOKE_HOST_FUNCTION_INSUFFICIENT_REFUNDABLE_FEE:
     void;
 };
 
-enum BumpFootprintExpirationResultCode
+enum ExtendFootprintTTLResultCode
 {
     // codes considered as "success" for the operation
-    BUMP_FOOTPRINT_EXPIRATION_SUCCESS = 0,
+    EXTEND_FOOTPRINT_TTL_SUCCESS = 0,
 
     // codes considered as "failure" for the operation
-    BUMP_FOOTPRINT_EXPIRATION_MALFORMED = -1,
-    BUMP_FOOTPRINT_EXPIRATION_RESOURCE_LIMIT_EXCEEDED = -2,
-    BUMP_FOOTPRINT_EXPIRATION_INSUFFICIENT_REFUNDABLE_FEE = -3
+    EXTEND_FOOTPRINT_TTL_MALFORMED = -1,
+    EXTEND_FOOTPRINT_TTL_RESOURCE_LIMIT_EXCEEDED = -2,
+    EXTEND_FOOTPRINT_TTL_INSUFFICIENT_REFUNDABLE_FEE = -3
 };
 
-union BumpFootprintExpirationResult switch (BumpFootprintExpirationResultCode code)
+union ExtendFootprintTTLResult switch (ExtendFootprintTTLResultCode code)
 {
-case BUMP_FOOTPRINT_EXPIRATION_SUCCESS:
+case EXTEND_FOOTPRINT_TTL_SUCCESS:
     void;
-case BUMP_FOOTPRINT_EXPIRATION_MALFORMED:
-case BUMP_FOOTPRINT_EXPIRATION_RESOURCE_LIMIT_EXCEEDED:
-case BUMP_FOOTPRINT_EXPIRATION_INSUFFICIENT_REFUNDABLE_FEE:
+case EXTEND_FOOTPRINT_TTL_MALFORMED:
+case EXTEND_FOOTPRINT_TTL_RESOURCE_LIMIT_EXCEEDED:
+case EXTEND_FOOTPRINT_TTL_INSUFFICIENT_REFUNDABLE_FEE:
     void;
 };
 
@@ -3507,8 +3505,8 @@ case opINNER:
         LiquidityPoolWithdrawResult liquidityPoolWithdrawResult;
     case INVOKE_HOST_FUNCTION:
         InvokeHostFunctionResult invokeHostFunctionResult;
-    case BUMP_FOOTPRINT_EXPIRATION:
-        BumpFootprintExpirationResult bumpFootprintExpirationResult;
+    case EXTEND_FOOTPRINT_TTL:
+        ExtendFootprintTTLResult extendFootprintTTLResult;
     case RESTORE_FOOTPRINT:
         RestoreFootprintResult restoreFootprintResult;
     }
@@ -4041,7 +4039,7 @@ struct DiagnosticEvent
     ContractEvent event;
 };
 
-struct SorobanTransactionMeta
+struct SorobanTransactionMeta 
 {
     ExtensionPoint ext;
 
@@ -4064,11 +4062,11 @@ struct TransactionMetaV3
     OperationMeta operations<>;          // meta for each operation
     LedgerEntryChanges txChangesAfter;   // tx level changes after operations are
                                          // applied if any
-    SorobanTransactionMeta* sorobanMeta; // Soroban-specific meta (only for
+    SorobanTransactionMeta* sorobanMeta; // Soroban-specific meta (only for 
                                          // Soroban transactions).
 };
 
-// This is in Stellar-ledger.x to due to a circular dependency
+// This is in Stellar-ledger.x to due to a circular dependency 
 struct InvokeHostFunctionSuccessPreImage
 {
     SCVal returnValue;
@@ -4127,26 +4125,8 @@ struct LedgerCloseMetaV0
 
 struct LedgerCloseMetaV1
 {
-    LedgerHeaderHistoryEntry ledgerHeader;
-
-    GeneralizedTransactionSet txSet;
-
-    // NB: transactions are sorted in apply order here
-    // fees for all transactions are processed first
-    // followed by applying transactions
-    TransactionResultMeta txProcessing<>;
-
-    // upgrades are applied last
-    UpgradeEntryMeta upgradesProcessing<>;
-
-    // other misc information attached to the ledger close
-    SCPHistoryEntry scpInfo<>;
-};
-
-struct LedgerCloseMetaV2
-{
-    // We forgot to add an ExtensionPoint in v1 but at least
-    // we can add one now in v2.
+    // We forgot to add an ExtensionPoint in v0 but at least
+    // we can add one now in v1.
     ExtensionPoint ext;
 
     LedgerHeaderHistoryEntry ledgerHeader;
@@ -4168,10 +4148,10 @@ struct LedgerCloseMetaV2
     // systems calculating storage fees correctly.
     uint64 totalByteSizeOfBucketList;
 
-    // Expired temp keys that are being evicted at this ledger.
+    // Temp keys that are being evicted at this ledger.
     LedgerKey evictedTemporaryLedgerKeys<>;
 
-    // Expired restorable ledger entries that are being
+    // Archived restorable ledger entries that are being
     // evicted at this ledger.
     LedgerEntry evictedPersistentLedgerEntries<>;
 };
@@ -4182,8 +4162,6 @@ case 0:
     LedgerCloseMetaV0 v0;
 case 1:
     LedgerCloseMetaV1 v1;
-case 2:
-    LedgerCloseMetaV2 v2;
 };
 }
 
@@ -4591,30 +4569,37 @@ namespace stellar
 union StoredTransactionSet switch (int v)
 {
 case 0:
-  TransactionSet txSet;
+	TransactionSet txSet;
 case 1:
-  GeneralizedTransactionSet generalizedTxSet;
+	GeneralizedTransactionSet generalizedTxSet;
+};
+
+struct StoredDebugTransactionSet
+{
+	StoredTransactionSet txSet;
+	uint32 ledgerSeq;
+	StellarValue scpValue;
 };
 
 struct PersistedSCPStateV0
 {
-  SCPEnvelope scpEnvelopes<>;
-  SCPQuorumSet quorumSets<>;
-  StoredTransactionSet txSets<>;
+	SCPEnvelope scpEnvelopes<>;
+	SCPQuorumSet quorumSets<>;
+	StoredTransactionSet txSets<>;
 };
 
 struct PersistedSCPStateV1
 {
-  // Tx sets are saved separately
-  SCPEnvelope scpEnvelopes<>;
-  SCPQuorumSet quorumSets<>;
+	// Tx sets are saved separately
+	SCPEnvelope scpEnvelopes<>;
+	SCPQuorumSet quorumSets<>;
 };
 
 union PersistedSCPState switch (int v)
 {
 case 0:
-  PersistedSCPStateV0 v0;
+	PersistedSCPStateV0 v0;
 case 1:
-  PersistedSCPStateV1 v1;
+	PersistedSCPStateV1 v1;
 };
 }

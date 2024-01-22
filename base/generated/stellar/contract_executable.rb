@@ -9,7 +9,7 @@ require 'xdr'
 #   {
 #   case CONTRACT_EXECUTABLE_WASM:
 #       Hash wasm_hash;
-#   case CONTRACT_EXECUTABLE_TOKEN:
+#   case CONTRACT_EXECUTABLE_STELLAR_ASSET:
 #       void;
 #   };
 #
@@ -18,8 +18,8 @@ module Stellar
   class ContractExecutable < XDR::Union
     switch_on ContractExecutableType, :type
 
-    switch :contract_executable_wasm, :wasm_hash
-    switch :contract_executable_token
+    switch :contract_executable_wasm,        :wasm_hash
+    switch :contract_executable_stellar_asset
 
     attribute :wasm_hash, Hash
   end

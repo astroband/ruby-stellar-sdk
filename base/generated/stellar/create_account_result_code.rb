@@ -9,7 +9,7 @@ require 'xdr'
 #   {
 #       // codes considered as "success" for the operation
 #       CREATE_ACCOUNT_SUCCESS = 0, // account was created
-#
+#   
 #       // codes considered as "failure" for the operation
 #       CREATE_ACCOUNT_MALFORMED = -1,   // invalid destination
 #       CREATE_ACCOUNT_UNDERFUNDED = -2, // not enough funds in source account

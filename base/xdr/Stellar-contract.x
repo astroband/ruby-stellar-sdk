@@ -63,7 +63,7 @@ enum SCValType
     SCV_ADDRESS = 18,
 
     // The following are the internal SCVal variants that are not
-    // exposed to the contracts.
+    // exposed to the contracts. 
     SCV_CONTRACT_INSTANCE = 19,
 
     // SCV_LEDGER_KEY_CONTRACT_INSTANCE and SCV_LEDGER_KEY_NONCE are unique
@@ -165,14 +165,14 @@ struct Int256Parts {
 enum ContractExecutableType
 {
     CONTRACT_EXECUTABLE_WASM = 0,
-    CONTRACT_EXECUTABLE_TOKEN = 1
+    CONTRACT_EXECUTABLE_STELLAR_ASSET = 1
 };
 
 union ContractExecutable switch (ContractExecutableType type)
 {
 case CONTRACT_EXECUTABLE_WASM:
     Hash wasm_hash;
-case CONTRACT_EXECUTABLE_TOKEN:
+case CONTRACT_EXECUTABLE_STELLAR_ASSET:
     void;
 };
 

@@ -8,9 +8,9 @@ require 'xdr'
 #   union StoredTransactionSet switch (int v)
 #   {
 #   case 0:
-#     TransactionSet txSet;
+#   	TransactionSet txSet;
 #   case 1:
-#     GeneralizedTransactionSet generalizedTxSet;
+#   	GeneralizedTransactionSet generalizedTxSet;
 #   };
 #
 # ===========================================================================

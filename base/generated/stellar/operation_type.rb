@@ -32,7 +32,7 @@ require 'xdr'
 #       LIQUIDITY_POOL_DEPOSIT = 22,
 #       LIQUIDITY_POOL_WITHDRAW = 23,
 #       INVOKE_HOST_FUNCTION = 24,
-#       BUMP_FOOTPRINT_EXPIRATION = 25,
+#       EXTEND_FOOTPRINT_TTL = 25,
 #       RESTORE_FOOTPRINT = 26
 #   };
 #
@@ -64,7 +64,7 @@ module Stellar
     member :liquidity_pool_deposit,           22
     member :liquidity_pool_withdraw,          23
     member :invoke_host_function,             24
-    member :bump_footprint_expiration,        25
+    member :extend_footprint_ttl,             25
     member :restore_footprint,                26
 
     seal

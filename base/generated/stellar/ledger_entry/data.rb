@@ -25,8 +25,8 @@ require 'xdr'
 #           ContractCodeEntry contractCode;
 #       case CONFIG_SETTING:
 #           ConfigSettingEntry configSetting;
-#       case EXPIRATION:
-#           ExpirationEntry expiration;
+#       case TTL:
+#           TTLEntry ttl;
 #       }
 #
 # ===========================================================================
@@ -44,7 +44,7 @@ module Stellar
       switch :contract_data,     :contract_data
       switch :contract_code,     :contract_code
       switch :config_setting,    :config_setting
-      switch :expiration,        :expiration
+      switch :ttl,               :ttl
 
       attribute :account,           AccountEntry
       attribute :trust_line,        TrustLineEntry
@@ -55,7 +55,7 @@ module Stellar
       attribute :contract_data,     ContractDataEntry
       attribute :contract_code,     ContractCodeEntry
       attribute :config_setting,    ConfigSettingEntry
-      attribute :expiration,        ExpirationEntry
+      attribute :ttl,               TTLEntry
     end
   end
 end

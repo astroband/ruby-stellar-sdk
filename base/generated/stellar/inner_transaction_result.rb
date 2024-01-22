@@ -9,7 +9,7 @@ require 'xdr'
 #   {
 #       // Always 0. Here for binary compatibility.
 #       int64 feeCharged;
-#
+#   
 #       union switch (TransactionResultCode code)
 #       {
 #       // txFEE_BUMP_INNER_SUCCESS is not included
@@ -35,7 +35,7 @@ require 'xdr'
 #           void;
 #       }
 #       result;
-#
+#   
 #       // reserved for future use
 #       union switch (int v)
 #       {
