@@ -426,30 +426,30 @@ RSpec.describe Stellar::Operation do
     end
   end
 
-  describe ".bump_footprint_expiration" do
-    let(:ledgers_to_expire) { 100 }
-    let(:attrs) { {source_account: account, ledgers_to_expire: ledgers_to_expire} }
-    subject(:operation) { described_class.bump_footprint_expiration(**attrs) }
+  describe ".extend_footprint_ttl" do
+    let(:extend_to) { 100 }
+    let(:attrs) { {source_account: account, extend_to: extend_to} }
+    subject(:operation) { described_class.extend_footprint_ttl(**attrs) }
 
     include_context "XDR serializable"
     its("source_account") { is_expected.to eq(account.muxed_account) }
-    its("body.value") { is_expected.to be_a(Stellar::BumpFootprintExpirationOp) }
-    its("body.value.ledgers_to_expire") { is_expected.to be_an(Integer) }
-    its("body.value.ledgers_to_expire") { is_expected.to eq(100) }
+    its("body.value") { is_expected.to be_a(Stellar::ExtendFootprintTTLOp) }
+    its("body.value.extend_to") { is_expected.to be_an(Integer) }
+    its("body.value.extend_to") { is_expected.to eq(100) }
 
     context "when negative ledgers to expire is provided" do
-      let(:ledgers_to_expire) { -100 }
+      let(:extend_to) { -100 }
 
       it "raises error" do
-        expect { operation }.to raise_error(ArgumentError, ":ledgers_to_expire must be positive")
+        expect { operation }.to raise_error(ArgumentError, ":extend_to must be positive")
       end
     end
 
     context "when ledgers to expire is too large" do
-      let(:ledgers_to_expire) { 2**32 }
+      let(:extend_to) { 2**32 }
 
       it "raises error" do
-        expect { operation }.to raise_error(ArgumentError, ":ledgers_to_expire is too big")
+        expect { operation }.to raise_error(ArgumentError, ":extend_to is too big")
       end
     end
   end

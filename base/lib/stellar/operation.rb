@@ -487,20 +487,20 @@ module Stellar
       # Bump footprint expiration operation builder.
       #
       # @param source_account [KeyPair, nil] the source account for the operation
-      # @param ledgers_to_expire [Integer, #to_i] the number of ledgers to expire (uint32)
+      # @param extend_to [Integer, #to_i] the number of ledgers to expire (uint32)
       #
       # @return [Operation] the built operation
-      def bump_footprint_expiration(ledgers_to_expire:, source_account: nil)
-        ledgers_to_expire = ledgers_to_expire.to_i
-        raise ArgumentError, ":ledgers_to_expire must be positive" if ledgers_to_expire < 0
-        raise ArgumentError, ":ledgers_to_expire is too big" unless ledgers_to_expire <= MAX_UINT32
+      def extend_footprint_ttl(extend_to:, source_account: nil)
+        extend_to = extend_to.to_i
+        raise ArgumentError, ":extend_to must be positive" if extend_to < 0
+        raise ArgumentError, ":extend_to is too big" unless extend_to <= MAX_UINT32
 
-        op = BumpFootprintExpirationOp.new(
-          ledgers_to_expire: ledgers_to_expire,
+        op = ExtendFootprintTTLOp.new(
+          extend_to: extend_to,
           ext: Stellar::ExtensionPoint.new(0)
         )
 
-        make(source_account: source_account, body: [:bump_footprint_expiration, op])
+        make(source_account: source_account, body: [:extend_footprint_ttl, op])
       end
 
       # Restore footprint operation builder.
