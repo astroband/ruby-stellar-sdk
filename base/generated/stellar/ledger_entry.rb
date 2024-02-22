@@ -23,6 +23,14 @@ require 'xdr'
 #           ClaimableBalanceEntry claimableBalance;
 #       case LIQUIDITY_POOL:
 #           LiquidityPoolEntry liquidityPool;
+#       case CONTRACT_DATA:
+#           ContractDataEntry contractData;
+#       case CONTRACT_CODE:
+#           ContractCodeEntry contractCode;
+#       case CONFIG_SETTING:
+#           ConfigSettingEntry configSetting;
+#       case TTL:
+#           TTLEntry ttl;
 #       }
 #       data;
 #   

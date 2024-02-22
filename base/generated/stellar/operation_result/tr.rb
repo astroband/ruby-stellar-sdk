@@ -55,6 +55,12 @@ require 'xdr'
 #           LiquidityPoolDepositResult liquidityPoolDepositResult;
 #       case LIQUIDITY_POOL_WITHDRAW:
 #           LiquidityPoolWithdrawResult liquidityPoolWithdrawResult;
+#       case INVOKE_HOST_FUNCTION:
+#           InvokeHostFunctionResult invokeHostFunctionResult;
+#       case EXTEND_FOOTPRINT_TTL:
+#           ExtendFootprintTTLResult extendFootprintTTLResult;
+#       case RESTORE_FOOTPRINT:
+#           RestoreFootprintResult restoreFootprintResult;
 #       }
 #
 # ===========================================================================
@@ -87,6 +93,9 @@ module Stellar
       switch :set_trust_line_flags,             :set_trust_line_flags_result
       switch :liquidity_pool_deposit,           :liquidity_pool_deposit_result
       switch :liquidity_pool_withdraw,          :liquidity_pool_withdraw_result
+      switch :invoke_host_function,             :invoke_host_function_result
+      switch :extend_footprint_ttl,             :extend_footprint_ttl_result
+      switch :restore_footprint,                :restore_footprint_result
 
       attribute :create_account_result,                   CreateAccountResult
       attribute :payment_result,                          PaymentResult
@@ -112,6 +121,9 @@ module Stellar
       attribute :set_trust_line_flags_result,             SetTrustLineFlagsResult
       attribute :liquidity_pool_deposit_result,           LiquidityPoolDepositResult
       attribute :liquidity_pool_withdraw_result,          LiquidityPoolWithdrawResult
+      attribute :invoke_host_function_result,             InvokeHostFunctionResult
+      attribute :extend_footprint_ttl_result,             ExtendFootprintTTLResult
+      attribute :restore_footprint_result,                RestoreFootprintResult
     end
   end
 end

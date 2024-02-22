@@ -9,7 +9,10 @@ require 'xdr'
 #   {
 #   case MANAGE_DATA_SUCCESS:
 #       void;
-#   default:
+#   case MANAGE_DATA_NOT_SUPPORTED_YET:
+#   case MANAGE_DATA_NAME_NOT_FOUND:
+#   case MANAGE_DATA_LOW_RESERVE:
+#   case MANAGE_DATA_INVALID_NAME:
 #       void;
 #   };
 #
@@ -19,7 +22,10 @@ module Stellar
     switch_on ManageDataResultCode, :code
 
     switch :manage_data_success
-    switch :default
+    switch :manage_data_not_supported_yet
+    switch :manage_data_name_not_found
+    switch :manage_data_low_reserve
+    switch :manage_data_invalid_name
 
   end
 end

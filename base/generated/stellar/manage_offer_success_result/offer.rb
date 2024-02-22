@@ -10,7 +10,7 @@ require 'xdr'
 #       case MANAGE_OFFER_CREATED:
 #       case MANAGE_OFFER_UPDATED:
 #           OfferEntry offer;
-#       default:
+#       case MANAGE_OFFER_DELETED:
 #           void;
 #       }
 #
@@ -22,7 +22,7 @@ module Stellar
 
       switch :manage_offer_created, :offer
       switch :manage_offer_updated, :offer
-      switch :default
+      switch :manage_offer_deleted
 
       attribute :offer, OfferEntry
     end

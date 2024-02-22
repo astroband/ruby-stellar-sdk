@@ -407,6 +407,7 @@ RSpec.describe Stellar::Operation do
 
     it_behaves_like "XDR serializable"
 
+    its("source_account") { is_expected.to eq(account.muxed_account) }
     its("body.value") { is_expected.to be_a(Stellar::ClawbackClaimableBalanceOp) }
     its("body.value.balance_id") { is_expected.to be_a(Stellar::ClaimableBalanceID) }
 
@@ -416,8 +417,6 @@ RSpec.describe Stellar::Operation do
       expect(hex_balance_id).to eq(balance_id)
     end
 
-    its("source_account") { is_expected.to eq(account.muxed_account) }
-
     context "when invalid balance id is provided" do
       let(:balance_id) { "someinvalidstring" }
 
@@ -425,5 +424,42 @@ RSpec.describe Stellar::Operation do
         expect { operation }.to raise_error(ArgumentError, "Claimable balance id '#{balance_id}' is invalid")
       end
     end
+  end
+
+  describe ".extend_footprint_ttl" do
+    let(:extend_to) { 100 }
+    let(:attrs) { {source_account: account, extend_to: extend_to} }
+    subject(:operation) { described_class.extend_footprint_ttl(**attrs) }
+
+    include_context "XDR serializable"
+    its("source_account") { is_expected.to eq(account.muxed_account) }
+    its("body.value") { is_expected.to be_a(Stellar::ExtendFootprintTTLOp) }
+    its("body.value.extend_to") { is_expected.to be_an(Integer) }
+    its("body.value.extend_to") { is_expected.to eq(100) }
+
+    context "when negative ledgers to expire is provided" do
+      let(:extend_to) { -100 }
+
+      it "raises error" do
+        expect { operation }.to raise_error(ArgumentError, ":extend_to must be positive")
+      end
+    end
+
+    context "when ledgers to expire is too large" do
+      let(:extend_to) { 2**32 }
+
+      it "raises error" do
+        expect { operation }.to raise_error(ArgumentError, ":extend_to is too big")
+      end
+    end
+  end
+
+  describe ".restore_footprint" do
+    let(:attrs) { {source_account: account} }
+    subject(:operation) { described_class.restore_footprint(**attrs) }
+
+    include_context "XDR serializable"
+    its("source_account") { is_expected.to eq(account.muxed_account) }
+    its("body.value") { is_expected.to be_a(Stellar::RestoreFootprintOp) }
   end
 end

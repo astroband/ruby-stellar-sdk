@@ -12,6 +12,8 @@ module Stellar
   Int32 = XDR::Int
   Uint64 = XDR::UnsignedHyper
   Int64 = XDR::Hyper
+  TimePoint = Uint64
+  Duration = Uint64
   autoload :ExtensionPoint
   autoload :CryptoKeyType
   autoload :PublicKeyType
@@ -21,6 +23,7 @@ module Stellar
   Signature = XDR::VarOpaque[64]
   SignatureHint = XDR::Opaque[4]
   NodeID = PublicKey
+  AccountID = PublicKey
   autoload :Curve25519Secret
   autoload :Curve25519Public
   autoload :HmacSha256Key
@@ -29,13 +32,97 @@ end
 module Stellar
   include XDR::Namespace
 
-  AccountID = PublicKey
+  autoload :SCValType
+  autoload :SCErrorType
+  autoload :SCErrorCode
+  autoload :SCError
+  autoload :UInt128Parts
+  autoload :Int128Parts
+  autoload :UInt256Parts
+  autoload :Int256Parts
+  autoload :ContractExecutableType
+  autoload :ContractExecutable
+  autoload :SCAddressType
+  autoload :SCAddress
+  SCSYMBOL_LIMIT = 32
+  SCBytes = XDR::VarOpaque[]
+  SCString = XDR::String[]
+  SCSymbol = XDR::String[SCSYMBOL_LIMIT]
+  class SCVal < XDR::Union; end
+  SCVec = XDR::VarArray[SCVal]
+  autoload :SCMapEntry
+  SCMap = XDR::VarArray[SCMapEntry]
+  autoload :SCNonceKey
+  autoload :SCContractInstance
+  require_relative "stellar/sc_val"
+end
+module Stellar
+  include XDR::Namespace
+
+  autoload :ConfigSettingContractExecutionLanesV0
+  autoload :ConfigSettingContractComputeV0
+  autoload :ConfigSettingContractLedgerCostV0
+  autoload :ConfigSettingContractHistoricalDataV0
+  autoload :ConfigSettingContractEventsV0
+  autoload :ConfigSettingContractBandwidthV0
+  autoload :ContractCostType
+  autoload :ContractCostParamEntry
+  autoload :StateArchivalSettings
+  autoload :EvictionIterator
+  CONTRACT_COST_COUNT_LIMIT = 1024
+  ContractCostParams = XDR::VarArray[ContractCostParamEntry, CONTRACT_COST_COUNT_LIMIT]
+  autoload :ConfigSettingID
+  autoload :ConfigSettingEntry
+end
+module Stellar
+  include XDR::Namespace
+
+  autoload :SCEnvMetaKind
+  autoload :SCEnvMetaEntry
+end
+module Stellar
+  include XDR::Namespace
+
+  autoload :SCMetaV0
+  autoload :SCMetaKind
+  autoload :SCMetaEntry
+end
+module Stellar
+  include XDR::Namespace
+
+  SC_SPEC_DOC_LIMIT = 1024
+  autoload :SCSpecType
+  autoload :SCSpecTypeOption
+  autoload :SCSpecTypeResult
+  autoload :SCSpecTypeVec
+  autoload :SCSpecTypeMap
+  autoload :SCSpecTypeTuple
+  autoload :SCSpecTypeBytesN
+  autoload :SCSpecTypeUDT
+  autoload :SCSpecTypeDef
+  autoload :SCSpecUDTStructFieldV0
+  autoload :SCSpecUDTStructV0
+  autoload :SCSpecUDTUnionCaseVoidV0
+  autoload :SCSpecUDTUnionCaseTupleV0
+  autoload :SCSpecUDTUnionCaseV0Kind
+  autoload :SCSpecUDTUnionCaseV0
+  autoload :SCSpecUDTUnionV0
+  autoload :SCSpecUDTEnumCaseV0
+  autoload :SCSpecUDTEnumV0
+  autoload :SCSpecUDTErrorEnumCaseV0
+  autoload :SCSpecUDTErrorEnumV0
+  autoload :SCSpecFunctionInputV0
+  autoload :SCSpecFunctionV0
+  autoload :SCSpecEntryKind
+  autoload :SCSpecEntry
+end
+module Stellar
+  include XDR::Namespace
+
   Thresholds = XDR::Opaque[4]
   String32 = XDR::String[32]
   String64 = XDR::String[64]
   SequenceNumber = Int64
-  TimePoint = Uint64
-  Duration = Uint64
   DataValue = XDR::VarOpaque[64]
   PoolID = Hash
   AssetCode4 = XDR::Opaque[4]
@@ -83,6 +170,10 @@ module Stellar
   autoload :ClaimableBalanceEntry
   autoload :LiquidityPoolConstantProductParameters
   autoload :LiquidityPoolEntry
+  autoload :ContractDataDurability
+  autoload :ContractDataEntry
+  autoload :ContractCodeEntry
+  autoload :TTLEntry
   autoload :LedgerEntryExtensionV1
   autoload :LedgerEntry
   autoload :LedgerKey
@@ -91,6 +182,7 @@ end
 module Stellar
   include XDR::Namespace
 
+  MAX_OPS_PER_TX = 100
   autoload :LiquidityPoolParameters
   autoload :MuxedAccount
   autoload :DecoratedSignature
@@ -119,6 +211,22 @@ module Stellar
   LIQUIDITY_POOL_FEE_V18 = 30
   autoload :LiquidityPoolDepositOp
   autoload :LiquidityPoolWithdrawOp
+  autoload :HostFunctionType
+  autoload :ContractIDPreimageType
+  autoload :ContractIDPreimage
+  autoload :CreateContractArgs
+  autoload :InvokeContractArgs
+  autoload :HostFunction
+  autoload :SorobanAuthorizedFunctionType
+  autoload :SorobanAuthorizedFunction
+  autoload :SorobanAuthorizedInvocation
+  autoload :SorobanAddressCredentials
+  autoload :SorobanCredentialsType
+  autoload :SorobanCredentials
+  autoload :SorobanAuthorizationEntry
+  autoload :InvokeHostFunctionOp
+  autoload :ExtendFootprintTTLOp
+  autoload :RestoreFootprintOp
   autoload :Operation
   autoload :HashIDPreimage
   autoload :MemoType
@@ -128,7 +236,9 @@ module Stellar
   autoload :PreconditionsV2
   autoload :PreconditionType
   autoload :Preconditions
-  MAX_OPS_PER_TX = 100
+  autoload :LedgerFootprint
+  autoload :SorobanResources
+  autoload :SorobanTransactionData
   autoload :TransactionV0
   autoload :TransactionV0Envelope
   autoload :Transaction
@@ -192,6 +302,12 @@ module Stellar
   autoload :LiquidityPoolDepositResult
   autoload :LiquidityPoolWithdrawResultCode
   autoload :LiquidityPoolWithdrawResult
+  autoload :InvokeHostFunctionResultCode
+  autoload :InvokeHostFunctionResult
+  autoload :ExtendFootprintTTLResultCode
+  autoload :ExtendFootprintTTLResult
+  autoload :RestoreFootprintResultCode
+  autoload :RestoreFootprintResult
   autoload :OperationResultCode
   autoload :OperationResult
   autoload :TransactionResultCode
@@ -211,11 +327,18 @@ module Stellar
   autoload :LedgerHeaderExtensionV1
   autoload :LedgerHeader
   autoload :LedgerUpgradeType
+  autoload :ConfigUpgradeSetKey
   autoload :LedgerUpgrade
+  autoload :ConfigUpgradeSet
   autoload :BucketEntryType
   autoload :BucketMetadata
   autoload :BucketEntry
+  autoload :TxSetComponentType
+  autoload :TxSetComponent
+  autoload :TransactionPhase
   autoload :TransactionSet
+  autoload :TransactionSetV1
+  autoload :GeneralizedTransactionSet
   autoload :TransactionResultPair
   autoload :TransactionResultSet
   autoload :TransactionHistoryEntry
@@ -230,10 +353,17 @@ module Stellar
   autoload :OperationMeta
   autoload :TransactionMetaV1
   autoload :TransactionMetaV2
+  autoload :ContractEventType
+  autoload :ContractEvent
+  autoload :DiagnosticEvent
+  autoload :SorobanTransactionMeta
+  autoload :TransactionMetaV3
+  autoload :InvokeHostFunctionSuccessPreImage
   autoload :TransactionMeta
   autoload :TransactionResultMeta
   autoload :UpgradeEntryMeta
   autoload :LedgerCloseMetaV0
+  autoload :LedgerCloseMetaV1
   autoload :LedgerCloseMeta
 end
 module Stellar
@@ -242,14 +372,17 @@ module Stellar
   autoload :ErrorCode
   autoload :Error
   autoload :SendMore
+  autoload :SendMoreExtended
   autoload :AuthCert
   autoload :Hello
+  AUTH_MSG_FLAG_FLOW_CONTROL_BYTES_REQUESTED = 200
   autoload :Auth
   autoload :IPAddrType
   autoload :PeerAddress
   autoload :MessageType
   autoload :DontHave
   autoload :SurveyMessageCommandType
+  autoload :SurveyMessageResponseType
   autoload :SurveyRequestMessage
   autoload :SignedSurveyRequestMessage
   EncryptedBody = XDR::VarOpaque[64000]
@@ -257,8 +390,15 @@ module Stellar
   autoload :SignedSurveyResponseMessage
   autoload :PeerStats
   PeerStatList = XDR::VarArray[PeerStats, 25]
-  autoload :TopologyResponseBody
+  autoload :TopologyResponseBodyV0
+  autoload :TopologyResponseBodyV1
   autoload :SurveyResponseBody
+  TX_ADVERT_VECTOR_MAX_SIZE = 1000
+  TxAdvertVector = XDR::VarArray[Hash, TX_ADVERT_VECTOR_MAX_SIZE]
+  autoload :FloodAdvert
+  TX_DEMAND_VECTOR_MAX_SIZE = 1000
+  TxDemandVector = XDR::VarArray[Hash, TX_DEMAND_VECTOR_MAX_SIZE]
+  autoload :FloodDemand
   autoload :StellarMessage
   autoload :AuthenticatedMessage
 end
@@ -272,4 +412,13 @@ module Stellar
   autoload :SCPStatement
   autoload :SCPEnvelope
   autoload :SCPQuorumSet
+end
+module Stellar
+  include XDR::Namespace
+
+  autoload :StoredTransactionSet
+  autoload :StoredDebugTransactionSet
+  autoload :PersistedSCPStateV0
+  autoload :PersistedSCPStateV1
+  autoload :PersistedSCPState
 end

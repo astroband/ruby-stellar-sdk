@@ -18,11 +18,25 @@ require 'xdr'
 #       struct
 #       {
 #           AccountID sourceAccount;
-#           SequenceNumber seqNum;
+#           SequenceNumber seqNum; 
 #           uint32 opNum;
 #           PoolID liquidityPoolID;
 #           Asset asset;
 #       } revokeID;
+#   case ENVELOPE_TYPE_CONTRACT_ID:
+#       struct
+#       {
+#           Hash networkID;
+#           ContractIDPreimage contractIDPreimage;
+#       } contractID;
+#   case ENVELOPE_TYPE_SOROBAN_AUTHORIZATION:
+#       struct
+#       {
+#           Hash networkID;
+#           int64 nonce;
+#           uint32 signatureExpirationLedger;
+#           SorobanAuthorizedInvocation invocation;
+#       } sorobanAuthorization;
 #   };
 #
 # ===========================================================================
@@ -32,13 +46,19 @@ module Stellar
 
     autoload :OperationID
     autoload :RevokeID
+    autoload :ContractID
+    autoload :SorobanAuthorization
 
     switch_on EnvelopeType, :type
 
-    switch :envelope_type_op_id,             :operation_id
-    switch :envelope_type_pool_revoke_op_id, :revoke_id
+    switch :envelope_type_op_id,                 :operation_id
+    switch :envelope_type_pool_revoke_op_id,     :revoke_id
+    switch :envelope_type_contract_id,           :contract_id
+    switch :envelope_type_soroban_authorization, :soroban_authorization
 
-    attribute :operation_id, OperationID
-    attribute :revoke_id,    RevokeID
+    attribute :operation_id,          OperationID
+    attribute :revoke_id,             RevokeID
+    attribute :contract_id,           ContractID
+    attribute :soroban_authorization, SorobanAuthorization
   end
 end

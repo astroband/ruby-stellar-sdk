@@ -11,11 +11,22 @@ RSpec.describe Stellar::Util::StrKey do
 
   describe "#check_decode" do
     it "properly decodes" do
-      expect(decode(:seed, "SAAAAAAAAAADST3H")).to eq_bytes("\x00\x00\x00\x00\x00\x00\x39")
-      expect(decode(:account_id, "GD777777777764TU")).to eq_bytes("\xFF\xFF\xFF\xFF\xFF\xFF\xFF")
-      expect(decode(:account_id, "GBQWWBFLRP3BXZD5")).to eq_bytes("\x61\x6b\x04\xab\x8b\xf6\x1b")
-      expect(decode(:pre_auth_tx, "TBU2RRGLXH3E4VON")).to eq_bytes("\x69\xa8\xc4\xcb\xb9\xf6\x4e")
-      expect(decode(:hash_x, "XBU2RRGLXH3E4PNW")).to eq_bytes("\x69\xa8\xc4\xcb\xb9\xf6\x4e")
+      expect(decode(:seed, "SAAAAAAAAAADST3H"))
+        .to eq_bytes("\x00\x00\x00\x00\x00\x00\x39")
+      expect(decode(:account_id, "GD777777777764TU"))
+        .to eq_bytes("\xFF\xFF\xFF\xFF\xFF\xFF\xFF")
+      expect(decode(:account_id, "GBQWWBFLRP3BXZD5"))
+        .to eq_bytes("\x61\x6b\x04\xab\x8b\xf6\x1b")
+      expect(decode(:pre_auth_tx, "TBU2RRGLXH3E4VON"))
+        .to eq_bytes("\x69\xa8\xc4\xcb\xb9\xf6\x4e")
+      expect(decode(:hash_x, "XBU2RRGLXH3E4PNW"))
+        .to eq_bytes("\x69\xa8\xc4\xcb\xb9\xf6\x4e")
+      expect(decode(:account_id, "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ"))
+        .to eq_bytes("\x3f\x0c\x34\xbf\x93\xad\x0d\x99\x71\xd0\x4c\xcc\x90\xf7\x05\x51\x1c\x83\x8a\xad\x97\x34\xa4\xa2\xfb\x0d\x7a\x03\xfc\x7f\xe8\x9a")
+      expect(decode(:muxed, "MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAACJUQ"))
+        .to eq_bytes("\x3f\x0c\x34\xbf\x93\xad\x0d\x99\x71\xd0\x4c\xcc\x90\xf7\x05\x51\x1c\x83\x8a\xad\x97\x34\xa4\xa2\xfb\x0d\x7a\x03\xfc\x7f\xe8\x9a\x00\x00\x00\x00\x00\x00\x00\x00")
+      expect(decode(:contract, "CA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUWDA"))
+        .to eq_bytes("\x3f\x0c\x34\xbf\x93\xad\x0d\x99\x71\xd0\x4c\xcc\x90\xf7\x05\x51\x1c\x83\x8a\xad\x97\x34\xa4\xa2\xfb\x0d\x7a\x03\xfc\x7f\xe8\x9a")
     end
 
     it "raises an ArgumentError when an invalid version is provided" do
@@ -34,11 +45,22 @@ RSpec.describe Stellar::Util::StrKey do
 
   describe "#check_encode" do
     it "properly encodes" do
-      expect(encode(:seed, "\x00\x00\x00\x00\x00\x00\x39")).to eq("SAAAAAAAAAADST3H")
-      expect(encode(:account_id, "\xFF\xFF\xFF\xFF\xFF\xFF\xFF")).to eq("GD777777777764TU")
-      expect(encode(:account_id, "\x61\x6b\x04\xab\x8b\xf6\x1b")).to eq("GBQWWBFLRP3BXZD5")
-      expect(encode(:pre_auth_tx, "\x69\xa8\xc4\xcb\xb9\xf6\x4e")).to eq_bytes("TBU2RRGLXH3E4VON")
-      expect(encode(:hash_x, "\x69\xa8\xc4\xcb\xb9\xf6\x4e")).to eq_bytes("XBU2RRGLXH3E4PNW")
+      expect(encode(:seed, "\x00\x00\x00\x00\x00\x00\x39"))
+        .to eq("SAAAAAAAAAADST3H")
+      expect(encode(:account_id, "\xFF\xFF\xFF\xFF\xFF\xFF\xFF"))
+        .to eq("GD777777777764TU")
+      expect(encode(:account_id, "\x61\x6b\x04\xab\x8b\xf6\x1b"))
+        .to eq("GBQWWBFLRP3BXZD5")
+      expect(encode(:pre_auth_tx, "\x69\xa8\xc4\xcb\xb9\xf6\x4e"))
+        .to eq("TBU2RRGLXH3E4VON")
+      expect(encode(:hash_x, "\x69\xa8\xc4\xcb\xb9\xf6\x4e"))
+        .to eq("XBU2RRGLXH3E4PNW")
+      expect(encode(:account_id, "\x3f\x0c\x34\xbf\x93\xad\x0d\x99\x71\xd0\x4c\xcc\x90\xf7\x05\x51\x1c\x83\x8a\xad\x97\x34\xa4\xa2\xfb\x0d\x7a\x03\xfc\x7f\xe8\x9a"))
+        .to eq("GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ")
+      expect(encode(:muxed, "\x3f\x0c\x34\xbf\x93\xad\x0d\x99\x71\xd0\x4c\xcc\x90\xf7\x05\x51\x1c\x83\x8a\xad\x97\x34\xa4\xa2\xfb\x0d\x7a\x03\xfc\x7f\xe8\x9a\x00\x00\x00\x00\x00\x00\x00\x00"))
+        .to eq("MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAACJUQ")
+      expect(encode(:contract, "\x3f\x0c\x34\xbf\x93\xad\x0d\x99\x71\xd0\x4c\xcc\x90\xf7\x05\x51\x1c\x83\x8a\xad\x97\x34\xa4\xa2\xfb\x0d\x7a\x03\xfc\x7f\xe8\x9a"))
+        .to eq("CA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUWDA")
     end
 
     it "raises an ArgumentError when an invalid version is provided" do

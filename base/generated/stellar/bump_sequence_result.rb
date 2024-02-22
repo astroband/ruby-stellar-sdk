@@ -9,7 +9,7 @@ require 'xdr'
 #   {
 #   case BUMP_SEQUENCE_SUCCESS:
 #       void;
-#   default:
+#   case BUMP_SEQUENCE_BAD_SEQ:
 #       void;
 #   };
 #
@@ -19,7 +19,7 @@ module Stellar
     switch_on BumpSequenceResultCode, :code
 
     switch :bump_sequence_success
-    switch :default
+    switch :bump_sequence_bad_seq
 
   end
 end
