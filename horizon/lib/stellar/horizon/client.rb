@@ -1,6 +1,7 @@
 require "hyperclient"
 require "active_support/core_ext/object/blank"
 require "securerandom"
+require 'faraday/excon'
 
 module Stellar::Horizon
   class AccountRequiresMemoError < StandardError
@@ -48,7 +49,7 @@ module Stellar::Horizon
       @horizon = Hyperclient.new(options[:horizon]) { |client|
         client.faraday_block = lambda do |conn|
           conn.use Faraday::Response::RaiseError
-          conn.use FaradayMiddleware::FollowRedirects
+          conn.use Faraday::FollowRedirects::Middleware
           conn.request :url_encoded
           conn.response :hal_json, content_type: /\bjson$/
           conn.adapter :excon
@@ -91,7 +92,12 @@ module Stellar::Horizon
     def friendbot(account)
       uri = URI.parse(FRIENDBOT_URL)
       uri.query = "addr=#{account.address}"
-      Faraday.post(uri.to_s)
+
+      conn = Faraday.new do |f|
+        f.adapter :excon
+      end
+
+      conn.post(uri.to_s)
     end
 
     # @option options [Stellar::Account] :account
