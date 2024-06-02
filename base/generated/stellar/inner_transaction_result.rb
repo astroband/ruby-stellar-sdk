@@ -31,6 +31,7 @@ require 'xdr'
 #       case txBAD_SPONSORSHIP:
 #       case txBAD_MIN_SEQ_AGE_OR_GAP:
 #       case txMALFORMED:
+#       case txSOROBAN_INVALID:
 #           void;
 #       }
 #       result;

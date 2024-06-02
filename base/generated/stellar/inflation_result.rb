@@ -9,7 +9,7 @@ require 'xdr'
 #   {
 #   case INFLATION_SUCCESS:
 #       InflationPayout payouts<>;
-#   default:
+#   case INFLATION_NOT_TIME:
 #       void;
 #   };
 #
@@ -19,7 +19,7 @@ module Stellar
     switch_on InflationResultCode, :code
 
     switch :inflation_success, :payouts
-    switch :default
+    switch :inflation_not_time
 
     attribute :payouts, XDR::VarArray[InflationPayout]
   end

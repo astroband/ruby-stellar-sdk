@@ -25,9 +25,9 @@ ask contributors to follow so that we can merge your changes quickly.
 * <a href="https://docs.google.com/forms/d/1g7EF6PERciwn7zfmfke5Sir2n10yddGGSXyZsq98tVY/viewform?usp=send_form">Sign the Contributor License Agreement</a>
 * Push your changes to a topic branch in your fork of the repository.
 * Submit a pull request to the corresponding repository in the Stellar organization.
- * Include a descriptive [commit message](https://github.com/erlang/otp/wiki/Writing-good-commit-messages).
- * Changes contributed via pull request should focus on a single issue at a time.
- * Rebase your local changes against the master branch. Resolve any conflicts that arise.
+  * Include a descriptive [commit message](https://github.com/erlang/otp/wiki/Writing-good-commit-messages).
+  * Changes contributed via pull request should focus on a single issue at a time.
+  * Rebase your local changes against the master branch. Resolve any conflicts that arise.
 
 At this point you're waiting on us. We like to at least comment on pull requests within three
 business days. We may suggest some changes or improvements or alternatives.

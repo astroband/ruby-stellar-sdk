@@ -10,7 +10,9 @@ require 'xdr'
 #   {
 #   case BEGIN_SPONSORING_FUTURE_RESERVES_SUCCESS:
 #       void;
-#   default:
+#   case BEGIN_SPONSORING_FUTURE_RESERVES_MALFORMED:
+#   case BEGIN_SPONSORING_FUTURE_RESERVES_ALREADY_SPONSORED:
+#   case BEGIN_SPONSORING_FUTURE_RESERVES_RECURSIVE:
 #       void;
 #   };
 #
@@ -20,7 +22,9 @@ module Stellar
     switch_on BeginSponsoringFutureReservesResultCode, :code
 
     switch :begin_sponsoring_future_reserves_success
-    switch :default
+    switch :begin_sponsoring_future_reserves_malformed
+    switch :begin_sponsoring_future_reserves_already_sponsored
+    switch :begin_sponsoring_future_reserves_recursive
 
   end
 end

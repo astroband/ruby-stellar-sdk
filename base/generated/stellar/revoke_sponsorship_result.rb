@@ -9,7 +9,11 @@ require 'xdr'
 #   {
 #   case REVOKE_SPONSORSHIP_SUCCESS:
 #       void;
-#   default:
+#   case REVOKE_SPONSORSHIP_DOES_NOT_EXIST:
+#   case REVOKE_SPONSORSHIP_NOT_SPONSOR:
+#   case REVOKE_SPONSORSHIP_LOW_RESERVE:
+#   case REVOKE_SPONSORSHIP_ONLY_TRANSFERABLE:
+#   case REVOKE_SPONSORSHIP_MALFORMED:
 #       void;
 #   };
 #
@@ -19,7 +23,11 @@ module Stellar
     switch_on RevokeSponsorshipResultCode, :code
 
     switch :revoke_sponsorship_success
-    switch :default
+    switch :revoke_sponsorship_does_not_exist
+    switch :revoke_sponsorship_not_sponsor
+    switch :revoke_sponsorship_low_reserve
+    switch :revoke_sponsorship_only_transferable
+    switch :revoke_sponsorship_malformed
 
   end
 end

@@ -9,7 +9,11 @@ require 'xdr'
 #   {
 #   case SET_TRUST_LINE_FLAGS_SUCCESS:
 #       void;
-#   default:
+#   case SET_TRUST_LINE_FLAGS_MALFORMED:
+#   case SET_TRUST_LINE_FLAGS_NO_TRUST_LINE:
+#   case SET_TRUST_LINE_FLAGS_CANT_REVOKE:
+#   case SET_TRUST_LINE_FLAGS_INVALID_STATE:
+#   case SET_TRUST_LINE_FLAGS_LOW_RESERVE:
 #       void;
 #   };
 #
@@ -19,7 +23,11 @@ module Stellar
     switch_on SetTrustLineFlagsResultCode, :code
 
     switch :set_trust_line_flags_success
-    switch :default
+    switch :set_trust_line_flags_malformed
+    switch :set_trust_line_flags_no_trust_line
+    switch :set_trust_line_flags_cant_revoke
+    switch :set_trust_line_flags_invalid_state
+    switch :set_trust_line_flags_low_reserve
 
   end
 end

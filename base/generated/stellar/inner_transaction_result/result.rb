@@ -26,6 +26,7 @@ require 'xdr'
 #       case txBAD_SPONSORSHIP:
 #       case txBAD_MIN_SEQ_AGE_OR_GAP:
 #       case txMALFORMED:
+#       case txSOROBAN_INVALID:
 #           void;
 #       }
 #
@@ -51,6 +52,7 @@ module Stellar
       switch :tx_bad_sponsorship
       switch :tx_bad_min_seq_age_or_gap
       switch :tx_malformed
+      switch :tx_soroban_invalid
 
       attribute :results, XDR::VarArray[OperationResult]
     end
