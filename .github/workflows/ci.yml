@@ -61,7 +61,7 @@ jobs:
       if: success()
       continue-on-error: true
     - name: Upload code coverage data to CodeClimate
-      uses: paambaati/codeclimate-action@v5
+      uses: paambaati/codeclimate-action@v8
       with:
         coverageLocations: coverage/coverage.json:simplecov
         debug: true
