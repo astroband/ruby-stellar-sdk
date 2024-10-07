@@ -1,7 +1,7 @@
 require "hyperclient"
 require "active_support/core_ext/object/blank"
 require "securerandom"
-require 'faraday/excon'
+require "faraday/excon"
 
 module Stellar::Horizon
   class AccountRequiresMemoError < StandardError
