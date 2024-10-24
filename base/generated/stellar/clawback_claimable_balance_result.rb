@@ -10,7 +10,9 @@ require 'xdr'
 #   {
 #   case CLAWBACK_CLAIMABLE_BALANCE_SUCCESS:
 #       void;
-#   default:
+#   case CLAWBACK_CLAIMABLE_BALANCE_DOES_NOT_EXIST:
+#   case CLAWBACK_CLAIMABLE_BALANCE_NOT_ISSUER:
+#   case CLAWBACK_CLAIMABLE_BALANCE_NOT_CLAWBACK_ENABLED:
 #       void;
 #   };
 #
@@ -20,7 +22,9 @@ module Stellar
     switch_on ClawbackClaimableBalanceResultCode, :code
 
     switch :clawback_claimable_balance_success
-    switch :default
+    switch :clawback_claimable_balance_does_not_exist
+    switch :clawback_claimable_balance_not_issuer
+    switch :clawback_claimable_balance_not_clawback_enabled
 
   end
 end

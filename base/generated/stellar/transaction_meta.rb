@@ -13,6 +13,8 @@ require 'xdr'
 #       TransactionMetaV1 v1;
 #   case 2:
 #       TransactionMetaV2 v2;
+#   case 3:
+#       TransactionMetaV3 v3;
 #   };
 #
 # ===========================================================================
@@ -23,9 +25,11 @@ module Stellar
     switch 0, :operations
     switch 1, :v1
     switch 2, :v2
+    switch 3, :v3
 
     attribute :operations, XDR::VarArray[OperationMeta]
     attribute :v1,         TransactionMetaV1
     attribute :v2,         TransactionMetaV2
+    attribute :v3,         TransactionMetaV3
   end
 end

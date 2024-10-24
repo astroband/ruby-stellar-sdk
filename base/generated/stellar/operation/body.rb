@@ -55,6 +55,12 @@ require 'xdr'
 #           LiquidityPoolDepositOp liquidityPoolDepositOp;
 #       case LIQUIDITY_POOL_WITHDRAW:
 #           LiquidityPoolWithdrawOp liquidityPoolWithdrawOp;
+#       case INVOKE_HOST_FUNCTION:
+#           InvokeHostFunctionOp invokeHostFunctionOp;
+#       case EXTEND_FOOTPRINT_TTL:
+#           ExtendFootprintTTLOp extendFootprintTTLOp;
+#       case RESTORE_FOOTPRINT:
+#           RestoreFootprintOp restoreFootprintOp;
 #       }
 #
 # ===========================================================================
@@ -87,6 +93,9 @@ module Stellar
       switch :set_trust_line_flags,             :set_trust_line_flags_op
       switch :liquidity_pool_deposit,           :liquidity_pool_deposit_op
       switch :liquidity_pool_withdraw,          :liquidity_pool_withdraw_op
+      switch :invoke_host_function,             :invoke_host_function_op
+      switch :extend_footprint_ttl,             :extend_footprint_ttl_op
+      switch :restore_footprint,                :restore_footprint_op
 
       attribute :create_account_op,                   CreateAccountOp
       attribute :payment_op,                          PaymentOp
@@ -110,6 +119,9 @@ module Stellar
       attribute :set_trust_line_flags_op,             SetTrustLineFlagsOp
       attribute :liquidity_pool_deposit_op,           LiquidityPoolDepositOp
       attribute :liquidity_pool_withdraw_op,          LiquidityPoolWithdrawOp
+      attribute :invoke_host_function_op,             InvokeHostFunctionOp
+      attribute :extend_footprint_ttl_op,             ExtendFootprintTTLOp
+      attribute :restore_footprint_op,                RestoreFootprintOp
     end
   end
 end

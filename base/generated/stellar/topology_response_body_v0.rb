@@ -5,7 +5,7 @@ require 'xdr'
 
 # === xdr source ============================================================
 #
-#   struct TopologyResponseBody
+#   struct TopologyResponseBodyV0
 #   {
 #       PeerStatList inboundPeers;
 #       PeerStatList outboundPeers;
@@ -16,7 +16,7 @@ require 'xdr'
 #
 # ===========================================================================
 module Stellar
-  class TopologyResponseBody < XDR::Struct
+  class TopologyResponseBodyV0 < XDR::Struct
     attribute :inbound_peers,             PeerStatList
     attribute :outbound_peers,            PeerStatList
     attribute :total_inbound_peer_count,  Uint32

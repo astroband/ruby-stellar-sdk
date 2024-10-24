@@ -9,7 +9,10 @@ require 'xdr'
 #   {
 #   case CREATE_ACCOUNT_SUCCESS:
 #       void;
-#   default:
+#   case CREATE_ACCOUNT_MALFORMED:
+#   case CREATE_ACCOUNT_UNDERFUNDED:
+#   case CREATE_ACCOUNT_LOW_RESERVE:
+#   case CREATE_ACCOUNT_ALREADY_EXIST:
 #       void;
 #   };
 #
@@ -19,7 +22,10 @@ module Stellar
     switch_on CreateAccountResultCode, :code
 
     switch :create_account_success
-    switch :default
+    switch :create_account_malformed
+    switch :create_account_underfunded
+    switch :create_account_low_reserve
+    switch :create_account_already_exist
 
   end
 end

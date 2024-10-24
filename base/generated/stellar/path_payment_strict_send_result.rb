@@ -13,9 +13,20 @@ require 'xdr'
 #           ClaimAtom offers<>;
 #           SimplePaymentResult last;
 #       } success;
+#   case PATH_PAYMENT_STRICT_SEND_MALFORMED:
+#   case PATH_PAYMENT_STRICT_SEND_UNDERFUNDED:
+#   case PATH_PAYMENT_STRICT_SEND_SRC_NO_TRUST:
+#   case PATH_PAYMENT_STRICT_SEND_SRC_NOT_AUTHORIZED:
+#   case PATH_PAYMENT_STRICT_SEND_NO_DESTINATION:
+#   case PATH_PAYMENT_STRICT_SEND_NO_TRUST:
+#   case PATH_PAYMENT_STRICT_SEND_NOT_AUTHORIZED:
+#   case PATH_PAYMENT_STRICT_SEND_LINE_FULL:
+#       void;
 #   case PATH_PAYMENT_STRICT_SEND_NO_ISSUER:
 #       Asset noIssuer; // the asset that caused the error
-#   default:
+#   case PATH_PAYMENT_STRICT_SEND_TOO_FEW_OFFERS:
+#   case PATH_PAYMENT_STRICT_SEND_OFFER_CROSS_SELF:
+#   case PATH_PAYMENT_STRICT_SEND_UNDER_DESTMIN:
 #       void;
 #   };
 #
@@ -28,9 +39,19 @@ module Stellar
 
     switch_on PathPaymentStrictSendResultCode, :code
 
-    switch :path_payment_strict_send_success,   :success
-    switch :path_payment_strict_send_no_issuer, :no_issuer
-    switch :default
+    switch :path_payment_strict_send_success,          :success
+    switch :path_payment_strict_send_malformed
+    switch :path_payment_strict_send_underfunded
+    switch :path_payment_strict_send_src_no_trust
+    switch :path_payment_strict_send_src_not_authorized
+    switch :path_payment_strict_send_no_destination
+    switch :path_payment_strict_send_no_trust
+    switch :path_payment_strict_send_not_authorized
+    switch :path_payment_strict_send_line_full
+    switch :path_payment_strict_send_no_issuer,        :no_issuer
+    switch :path_payment_strict_send_too_few_offers
+    switch :path_payment_strict_send_offer_cross_self
+    switch :path_payment_strict_send_under_destmin
 
     attribute :success,   Success
     attribute :no_issuer, Asset

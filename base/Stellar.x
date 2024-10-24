@@ -14,6 +14,9 @@ typedef int int32;
 typedef unsigned hyper uint64;
 typedef hyper int64;
 
+typedef uint64 TimePoint;
+typedef uint64 Duration;
+
 // An ExtensionPoint is always marshaled as a 32-bit 0 value.  At a
 // later point, it can be replaced by a different union so as to
 // extend a structure.
@@ -79,6 +82,7 @@ typedef opaque Signature<64>;
 typedef opaque SignatureHint[4];
 
 typedef PublicKey NodeID;
+typedef PublicKey AccountID;
 
 struct Curve25519Secret
 {
@@ -101,22 +105,838 @@ struct HmacSha256Mac
 };
 }
 
+// Copyright 2022 Stellar Development Foundation and contributors. Licensed
+// under the Apache License, Version 2.0. See the COPYING file at the root
+// of this distribution or at http://www.apache.org/licenses/LICENSE-2.0
+
+% #include "xdr/Stellar-types.h"
+namespace stellar
+{
+
+// We fix a maximum of 128 value types in the system for two reasons: we want to
+// keep the codes relatively small (<= 8 bits) when bit-packing values into a
+// u64 at the environment interface level, so that we keep many bits for
+// payloads (small strings, small numeric values, object handles); and then we
+// actually want to go one step further and ensure (for code-size) that our
+// codes fit in a single ULEB128-code byte, which means we can only use 7 bits.
+//
+// We also reserve several type codes from this space because we want to _reuse_
+// the SCValType codes at the environment interface level (or at least not
+// exceed its number-space) but there are more types at that level, assigned to
+// optimizations/special case representations of values abstract at this level.
+
+enum SCValType
+{
+    SCV_BOOL = 0,
+    SCV_VOID = 1,
+    SCV_ERROR = 2,
+
+    // 32 bits is the smallest type in WASM or XDR; no need for u8/u16.
+    SCV_U32 = 3,
+    SCV_I32 = 4,
+
+    // 64 bits is naturally supported by both WASM and XDR also.
+    SCV_U64 = 5,
+    SCV_I64 = 6,
+
+    // Time-related u64 subtypes with their own functions and formatting.
+    SCV_TIMEPOINT = 7,
+    SCV_DURATION = 8,
+
+    // 128 bits is naturally supported by Rust and we use it for Soroban
+    // fixed-point arithmetic prices / balances / similar "quantities". These
+    // are represented in XDR as a pair of 2 u64s.
+    SCV_U128 = 9,
+    SCV_I128 = 10,
+
+    // 256 bits is the size of sha256 output, ed25519 keys, and the EVM machine
+    // word, so for interop use we include this even though it requires a small
+    // amount of Rust guest and/or host library code.
+    SCV_U256 = 11,
+    SCV_I256 = 12,
+
+    // Bytes come in 3 flavors, 2 of which have meaningfully different
+    // formatting and validity-checking / domain-restriction.
+    SCV_BYTES = 13,
+    SCV_STRING = 14,
+    SCV_SYMBOL = 15,
+
+    // Vecs and maps are just polymorphic containers of other ScVals.
+    SCV_VEC = 16,
+    SCV_MAP = 17,
+
+    // Address is the universal identifier for contracts and classic
+    // accounts.
+    SCV_ADDRESS = 18,
+
+    // The following are the internal SCVal variants that are not
+    // exposed to the contracts. 
+    SCV_CONTRACT_INSTANCE = 19,
+
+    // SCV_LEDGER_KEY_CONTRACT_INSTANCE and SCV_LEDGER_KEY_NONCE are unique
+    // symbolic SCVals used as the key for ledger entries for a contract's
+    // instance and an address' nonce, respectively.
+    SCV_LEDGER_KEY_CONTRACT_INSTANCE = 20,
+    SCV_LEDGER_KEY_NONCE = 21
+};
+
+enum SCErrorType
+{
+    SCE_CONTRACT = 0,          // Contract-specific, user-defined codes.
+    SCE_WASM_VM = 1,           // Errors while interpreting WASM bytecode.
+    SCE_CONTEXT = 2,           // Errors in the contract's host context.
+    SCE_STORAGE = 3,           // Errors accessing host storage.
+    SCE_OBJECT = 4,            // Errors working with host objects.
+    SCE_CRYPTO = 5,            // Errors in cryptographic operations.
+    SCE_EVENTS = 6,            // Errors while emitting events.
+    SCE_BUDGET = 7,            // Errors relating to budget limits.
+    SCE_VALUE = 8,             // Errors working with host values or SCVals.
+    SCE_AUTH = 9               // Errors from the authentication subsystem.
+};
+
+enum SCErrorCode
+{
+    SCEC_ARITH_DOMAIN = 0,      // Some arithmetic was undefined (overflow, divide-by-zero).
+    SCEC_INDEX_BOUNDS = 1,      // Something was indexed beyond its bounds.
+    SCEC_INVALID_INPUT = 2,     // User provided some otherwise-bad data.
+    SCEC_MISSING_VALUE = 3,     // Some value was required but not provided.
+    SCEC_EXISTING_VALUE = 4,    // Some value was provided where not allowed.
+    SCEC_EXCEEDED_LIMIT = 5,    // Some arbitrary limit -- gas or otherwise -- was hit.
+    SCEC_INVALID_ACTION = 6,    // Data was valid but action requested was not.
+    SCEC_INTERNAL_ERROR = 7,    // The host detected an error in its own logic.
+    SCEC_UNEXPECTED_TYPE = 8,   // Some type wasn't as expected.
+    SCEC_UNEXPECTED_SIZE = 9    // Something's size wasn't as expected.
+};
+
+// Smart contract errors are split into a type (SCErrorType) and a code. When an
+// error is of type SCE_CONTRACT it carries a user-defined uint32 code that
+// Soroban assigns no specific meaning to. In all other cases, the type
+// specifies a subsystem of the Soroban host where the error originated, and the
+// accompanying code is an SCErrorCode, each of which specifies a slightly more
+// precise class of errors within that subsystem.
+//
+// Error types and codes are not maximally precise; there is a tradeoff between
+// precision and flexibility in the implementation, and the granularity here is
+// chosen to be adequate for most purposes while not placing a burden on future
+// system evolution and maintenance. When additional precision is needed for
+// debugging, Soroban can be run with diagnostic events enabled.
+
+union SCError switch (SCErrorType type)
+{
+case SCE_CONTRACT:
+    uint32 contractCode;
+case SCE_WASM_VM:
+case SCE_CONTEXT:
+case SCE_STORAGE:
+case SCE_OBJECT:
+case SCE_CRYPTO:
+case SCE_EVENTS:
+case SCE_BUDGET:
+case SCE_VALUE:
+case SCE_AUTH:
+    SCErrorCode code;
+};
+
+struct UInt128Parts {
+    uint64 hi;
+    uint64 lo;
+};
+
+// A signed int128 has a high sign bit and 127 value bits. We break it into a
+// signed high int64 (that carries the sign bit and the high 63 value bits) and
+// a low unsigned uint64 that carries the low 64 bits. This will sort in
+// generated code in the same order the underlying int128 sorts.
+struct Int128Parts {
+    int64 hi;
+    uint64 lo;
+};
+
+struct UInt256Parts {
+    uint64 hi_hi;
+    uint64 hi_lo;
+    uint64 lo_hi;
+    uint64 lo_lo;
+};
+
+// A signed int256 has a high sign bit and 255 value bits. We break it into a
+// signed high int64 (that carries the sign bit and the high 63 value bits) and
+// three low unsigned `uint64`s that carry the lower bits. This will sort in
+// generated code in the same order the underlying int256 sorts.
+struct Int256Parts {
+    int64 hi_hi;
+    uint64 hi_lo;
+    uint64 lo_hi;
+    uint64 lo_lo;
+};
+
+enum ContractExecutableType
+{
+    CONTRACT_EXECUTABLE_WASM = 0,
+    CONTRACT_EXECUTABLE_STELLAR_ASSET = 1
+};
+
+union ContractExecutable switch (ContractExecutableType type)
+{
+case CONTRACT_EXECUTABLE_WASM:
+    Hash wasm_hash;
+case CONTRACT_EXECUTABLE_STELLAR_ASSET:
+    void;
+};
+
+enum SCAddressType
+{
+    SC_ADDRESS_TYPE_ACCOUNT = 0,
+    SC_ADDRESS_TYPE_CONTRACT = 1
+};
+
+union SCAddress switch (SCAddressType type)
+{
+case SC_ADDRESS_TYPE_ACCOUNT:
+    AccountID accountId;
+case SC_ADDRESS_TYPE_CONTRACT:
+    Hash contractId;
+};
+
+%struct SCVal;
+%struct SCMapEntry;
+
+const SCSYMBOL_LIMIT = 32;
+
+typedef SCVal SCVec<>;
+typedef SCMapEntry SCMap<>;
+
+typedef opaque SCBytes<>;
+typedef string SCString<>;
+typedef string SCSymbol<SCSYMBOL_LIMIT>;
+
+struct SCNonceKey {
+    int64 nonce;
+};
+
+struct SCContractInstance {
+    ContractExecutable executable;
+    SCMap* storage;
+};
+
+union SCVal switch (SCValType type)
+{
+
+case SCV_BOOL:
+    bool b;
+case SCV_VOID:
+    void;
+case SCV_ERROR:
+    SCError error;
+
+case SCV_U32:
+    uint32 u32;
+case SCV_I32:
+    int32 i32;
+
+case SCV_U64:
+    uint64 u64;
+case SCV_I64:
+    int64 i64;
+case SCV_TIMEPOINT:
+    TimePoint timepoint;
+case SCV_DURATION:
+    Duration duration;
+
+case SCV_U128:
+    UInt128Parts u128;
+case SCV_I128:
+    Int128Parts i128;
+
+case SCV_U256:
+    UInt256Parts u256;
+case SCV_I256:
+    Int256Parts i256;
+
+case SCV_BYTES:
+    SCBytes bytes;
+case SCV_STRING:
+    SCString str;
+case SCV_SYMBOL:
+    SCSymbol sym;
+
+// Vec and Map are recursive so need to live
+// behind an option, due to xdrpp limitations.
+case SCV_VEC:
+    SCVec *vec;
+case SCV_MAP:
+    SCMap *map;
+
+case SCV_ADDRESS:
+    SCAddress address;
+
+// Special SCVals reserved for system-constructed contract-data
+// ledger keys, not generally usable elsewhere.
+case SCV_LEDGER_KEY_CONTRACT_INSTANCE:
+    void;
+case SCV_LEDGER_KEY_NONCE:
+    SCNonceKey nonce_key;
+
+case SCV_CONTRACT_INSTANCE:
+    SCContractInstance instance;
+};
+
+struct SCMapEntry
+{
+    SCVal key;
+    SCVal val;
+};
+
+}
+
+%#include "xdr/Stellar-types.h"
+
+namespace stellar {
+// General “Soroban execution lane” settings
+struct ConfigSettingContractExecutionLanesV0
+{
+    // maximum number of Soroban transactions per ledger
+    uint32 ledgerMaxTxCount;
+};
+
+// "Compute" settings for contracts (instructions and memory).
+struct ConfigSettingContractComputeV0
+{
+    // Maximum instructions per ledger
+    int64 ledgerMaxInstructions;
+    // Maximum instructions per transaction
+    int64 txMaxInstructions;
+    // Cost of 10000 instructions
+    int64 feeRatePerInstructionsIncrement;
+
+    // Memory limit per transaction. Unlike instructions, there is no fee
+    // for memory, just the limit.
+    uint32 txMemoryLimit;
+};
+
+// Ledger access settings for contracts.
+struct ConfigSettingContractLedgerCostV0
+{
+    // Maximum number of ledger entry read operations per ledger
+    uint32 ledgerMaxReadLedgerEntries;
+    // Maximum number of bytes that can be read per ledger
+    uint32 ledgerMaxReadBytes;
+    // Maximum number of ledger entry write operations per ledger
+    uint32 ledgerMaxWriteLedgerEntries;
+    // Maximum number of bytes that can be written per ledger
+    uint32 ledgerMaxWriteBytes;
+
+    // Maximum number of ledger entry read operations per transaction
+    uint32 txMaxReadLedgerEntries;
+    // Maximum number of bytes that can be read per transaction
+    uint32 txMaxReadBytes;
+    // Maximum number of ledger entry write operations per transaction
+    uint32 txMaxWriteLedgerEntries;
+    // Maximum number of bytes that can be written per transaction
+    uint32 txMaxWriteBytes;
+
+    int64 feeReadLedgerEntry;  // Fee per ledger entry read
+    int64 feeWriteLedgerEntry; // Fee per ledger entry write
+
+    int64 feeRead1KB;  // Fee for reading 1KB
+
+    // The following parameters determine the write fee per 1KB.
+    // Write fee grows linearly until bucket list reaches this size
+    int64 bucketListTargetSizeBytes;
+    // Fee per 1KB write when the bucket list is empty
+    int64 writeFee1KBBucketListLow;
+    // Fee per 1KB write when the bucket list has reached `bucketListTargetSizeBytes` 
+    int64 writeFee1KBBucketListHigh;
+    // Write fee multiplier for any additional data past the first `bucketListTargetSizeBytes`
+    uint32 bucketListWriteFeeGrowthFactor;
+};
+
+// Historical data (pushed to core archives) settings for contracts.
+struct ConfigSettingContractHistoricalDataV0
+{
+    int64 feeHistorical1KB; // Fee for storing 1KB in archives
+};
+
+// Contract event-related settings.
+struct ConfigSettingContractEventsV0
+{
+    // Maximum size of events that a contract call can emit.
+    uint32 txMaxContractEventsSizeBytes;
+    // Fee for generating 1KB of contract events.
+    int64 feeContractEvents1KB;
+};
+
+// Bandwidth related data settings for contracts.
+// We consider bandwidth to only be consumed by the transaction envelopes, hence
+// this concerns only transaction sizes.
+struct ConfigSettingContractBandwidthV0
+{
+    // Maximum sum of all transaction sizes in the ledger in bytes
+    uint32 ledgerMaxTxsSizeBytes;
+    // Maximum size in bytes for a transaction
+    uint32 txMaxSizeBytes;
+
+    // Fee for 1 KB of transaction size
+    int64 feeTxSize1KB;
+};
+
+enum ContractCostType {
+    // Cost of running 1 wasm instruction
+    WasmInsnExec = 0,
+    // Cost of allocating a slice of memory (in bytes)
+    MemAlloc = 1,
+    // Cost of copying a slice of bytes into a pre-allocated memory
+    MemCpy = 2,
+    // Cost of comparing two slices of memory
+    MemCmp = 3,
+    // Cost of a host function dispatch, not including the actual work done by
+    // the function nor the cost of VM invocation machinary
+    DispatchHostFunction = 4,
+    // Cost of visiting a host object from the host object storage. Exists to 
+    // make sure some baseline cost coverage, i.e. repeatly visiting objects
+    // by the guest will always incur some charges.
+    VisitObject = 5,
+    // Cost of serializing an xdr object to bytes
+    ValSer = 6,
+    // Cost of deserializing an xdr object from bytes
+    ValDeser = 7,
+    // Cost of computing the sha256 hash from bytes
+    ComputeSha256Hash = 8,
+    // Cost of computing the ed25519 pubkey from bytes
+    ComputeEd25519PubKey = 9,
+    // Cost of verifying ed25519 signature of a payload.
+    VerifyEd25519Sig = 10,
+    // Cost of instantiation a VM from wasm bytes code.
+    VmInstantiation = 11,
+    // Cost of instantiation a VM from a cached state.
+    VmCachedInstantiation = 12,
+    // Cost of invoking a function on the VM. If the function is a host function,
+    // additional cost will be covered by `DispatchHostFunction`.
+    InvokeVmFunction = 13,
+    // Cost of computing a keccak256 hash from bytes.
+    ComputeKeccak256Hash = 14,
+    // Cost of computing an ECDSA secp256k1 signature from bytes.
+    ComputeEcdsaSecp256k1Sig = 15,
+    // Cost of recovering an ECDSA secp256k1 key from a signature.
+    RecoverEcdsaSecp256k1Key = 16,
+    // Cost of int256 addition (`+`) and subtraction (`-`) operations
+    Int256AddSub = 17,
+    // Cost of int256 multiplication (`*`) operation
+    Int256Mul = 18,
+    // Cost of int256 division (`/`) operation
+    Int256Div = 19,
+    // Cost of int256 power (`exp`) operation
+    Int256Pow = 20,
+    // Cost of int256 shift (`shl`, `shr`) operation
+    Int256Shift = 21,
+    // Cost of drawing random bytes using a ChaCha20 PRNG
+    ChaCha20DrawBytes = 22
+};
+
+struct ContractCostParamEntry {
+    // use `ext` to add more terms (e.g. higher order polynomials) in the future
+    ExtensionPoint ext;
+
+    int64 constTerm;
+    int64 linearTerm;
+};
+
+struct StateArchivalSettings {
+    uint32 maxEntryTTL;
+    uint32 minTemporaryTTL;
+    uint32 minPersistentTTL;
+
+    // rent_fee = wfee_rate_average / rent_rate_denominator_for_type
+    int64 persistentRentRateDenominator;
+    int64 tempRentRateDenominator;
+
+    // max number of entries that emit archival meta in a single ledger
+    uint32 maxEntriesToArchive;
+
+    // Number of snapshots to use when calculating average BucketList size
+    uint32 bucketListSizeWindowSampleSize;
+
+    // Maximum number of bytes that we scan for eviction per ledger
+    uint64 evictionScanSize;
+
+    // Lowest BucketList level to be scanned to evict entries
+    uint32 startingEvictionScanLevel;
+};
+
+struct EvictionIterator {
+    uint32 bucketListLevel;
+    bool isCurrBucket;
+    uint64 bucketFileOffset;
+};
+
+// limits the ContractCostParams size to 20kB
+const CONTRACT_COST_COUNT_LIMIT = 1024;
+
+typedef ContractCostParamEntry ContractCostParams<CONTRACT_COST_COUNT_LIMIT>;
+
+// Identifiers of all the network settings.
+enum ConfigSettingID
+{
+    CONFIG_SETTING_CONTRACT_MAX_SIZE_BYTES = 0,
+    CONFIG_SETTING_CONTRACT_COMPUTE_V0 = 1,
+    CONFIG_SETTING_CONTRACT_LEDGER_COST_V0 = 2,
+    CONFIG_SETTING_CONTRACT_HISTORICAL_DATA_V0 = 3,
+    CONFIG_SETTING_CONTRACT_EVENTS_V0 = 4,
+    CONFIG_SETTING_CONTRACT_BANDWIDTH_V0 = 5,
+    CONFIG_SETTING_CONTRACT_COST_PARAMS_CPU_INSTRUCTIONS = 6,
+    CONFIG_SETTING_CONTRACT_COST_PARAMS_MEMORY_BYTES = 7,
+    CONFIG_SETTING_CONTRACT_DATA_KEY_SIZE_BYTES = 8,
+    CONFIG_SETTING_CONTRACT_DATA_ENTRY_SIZE_BYTES = 9,
+    CONFIG_SETTING_STATE_ARCHIVAL = 10,
+    CONFIG_SETTING_CONTRACT_EXECUTION_LANES = 11,
+    CONFIG_SETTING_BUCKETLIST_SIZE_WINDOW = 12,
+    CONFIG_SETTING_EVICTION_ITERATOR = 13
+};
+
+union ConfigSettingEntry switch (ConfigSettingID configSettingID)
+{
+case CONFIG_SETTING_CONTRACT_MAX_SIZE_BYTES:
+    uint32 contractMaxSizeBytes;
+case CONFIG_SETTING_CONTRACT_COMPUTE_V0:
+    ConfigSettingContractComputeV0 contractCompute;
+case CONFIG_SETTING_CONTRACT_LEDGER_COST_V0:
+    ConfigSettingContractLedgerCostV0 contractLedgerCost;
+case CONFIG_SETTING_CONTRACT_HISTORICAL_DATA_V0:
+    ConfigSettingContractHistoricalDataV0 contractHistoricalData;
+case CONFIG_SETTING_CONTRACT_EVENTS_V0:
+    ConfigSettingContractEventsV0 contractEvents;
+case CONFIG_SETTING_CONTRACT_BANDWIDTH_V0:
+    ConfigSettingContractBandwidthV0 contractBandwidth;
+case CONFIG_SETTING_CONTRACT_COST_PARAMS_CPU_INSTRUCTIONS:
+    ContractCostParams contractCostParamsCpuInsns;
+case CONFIG_SETTING_CONTRACT_COST_PARAMS_MEMORY_BYTES:
+    ContractCostParams contractCostParamsMemBytes;
+case CONFIG_SETTING_CONTRACT_DATA_KEY_SIZE_BYTES:
+    uint32 contractDataKeySizeBytes;
+case CONFIG_SETTING_CONTRACT_DATA_ENTRY_SIZE_BYTES:
+    uint32 contractDataEntrySizeBytes;
+case CONFIG_SETTING_STATE_ARCHIVAL:
+    StateArchivalSettings stateArchivalSettings;
+case CONFIG_SETTING_CONTRACT_EXECUTION_LANES:
+    ConfigSettingContractExecutionLanesV0 contractExecutionLanes;
+case CONFIG_SETTING_BUCKETLIST_SIZE_WINDOW:
+    uint64 bucketListSizeWindow<>;
+case CONFIG_SETTING_EVICTION_ITERATOR:
+    EvictionIterator evictionIterator;
+};
+}
+
+// Copyright 2022 Stellar Development Foundation and contributors. Licensed
+// under the Apache License, Version 2.0. See the COPYING file at the root
+// of this distribution or at http://www.apache.org/licenses/LICENSE-2.0
+
+// The contract spec XDR is highly experimental, incomplete, and still being
+// iterated on. Breaking changes expected.
+
+% #include "xdr/Stellar-types.h"
+namespace stellar
+{
+
+enum SCEnvMetaKind
+{
+    SC_ENV_META_KIND_INTERFACE_VERSION = 0
+};
+
+union SCEnvMetaEntry switch (SCEnvMetaKind kind)
+{
+case SC_ENV_META_KIND_INTERFACE_VERSION:
+    uint64 interfaceVersion;
+};
+
+}
+
+// Copyright 2022 Stellar Development Foundation and contributors. Licensed
+// under the Apache License, Version 2.0. See the COPYING file at the root
+// of this distribution or at http://www.apache.org/licenses/LICENSE-2.0
+
+// The contract meta XDR is highly experimental, incomplete, and still being
+// iterated on. Breaking changes expected.
+
+% #include "xdr/Stellar-types.h"
+namespace stellar
+{
+
+struct SCMetaV0
+{
+    string key<>;
+    string val<>;
+};
+
+enum SCMetaKind
+{
+    SC_META_V0 = 0
+};
+
+union SCMetaEntry switch (SCMetaKind kind)
+{
+case SC_META_V0:
+    SCMetaV0 v0;
+};
+
+}
+
+// Copyright 2022 Stellar Development Foundation and contributors. Licensed
+// under the Apache License, Version 2.0. See the COPYING file at the root
+// of this distribution or at http://www.apache.org/licenses/LICENSE-2.0
+
+// The contract Contractspec XDR is highly experimental, incomplete, and still being
+// iterated on. Breaking changes expected.
+
+% #include "xdr/Stellar-types.h"
+% #include "xdr/Stellar-contract.h"
+namespace stellar
+{
+
+const SC_SPEC_DOC_LIMIT = 1024;
+
+enum SCSpecType
+{
+    SC_SPEC_TYPE_VAL = 0,
+
+    // Types with no parameters.
+    SC_SPEC_TYPE_BOOL = 1,
+    SC_SPEC_TYPE_VOID = 2,
+    SC_SPEC_TYPE_ERROR = 3,
+    SC_SPEC_TYPE_U32 = 4,
+    SC_SPEC_TYPE_I32 = 5,
+    SC_SPEC_TYPE_U64 = 6,
+    SC_SPEC_TYPE_I64 = 7,
+    SC_SPEC_TYPE_TIMEPOINT = 8,
+    SC_SPEC_TYPE_DURATION = 9,
+    SC_SPEC_TYPE_U128 = 10,
+    SC_SPEC_TYPE_I128 = 11,
+    SC_SPEC_TYPE_U256 = 12,
+    SC_SPEC_TYPE_I256 = 13,
+    SC_SPEC_TYPE_BYTES = 14,
+    SC_SPEC_TYPE_STRING = 16,
+    SC_SPEC_TYPE_SYMBOL = 17,
+    SC_SPEC_TYPE_ADDRESS = 19,
+
+    // Types with parameters.
+    SC_SPEC_TYPE_OPTION = 1000,
+    SC_SPEC_TYPE_RESULT = 1001,
+    SC_SPEC_TYPE_VEC = 1002,
+    SC_SPEC_TYPE_MAP = 1004,
+    SC_SPEC_TYPE_TUPLE = 1005,
+    SC_SPEC_TYPE_BYTES_N = 1006,
+
+    // User defined types.
+    SC_SPEC_TYPE_UDT = 2000
+};
+
+struct SCSpecTypeOption
+{
+    SCSpecTypeDef valueType;
+};
+
+struct SCSpecTypeResult
+{
+    SCSpecTypeDef okType;
+    SCSpecTypeDef errorType;
+};
+
+struct SCSpecTypeVec
+{
+    SCSpecTypeDef elementType;
+};
+
+struct SCSpecTypeMap
+{
+    SCSpecTypeDef keyType;
+    SCSpecTypeDef valueType;
+};
+
+struct SCSpecTypeTuple
+{
+    SCSpecTypeDef valueTypes<12>;
+};
+
+struct SCSpecTypeBytesN
+{
+    uint32 n;
+};
+
+struct SCSpecTypeUDT
+{
+    string name<60>;
+};
+
+union SCSpecTypeDef switch (SCSpecType type)
+{
+case SC_SPEC_TYPE_VAL:
+case SC_SPEC_TYPE_BOOL:
+case SC_SPEC_TYPE_VOID:
+case SC_SPEC_TYPE_ERROR:
+case SC_SPEC_TYPE_U32:
+case SC_SPEC_TYPE_I32:
+case SC_SPEC_TYPE_U64:
+case SC_SPEC_TYPE_I64:
+case SC_SPEC_TYPE_TIMEPOINT:
+case SC_SPEC_TYPE_DURATION:
+case SC_SPEC_TYPE_U128:
+case SC_SPEC_TYPE_I128:
+case SC_SPEC_TYPE_U256:
+case SC_SPEC_TYPE_I256:
+case SC_SPEC_TYPE_BYTES:
+case SC_SPEC_TYPE_STRING:
+case SC_SPEC_TYPE_SYMBOL:
+case SC_SPEC_TYPE_ADDRESS:
+    void;
+case SC_SPEC_TYPE_OPTION:
+    SCSpecTypeOption option;
+case SC_SPEC_TYPE_RESULT:
+    SCSpecTypeResult result;
+case SC_SPEC_TYPE_VEC:
+    SCSpecTypeVec vec;
+case SC_SPEC_TYPE_MAP:
+    SCSpecTypeMap map;
+case SC_SPEC_TYPE_TUPLE:
+    SCSpecTypeTuple tuple;
+case SC_SPEC_TYPE_BYTES_N:
+    SCSpecTypeBytesN bytesN;
+case SC_SPEC_TYPE_UDT:
+    SCSpecTypeUDT udt;
+};
+
+struct SCSpecUDTStructFieldV0
+{
+    string doc<SC_SPEC_DOC_LIMIT>;
+    string name<30>;
+    SCSpecTypeDef type;
+};
+
+struct SCSpecUDTStructV0
+{
+    string doc<SC_SPEC_DOC_LIMIT>;
+    string lib<80>;
+    string name<60>;
+    SCSpecUDTStructFieldV0 fields<40>;
+};
+
+struct SCSpecUDTUnionCaseVoidV0
+{
+    string doc<SC_SPEC_DOC_LIMIT>;
+    string name<60>;
+};
+
+struct SCSpecUDTUnionCaseTupleV0
+{
+    string doc<SC_SPEC_DOC_LIMIT>;
+    string name<60>;
+    SCSpecTypeDef type<12>;
+};
+
+enum SCSpecUDTUnionCaseV0Kind
+{
+    SC_SPEC_UDT_UNION_CASE_VOID_V0 = 0,
+    SC_SPEC_UDT_UNION_CASE_TUPLE_V0 = 1
+};
+
+union SCSpecUDTUnionCaseV0 switch (SCSpecUDTUnionCaseV0Kind kind)
+{
+case SC_SPEC_UDT_UNION_CASE_VOID_V0:
+    SCSpecUDTUnionCaseVoidV0 voidCase;
+case SC_SPEC_UDT_UNION_CASE_TUPLE_V0:
+    SCSpecUDTUnionCaseTupleV0 tupleCase;
+};
+
+struct SCSpecUDTUnionV0
+{
+    string doc<SC_SPEC_DOC_LIMIT>;
+    string lib<80>;
+    string name<60>;
+    SCSpecUDTUnionCaseV0 cases<50>;
+};
+
+struct SCSpecUDTEnumCaseV0
+{
+    string doc<SC_SPEC_DOC_LIMIT>;
+    string name<60>;
+    uint32 value;
+};
+
+struct SCSpecUDTEnumV0
+{
+    string doc<SC_SPEC_DOC_LIMIT>;
+    string lib<80>;
+    string name<60>;
+    SCSpecUDTEnumCaseV0 cases<50>;
+};
+
+struct SCSpecUDTErrorEnumCaseV0
+{
+    string doc<SC_SPEC_DOC_LIMIT>;
+    string name<60>;
+    uint32 value;
+};
+
+struct SCSpecUDTErrorEnumV0
+{
+    string doc<SC_SPEC_DOC_LIMIT>;
+    string lib<80>;
+    string name<60>;
+    SCSpecUDTErrorEnumCaseV0 cases<50>;
+};
+
+struct SCSpecFunctionInputV0
+{
+    string doc<SC_SPEC_DOC_LIMIT>;
+    string name<30>;
+    SCSpecTypeDef type;
+};
+
+struct SCSpecFunctionV0
+{
+    string doc<SC_SPEC_DOC_LIMIT>;
+    SCSymbol name;
+    SCSpecFunctionInputV0 inputs<10>;
+    SCSpecTypeDef outputs<1>;
+};
+
+enum SCSpecEntryKind
+{
+    SC_SPEC_ENTRY_FUNCTION_V0 = 0,
+    SC_SPEC_ENTRY_UDT_STRUCT_V0 = 1,
+    SC_SPEC_ENTRY_UDT_UNION_V0 = 2,
+    SC_SPEC_ENTRY_UDT_ENUM_V0 = 3,
+    SC_SPEC_ENTRY_UDT_ERROR_ENUM_V0 = 4
+};
+
+union SCSpecEntry switch (SCSpecEntryKind kind)
+{
+case SC_SPEC_ENTRY_FUNCTION_V0:
+    SCSpecFunctionV0 functionV0;
+case SC_SPEC_ENTRY_UDT_STRUCT_V0:
+    SCSpecUDTStructV0 udtStructV0;
+case SC_SPEC_ENTRY_UDT_UNION_V0:
+    SCSpecUDTUnionV0 udtUnionV0;
+case SC_SPEC_ENTRY_UDT_ENUM_V0:
+    SCSpecUDTEnumV0 udtEnumV0;
+case SC_SPEC_ENTRY_UDT_ERROR_ENUM_V0:
+    SCSpecUDTErrorEnumV0 udtErrorEnumV0;
+};
+
+}
+
 // Copyright 2015 Stellar Development Foundation and contributors. Licensed
 // under the Apache License, Version 2.0. See the COPYING file at the root
 // of this distribution or at http://www.apache.org/licenses/LICENSE-2.0
 
 %#include "xdr/Stellar-types.h"
+%#include "xdr/Stellar-contract.h"
+%#include "xdr/Stellar-contract-config-setting.h"
 
 namespace stellar
 {
 
-typedef PublicKey AccountID;
 typedef opaque Thresholds[4];
 typedef string string32<32>;
 typedef string string64<64>;
 typedef int64 SequenceNumber;
-typedef uint64 TimePoint;
-typedef uint64 Duration;
 typedef opaque DataValue<64>;
 typedef Hash PoolID; // SHA256(LiquidityPoolParameters)
 
@@ -201,7 +1021,11 @@ enum LedgerEntryType
     OFFER = 2,
     DATA = 3,
     CLAIMABLE_BALANCE = 4,
-    LIQUIDITY_POOL = 5
+    LIQUIDITY_POOL = 5,
+    CONTRACT_DATA = 6,
+    CONTRACT_CODE = 7,
+    CONFIG_SETTING = 8,
+    TTL = 9
 };
 
 struct Signer
@@ -594,6 +1418,33 @@ struct LiquidityPoolEntry
     body;
 };
 
+enum ContractDataDurability {
+    TEMPORARY = 0,
+    PERSISTENT = 1
+};
+
+struct ContractDataEntry {
+    ExtensionPoint ext;
+
+    SCAddress contract;
+    SCVal key;
+    ContractDataDurability durability;
+    SCVal val;
+};
+
+struct ContractCodeEntry {
+    ExtensionPoint ext;
+
+    Hash hash;
+    opaque code<>;
+};
+
+struct TTLEntry {
+    // Hash of the LedgerKey that is associated with this TTLEntry
+    Hash keyHash;
+    uint32 liveUntilLedgerSeq;
+};
+
 struct LedgerEntryExtensionV1
 {
     SponsorshipDescriptor sponsoringID;
@@ -624,6 +1475,14 @@ struct LedgerEntry
         ClaimableBalanceEntry claimableBalance;
     case LIQUIDITY_POOL:
         LiquidityPoolEntry liquidityPool;
+    case CONTRACT_DATA:
+        ContractDataEntry contractData;
+    case CONTRACT_CODE:
+        ContractCodeEntry contractCode;
+    case CONFIG_SETTING:
+        ConfigSettingEntry configSetting;
+    case TTL:
+        TTLEntry ttl;
     }
     data;
 
@@ -678,6 +1537,29 @@ case LIQUIDITY_POOL:
     {
         PoolID liquidityPoolID;
     } liquidityPool;
+case CONTRACT_DATA:
+    struct
+    {
+        SCAddress contract;
+        SCVal key;
+        ContractDataDurability durability;
+    } contractData;
+case CONTRACT_CODE:
+    struct
+    {
+        Hash hash;
+    } contractCode;
+case CONFIG_SETTING:
+    struct
+    {
+        ConfigSettingID configSettingID;
+    } configSetting;
+case TTL:
+    struct
+    {
+        // Hash of the LedgerKey that is associated with this TTLEntry
+        Hash keyHash;
+    } ttl;
 };
 
 // list of all envelope types used in the application
@@ -692,7 +1574,9 @@ enum EnvelopeType
     ENVELOPE_TYPE_SCPVALUE = 4,
     ENVELOPE_TYPE_TX_FEE_BUMP = 5,
     ENVELOPE_TYPE_OP_ID = 6,
-    ENVELOPE_TYPE_POOL_REVOKE_OP_ID = 7
+    ENVELOPE_TYPE_POOL_REVOKE_OP_ID = 7,
+    ENVELOPE_TYPE_CONTRACT_ID = 8,
+    ENVELOPE_TYPE_SOROBAN_AUTHORIZATION = 9
 };
 }
 
@@ -700,10 +1584,14 @@ enum EnvelopeType
 // under the Apache License, Version 2.0. See the COPYING file at the root
 // of this distribution or at http://www.apache.org/licenses/LICENSE-2.0
 
+%#include "xdr/Stellar-contract.h"
 %#include "xdr/Stellar-ledger-entries.h"
 
 namespace stellar
 {
+
+// maximum number of operations per transaction
+const MAX_OPS_PER_TX = 100;
 
 union LiquidityPoolParameters switch (LiquidityPoolType type)
 {
@@ -755,7 +1643,10 @@ enum OperationType
     CLAWBACK_CLAIMABLE_BALANCE = 20,
     SET_TRUST_LINE_FLAGS = 21,
     LIQUIDITY_POOL_DEPOSIT = 22,
-    LIQUIDITY_POOL_WITHDRAW = 23
+    LIQUIDITY_POOL_WITHDRAW = 23,
+    INVOKE_HOST_FUNCTION = 24,
+    EXTEND_FOOTPRINT_TTL = 25,
+    RESTORE_FOOTPRINT = 26
 };
 
 /* CreateAccount
@@ -1163,6 +2054,141 @@ struct LiquidityPoolWithdrawOp
     int64 minAmountB; // minimum amount of second asset to withdraw
 };
 
+enum HostFunctionType
+{
+    HOST_FUNCTION_TYPE_INVOKE_CONTRACT = 0,
+    HOST_FUNCTION_TYPE_CREATE_CONTRACT = 1,
+    HOST_FUNCTION_TYPE_UPLOAD_CONTRACT_WASM = 2
+};
+
+enum ContractIDPreimageType
+{
+    CONTRACT_ID_PREIMAGE_FROM_ADDRESS = 0,
+    CONTRACT_ID_PREIMAGE_FROM_ASSET = 1
+};
+ 
+union ContractIDPreimage switch (ContractIDPreimageType type)
+{
+case CONTRACT_ID_PREIMAGE_FROM_ADDRESS:
+    struct
+    {
+        SCAddress address;
+        uint256 salt;
+    } fromAddress;
+case CONTRACT_ID_PREIMAGE_FROM_ASSET:
+    Asset fromAsset;
+};
+
+struct CreateContractArgs
+{
+    ContractIDPreimage contractIDPreimage;
+    ContractExecutable executable;
+};
+
+struct InvokeContractArgs {
+    SCAddress contractAddress;
+    SCSymbol functionName;
+    SCVal args<>;
+};
+
+union HostFunction switch (HostFunctionType type)
+{
+case HOST_FUNCTION_TYPE_INVOKE_CONTRACT:
+    InvokeContractArgs invokeContract;
+case HOST_FUNCTION_TYPE_CREATE_CONTRACT:
+    CreateContractArgs createContract;
+case HOST_FUNCTION_TYPE_UPLOAD_CONTRACT_WASM:
+    opaque wasm<>;
+};
+
+enum SorobanAuthorizedFunctionType
+{
+    SOROBAN_AUTHORIZED_FUNCTION_TYPE_CONTRACT_FN = 0,
+    SOROBAN_AUTHORIZED_FUNCTION_TYPE_CREATE_CONTRACT_HOST_FN = 1
+};
+
+union SorobanAuthorizedFunction switch (SorobanAuthorizedFunctionType type)
+{
+case SOROBAN_AUTHORIZED_FUNCTION_TYPE_CONTRACT_FN:
+    InvokeContractArgs contractFn;
+case SOROBAN_AUTHORIZED_FUNCTION_TYPE_CREATE_CONTRACT_HOST_FN:
+    CreateContractArgs createContractHostFn;
+};
+
+struct SorobanAuthorizedInvocation
+{
+    SorobanAuthorizedFunction function;
+    SorobanAuthorizedInvocation subInvocations<>;
+};
+
+struct SorobanAddressCredentials
+{
+    SCAddress address;
+    int64 nonce;
+    uint32 signatureExpirationLedger;    
+    SCVal signature;
+};
+
+enum SorobanCredentialsType
+{
+    SOROBAN_CREDENTIALS_SOURCE_ACCOUNT = 0,
+    SOROBAN_CREDENTIALS_ADDRESS = 1
+};
+
+union SorobanCredentials switch (SorobanCredentialsType type)
+{
+case SOROBAN_CREDENTIALS_SOURCE_ACCOUNT:
+    void;
+case SOROBAN_CREDENTIALS_ADDRESS:
+    SorobanAddressCredentials address;
+};
+
+/* Unit of authorization data for Soroban.
+
+   Represents an authorization for executing the tree of authorized contract 
+   and/or host function calls by the user defined by `credentials`.
+*/
+struct SorobanAuthorizationEntry
+{
+    SorobanCredentials credentials;
+    SorobanAuthorizedInvocation rootInvocation;
+};
+
+/* Upload WASM, create, and invoke contracts in Soroban.
+
+    Threshold: med
+    Result: InvokeHostFunctionResult
+*/
+struct InvokeHostFunctionOp
+{
+    // Host function to invoke.
+    HostFunction hostFunction;
+    // Per-address authorizations for this host function.
+    SorobanAuthorizationEntry auth<>;
+};
+
+/* Extend the TTL of the entries specified in the readOnly footprint
+   so they will live at least extendTo ledgers from lcl.
+
+    Threshold: med
+    Result: ExtendFootprintTTLResult
+*/
+struct ExtendFootprintTTLOp
+{
+    ExtensionPoint ext;
+    uint32 extendTo;
+};
+
+/* Restore the archived entries specified in the readWrite footprint.
+
+    Threshold: med
+    Result: RestoreFootprintOp
+*/
+struct RestoreFootprintOp
+{
+    ExtensionPoint ext;
+};
+
 /* An operation is the lowest unit of work that a transaction does */
 struct Operation
 {
@@ -1221,6 +2247,12 @@ struct Operation
         LiquidityPoolDepositOp liquidityPoolDepositOp;
     case LIQUIDITY_POOL_WITHDRAW:
         LiquidityPoolWithdrawOp liquidityPoolWithdrawOp;
+    case INVOKE_HOST_FUNCTION:
+        InvokeHostFunctionOp invokeHostFunctionOp;
+    case EXTEND_FOOTPRINT_TTL:
+        ExtendFootprintTTLOp extendFootprintTTLOp;
+    case RESTORE_FOOTPRINT:
+        RestoreFootprintOp restoreFootprintOp;
     }
     body;
 };
@@ -1238,11 +2270,25 @@ case ENVELOPE_TYPE_POOL_REVOKE_OP_ID:
     struct
     {
         AccountID sourceAccount;
-        SequenceNumber seqNum;
+        SequenceNumber seqNum; 
         uint32 opNum;
         PoolID liquidityPoolID;
         Asset asset;
     } revokeID;
+case ENVELOPE_TYPE_CONTRACT_ID:
+    struct
+    {
+        Hash networkID;
+        ContractIDPreimage contractIDPreimage;
+    } contractID;
+case ENVELOPE_TYPE_SOROBAN_AUTHORIZATION:
+    struct
+    {
+        Hash networkID;
+        int64 nonce;
+        uint32 signatureExpirationLedger;
+        SorobanAuthorizedInvocation invocation;
+    } sorobanAuthorization;
 };
 
 enum MemoType
@@ -1330,8 +2376,44 @@ case PRECOND_V2:
     PreconditionsV2 v2;
 };
 
-// maximum number of operations per transaction
-const MAX_OPS_PER_TX = 100;
+// Ledger key sets touched by a smart contract transaction.
+struct LedgerFootprint
+{
+    LedgerKey readOnly<>;
+    LedgerKey readWrite<>;
+};
+
+// Resource limits for a Soroban transaction.
+// The transaction will fail if it exceeds any of these limits.
+struct SorobanResources
+{   
+    // The ledger footprint of the transaction.
+    LedgerFootprint footprint;
+    // The maximum number of instructions this transaction can use
+    uint32 instructions; 
+
+    // The maximum number of bytes this transaction can read from ledger
+    uint32 readBytes;
+    // The maximum number of bytes this transaction can write to ledger
+    uint32 writeBytes;
+};
+
+// The transaction extension for Soroban.
+struct SorobanTransactionData
+{
+    ExtensionPoint ext;
+    SorobanResources resources;
+    // Amount of the transaction `fee` allocated to the Soroban resource fees.
+    // The fraction of `resourceFee` corresponding to `resources` specified 
+    // above is *not* refundable (i.e. fees for instructions, ledger I/O), as
+    // well as fees for the transaction size.
+    // The remaining part of the fee is refundable and the charged value is
+    // based on the actual consumption of refundable resources (events, ledger
+    // rent bumps).
+    // The `inclusionFee` used for prioritization of the transaction is defined
+    // as `tx.fee - resourceFee`.
+    int64 resourceFee;
+};
 
 // TransactionV0 is a transaction with the AccountID discriminant stripped off,
 // leaving a raw ed25519 public key to identify the source account. This is used
@@ -1393,6 +2475,8 @@ struct Transaction
     {
     case 0:
         void;
+    case 1:
+        SorobanTransactionData sorobanData;
     }
     ext;
 };
@@ -1545,7 +2629,10 @@ union CreateAccountResult switch (CreateAccountResultCode code)
 {
 case CREATE_ACCOUNT_SUCCESS:
     void;
-default:
+case CREATE_ACCOUNT_MALFORMED:
+case CREATE_ACCOUNT_UNDERFUNDED:
+case CREATE_ACCOUNT_LOW_RESERVE:
+case CREATE_ACCOUNT_ALREADY_EXIST:
     void;
 };
 
@@ -1572,7 +2659,15 @@ union PaymentResult switch (PaymentResultCode code)
 {
 case PAYMENT_SUCCESS:
     void;
-default:
+case PAYMENT_MALFORMED:
+case PAYMENT_UNDERFUNDED:
+case PAYMENT_SRC_NO_TRUST:
+case PAYMENT_SRC_NOT_AUTHORIZED:
+case PAYMENT_NO_DESTINATION:
+case PAYMENT_NO_TRUST:
+case PAYMENT_NOT_AUTHORIZED:
+case PAYMENT_LINE_FULL:
+case PAYMENT_NO_ISSUER:
     void;
 };
 
@@ -1623,9 +2718,20 @@ case PATH_PAYMENT_STRICT_RECEIVE_SUCCESS:
         ClaimAtom offers<>;
         SimplePaymentResult last;
     } success;
+case PATH_PAYMENT_STRICT_RECEIVE_MALFORMED:
+case PATH_PAYMENT_STRICT_RECEIVE_UNDERFUNDED:
+case PATH_PAYMENT_STRICT_RECEIVE_SRC_NO_TRUST:
+case PATH_PAYMENT_STRICT_RECEIVE_SRC_NOT_AUTHORIZED:
+case PATH_PAYMENT_STRICT_RECEIVE_NO_DESTINATION:
+case PATH_PAYMENT_STRICT_RECEIVE_NO_TRUST:
+case PATH_PAYMENT_STRICT_RECEIVE_NOT_AUTHORIZED:
+case PATH_PAYMENT_STRICT_RECEIVE_LINE_FULL:
+    void;
 case PATH_PAYMENT_STRICT_RECEIVE_NO_ISSUER:
     Asset noIssuer; // the asset that caused the error
-default:
+case PATH_PAYMENT_STRICT_RECEIVE_TOO_FEW_OFFERS:
+case PATH_PAYMENT_STRICT_RECEIVE_OFFER_CROSS_SELF:
+case PATH_PAYMENT_STRICT_RECEIVE_OVER_SENDMAX:
     void;
 };
 
@@ -1667,9 +2773,20 @@ case PATH_PAYMENT_STRICT_SEND_SUCCESS:
         ClaimAtom offers<>;
         SimplePaymentResult last;
     } success;
+case PATH_PAYMENT_STRICT_SEND_MALFORMED:
+case PATH_PAYMENT_STRICT_SEND_UNDERFUNDED:
+case PATH_PAYMENT_STRICT_SEND_SRC_NO_TRUST:
+case PATH_PAYMENT_STRICT_SEND_SRC_NOT_AUTHORIZED:
+case PATH_PAYMENT_STRICT_SEND_NO_DESTINATION:
+case PATH_PAYMENT_STRICT_SEND_NO_TRUST:
+case PATH_PAYMENT_STRICT_SEND_NOT_AUTHORIZED:
+case PATH_PAYMENT_STRICT_SEND_LINE_FULL:
+    void;
 case PATH_PAYMENT_STRICT_SEND_NO_ISSUER:
     Asset noIssuer; // the asset that caused the error
-default:
+case PATH_PAYMENT_STRICT_SEND_TOO_FEW_OFFERS:
+case PATH_PAYMENT_STRICT_SEND_OFFER_CROSS_SELF:
+case PATH_PAYMENT_STRICT_SEND_UNDER_DESTMIN:
     void;
 };
 
@@ -1719,7 +2836,7 @@ struct ManageOfferSuccessResult
     case MANAGE_OFFER_CREATED:
     case MANAGE_OFFER_UPDATED:
         OfferEntry offer;
-    default:
+    case MANAGE_OFFER_DELETED:
         void;
     }
     offer;
@@ -1729,7 +2846,18 @@ union ManageSellOfferResult switch (ManageSellOfferResultCode code)
 {
 case MANAGE_SELL_OFFER_SUCCESS:
     ManageOfferSuccessResult success;
-default:
+case MANAGE_SELL_OFFER_MALFORMED:
+case MANAGE_SELL_OFFER_SELL_NO_TRUST:
+case MANAGE_SELL_OFFER_BUY_NO_TRUST:
+case MANAGE_SELL_OFFER_SELL_NOT_AUTHORIZED:
+case MANAGE_SELL_OFFER_BUY_NOT_AUTHORIZED:
+case MANAGE_SELL_OFFER_LINE_FULL:
+case MANAGE_SELL_OFFER_UNDERFUNDED:
+case MANAGE_SELL_OFFER_CROSS_SELF:
+case MANAGE_SELL_OFFER_SELL_NO_ISSUER:
+case MANAGE_SELL_OFFER_BUY_NO_ISSUER:
+case MANAGE_SELL_OFFER_NOT_FOUND:
+case MANAGE_SELL_OFFER_LOW_RESERVE:
     void;
 };
 
@@ -1763,7 +2891,18 @@ union ManageBuyOfferResult switch (ManageBuyOfferResultCode code)
 {
 case MANAGE_BUY_OFFER_SUCCESS:
     ManageOfferSuccessResult success;
-default:
+case MANAGE_BUY_OFFER_MALFORMED:
+case MANAGE_BUY_OFFER_SELL_NO_TRUST:
+case MANAGE_BUY_OFFER_BUY_NO_TRUST:
+case MANAGE_BUY_OFFER_SELL_NOT_AUTHORIZED:
+case MANAGE_BUY_OFFER_BUY_NOT_AUTHORIZED:
+case MANAGE_BUY_OFFER_LINE_FULL:
+case MANAGE_BUY_OFFER_UNDERFUNDED:
+case MANAGE_BUY_OFFER_CROSS_SELF:
+case MANAGE_BUY_OFFER_SELL_NO_ISSUER:
+case MANAGE_BUY_OFFER_BUY_NO_ISSUER:
+case MANAGE_BUY_OFFER_NOT_FOUND:
+case MANAGE_BUY_OFFER_LOW_RESERVE:
     void;
 };
 
@@ -1791,7 +2930,16 @@ union SetOptionsResult switch (SetOptionsResultCode code)
 {
 case SET_OPTIONS_SUCCESS:
     void;
-default:
+case SET_OPTIONS_LOW_RESERVE:
+case SET_OPTIONS_TOO_MANY_SIGNERS:
+case SET_OPTIONS_BAD_FLAGS:
+case SET_OPTIONS_INVALID_INFLATION:
+case SET_OPTIONS_CANT_CHANGE:
+case SET_OPTIONS_UNKNOWN_FLAG:
+case SET_OPTIONS_THRESHOLD_OUT_OF_RANGE:
+case SET_OPTIONS_BAD_SIGNER:
+case SET_OPTIONS_INVALID_HOME_DOMAIN:
+case SET_OPTIONS_AUTH_REVOCABLE_REQUIRED:
     void;
 };
 
@@ -1820,7 +2968,14 @@ union ChangeTrustResult switch (ChangeTrustResultCode code)
 {
 case CHANGE_TRUST_SUCCESS:
     void;
-default:
+case CHANGE_TRUST_MALFORMED:
+case CHANGE_TRUST_NO_ISSUER:
+case CHANGE_TRUST_INVALID_LIMIT:
+case CHANGE_TRUST_LOW_RESERVE:
+case CHANGE_TRUST_SELF_NOT_ALLOWED:
+case CHANGE_TRUST_TRUST_LINE_MISSING:
+case CHANGE_TRUST_CANNOT_DELETE:
+case CHANGE_TRUST_NOT_AUTH_MAINTAIN_LIABILITIES:
     void;
 };
 
@@ -1845,7 +3000,12 @@ union AllowTrustResult switch (AllowTrustResultCode code)
 {
 case ALLOW_TRUST_SUCCESS:
     void;
-default:
+case ALLOW_TRUST_MALFORMED:
+case ALLOW_TRUST_NO_TRUST_LINE:
+case ALLOW_TRUST_TRUST_NOT_REQUIRED:
+case ALLOW_TRUST_CANT_REVOKE:
+case ALLOW_TRUST_SELF_NOT_ALLOWED:
+case ALLOW_TRUST_LOW_RESERVE:
     void;
 };
 
@@ -1870,7 +3030,13 @@ union AccountMergeResult switch (AccountMergeResultCode code)
 {
 case ACCOUNT_MERGE_SUCCESS:
     int64 sourceAccountBalance; // how much got transferred from source account
-default:
+case ACCOUNT_MERGE_MALFORMED:
+case ACCOUNT_MERGE_NO_ACCOUNT:
+case ACCOUNT_MERGE_IMMUTABLE_SET:
+case ACCOUNT_MERGE_HAS_SUB_ENTRIES:
+case ACCOUNT_MERGE_SEQNUM_TOO_FAR:
+case ACCOUNT_MERGE_DEST_FULL:
+case ACCOUNT_MERGE_IS_SPONSOR:
     void;
 };
 
@@ -1894,7 +3060,7 @@ union InflationResult switch (InflationResultCode code)
 {
 case INFLATION_SUCCESS:
     InflationPayout payouts<>;
-default:
+case INFLATION_NOT_TIME:
     void;
 };
 
@@ -1917,7 +3083,10 @@ union ManageDataResult switch (ManageDataResultCode code)
 {
 case MANAGE_DATA_SUCCESS:
     void;
-default:
+case MANAGE_DATA_NOT_SUPPORTED_YET:
+case MANAGE_DATA_NAME_NOT_FOUND:
+case MANAGE_DATA_LOW_RESERVE:
+case MANAGE_DATA_INVALID_NAME:
     void;
 };
 
@@ -1935,7 +3104,7 @@ union BumpSequenceResult switch (BumpSequenceResultCode code)
 {
 case BUMP_SEQUENCE_SUCCESS:
     void;
-default:
+case BUMP_SEQUENCE_BAD_SEQ:
     void;
 };
 
@@ -1956,7 +3125,11 @@ union CreateClaimableBalanceResult switch (
 {
 case CREATE_CLAIMABLE_BALANCE_SUCCESS:
     ClaimableBalanceID balanceID;
-default:
+case CREATE_CLAIMABLE_BALANCE_MALFORMED:
+case CREATE_CLAIMABLE_BALANCE_LOW_RESERVE:
+case CREATE_CLAIMABLE_BALANCE_NO_TRUST:
+case CREATE_CLAIMABLE_BALANCE_NOT_AUTHORIZED:
+case CREATE_CLAIMABLE_BALANCE_UNDERFUNDED:
     void;
 };
 
@@ -1970,14 +3143,17 @@ enum ClaimClaimableBalanceResultCode
     CLAIM_CLAIMABLE_BALANCE_LINE_FULL = -3,
     CLAIM_CLAIMABLE_BALANCE_NO_TRUST = -4,
     CLAIM_CLAIMABLE_BALANCE_NOT_AUTHORIZED = -5
-
 };
 
 union ClaimClaimableBalanceResult switch (ClaimClaimableBalanceResultCode code)
 {
 case CLAIM_CLAIMABLE_BALANCE_SUCCESS:
     void;
-default:
+case CLAIM_CLAIMABLE_BALANCE_DOES_NOT_EXIST:
+case CLAIM_CLAIMABLE_BALANCE_CANNOT_CLAIM:
+case CLAIM_CLAIMABLE_BALANCE_LINE_FULL:
+case CLAIM_CLAIMABLE_BALANCE_NO_TRUST:
+case CLAIM_CLAIMABLE_BALANCE_NOT_AUTHORIZED:
     void;
 };
 
@@ -1999,7 +3175,9 @@ union BeginSponsoringFutureReservesResult switch (
 {
 case BEGIN_SPONSORING_FUTURE_RESERVES_SUCCESS:
     void;
-default:
+case BEGIN_SPONSORING_FUTURE_RESERVES_MALFORMED:
+case BEGIN_SPONSORING_FUTURE_RESERVES_ALREADY_SPONSORED:
+case BEGIN_SPONSORING_FUTURE_RESERVES_RECURSIVE:
     void;
 };
 
@@ -2019,7 +3197,7 @@ union EndSponsoringFutureReservesResult switch (
 {
 case END_SPONSORING_FUTURE_RESERVES_SUCCESS:
     void;
-default:
+case END_SPONSORING_FUTURE_RESERVES_NOT_SPONSORED:
     void;
 };
 
@@ -2042,7 +3220,11 @@ union RevokeSponsorshipResult switch (RevokeSponsorshipResultCode code)
 {
 case REVOKE_SPONSORSHIP_SUCCESS:
     void;
-default:
+case REVOKE_SPONSORSHIP_DOES_NOT_EXIST:
+case REVOKE_SPONSORSHIP_NOT_SPONSOR:
+case REVOKE_SPONSORSHIP_LOW_RESERVE:
+case REVOKE_SPONSORSHIP_ONLY_TRANSFERABLE:
+case REVOKE_SPONSORSHIP_MALFORMED:
     void;
 };
 
@@ -2064,7 +3246,10 @@ union ClawbackResult switch (ClawbackResultCode code)
 {
 case CLAWBACK_SUCCESS:
     void;
-default:
+case CLAWBACK_MALFORMED:
+case CLAWBACK_NOT_CLAWBACK_ENABLED:
+case CLAWBACK_NO_TRUST:
+case CLAWBACK_UNDERFUNDED:
     void;
 };
 
@@ -2086,7 +3271,9 @@ union ClawbackClaimableBalanceResult switch (
 {
 case CLAWBACK_CLAIMABLE_BALANCE_SUCCESS:
     void;
-default:
+case CLAWBACK_CLAIMABLE_BALANCE_DOES_NOT_EXIST:
+case CLAWBACK_CLAIMABLE_BALANCE_NOT_ISSUER:
+case CLAWBACK_CLAIMABLE_BALANCE_NOT_CLAWBACK_ENABLED:
     void;
 };
 
@@ -2110,7 +3297,11 @@ union SetTrustLineFlagsResult switch (SetTrustLineFlagsResultCode code)
 {
 case SET_TRUST_LINE_FLAGS_SUCCESS:
     void;
-default:
+case SET_TRUST_LINE_FLAGS_MALFORMED:
+case SET_TRUST_LINE_FLAGS_NO_TRUST_LINE:
+case SET_TRUST_LINE_FLAGS_CANT_REVOKE:
+case SET_TRUST_LINE_FLAGS_INVALID_STATE:
+case SET_TRUST_LINE_FLAGS_LOW_RESERVE:
     void;
 };
 
@@ -2139,7 +3330,13 @@ union LiquidityPoolDepositResult switch (LiquidityPoolDepositResultCode code)
 {
 case LIQUIDITY_POOL_DEPOSIT_SUCCESS:
     void;
-default:
+case LIQUIDITY_POOL_DEPOSIT_MALFORMED:
+case LIQUIDITY_POOL_DEPOSIT_NO_TRUST:
+case LIQUIDITY_POOL_DEPOSIT_NOT_AUTHORIZED:
+case LIQUIDITY_POOL_DEPOSIT_UNDERFUNDED:
+case LIQUIDITY_POOL_DEPOSIT_LINE_FULL:
+case LIQUIDITY_POOL_DEPOSIT_BAD_PRICE:
+case LIQUIDITY_POOL_DEPOSIT_POOL_FULL:
     void;
 };
 
@@ -2165,7 +3362,78 @@ union LiquidityPoolWithdrawResult switch (LiquidityPoolWithdrawResultCode code)
 {
 case LIQUIDITY_POOL_WITHDRAW_SUCCESS:
     void;
-default:
+case LIQUIDITY_POOL_WITHDRAW_MALFORMED:
+case LIQUIDITY_POOL_WITHDRAW_NO_TRUST:
+case LIQUIDITY_POOL_WITHDRAW_UNDERFUNDED:
+case LIQUIDITY_POOL_WITHDRAW_LINE_FULL:
+case LIQUIDITY_POOL_WITHDRAW_UNDER_MINIMUM:
+    void;
+};
+
+enum InvokeHostFunctionResultCode
+{
+    // codes considered as "success" for the operation
+    INVOKE_HOST_FUNCTION_SUCCESS = 0,
+
+    // codes considered as "failure" for the operation
+    INVOKE_HOST_FUNCTION_MALFORMED = -1,
+    INVOKE_HOST_FUNCTION_TRAPPED = -2,
+    INVOKE_HOST_FUNCTION_RESOURCE_LIMIT_EXCEEDED = -3,
+    INVOKE_HOST_FUNCTION_ENTRY_ARCHIVED = -4,
+    INVOKE_HOST_FUNCTION_INSUFFICIENT_REFUNDABLE_FEE = -5
+};
+
+union InvokeHostFunctionResult switch (InvokeHostFunctionResultCode code)
+{
+case INVOKE_HOST_FUNCTION_SUCCESS:
+    Hash success; // sha256(InvokeHostFunctionSuccessPreImage)
+case INVOKE_HOST_FUNCTION_MALFORMED:
+case INVOKE_HOST_FUNCTION_TRAPPED:
+case INVOKE_HOST_FUNCTION_RESOURCE_LIMIT_EXCEEDED:
+case INVOKE_HOST_FUNCTION_ENTRY_ARCHIVED:
+case INVOKE_HOST_FUNCTION_INSUFFICIENT_REFUNDABLE_FEE:
+    void;
+};
+
+enum ExtendFootprintTTLResultCode
+{
+    // codes considered as "success" for the operation
+    EXTEND_FOOTPRINT_TTL_SUCCESS = 0,
+
+    // codes considered as "failure" for the operation
+    EXTEND_FOOTPRINT_TTL_MALFORMED = -1,
+    EXTEND_FOOTPRINT_TTL_RESOURCE_LIMIT_EXCEEDED = -2,
+    EXTEND_FOOTPRINT_TTL_INSUFFICIENT_REFUNDABLE_FEE = -3
+};
+
+union ExtendFootprintTTLResult switch (ExtendFootprintTTLResultCode code)
+{
+case EXTEND_FOOTPRINT_TTL_SUCCESS:
+    void;
+case EXTEND_FOOTPRINT_TTL_MALFORMED:
+case EXTEND_FOOTPRINT_TTL_RESOURCE_LIMIT_EXCEEDED:
+case EXTEND_FOOTPRINT_TTL_INSUFFICIENT_REFUNDABLE_FEE:
+    void;
+};
+
+enum RestoreFootprintResultCode
+{
+    // codes considered as "success" for the operation
+    RESTORE_FOOTPRINT_SUCCESS = 0,
+
+    // codes considered as "failure" for the operation
+    RESTORE_FOOTPRINT_MALFORMED = -1,
+    RESTORE_FOOTPRINT_RESOURCE_LIMIT_EXCEEDED = -2,
+    RESTORE_FOOTPRINT_INSUFFICIENT_REFUNDABLE_FEE = -3
+};
+
+union RestoreFootprintResult switch (RestoreFootprintResultCode code)
+{
+case RESTORE_FOOTPRINT_SUCCESS:
+    void;
+case RESTORE_FOOTPRINT_MALFORMED:
+case RESTORE_FOOTPRINT_RESOURCE_LIMIT_EXCEEDED:
+case RESTORE_FOOTPRINT_INSUFFICIENT_REFUNDABLE_FEE:
     void;
 };
 
@@ -2235,9 +3503,20 @@ case opINNER:
         LiquidityPoolDepositResult liquidityPoolDepositResult;
     case LIQUIDITY_POOL_WITHDRAW:
         LiquidityPoolWithdrawResult liquidityPoolWithdrawResult;
+    case INVOKE_HOST_FUNCTION:
+        InvokeHostFunctionResult invokeHostFunctionResult;
+    case EXTEND_FOOTPRINT_TTL:
+        ExtendFootprintTTLResult extendFootprintTTLResult;
+    case RESTORE_FOOTPRINT:
+        RestoreFootprintResult restoreFootprintResult;
     }
     tr;
-default:
+case opBAD_AUTH:
+case opNO_ACCOUNT:
+case opNOT_SUPPORTED:
+case opTOO_MANY_SUBENTRIES:
+case opEXCEEDED_WORK_LIMIT:
+case opTOO_MANY_SPONSORING:
     void;
 };
 
@@ -2260,12 +3539,12 @@ enum TransactionResultCode
     txBAD_AUTH_EXTRA = -10,      // unused signatures attached to transaction
     txINTERNAL_ERROR = -11,      // an unknown error occurred
 
-    txNOT_SUPPORTED = -12,         // transaction type not supported
-    txFEE_BUMP_INNER_FAILED = -13, // fee bump inner transaction failed
-    txBAD_SPONSORSHIP = -14,       // sponsorship not confirmed
-    txBAD_MIN_SEQ_AGE_OR_GAP =
-        -15, // minSeqAge or minSeqLedgerGap conditions not met
-    txMALFORMED = -16 // precondition is invalid
+    txNOT_SUPPORTED = -12,          // transaction type not supported
+    txFEE_BUMP_INNER_FAILED = -13,  // fee bump inner transaction failed
+    txBAD_SPONSORSHIP = -14,        // sponsorship not confirmed
+    txBAD_MIN_SEQ_AGE_OR_GAP = -15, // minSeqAge or minSeqLedgerGap conditions not met
+    txMALFORMED = -16,              // precondition is invalid
+    txSOROBAN_INVALID = -17         // soroban-specific preconditions were not met
 };
 
 // InnerTransactionResult must be binary compatible with TransactionResult
@@ -2296,6 +3575,7 @@ struct InnerTransactionResult
     case txBAD_SPONSORSHIP:
     case txBAD_MIN_SEQ_AGE_OR_GAP:
     case txMALFORMED:
+    case txSOROBAN_INVALID:
         void;
     }
     result;
@@ -2327,7 +3607,22 @@ struct TransactionResult
     case txSUCCESS:
     case txFAILED:
         OperationResult results<>;
-    default:
+    case txTOO_EARLY:
+    case txTOO_LATE:
+    case txMISSING_OPERATION:
+    case txBAD_SEQ:
+    case txBAD_AUTH:
+    case txINSUFFICIENT_BALANCE:
+    case txNO_ACCOUNT:
+    case txINSUFFICIENT_FEE:
+    case txBAD_AUTH_EXTRA:
+    case txINTERNAL_ERROR:
+    case txNOT_SUPPORTED:
+    // case txFEE_BUMP_INNER_FAILED: handled above
+    case txBAD_SPONSORSHIP:
+    case txBAD_MIN_SEQ_AGE_OR_GAP:
+    case txMALFORMED:
+    case txSOROBAN_INVALID:
         void;
     }
     result;
@@ -2466,7 +3761,14 @@ enum LedgerUpgradeType
     LEDGER_UPGRADE_BASE_FEE = 2,
     LEDGER_UPGRADE_MAX_TX_SET_SIZE = 3,
     LEDGER_UPGRADE_BASE_RESERVE = 4,
-    LEDGER_UPGRADE_FLAGS = 5
+    LEDGER_UPGRADE_FLAGS = 5,
+    LEDGER_UPGRADE_CONFIG = 6,
+    LEDGER_UPGRADE_MAX_SOROBAN_TX_SET_SIZE = 7
+};
+
+struct ConfigUpgradeSetKey {
+    Hash contractID;
+    Hash contentHash;
 };
 
 union LedgerUpgrade switch (LedgerUpgradeType type)
@@ -2481,6 +3783,17 @@ case LEDGER_UPGRADE_BASE_RESERVE:
     uint32 newBaseReserve; // update baseReserve
 case LEDGER_UPGRADE_FLAGS:
     uint32 newFlags; // update flags
+case LEDGER_UPGRADE_CONFIG:
+    // Update arbitrary `ConfigSetting` entries identified by the key.
+    ConfigUpgradeSetKey newConfig;
+case LEDGER_UPGRADE_MAX_SOROBAN_TX_SET_SIZE:
+    // Update ConfigSettingContractExecutionLanesV0.ledgerMaxTxCount without
+    // using `LEDGER_UPGRADE_CONFIG`.
+    uint32 newMaxSorobanTxSetSize;
+};
+
+struct ConfigUpgradeSet {
+    ConfigSettingEntry updatedEntry<>;
 };
 
 /* Entries used to define the bucket list */
@@ -2520,12 +3833,48 @@ case METAENTRY:
     BucketMetadata metaEntry;
 };
 
+enum TxSetComponentType
+{
+  // txs with effective fee <= bid derived from a base fee (if any).
+  // If base fee is not specified, no discount is applied.
+  TXSET_COMP_TXS_MAYBE_DISCOUNTED_FEE = 0
+};
+
+union TxSetComponent switch (TxSetComponentType type)
+{
+case TXSET_COMP_TXS_MAYBE_DISCOUNTED_FEE:
+  struct
+  {
+    int64* baseFee;
+    TransactionEnvelope txs<>;
+  } txsMaybeDiscountedFee;
+};
+
+union TransactionPhase switch (int v)
+{
+case 0:
+    TxSetComponent v0Components<>;
+};
+
 // Transaction sets are the unit used by SCP to decide on transitions
 // between ledgers
 struct TransactionSet
 {
     Hash previousLedgerHash;
     TransactionEnvelope txs<>;
+};
+
+struct TransactionSetV1
+{
+    Hash previousLedgerHash;
+    TransactionPhase phases<>;
+};
+
+union GeneralizedTransactionSet switch (int v)
+{
+// We consider the legacy TransactionSet to be v0.
+case 1:
+    TransactionSetV1 v1TxSet;
 };
 
 struct TransactionResultPair
@@ -2547,11 +3896,13 @@ struct TransactionHistoryEntry
     uint32 ledgerSeq;
     TransactionSet txSet;
 
-    // reserved for future use
+    // when v != 0, txSet must be empty
     union switch (int v)
     {
     case 0:
         void;
+    case 1:
+        GeneralizedTransactionSet generalizedTxSet;
     }
     ext;
 };
@@ -2654,6 +4005,74 @@ struct TransactionMetaV2
                                         // applied if any
 };
 
+enum ContractEventType
+{
+    SYSTEM = 0,
+    CONTRACT = 1,
+    DIAGNOSTIC = 2
+};
+
+struct ContractEvent
+{
+    // We can use this to add more fields, or because it
+    // is first, to change ContractEvent into a union.
+    ExtensionPoint ext;
+
+    Hash* contractID;
+    ContractEventType type;
+
+    union switch (int v)
+    {
+    case 0:
+        struct
+        {
+            SCVal topics<>;
+            SCVal data;
+        } v0;
+    }
+    body;
+};
+
+struct DiagnosticEvent
+{
+    bool inSuccessfulContractCall;
+    ContractEvent event;
+};
+
+struct SorobanTransactionMeta 
+{
+    ExtensionPoint ext;
+
+    ContractEvent events<>;             // custom events populated by the
+                                        // contracts themselves.
+    SCVal returnValue;                  // return value of the host fn invocation
+
+    // Diagnostics events that are not hashed.
+    // This will contain all contract and diagnostic events. Even ones
+    // that were emitted in a failed contract call.
+    DiagnosticEvent diagnosticEvents<>;
+};
+
+struct TransactionMetaV3
+{
+    ExtensionPoint ext;
+
+    LedgerEntryChanges txChangesBefore;  // tx level changes before operations
+                                         // are applied if any
+    OperationMeta operations<>;          // meta for each operation
+    LedgerEntryChanges txChangesAfter;   // tx level changes after operations are
+                                         // applied if any
+    SorobanTransactionMeta* sorobanMeta; // Soroban-specific meta (only for 
+                                         // Soroban transactions).
+};
+
+// This is in Stellar-ledger.x to due to a circular dependency 
+struct InvokeHostFunctionSuccessPreImage
+{
+    SCVal returnValue;
+    ContractEvent events<>;
+};
+
 // this is the meta produced when applying transactions
 // it does not include pre-apply updates such as fees
 union TransactionMeta switch (int v)
@@ -2664,6 +4083,8 @@ case 1:
     TransactionMetaV1 v1;
 case 2:
     TransactionMetaV2 v2;
+case 3:
+    TransactionMetaV3 v3;
 };
 
 // This struct groups together changes on a per transaction basis
@@ -2702,10 +4123,45 @@ struct LedgerCloseMetaV0
     SCPHistoryEntry scpInfo<>;
 };
 
+struct LedgerCloseMetaV1
+{
+    // We forgot to add an ExtensionPoint in v0 but at least
+    // we can add one now in v1.
+    ExtensionPoint ext;
+
+    LedgerHeaderHistoryEntry ledgerHeader;
+
+    GeneralizedTransactionSet txSet;
+
+    // NB: transactions are sorted in apply order here
+    // fees for all transactions are processed first
+    // followed by applying transactions
+    TransactionResultMeta txProcessing<>;
+
+    // upgrades are applied last
+    UpgradeEntryMeta upgradesProcessing<>;
+
+    // other misc information attached to the ledger close
+    SCPHistoryEntry scpInfo<>;
+
+    // Size in bytes of BucketList, to support downstream
+    // systems calculating storage fees correctly.
+    uint64 totalByteSizeOfBucketList;
+
+    // Temp keys that are being evicted at this ledger.
+    LedgerKey evictedTemporaryLedgerKeys<>;
+
+    // Archived restorable ledger entries that are being
+    // evicted at this ledger.
+    LedgerEntry evictedPersistentLedgerEntries<>;
+};
+
 union LedgerCloseMeta switch (int v)
 {
 case 0:
     LedgerCloseMetaV0 v0;
+case 1:
+    LedgerCloseMetaV1 v1;
 };
 }
 
@@ -2738,6 +4194,12 @@ struct SendMore
     uint32 numMessages;
 };
 
+struct SendMoreExtended
+{
+    uint32 numMessages;
+    uint32 numBytes;
+};
+
 struct AuthCert
 {
     Curve25519Public pubkey;
@@ -2758,11 +4220,18 @@ struct Hello
     uint256 nonce;
 };
 
+// During the roll-out phrase, nodes can disable flow control in bytes.
+// Therefore, we need a way to communicate with other nodes
+// that we want/don't want flow control in bytes.
+// We use the `flags` field in the Auth message with a special value
+// set to communicate this. Note that AUTH_MSG_FLAG_FLOW_CONTROL_BYTES_REQUESTED != 0
+// AND AUTH_MSG_FLAG_FLOW_CONTROL_BYTES_REQUESTED != 100 (as previously
+// that value was used for other purposes).
+const AUTH_MSG_FLAG_FLOW_CONTROL_BYTES_REQUESTED = 200;
+
 struct Auth
 {
-    // Empty message, just to confirm
-    // establishment of MAC keys.
-    int unused;
+    int flags;
 };
 
 enum IPAddrType
@@ -2785,6 +4254,7 @@ struct PeerAddress
     uint32 numFailures;
 };
 
+// Next ID: 21
 enum MessageType
 {
     ERROR_MSG = 0,
@@ -2796,6 +4266,7 @@ enum MessageType
 
     GET_TX_SET = 6, // gets a particular txset by hash
     TX_SET = 7,
+    GENERALIZED_TX_SET = 17,
 
     TRANSACTION = 8, // pass on a tx you have heard about
 
@@ -2811,7 +4282,11 @@ enum MessageType
     SURVEY_REQUEST = 14,
     SURVEY_RESPONSE = 15,
 
-    SEND_MORE = 16
+    SEND_MORE = 16,
+    SEND_MORE_EXTENDED = 20,
+
+    FLOOD_ADVERT = 18,
+    FLOOD_DEMAND = 19
 };
 
 struct DontHave
@@ -2823,6 +4298,12 @@ struct DontHave
 enum SurveyMessageCommandType
 {
     SURVEY_TOPOLOGY = 0
+};
+
+enum SurveyMessageResponseType
+{
+    SURVEY_TOPOLOGY_RESPONSE_V0 = 0,
+    SURVEY_TOPOLOGY_RESPONSE_V1 = 1
 };
 
 struct SurveyRequestMessage
@@ -2879,7 +4360,7 @@ struct PeerStats
 
 typedef PeerStats PeerStatList<25>;
 
-struct TopologyResponseBody
+struct TopologyResponseBodyV0
 {
     PeerStatList inboundPeers;
     PeerStatList outboundPeers;
@@ -2888,10 +4369,40 @@ struct TopologyResponseBody
     uint32 totalOutboundPeerCount;
 };
 
-union SurveyResponseBody switch (SurveyMessageCommandType type)
+struct TopologyResponseBodyV1
 {
-case SURVEY_TOPOLOGY:
-    TopologyResponseBody topologyResponseBody;
+    PeerStatList inboundPeers;
+    PeerStatList outboundPeers;
+
+    uint32 totalInboundPeerCount;
+    uint32 totalOutboundPeerCount;
+
+    uint32 maxInboundPeerCount;
+    uint32 maxOutboundPeerCount;
+};
+
+union SurveyResponseBody switch (SurveyMessageResponseType type)
+{
+case SURVEY_TOPOLOGY_RESPONSE_V0:
+    TopologyResponseBodyV0 topologyResponseBodyV0;
+case SURVEY_TOPOLOGY_RESPONSE_V1:
+    TopologyResponseBodyV1 topologyResponseBodyV1;
+};
+
+const TX_ADVERT_VECTOR_MAX_SIZE = 1000;
+typedef Hash TxAdvertVector<TX_ADVERT_VECTOR_MAX_SIZE>;
+
+struct FloodAdvert
+{
+    TxAdvertVector txHashes;
+};
+
+const TX_DEMAND_VECTOR_MAX_SIZE = 1000;
+typedef Hash TxDemandVector<TX_DEMAND_VECTOR_MAX_SIZE>;
+
+struct FloodDemand
+{
+    TxDemandVector txHashes;
 };
 
 union StellarMessage switch (MessageType type)
@@ -2913,6 +4424,8 @@ case GET_TX_SET:
     uint256 txSetHash;
 case TX_SET:
     TransactionSet txSet;
+case GENERALIZED_TX_SET:
+    GeneralizedTransactionSet generalizedTxSet;
 
 case TRANSACTION:
     TransactionEnvelope transaction;
@@ -2934,6 +4447,13 @@ case GET_SCP_STATE:
     uint32 getSCPLedgerSeq; // ledger seq requested ; if 0, requests the latest
 case SEND_MORE:
     SendMore sendMoreMessage;
+case SEND_MORE_EXTENDED:
+    SendMoreExtended sendMoreExtendedMessage;
+// Pull mode
+case FLOOD_ADVERT:
+     FloodAdvert floodAdvert;
+case FLOOD_DEMAND:
+     FloodDemand floodDemand;
 };
 
 union AuthenticatedMessage switch (uint32 v)
@@ -3032,5 +4552,54 @@ struct SCPQuorumSet
     uint32 threshold;
     NodeID validators<>;
     SCPQuorumSet innerSets<>;
+};
+}
+
+// Copyright 2022 Stellar Development Foundation and contributors. Licensed
+// under the Apache License, Version 2.0. See the COPYING file at the root
+// of this distribution or at http://www.apache.org/licenses/LICENSE-2.0
+
+// This is for 'internal'-only messages that are not meant to be read/written
+// by any other binaries besides a single Core instance.
+%#include "xdr/Stellar-ledger.h"
+%#include "xdr/Stellar-SCP.h"
+
+namespace stellar
+{
+union StoredTransactionSet switch (int v)
+{
+case 0:
+	TransactionSet txSet;
+case 1:
+	GeneralizedTransactionSet generalizedTxSet;
+};
+
+struct StoredDebugTransactionSet
+{
+	StoredTransactionSet txSet;
+	uint32 ledgerSeq;
+	StellarValue scpValue;
+};
+
+struct PersistedSCPStateV0
+{
+	SCPEnvelope scpEnvelopes<>;
+	SCPQuorumSet quorumSets<>;
+	StoredTransactionSet txSets<>;
+};
+
+struct PersistedSCPStateV1
+{
+	// Tx sets are saved separately
+	SCPEnvelope scpEnvelopes<>;
+	SCPQuorumSet quorumSets<>;
+};
+
+union PersistedSCPState switch (int v)
+{
+case 0:
+	PersistedSCPStateV0 v0;
+case 1:
+	PersistedSCPStateV1 v1;
 };
 }
