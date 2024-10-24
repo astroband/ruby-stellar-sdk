@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "excon", ">= 0.71.0", "< 1.0"
   spec.add_dependency "faraday", ">= 1.6.0", "< 3.0"
-  spec.add_dependency "faraday-excon", ">= 1.1.0", "< 3.0"
+  spec.add_dependency "faraday-excon", "~> 2.1"
   spec.add_dependency "faraday-follow_redirects", ">= 0.3.0", "< 1.0"
-  spec.add_dependency "hyperclient", ">= 0.7.0", "< 2.0"
+  spec.add_dependency "hyperclient", "~> 2.0"
 end
