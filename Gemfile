@@ -31,11 +31,17 @@ group :development do
   gem "break"
   gem "gem-release", require: false
   gem "octokit"
+  gem "netrc"
   gem "pry"
   gem "pry-doc"
-  gem "netrc"
 end
 
 group :guard, optional: true do
   gem "guard-rspec"
+end
+
+platform :mri do
+  # To silence warnings about default gems
+  gem "fiddle"
+  gem "rdoc"
 end
