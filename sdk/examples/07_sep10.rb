@@ -56,7 +56,7 @@ end
 def example_verify_challenge_tx_threshold
   # 1. The wallet makes a GET request to /auth,
   # 2. The server receives the request, and returns the challenge xdr.
-  envelope_xdr = Stellar::SEP10.build_challenge_tx(
+  envelope_xdr = Stellar::Ecosystem::SEP10::Challenge.new(
     server: $server_kp,
     client: $client_master_kp,
     anchor_name: "SDF",
