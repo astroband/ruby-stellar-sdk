@@ -28,7 +28,6 @@ end
 
 group :development do
   gem "awesome_print"
-  gem "break"
   gem "gem-release", require: false
   gem "octokit"
   gem "netrc"
