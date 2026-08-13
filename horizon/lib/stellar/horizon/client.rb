@@ -1,5 +1,6 @@
 require "hyperclient"
 require "active_support/core_ext/object/blank"
+require "faraday/follow_redirects"
 require "securerandom"
 
 module Stellar::Horizon
@@ -48,7 +49,7 @@ module Stellar::Horizon
       @horizon = Hyperclient.new(options[:horizon]) { |client|
         client.faraday_block = lambda do |conn|
           conn.use Faraday::Response::RaiseError
-          conn.use FaradayMiddleware::FollowRedirects
+          conn.use Faraday::FollowRedirects::Middleware
           conn.request :url_encoded
           conn.response :hal_json, content_type: /\bjson$/
           conn.adapter :excon
