@@ -1,5 +1,6 @@
 require "hyperclient"
 require "active_support/core_ext/object/blank"
+require "faraday/excon"
 require "faraday/follow_redirects"
 require "securerandom"
 
